@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 70%;
+	background-color: #fcf8c7; 
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}    
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+  -->
+</style>
+    
+<head>
+   
+<title>TFBO19ISS</title></head>
+    
+<body>
+
+<div class="body"> 
+
+<h1>Final task ISS-2020 Cesena</h1> 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/LectureBologna1819.html" target="isslm">
+LabISS-lectures site</a></font> 
+ 
+<h2>Separate collection of waste</h2> 
+
+The <em>supervisor</em> of a waiting room (<em>wroom</em>) of a large train station intends to promote automatic collection of the rubbish, by means of ddr robots.
+To this end, some specialized robot (<em>detector</em>) periodically explores the surface of the <em>wroom</em> in order to collect objects 
+made of recyclable material, in particular bottles made of <i>plastic</i> .
+
+ 
+
+
+<h3>The room</h3>
+
+The <em>wroom</em> is equipped with a indoor air quality sensor (for example <a href="https://revspace.nl/CJMCU-811" target="web">CJMCU-811</a>)
+that makes available data on the  <a href="https://www.idt.com/eu/en/document/whp/overview-tvoc-and-indoor-air-quality" target="web">TVOC concentration in ppm</a>.
+<br/><br/>
+When the indoor air quality sensor detects a level of <tt>TVOC</tt> higher than a prefixed value, the <em>wroom</em> is said to be in <bc>state-TVOCHigh</bc>.
+
+<br/><br/>
+
+The <em>wroom</em> is also equipped with a collector of plastic-objects (<em>plasticBox</em>)
+that can contain a maximum of <m><k>NPB</k></m> (e.g. <tt>NPB=10</tt>) bottles.
+<br/><br/>
+The <em>detector</em> is initially located in a <em>detectorHome</em>  situated on the (left-up) corner of the <em>wroom</em>. 
+<br/><br/>
+The collector is situated along the border of the <em>wroom</em> behind the <em>detectorHome</em> and works as a smart device, 
+able to expose and update - via CoAP - its content.
+
+ <br/><br/>
+	<center><table style="width:98%">
+	<tbody>	
+	<tr>
+	<td style="width:60%">
+ 	<center><img src="./img/roomLayout20.png" alt="roomLayout" width="75%" height="32%"/></center>
+	</td> 
+	<td><m>
+ 	<br/><br/>
+	For a possible virtual environment, see <a href="./sceneConfig.js" target="lecture">sceneConfig.js</a>
+   	</m>
+ 	</td>
+	 </table>
+	</center> 	
+
+<h3>The detector</h3>
+
+The <em>detector</em> is able to recognize if an object is made of  plastic and is equipped with a local container (<em>detectorBox</em>)
+that can contain a maximum of <m><k>NDB&lt;NPB</k></m> (e.g. <tt>NDB=5</tt>) bottles.
+<br/><br/>
+The behavior of the <em>detector</em> is managed by the <em>supervisor</em>, which can tell the robot to perform a set of tasks.
+These tasks are executed when the <em>wroom</em> is <bc>closed</bc> to people and include:
+
+<ol>
+<li><i>Explore the room</i>. This task performs the following actions:
+
+	<ul>
+	<li>explore the <em>wroom</em> in a <i>systematic way</i> in order to find static obstacles;</li>
+	<li>if the obstacle is not made made of plastic, keep track of its position in the <em>wroom</em> and continue the exploration; </li>
+	<li>if the detected object is made of plastic, put it (if there is space) in the <em>detectorBox</em>;
+	if the <em>detectorBox</em> is full or if the room has been completely explored, execute the task <i>Empty the detectorBox</i>. </li>
+	</ul>
+ <br/> 
+</li>
+
+<li><i>Empty the detectorBox</i>. This task performs the following actions:
+	<ul>
+	<li>if the <em>detectorBox</em> is empty, execute the task <i>Go to home</i>;
+ 	<li>check if the <em>plasticBox</em> is able to accept the objects contained in the <em>detectorBox</em>; 
+	if it cannot accept, send a message to the <em>supervisor</em> and wait for a command;</li>
+	<li>otherwise, save the current position of the robot(<em>beforeEmptyPos</em>),
+		then move to the  <em>plasticBox</em>, transfer into it the content of the <em>detectorBox</em> 
+	and return to the task <i>Explore the room</i>, restarting from the saved <em>beforeEmptyPos</em> .
+	</li>
+	</ul>
+<br/>
+</li> 
+
+<li><i>Go to home</i>. This task performs the following actions:
+
+	<ul>
+	<li>return the robot to its <em>discoveryHome</em></li>	
+	</ul>
+<br/>
+</li>
+
+<li><i>Terminate the work</i>. This task performs the following actions:
+
+	<ul>
+	<li>if the <em>detectorBox</em> is empty, return to the <em>discoveryHome</em>;
+	otherwise, execute the task <i>Empty the detectorBox</i> and then return  to the <em>discoveryHome</em></li>	
+	</ul>
+
+</li>
+
+</ol>
+
+
+<h2>Requirements</h2> 	
+
+<div class="req">
+Design and build the software to put on board of the <em>plasticBox</em> and of the <em>detector</em>. The system
+must be able to accept the following commands sent by the <i>smart-phone</i> of the <em>supervisor</em>:
+
+<ul>
+<li><bc>explore</bc>: the <em>detector</em> must execute the task <i>Explore the room</i>.</li>
+<!-- <li><em>empty</em>:   the <em>detector</em> must execute in autonomous way  the <i>Empty the detectorBox</i> task.</li> -->
+<li><bc>suspend</bc>:   the <em>detector</em> must execute the task <i>Go to home</i>. </li>
+<li><bc>terminate</bc>:  the <em>detector</em> must execute the task <i>Terminate the work</i>.</li>
+
+</ul>
+Any command sent by the <em>supervisor</em> can be executed only if the room is <b>NOT</b> in the <bc>state-TVOCHigh</bc>.
+
+The system must also include an 'agent' able to detect the <bc>state-TVOCHigh</bc> and to 
+send in automatic way the command <bc>suspend</bc> to the robot. 
+
+
+<br/><br/>
+Moreover, the <i>smart-phone</i> of the <em>supervisor</em> should be automatically updated with information about:
+<ul>
+<li>the current  position of the robot on a map of the <em>wroom</em>. The map should also show the position of the detected non-plastic objects;</li>
+<li>the space still available in its <em>detectorBox</em>;</li>
+<li>the space still available in the  <em>plasticBox</em>.</li>
+</ul>
+ </div>
+
+
+
+   
+
+<h2>Non functional requirements</h2>  
+<ol>
+<li>The ideal work team is composed of 3 persons. Teams of 1 or 2 persons (<bc>NOT</bc> 4 or more) are also allowed. </li>
+<li>The team must present a workplan as the result of the requirement/problem analysis,
+including some significant <bc>TestPlan</bc>.</li>
+<li>The team must present the sequence of SPRINT performed, with appropriate motivations.</li>
+<li>The team must present (in synthetic, schematic way) the specific activity of each team-component.</li>
+</ol>	
+ 
+ <!--
+ // https://mvnrepository.com/artifact/it.unibo.alice.tuprolog/2p-core
+compile group: 'it.unibo.alice.tuprolog', name: '2p-core', version: '4.1.1'
+ -->
+</div>
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI    
+</div> 
+</body>
+</html>

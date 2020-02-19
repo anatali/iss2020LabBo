@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+	width: 750px;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 60%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>Lab1_2020</title></head>
+    
+<body>
+<div id="top">
+<h1>Lab1_2020 |  Design and build a Robot Commander <font size="5"></font> </h1>
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.issLabStart/userDocs/LectureCesena1920.html" target="isslm">LabISS-lectures site</a></font> 
+</div>  
+
+
+<div class="body"> 
+<h2>Requirements</h2>
+
+<div class="req">
+Design and build a software system (<em>RobCmd</em>) allowing the remote control of a <i>differential drive robot</i>
+(<em>Robot</em>) by means of a <em>Console</em>. The <em>Robot</em> must be able to execute a set of <i>movement-commands</i>
+sent by the <em>Console</em>:
+<ul>
+<li> <k>w</k>: forward</li>
+<li> <k>s</k>: backward</li>
+<li> <k>h</k>: stop the robot movement</li>
+<li> <k>a</k>: rotate left</li>
+<li> <k>d</k>: rotate right</li>
+</ul>
+
+The <em>Console</em> must run on a computational node different from that of the <em>Robot</em>.
+ 
+</div>	    
+ 
+<h2>A first model</h2>
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%"><h3>Structure</h3>
+<m>From the structural point of view, the system is composed by (at least) two components:
+the <em>console</em> and the <em>robot</em>.<br/>
+<ul>
+<li>Each component can be conceived as an autonomous entity that cannot have
+any 'pointer' or 'reference' to the other (the system is distributed).</li>
+<li>Each component  works in its won computational node</li>
+</ul>
+A proper model at this level can be described by using the 'custom' language (metamodel) named <k>qak</k>
+(see :
+</m>
+<pre>
+System <em>robcmd</em>
+
+Context ctxConsole ip [ host= "localhost" port= 8020 ] 
+Context ctxRobot   ip [ host= "localhost" port= 8030 ] 
+
+QActor <k>console</k> context ctxConsole {  
+	State s0 initial {
+		println ( "hello from console" )
+	}
+}
+
+QActor <k>robot</k> context ctxRobot {
+	State s0 initial {
+		println ( "robot ready" )
+	}
+}
+</pre>
+In the <k>qak</k> metamodel, a system is composed of a set of <k>QActors</k>, each working within a node
+(<k>Context</k>) with a specific <tt>IP</tt> and an <tt>entry-port</tt> number.
+Two actors can work in the same context.
+</td>
+<td><h3>Structure, interaction, behavior</h3>
+<m>
+In the <k>qak</k> metamodel, two actors can exchage information modeled as a <k>Dispatch</k>.
+<ul>
+<li>The <k>qak</k> language provides a primitive (<k>forward</k>) to send (in asynchronous way) a dispatch
+to an actor (including itself).</li>
+<li>The <k>qak</k> language <k>does not</k> provide any 'receive' operation, neither any 'callback' mechanism.
+Rather it handles input information by structuring its behavior as a Finite State Machine. </li>
+</ul>
+
+
+</m>
+<pre>
+System <em>robcmd</em>
+
+<k>Dispatch cmd : cmd(X)</k> <kc>// X = w | s | a ... </kc>
+
+Context ctxRobcmd ip [ host= "localhost" port= 8020 ] 
+
+QActor console context ctxRobcmd {  
+	State s0 initial {
+		println ( "hello from console" )
+		<k>forward robot -m cmd : cmd( w )</k>
+	}
+}
+
+QActor robot context ctxRobcmd {
+	State s0 initial {
+		println ( "robot ready" )
+	}
+	<k>Transition t0 whenMsg cmd -> handleCmd</k>
+	
+	State handleCmd{
+ 		printCurrentMessage
+	}
+}
+</pre>
+</td>
+</tr>
+</table>
+
+<m> 
+<div class="remark">
+AVVERTENZA:<br/>
+Per far eseguire un modello qak, CREARE UN KOTLIN PROJECT anzichè un Java project.
+See 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.qakintro2020/userDocs/LabQakIntro2020.html" target="web">
+LabQakIntro2020.html</a>
+</div>	 
+</m>
+
+ 
+<h2 id="testplan">Towards a test plan</h2>
+The Testing Unit (<kc>TU</kc>) should:
+<ol>
+<li>activate a <em>console</em> that sends to the <em>robot</em> a command (e.g. <tt>'w'</tt>)</li>
+<li>check (in automatic way) that the <em>robot</em> is moving according to the command sent (without using a Camera)
+</li>
+</ol>
+
+<h3>Current goals</h3>	
+Our current goals could be summarized as follows:
+
+<ul> 	
+<li>express the logical interaction between the <em>console</em> and the <em>robot</em></li>
+<li>express the logical behavior of the <em>console</em> (the sender) and the <em>robot</em> (the receiver) </li>
+<li>introduce an explicit representation of the state of the robot (<k>robotState</k>). For example: <tt>'robot moving forward'</tt></li>
+<li>make the <k>robotState</k> accessible to the <kc>TU</kc></li>
+</ul>	
+<m>
+<div class="remark">
+WORK TO DO<br/>
+Impostare un piano di testing, automatizzabile con JUnit 4
+</div>	
+</m> 
+<img src="./img/robotStateIntro.png" alt="robotStateIntro" width="60%" />
+ 
+<h2>A more attractive scenario</h2>	
+Automatic testing is very useful during system development. However, in order to better understand the requirements
+and to stabilize them, we aim at using a real (or a virtual) robot.
+The intent is to show as soon as possible a working prototype to the customer, in order to have proper feedbacks.
+
+<h3>A virtual robot</h3>	
+Let us start from the virtual robot described in 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.robot2020/userDocs/LabVirtualRobot.html" target="web">LabVirtualRobot</a>
+<br/><br/>
+
+For an example of usage, see:
+
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.robot2020/src/clientWenvTcpObj.kt" target="web">clientWenvTcpObj.kt</a>
+in project <tt>it.unibo.robot2020</tt>.
+
+<div class="remark">
+WORK TO DO<br/>
+Perform the problem analysis and define the <k>logical architecture</k> of the system.<br/>
+<m>See <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.qakintro2020/userDocs/LabQakIntro2020.html" target="web">
+LABQakIntro2020 | Using the QActor (meta)model</a>
+in project <tt>it.unibo.qakintro2020</tt>.
+</m>
+</div>	 
+
+
+
+ 
+<h2 id="reqstep">A new requirement: the step command</h2>
+<div class="req">
+Extend the software system <em>RobCmd</em> so that the <em>Robot</em> is also able to execute the following <i>movement-command</i>
+(always sent by the <em>Console</em>):
+<ul>
+<li> <k>step</k>: the robot moves forward for a prefixed time (e.g. <tt>2</tt> secs) and then stops.</li>
+</ul>
+Moreover, the robot must be always able to react 'immediately'  to the <k>h</k> command.
+</div>	    
+
+<br/><br/>
+</div>  
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+</body>
+</html>
