@@ -1,0 +1,45 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id 'eclipse'		//ADDED	
+	id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+}
+
+group = 'it.unibo.iss'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+    flatDir { //grazie Mattia Piretti
+       dirs '/C:/Didattica2018Work/iss2020LabBo/it.unibo.springbootIntro/libs'	//full path
+   }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	
+//CUSTOM
+    compile name: 'uniboInterfaces'
+     //For p2p two-way connections (TCP, UDP, BTH, Serial ...)
+    compile name: 'unibonoawtsupports'
+		
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+test {
+	useJUnitPlatform()
+}
+
+//ADDED
+bootJar {
+	mainClassName = 'com.example.demo.DemoApplication'
+}
