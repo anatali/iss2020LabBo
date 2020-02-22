@@ -447,7 +447,7 @@ they does not seem the right approach to face the problem of the definition of a
 for the development of distributed applications based on the idea of 
 <a href="https://en.wikipedia.org/wiki/Microservices" target="web">microservice</a>.
 
-<h2>Towards a conceptual space</h2>
+<h2>Towards a conceptual space (MVC-based)</h2>
 During initial release of Spring, all beans are used to be declared in an <tt>XML</tt> file. 
 For a large project, this quickly becomes a massive task. 
 In later versions, Spring guys provide annotation-based dependency injection and Java-based configuration. 
@@ -507,7 +507,43 @@ For example, <tt>DispatcherServlet</tt> will look for <tt>@RequestMapping</tt>  
 </tr>
  </tbody>
 </table>
- <br/><br/> 
+
+<h3>The service layer</h3>
+On the network we read that "There has been ambiguity about the use of Service layer in Spring". The concept of service layer
+<img src="./img/serviceLayer.png" alt="serviceLayer.png" width="80%"  />
+<br/>
+
+has been introduced for several reasons:
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:30%" >Provides separation of concern.
+</td>
+<td>Service layer improves code modularity by specifying business logic and rules.
+It makes use of a DAO that is the only responsible for interacting with DB.
+</td>
+</tr>
+
+<tr>
+<td>Improves Security.
+</td>
+<td>If you provide a service layer that has no relation to the DB, then it is more difficult to gain access to the DB 
+from the client except through the service. 
+</td>
+</tr>
+
+<tr>
+<td>Provide Loose Coupling.
+</td>
+<td>Service layer can also be used to serve loose coupling in the application.
+</td>
+</tr>
+
+ </tbody>
+</table>
+ <br/><br/>
+ 
 
 </li>
 </ol>
