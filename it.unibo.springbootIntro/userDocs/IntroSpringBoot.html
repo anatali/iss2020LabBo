@@ -88,18 +88,21 @@ bc{
 k{
 	font-family: "Arial";
 	font-weight: bold;
+	font-size: 80%;
     color: #990000;
 	 
 }
 ks{
 	font-family: "Arial";
 	font-weight: bold;
+	font-size: 80%;
     color: #0000CD	;
 	 
 }
 kc{
 	font-family: "Arial";
 	font-weight: bold;
+	font-size: 80%;
     color: #008000	;
 	 
 }
@@ -151,7 +154,7 @@ table, th, td {
     
 <body>
 <div id="body">
-<h1>An experiment with Spring Boot<font size="5"></font> </h1>
+<h1>Experimenting Spring Boot<font size="5"></font> </h1>
  
  
 <ol>
@@ -336,7 +339,7 @@ we could ask ourdelves wether we still 'work in Java':
 
 <tr>
 <td>
- <h3>SSpring MVC and Spring WebFlux</h3>
+ <h3>Spring MVC and Spring WebFlux</h3>
 <ul>
 <li>@GetMapping</li>
 <li>@PostMapping</li>
@@ -444,8 +447,225 @@ they does not seem the right approach to face the problem of the definition of a
 for the development of distributed applications based on the idea of 
 <a href="https://en.wikipedia.org/wiki/Microservices" target="web">microservice</a>.
 
+<h2>Towards a conceptual space</h2>
+During initial release of Spring, all beans are used to be declared in an <tt>XML</tt> file. 
+For a large project, this quickly becomes a massive task. 
+In later versions, Spring guys provide annotation-based dependency injection and Java-based configuration. 
+From Spring 2.5 annotation-based dependency injection was introduced, which <i>automatically scans</i> and register classes as 
+Spring bean which is annotated using <tt>@Component</tt> annotation. Moreover:
+ <br/><br/>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+ <ul>
+<li><ks>@Component</ks> is a generic stereotype for any Spring-managed component or bean.</li>
+<li><ks>@Controller</ks> is a stereotype for the presentation layer (<tt>Spring MVC</tt>).</li>
+<li><ks>@Service</ks> is a stereotype for the service layer.</li>
+<li><ks>@Repository</ks> is a stereotype for the persistence layer.</li>
+
+</ul>
+
+</td>
+<td><img src="./img/Components.png" alt="Components.png" width="90%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+ 
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+The annotation definitions are:
+<pre><m>@Component
+public @interface Service {
+….
+}
+@Component
+public @interface Repository {
+….
+}
+@Component
+public @interface Controller {
+…
+}</m>
+</pre>
+</td>
+<td>Instead of using <tt>@Component</tt> on a controller class in <tt>Spring MVC</tt>, we use <tt>@Controller</tt>, which is more readable and appropriate.
+By using that annotation we:
+<ol>
+<li>declare that this class is a <tt>Spring bean</tt> and should be created and maintained by <tt>Spring ApplicationContext</tt>;</li>
+<li>indicate that its a controller in <tt>MVC</tt> setup. This property is used by web-specific tools and functionalities.
+For example, <tt>DispatcherServlet</tt> will look for <tt>@RequestMapping</tt>  on classes which are annotated using 
+<tt>@Controller</tt>  but not with <tt>@Component</tt> .
 
 
+
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/> 
+
+</li>
+</ol>
+<h2>A closer look</h2>
+Let us introduce the following terms:
+<ul>
+<li><kc>Annotation</kc>: (noun)  a note added by way of comment or explanation often furnishing summaries of relevant decisions.</li>
+<li><kc>Stereotype</kc>: (noun) something conforming to a fixed or general <k>pattern</k>; especially : 
+a standardized <ks>mental picture</ks> that is held in common by members of a group and that represents 
+an oversimplified opinion, prejudiced attitude, or uncritical judgment.</li>
+</ul>
+
+ 
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:27%" >
+<k>@SpringBootApplication</k>
+</td>
+<td>A convenient annotation for: <tt>@Configuration</tt>, <tt>@EnableAutoConfiguration</tt>, <tt>@ComponentScan</tt>.<br/>
+<m>The class that is annotated with the <tt>@SpringBootApplication</tt>  must be kept in the base package, 
+and the component scan is made only its sub-packages.</m>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@Configuration</k>
+</td>
+<td>This annotation is used on classes that define <a href="https://www.baeldung.com/spring-bean" target="web">Spring Beans</a>.<br/>
+A bean is an object that is instantiated, assembled, and otherwise managed by a Spring <ks>IoC</ks> container.<br/>
+<m><a href="https://en.wikipedia.org/wiki/Inversion_of_control" target="web">Inversion of Control</a> (<k>IoC</k>) 
+is a process in which an object defines its dependencies without creating them. 
+This object delegates the job of constructing such dependencies to an <tt>IoC container</tt>.</m>
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@EnableAutoConfiguration</k>
+</td>
+<td>Tells Spring Boot to start adding beans based on classpath settings, other beans, and various property settings.
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@ComponentScan</k>
+</td>
+<td>Used to allow Spring to know the packages to scan for annotated components.
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@Component</k>
+</td>
+<td>Indicates that an annotated class is a "component". It is generic <kc>stereotype annotation</kc> for any Spring-managed component.
+The other stereotypes (<ks>Controller, Service, Repository</ks>) are simply specializations of the <tt>@Component</tt> class.<br/>
+<m>You no longer need to add <tt>@ResponseBody</tt> to all the <tt>RequestMapping</tt> methods and
+you no long use view-resolvers or send HTML in response. 
+You just send a <tt>domain object</tt> as an <tt>HTTP</tt> response in the format that is understood by the consumers, like <tt>JSON</tt>.</m>
+</td>
+</tr>
+
+<tr>
+<td ><k>@RestController </k>
+</td>
+<td>A convenience annotation that is itself annotated with <tt>@Controller</tt> and <tt>@ResponseBody</tt>.
+It marks a class as a controller where every method returns a <ks>domain object</ks> instead of a <ks>view</ks>.
+</td>
+</tr>
+
+
+<tr>
+<td ><k>@Controller</k>
+</td>
+<td>Indicates that an annotated class is a "Controller" 
+</td>
+</tr>
+
+<tr>
+<td ><k>@ResponseBody</k>
+</td>
+<td>This annotation (similar to <tt>@RequestBody</tt>) is used to annotate request handler methods.
+It indicates that the result type should be written straight in the response body in whatever format you specify like JSON or XML. 
+Spring converts the returned object into a response body by using the 
+<a href="https://dzone.com/articles/spring-mvc-http-message-converter"  target="web">HttpMessageConverter</a>.
+</td>
+</tr>
+
+<tr>
+<td ><k>@RequestBody</k>
+</td>
+<td>This annotation is used to annotate request handler methods arguments.
+It indicates that indicates that a method parameter should be bound to the value of the HTTP request body. 
+The <a href="https://dzone.com/articles/spring-mvc-http-message-converter"  target="web">HttpMessageConverter</a>
+ is responsible for converting from the HTTP request message to object..
+</td>
+</tr>
+
+  
+
+ </tbody>
+</table>
+<br/>
+ 
+
+
+
+
+
+
+ 
+<h2>From components to services</h2>
+
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:20%" >
+<k>@Service</k> 
+</td>
+<td>Indicates that an annotated class is a <ks>Service</ks>, originally defined by by Evans in
+<a href="https://en.wikipedia.org/wiki/Domain-driven_design"  target="web">Domain-driven design</a>
+as "an operation offered as an interface that stands alone in the model, with no encapsulated state."
+</td>
+
+</tr>
+
+<tr>
+<td ><k>@Repository</k>
+</td>
+<td>Indicates that an annotated class is a <ks>Repository</ks>, originally defined by Evans in
+<a href="https://en.wikipedia.org/wiki/Domain-driven_design"  target="web">Domain-driven design</a>as 
+"a mechanism for encapsulating storage, retrieval, and search behavior which emulates a collection of objects".
+</td>
+</tr>
+
+ </tbody>
+</table>
+<br/>
+<!--
+http://bit.ly/2kn7mSp
+https://www.youtube.com/playlist?list=PLeLcvrwLe185prGhjUrFGQsOh_0MArR1P
+https://en.wikipedia.org/wiki/YAML
+
+https://stedolan.github.io/jq/download/
+
+Runtime.getRuntime().availableProcessors()
+java -XX:+PrintFlagsFinal -version | findstr MaxHeapSize
+java -Xmx200m -XX:+PrintFlagsFinal -version | findstr MaxHeapSize  low the maximum heap size 
+
+ 
+docker run --rm -i openjdk:12.0.2
+-->
 <pre>
 https://www.youtube.com/watch?v=UfOxcrxhC0s		full course subtitled
 
@@ -468,56 +688,8 @@ by starting from
 
 <h2>Stereotype annotations </h2>
 
-Stereotype: (noun) something conforming to a fixed or general pattern; especially : 
-a standardized mental picture that is held in common by members of a group and that represents 
-an oversimplified opinion, prejudiced attitude, or uncritical judgment
- <br/><br/>
-Annotation: (noun)  a note added (as to a statute) by way of comment or explanation often furnishing summaries of relevant court decisions
 
-<br/>
-<table style="width:98%">
-<tbody>	
-<tr>
-<td style="width:20%" ><k>@Component</k>
-</td>
-<td>Indicates that an annotated class is a "component". It is generic stereotype annotation for any Spring-managed component.
-The other stereotypes (Controller, Service, Repository) are simply specializations of the <tt>@Component</tt> class.
 
-</td>
-</tr>
-
-<tr>
-<td ><k>@Controller</k>
-</td>
-<td>Indicates that an annotated class is a "Controller" 
-</td>
-</tr>
-
-<tr>
-<td ><k>@Service</k>
-</td>
-<td>Indicates that an annotated class is a "Service", originally defined by Domain-Driven Design (Evans, 2003) 
-as "an operation offered as an interface that stands alone in the model, with no encapsulated state."
-</td>
-</tr>
-
-<tr>
-<td ><k>@Repository</k>
-</td>
-<td>Indicates that an annotated class is a "Repository", originally defined by Domain-Driven Design (Evans, 2003) as 
-"a mechanism for encapsulating storage, retrieval, and search behavior which emulates a collection of objects".
-</td>
-</tr>
-
-<tr>
-<td ><k>@RestController </k>
-</td>
-<td>A convenience annotation that is itself annotated with @Controller and [@ResponseBody].
-</td>
-</tr>
-
- </tbody>
-</table>
 
 <h1>Spring cloud</h1>
 The idea of config server has come from the 12-factor app manifesto related to the best practices guidelines of developing modern 
