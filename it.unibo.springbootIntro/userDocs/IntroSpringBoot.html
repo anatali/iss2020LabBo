@@ -615,11 +615,19 @@ You just send a <tt>domain object</tt> as an <tt>HTTP</tt> response in the forma
 <td ><k>@RestController </k>
 </td>
 <td>A convenience annotation that is itself annotated with <tt>@Controller</tt> and <tt>@ResponseBody</tt>.
+<pre>
+ @Target(value=TYPE)
+ @Retention(value=RUNTIME)
+ @Documented
+ @Controller
+ @ResponseBody
+public @interface RestController
+</pre>
 It marks a class as a controller where every method returns a <ks>domain object</ks> instead of a <ks>view</ks>.
 </td>
 </tr>
 
-
+<!-- https://www.java67.com/2019/04/top-10-spring-mvc-and-rest-annotations-examples-java.html -->
 <tr>
 <td ><k>@Controller</k>
 </td>

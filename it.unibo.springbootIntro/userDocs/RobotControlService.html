@@ -159,23 +159,37 @@ table, th, td {
 
 <h2>A robot-control service</h2>
  
+ 
  <pre>
- docker build -t productservice .
+ Write application.yml
+  
+ 
+ docker build -t productservice .		//CREATE docker image
  
  docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" productservice
+ 
+ docker run --rm -p8080:8080  -pCOM21:COM21-e "SPRING_PROFILES_ACTIVE=docker"  springbootintro 9111341c7780
+ 
  
  http://localhost:8080/product/3
  curl localhost:8080/product/3
  
  CTRL_C
  
- docker run -d -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" --name prodserv1 productservice
+ docker run -d -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" --name prodserv1 productservice  //RUN detached
  
  docker logs prodserv1   (-f)
  docker rm -f prodserv1   //STOPS and removes the container
  
  </pre>
  
+ <pre>
+ docker system prune -a
+ docker rmi						//remove image
+ docker build -t robot .		//CREATE docker image
+ 
+ 
+ </pre>
  
 
  <br/><br/>

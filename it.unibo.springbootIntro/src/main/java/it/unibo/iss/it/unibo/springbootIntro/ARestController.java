@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import itunibo.robotMbot.JSSCSerialComm;
+import itunibo.robotMbot.SerialPortConnSupport;
+
+ 
+ 
+
 /*
  * the fundamental difference between a web application and a REST API is that 
  * the response from a web application is generally view (HTML + CSS + JavaScript)  
@@ -23,19 +29,43 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController  //combination of @Controller and @ResponseBody
 public class ARestController { 
+	private SerialPortConnSupport conn = null;
 	
-	private ConnRobotTcp robotConn  = new ConnRobotTcp();
-	public ARestController() {
-		robotConn.connect("localhost", 8018, "basicrobot");
-	}
-	
+ 	public ARestController() {
+ 		connectCoAP();
+    }
+ 	
+// 	private void connectSerial() {
+//  		try {
+// 			JSSCSerialComm connjss = new itunibo.robotMbot.JSSCSerialComm( );			 
+//	 		conn = connjss.connect("COM21");
+//		} catch (Exception e) { 
+//			System.out.println("ARestController Seral conn ERROR:" + e.getMessage());
+//		} 		
+// 	}
+ 	private void connectCoAP() {
+ 		CoapSupport.createConnection("192.168.1.8", "8018", "basicrobot");
+ 	}
     @GetMapping("/cmd")  
     public String handleCmd(@RequestParam(value = "v", defaultValue = "h") String robotcmd ) {
-    	ApplModel.curState = "executing cmd=>"+ robotcmd;
-    	robotConn.forward(robotcmd);
+    	ApplModel.curState = "executing cmd => "+ robotcmd + " conn=" + conn;
+     	it.unibo.robotMock.mockRobot.move(robotcmd);
+     	
+     	CoapSupport.forward(robotcmd);
+     	
+     	//itunibo.robotMock.mockrobotSupport().move("");
+     	
+//     	if( conn != null ) {
+//     		try {
+//				conn.sendALine( robotcmd );
+//			} catch (Exception e) {
+//				System.out.println("ARestController ERROR:" + e.getMessage());
+// 			}
+//     	}else {
+//     		System.out.println("ARestController Seral conn NOT SET"  );
+//     	}
         return String.format("ARestController handleCmd %s", robotcmd );  
     }
- 
  
 }
 
