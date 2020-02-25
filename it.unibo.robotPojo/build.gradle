@@ -6,34 +6,61 @@ USAGE:
 	gradle build distZip 		//for executable jar and distribution
  ================================================================================
 */
+/*
+buildscript {
+	ext {
+		springBootVersion = '2.1.0.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+    	flatDir {  
+       		dirs '/C:/Didattica2018Work/iss2020LabBo/it.unibo.issLabStart/resources'	//full path
+		}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+*/
 plugins {
     id 'java'
     id 'eclipse'
 	id 'org.jetbrains.kotlin.jvm' version '1.3.21'
  }
 
+
+
+
 version '1.0'
 
 sourceCompatibility = 1.8
-
+ 
 repositories {
     mavenCentral()
     flatDir {  
        dirs '/C:/Didattica2018Work/iss2020LabBo/it.unibo.issLabStart/resources'	//full path
    }
 }
-
+ 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     //testCompile group: 'junit', name: 'junit', version: '4.12'
+    
+// https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib
+	//compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '0.6.179'
+
+// https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-runtime
+	compile group: 'org.jetbrains.kotlin', name: 'kotlin-runtime', version: '1.2.71'
+
+    
 //COROUTINE
-    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-common', version: '1.1.0'
-    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.1.0'
+//    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core-common', version: '1.1.0'
+//    compile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.1.0'
  //ARDUINO
     // https://mvnrepository.com/artifact/org.scream3r/jssc
     compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
 //LOG4j	
-	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+//	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
  
 //CUSTOM
     compile name: 'uniboInterfaces'
@@ -57,12 +84,16 @@ compileTestKotlin {
 
 /*
 mainClassName = 'it.unibo.TODOKt'
+*/
 
 jar {
-    println("executing jar")
+    println("doing a fat jar")
     from sourceSets.main.allSource
     manifest {
-        attributes 'Main-Class': "$mainClassName"
+        attributes 'Main-Class': "nothing"
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
-*/
+

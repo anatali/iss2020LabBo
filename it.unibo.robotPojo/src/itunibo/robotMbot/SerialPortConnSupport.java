@@ -2,12 +2,13 @@ package itunibo.robotMbot;
 
 import java.util.ArrayList;
 import java.util.List;
+import it.unibo.is.interfaces.protocols.IConnInteraction;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
-
-public class SerialPortConnSupport implements ISerialPortInteraction, SerialPortEventListener{
+ 
+public class SerialPortConnSupport implements IConnInteraction, SerialPortEventListener{
 final static int SPACE_ASCII = 32;
 final static int DASH_ASCII = 45;
 final static int NEW_LINE_ASCII = 10;

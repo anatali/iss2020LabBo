@@ -4,15 +4,15 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import it.unibo.is.interfaces.IObserver;
 import it.unibo.is.interfaces.IOutputView;
-import it.unibo.supports.serial.ISerialPortInteraction;
+import it.unibo.is.interfaces.protocols.IConnInteraction;
 import it.unibo.system.SituatedPlainObject;
 
 public class ArduinoObserver extends SituatedPlainObject implements IObserver, SerialPortEventListener{
-protected ISerialPortInteraction portConn;
+protected IConnInteraction portConn;
 protected String curInput = "";
 protected int n = 0;
   
-	public ArduinoObserver(ISerialPortInteraction portConn,IOutputView outView) {
+	public ArduinoObserver(IConnInteraction portConn,IOutputView outView) {
 		super(outView);
 		this.portConn = portConn;
  	}

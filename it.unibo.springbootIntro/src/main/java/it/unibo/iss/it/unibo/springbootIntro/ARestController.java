@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import itunibo.robotMbot.JSSCSerialComm;
+//import itunibo.robotMbot.JSSCSerialComm;
 import itunibo.robotMbot.SerialPortConnSupport;
+import itunibo.robotMbot.mbotSupport;
 
  
  
@@ -32,28 +33,24 @@ public class ARestController {
 	private SerialPortConnSupport conn = null;
 	
  	public ARestController() {
- 		connectCoAP();
+ 		connec();
     }
  	
-// 	private void connectSerial() {
-//  		try {
-// 			JSSCSerialComm connjss = new itunibo.robotMbot.JSSCSerialComm( );			 
-//	 		conn = connjss.connect("COM21");
-//		} catch (Exception e) { 
-//			System.out.println("ARestController Seral conn ERROR:" + e.getMessage());
-//		} 		
-// 	}
- 	private void connectCoAP() {
- 		CoapSupport.createConnection("192.168.1.8", "8018", "basicrobot");
+  	private void connec() {
+ 		//CoapSupport.createConnection("192.168.1.8", "8018", "basicrobot");		
+ 		mbotSupport.INSTANCE.create();
  	}
     @GetMapping("/cmd")  
     public String handleCmd(@RequestParam(value = "v", defaultValue = "h") String robotcmd ) {
     	ApplModel.curState = "executing cmd => "+ robotcmd + " conn=" + conn;
      	it.unibo.robotMock.mockRobot.move(robotcmd);
      	
-     	CoapSupport.forward(robotcmd);
+     	mbotSupport.INSTANCE.move(robotcmd);
      	
-     	//itunibo.robotMock.mockrobotSupport().move("");
+     	//CoapSupport.forward(robotcmd);
+     	
+     	itunibo.robotMbot.mbotSupport.INSTANCE.create();
+     	//itunibo.robotMock.mockrobotSupport.INSTANCE.move("");
      	
 //     	if( conn != null ) {
 //     		try {

@@ -29,7 +29,8 @@ public class AController {
 	@GetMapping("/") 		//shortcut for @RequestMapping(method = RequestMethod.GET)
     public String homePage(Model model) {
         model.addAttribute("appName", appName);
-        return "welcome";
+        //return "welcome";
+        return "index";
     } 
 	
  

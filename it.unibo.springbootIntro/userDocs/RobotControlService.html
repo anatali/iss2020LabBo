@@ -152,6 +152,24 @@ table, th, td {
    
 <title>RobotControlService</title></head>
     
+	
+<h2>Robot adapters</h2>	
+<ol>
+<li>Add Kotlin nature to the project and Mouse on the project -> Configure Kotlin -> Add Kotlin nature</li>
+<li>Insert the  kotlin-runtime in build.gradle and a FLAT jar task</li>
+<li>Define robot adapters as POJO that implements an interface</li>
+<li>Define a Rest controller that makes direct use of an adapter POJO</li>
+<li>Put on Raspberry and experiment</li>
+<li>Activate a REST server and call a long-time command implemented in Arduino: the server does not accept other commands</li>
+<li>Activate another REST server (on another port) with the same adapter and call a stop command implemented in Arduino</li>
+<li>Replace the POJO adapter with a microservice: the previous interference is avoided </li>
+<li>Put the (CoAP) microservice adpater (or better the basicrobot) on Raspberry and the REST server in docker and experiment</li>
+<li>Introduce msg/6 <tt>msg(cmd,dispatch,connQakTcp,basicrobot,cmd(l),11)</tt> as an internal standard to overcome the absence of interface</li>
+<li></li>
+</ol>
+ 
+<h2>Robot adapters</h2>	
+
 <body>
 <div id="body">
 <h1>A service to control a DDR robot<font size="5"></font> </h1>
@@ -168,7 +186,7 @@ table, th, td {
  
  docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" productservice
  
- docker run --rm -p8080:8080  -pCOM21:COM21-e "SPRING_PROFILES_ACTIVE=docker"  springbootintro 9111341c7780
+ docker run --rm -p8080:8080  -pCOM21:COM21 -e "SPRING_PROFILES_ACTIVE=docker"  springbootintro 9111341c7780
  
  
  http://localhost:8080/product/3
