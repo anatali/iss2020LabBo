@@ -12,16 +12,25 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
     flatDir {  
         dirs '/C:/Didattica2018Work/iss2020LabBo/it.unibo.issLabStart/resources'	//full path
    }
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	//implementation 'org.springframework.boot:spring-boot-starter-web'
+	//implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+
+
+	implementation('org.springframework.boot:spring-boot-starter-actuator')
+	implementation('org.springframework.boot:spring-boot-starter-webflux')
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	testImplementation('io.projectreactor:reactor-test')
+
 
 //ARDUINO
     // https://mvnrepository.com/artifact/org.scream3r/jssc
@@ -42,7 +51,7 @@ compile group: 'commons-io', name: 'commons-io', version: '2.6'
 // https://mvnrepository.com/artifact/org.json/json
 compile group: 'org.json', name: 'json', version: '20090211'
 
-}
+ 
 	
 //CUSTOM
     compile name: 'uniboInterfaces'
@@ -52,14 +61,23 @@ compile group: 'org.json', name: 'json', version: '20090211'
 }
 
  
-
+/*
 test {
 	useJUnitPlatform()
+}
+*/
+
+test {
+  testLogging {
+    exceptionFormat = 'full'
+    events = ["passed", "failed", "skipped"]
+    showStandardStreams = true
+  }
 }
 
 //ADDED
 mainClassName = 'it.unibo.iss.it.unibo.springbootIntro.Application'
-
+/*
 jar {
     println("buildig the jar")
     from sourceSets.main.allSource
@@ -67,8 +85,5 @@ jar {
         attributes 'Main-Class': "$mainClassName"
     }
 }
-/*
-bootJar {
-	mainClassName = 'com.example.demo.DemoApplication'
-}
 */
+ 

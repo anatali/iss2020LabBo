@@ -1,5 +1,6 @@
 package it.unibo.iss.it.unibo.springbootIntro;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
  
 @Controller 
+
 public class AController { 
     @Value("${spring.application.name}")
     String appName;
@@ -34,7 +36,7 @@ public class AController {
     } 
 	
  
-    @GetMapping("/model")  
+    @GetMapping("/state")  
     public String showModel(Model model) {
     	//Object currentCommand = model.getAttribute("curCmd");
     	model.addAttribute("curState", ApplModel.curState);

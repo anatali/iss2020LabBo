@@ -13,7 +13,7 @@ public class AClient {
 
 	public static void main(String[] args)  {
         try {
-            String strUrl = "http://localhost:8080/";
+            String strUrl = "http://localhost:7001/robotstate";
             HttpClient client = HttpClientBuilder.create().build();
             HttpGet request = new HttpGet(strUrl);
             HttpResponse response = client.execute(request);
