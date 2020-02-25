@@ -28,7 +28,7 @@ public class ApplicationTests {
 //using static method, no need to use @Autowired
     @Test
 	public void testTest() {
-    	//PrintForTest.println("testTest");
+    	//PrintForTest.println("testTest"); 
     	 
     String answer = "hello";
  	   System.out.println("---------------------------------------------------- test1" ); 

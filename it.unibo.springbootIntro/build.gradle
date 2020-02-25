@@ -73,7 +73,7 @@ test {
     events = ["passed", "failed", "skipped"]
     showStandardStreams = true
   }
-}
+} 
 
 //ADDED
 mainClassName = 'it.unibo.iss.it.unibo.springbootIntro.Application'
