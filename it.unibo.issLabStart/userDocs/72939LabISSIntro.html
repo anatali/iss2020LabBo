@@ -150,7 +150,7 @@ table, th, td {
 <body>
 <div id="top">
 
-<h1>72939 - Laboratory of Software Systems <font size="5"></font> </h1>
+<h1>72939 - Software Systems Engineering M<font size="5"></font> </h1>
  <a href="https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2019/385373" target="web">SITO WEB di Ateneo</a><br/>
  <a href="./LectureBologna1920.html" target="web">LabSS-lectures site</a><br/>
  
@@ -171,7 +171,7 @@ table, th, td {
 
 <tr>
 <td><img src="./img/slide2.png" alt="slide2" width="100%" /> </td>
-<td>Software Engineering is an engineering discipline which is concerned with all aspects of software production 
+<td><k>Software Engineering</k> is an engineering discipline which is concerned with all aspects of software production 
 from the early stages of system requirements through to maintaining the system after is has gone into use.</td>
 </tr>
 
@@ -195,12 +195,27 @@ from the early stages of system requirements through to maintaining the system a
 
 <tr>
 <td><img src="./img/slide4.png" alt="slide4" width="100%" /> </td>
-<td><img src="./img/slide5.jpg" alt="slide5" width="100%" />  </td>
-</tr>
+<td><h3><a href="https://en.wikipedia.org/wiki/Spiral_model"  target="web">Spiral model</a></h3>
 
+<img src="./img/spiral_model_boehm_1988.png" alt="spiral_model_boehm_1988.png" width="100%" />  </td>
+</tr>
+ 
 <tr>
 <td><img src="./img/slide6.png" alt="slide6" width="100%" /> </td>
-<td><img src="./img/slide7.png" alt="slide7" width="100%"/> </td>
+<td>
+<h3><a href="https://en.wikipedia.org/wiki/Turing_machine"  target="web">Turing machine</a></h3>
+
+<img src="./img/turingm.png" alt="turingm" width="100%" /> 
+<h3><a href="https://en.wikipedia.org/wiki/Counter_machine"  target="web">Minsky machine</a></h3>
+<pre>
+CLR (r) 
+INC (r) 
+DEC (r) 
+CPY (rj, rk) 
+JZ (r, z) 
+JE (rj, rk, z) 
+</pre>
+</td>
 </tr>
 
 
@@ -257,22 +272,23 @@ Ad es. : <a href="https://en.wikipedia.org/wiki/Unified_Modeling_Language" targe
 </tr>
 
 <tr>
-<td><h3 id="reqtest">Requriements and Testing</h3>  
+<td><h3 id="reqtest">Requirements and Testing</h3>  
 
 <div class="remark">
 More than the act of testing, the act of <em>designing tests</em> is one of the best bug preventers known. 
 </div>
 
 <m>
-<a href="https://en.wikipedia.org/wiki/Software_testing">https://en.wikipedia.org/wiki/Software_testing</a><br/><br/>
-<a href="http://softwaretestingfundamentals.com/software-testing-quotes/">http://softwaretestingfundamentals.com/software-testing-quotes/</a>
+<a href="https://en.wikipedia.org/wiki/Software_testing" target="web">https://en.wikipedia.org/wiki/Software_testing</a><br/><br/>
+<a href="http://softwaretestingfundamentals.com/software-testing-quotes/"  target="web">http://softwaretestingfundamentals.com/software-testing-quotes/</a>
 </m>
+
 
 </td>
 <td> <img src="./img/topdownprocess.png" alt="topdownprocess" width="100%" />
 </td>
 </tr>
-
+<!--
 
 <tr>
 <td><img src="./img/slide12.png" alt="slide12" width="100%"/></td>
@@ -330,11 +346,134 @@ Dispatch: "Dispatch" name=ID  ":" msg = STRING  ;
 <img src="./img/emf.png" alt="emf" width="100%" /></td>
 </tr>
 
-
+-->
 
 </table>
 </center> 	
 
+
+<h2 id="agile">Agile development</h2>
+  	<center><table style="width:98%">
+	<tbody>	
+	<tr>
+	<td style="width:90%">
+ 	<center><img src="./img/overviewScrum.jpg" alt="overviewScrum" width="100%" height="52%"/></center>
+	</td>
+	<td>
+ <a href="https://en.wikipedia.org/wiki/Scrum_(software_development)" target="web">SCRUM (wikipedia)</a>
+ (<a href="https://www.scrumguides.org/" target="web">SCRUM guide</a>)
+ 	</td>
+	</tr>
+	 </table>
+	</center> 
+	
+<h2 id="iot">A domain: 
+<a href="https://en.wikipedia.org/wiki/Internet_of_things" target="web">Internet of Things (IOT)</a></h2>
+
+ 	<center><table style="width:98%">
+	<tbody>	
+	<tr>
+	<td style="width:50%">
+ 	<center><img src="./img/iot3.png" alt="iot3" width="145%" height="145%"/> </center>
+	</td>
+	<td>
+	<center><img src="./img/iot0.png" alt="iot0" width="100%" height="100%"/> </center>
+	<k>Distributed, heterogeneous systems</k>
+ 	</td>
+	</tr>
+	 </table>
+	</center> 
+
+	
+<h2 id="microservices">A reference <a href="https://en.wikipedia.org/wiki/Programming_model" target="web">programming model</a>
+		: 
+<a href="https://www.martinfowler.com/microservices/" target="web">Microservices</a></h2>
+
+ 	What distinguishes a<a href="https://en.wikipedia.org/wiki/Programming_model" target="web"> <k>programming model</k></a> from a normal library is that the behavior of the call cannot be understood in terms of the language the program is written in.
+	<ul>
+	<li>'Microservices' is a variant of the <a href="https://en.wikipedia.org/wiki/Service-oriented_architecture" target="web">service-oriented architecture (SOA)</a>
+	architectural style that structures an <a href="https://en.wikipedia.org/wiki/Application_(computing)" target="web">application </a>  
+	as a collection of <a href="https://en.wikipedia.org/wiki/Coupling_(computer_programming)" target="web"></a> loosely coupled services: 
+		services should be  <a href="https://en.wikipedia.org/wiki/Service_granularity_principle" target="web">fine-grained</a>  and the 
+	<a href="https://en.wikipedia.org/wiki/Protocol_(computing)" target="web">protocols</a>   should be lightweight. </li>
+	<li>Microservices emerged from: domain-driven design, continuos delivery, on-demand virtualization, infrastructure automation, small autonomous teams, systems at scale.</li>
+	<li>Microservices improve <a href="https://en.wikipedia.org/wiki/Modular_programming" target="web">modularity</a>   and makes the application easier to understand, 
+	develop and test. </li>
+	<li>It also parallelizes <a href="https://en.wikipedia.org/wiki/Software_development_process" target="web">development</a>   
+	by enabling small autonomous teams to develop, <a href="https://en.wikipedia.org/wiki/Software_deployment" target="web">deploy</a>  
+	and scale their respective services independently.</li>
+	
+	<li>It also allows the architecture of an individual service to emerge through continuous <a href="https://en.wikipedia.org/wiki/Refactoring" target="web">refactoring</a>. 
+	</li>
+	<li>Microservices-based architectures enable   <a href="https://en.wikipedia.org/wiki/Continuous_delivery" target="web">continuous delivery</a>  and deployment.</li>
+	
+	<li>Microservices-based architectures introduce a number of new, non trivial challenges that require proper tools and frameworks to simplify the design and the
+	development of Microservices. For example, in Java world:<br/>
+	
+	<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<ul>
+<li><a href="https://spring.io/projects/spring-boot" target="web">Spring Boot</a></li>
+<li><a href="https://spring.io/projects/spring-cloud" target="web">Spring Cloud</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Docker_(software)" target="web">Docker</a></li>
+<li><a href="https://it.wikipedia.org/wiki/Kubernetes" target="web">Kubernetes</a></li>
+<li>EFK( <a href="https://en.wikipedia.org/wiki/Elasticsearch" target="web">Elasticsearch </a>
+<a href="https://en.wikipedia.org/wiki/Fluentd" target="web">Fluentd</a>,
+	<a href="https://en.wikipedia.org/wiki/Kibana" target="web">Kibanak</a>)</li>
+<li><a href="Istio https://istio.io/" target="web">istio</a></li>
+<li>...</li>
+
+</ul>
+<div class="remark">
+Do we start from here? <br/>
+Let us do a <a href="Istio https://IntroSpringBoot.html" target="web">simple experiment  ....</a> </center>
+</div>
+</td>
+<td><center><img src="./img/HandsOnSpring.jpg" alt="HandsOnSpring.jpg" width="45%" height="45%"/>
+</td>
+</tr>
+ </tbody>
+</table>
+	</li>
+	</ul>
+Better to start from some more basic concept ...	
+	
+	 
+
+
+<h2 id=""> <a href="https://www.martinfowler.com/microservices/" target="web">Distributed computing</a></h2>
+ 	<ul>
+	<li><a href="https://www.martinfowler.com/microservices/" target="web">Distributed computing</a>
+	refers to the use of distributed systems to solve computational problems. </li>
+	<li>In distributed computing, a problem is divided into many tasks, each of which is solved by one or more computers, 
+which communicate with each other via <a href="https://en.wikipedia.org/wiki/Message_passing" target="web">message passing</a> .
+</li>
+ 	<li><k>A new set of concepts is required</k>. </li>
+   </ul>
+
+  
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:40%" >Let us introduce a set of (custom) symbols that we will use
+	in the next weeks to sketch (on paper, in informal way) our distributed architectures.<br/><br/>
+</td>
+<td><center><img src="./img/legenda.png" alt="iot0" width="100%" height="100%"/> </center>
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+<h2 id=""> <a href="https://www.martinfowler.com/microservices/" target="web">Application0</a></h2>
+<h3>Requirements</h3>	
+Design and build a software system to control a <k>DDR</k> (differential drive robot) so that:
+<ul>
+<li>The robot is able to explore in a systematic and autonomous way a room,</li>
+<li>by showing (in real time) to the user (on a smartphone) a picture of the explored space.</li>	
+</ul>
+<!--
 <h2>Our Goal</h2>
 
 <ol>
@@ -494,7 +633,7 @@ Si veda: <a href="devsDdr.html">devsDdr.html</a>
 
 <br/><br/>
 
-	
+-->	
 </div>  
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
 By AN Unibo-DISI    
