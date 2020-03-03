@@ -218,16 +218,53 @@ JE (rj, rk, z)
 </td>
 </tr>
 
-
 <tr>
-<td><h3>Bottom-up</h3><img src="./img/slide6a.jpg" alt="slide6a" width="100%" /> </td>
-<td><h3>Top-down</h3><img src="./img/slide6b.jpg" alt="slide6b" width="100%"/> </td>
+<td><h3>Programming Languages</h3>
+<img src="./img/historyHLPL.png" alt="historyHLPL.png" width="80%" /><br/>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Timeline_of_programming_languages"  target="web">Timeline of PL</a>,
+ <a href="https://en.wikipedia.org/wiki/History_of_programming_languages"  target="web">History of PL</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Comparison_of_programming_languages"  target="web">Comparison of PL</a></li>
+</ul>
+ 
+<!--
+https://en.wikipedia.org/wiki/List_of_programming_languages<br/>
+https://en.wikipedia.org/wiki/List_of_programming_languages_by_type<br/>
+https://en.wikipedia.org/wiki/Comparison_of_programming_languages<br/>
+https://en.wikipedia.org/wiki/History_of_programming_languages<br/>
+-->
+</td>
+<td><h3>Libraries</h3>
+A <k>Library</k> provides a set of helper functions/objects/modules which your application code calls for specific functionality. <br/>
+Libraries typically focus on a narrow scope.
+<br/><br/>
+<h3><a href="https://en.wikipedia.org/wiki/Software_framework"  target="web">Frameworks</a></h3>
+A <a href="https://en.wikipedia.org/wiki/Software_framework"  target="web"><k> Framework</k> </a> 
+defines open or unimplemented functions or objects which the user writes to create a custom application.<br/>
+<m>A key difference is in the <i>Inversion of Control</i>(<k>IoC</k>).</m><br/> 
+<img src="./img/framework-vs-library.png" alt="framework-vs-library.png" width="90%" /><br/>
+<!-- When we call a method from a library, we are in control. But in framework, the control is inverted i.e. the framework calls us. -->
+
+<hr/>
+<i><m>The designers of software frameworks aim to facilitate software developments by allowing designers and programmers 
+to devote their time to meeting software requirements rather than dealing with the more standard low-level details of providing 
+a working system, thereby reducing overall development time.</m>
+</i>
+<hr/>
+   </td>
 </tr>
 
 <tr>
 <td><img src="./img/slide10.png" alt="slide10" width="100%"/></td>
 <td><img src="./img/slide11.png" alt="slide11" width="100%" /> </td>
 </tr>
+
+<tr>
+<td><h3>Development Bottom-up</h3><img src="./img/slide6a.jpg" alt="slide6a" width="100%" /> </td>
+<td><h3>Development Top-down</h3><img src="./img/slide6b.jpg" alt="slide6b" width="100%"/> </td>
+</tr>
+
+
 
 
 <tr>
@@ -268,8 +305,34 @@ Ad es. : <a href="https://en.wikipedia.org/wiki/Unified_Modeling_Language" targe
 </ul>
 
 </td>
-<td><img src="./img/slide9.png" alt="slide9" width="100%"/></td>
+<td>
+<h3 id="modello">Modello nella ingegneria del software</h3>
+<ul>
+<li>Nei processi di costruzione del software, il termine modello va inteso come un insieme di concetti e proprietà 
+volti a catturare <k>aspetti essenziali</k> di un sistema, collocandosi in un preciso spazio concettuale.</li>
+<li>Per l'ingegnere del software un modello costituisce una visione semplificata di un sistema che rende il sistema stesso 
+più accessibile alla comprensione  e facilita il trasferimento di informazione e la collaborazione tra persone.
+<li>Ma ... <img src="./img/magritte.jpg" alt="magritte" width="50%" /> </li> 
+<li>L'insieme dei modelli che descrivono un sistema dovrebbe formare una descrizione completa, <k>coerente, consistente</k> e non (troppo) ridondante.
+</li>
+</li>
+</ul>
+ </td>
 </tr>
+
+<tr>
+<td><h3 id="reqtest">Representations</h3>  
+ <img src="./img/repofnums.png" alt="repofnums" width="100%" />
+ Quattro diverse rappresentazioni espresse in quattro differenti linguaggi  dello stesso concetto (modello).
+ 
+
+
+</td>
+<td>><h3 id="reqtest">Symbols</h3>  
+ <img src="./img/legenda0.png" alt="legenda0" width="100%" />
+</td>
+</tr>
+
 
 <tr>
 <td><h3 id="reqtest">Requirements and Testing</h3>  
@@ -441,8 +504,6 @@ Let us do a <a href="Istio https://IntroSpringBoot.html" target="web">simple exp
 Better to start from some more basic concept ...	
 	
 	 
-
-
 <h2 id=""> <a href="https://www.martinfowler.com/microservices/" target="web">Distributed computing</a></h2>
  	<ul>
 	<li><a href="https://www.martinfowler.com/microservices/" target="web">Distributed computing</a>
@@ -457,10 +518,11 @@ which communicate with each other via <a href="https://en.wikipedia.org/wiki/Mes
 <table style="width:98%">
 <tbody>	
 <tr>
-<td style="width:40%" >Let us introduce a set of (custom) symbols that we will use
-	in the next weeks to sketch (on paper, in informal way) our distributed architectures.<br/><br/>
+<td style="width:40%" >A set of (custom) symbols 
+	to sketch, in informal way, distributed architectures on a sheet of paper.<br/><br/>
+	Formal (custom, executable) models will be introduced 'by need' after problem analysis.
 </td>
-<td><center><img src="./img/legenda.png" alt="iot0" width="100%" height="100%"/> </center>
+<td><center><img src="./img/legenda1.png" alt="iot0" width="100%" height="100%"/> </center>
 </td>
 </tr>
  </tbody>
@@ -473,6 +535,19 @@ Design and build a software system to control a <k>DDR</k> (differential drive r
 <li>The robot is able to explore in a systematic and autonomous way a room,</li>
 <li>by showing (in real time) to the user (on a smartphone) a picture of the explored space.</li>	
 </ul>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:30%" > <img src="./img/mbot-S.jpg" alt="mbot-S" width="90%" /> 
+</td>
+<td> <img src="./img/mbotIot.png" alt="mbotIot" width="100%" /> 
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+\
+
 <!--
 <h2>Our Goal</h2>
 
