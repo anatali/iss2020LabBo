@@ -157,8 +157,8 @@ table, th, td {
 	
 	<h3>GIT | clone the iss2020Lab</h3>
 	<ol>
-	<li>Open a new, <b>empty</b> directory (e.g. <bc>iss2020Lab</bc>) and work in it.</li>
-	<li>Execute <bc>git clone  https://github.com/anatali/iss2019Lab.git </bc></li>
+	<li>Open a new, <b>empty</b> directory (e.g. <tt>iss2020</tt>)and work in it.</li>
+	<li>Execute <bc>git clone  https://github.com/anatali/iss2020Lab.git </bc></li>
 	<li>Execute <bc>git remote -v</bc>
 	<li>Use the files as a <u>read-only reference</u>: never change them</li>
 	<li>Execute <bc>git pull</bc> when needed</li>
@@ -167,38 +167,31 @@ table, th, td {
 	
 	<h3>GIT | useful commands </h3> 
 	<ul>
-	<li><pre>git config --global core.autocrlf input</pre>
-	Convert all CRLF line endings to LF before it stores it in the commit.<br/>
+	<li><pre>git config --global core.autocrlf input  <m><kc>//Convert all CRLF line endings to LF before it stores it in the commit.</kc></m> </pre>
 	When we clone a project that was created on the MS Windows platform
-	MS Windows typically put append a hidden CR + LF characters on the end of each line of a text file.
+	MS Windows typically put append a hidden <tt>CR + LF</tt> characters on the end of each line of a text file.
 	</li>
 	<li><pre>git status --h</pre>
-	<li><pre>git status --ignored</pre>
+	<li><pre>git status --ignored   <m><kc>//To see the ignored files</kc></m></pre>
 	<!-- <li><pre>git rm --cached build -r</pre> REMOVE from Staging area</li> -->
 	</li>
 	</ul>
-
-	
-	
-
-
-
-
-
+ 
     <h2>GRADLE</h2>
     See <a href="https://gradle.org/guides/" target="web">Gradle Tutorials and Guides</a> 
 	
     <ol>
         <li> See <a href="https://riptutorial.com/it/gradle" target="web">Gradle Tutorials and Guides</a> and <br/>
-		<a href="https://gradle.org/install/" target="code">Download <tt>gradle</tt></a> (using <tt>zip</tt> or <tt>SDKMAN</tt>). Current version: <tt>6.2.1</tt>.</li>
+		<a href="https://gradle.org/install/" target="code">Download <tt>gradle</tt></a> (using <tt>zip</tt> or <tt>SDKMAN</tt>). Current version: <tt>6.2.2</tt>.</li>
         <li>Set <tt>GRADLE_HOME</tt> to the unpacked Gradle files and add <tt>GRADLE_HOME/bin</tt> to your <tt>PATH</tt> environment variable</li>
         <li>Create a work dir (e.g. <tt>iss2020</tt>) and work in it.</li>
         <!-- <li>Execute <bc>gradle wrapper</bc> 
 		(see <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html" target="web">https://docs.gradle.org/current/userguide/gradle_wrapper.html</a>)
 		</li> -->
-        <li>Execute <bc>gradle init</bc> and select <tt>6</tt> (Java-application), <tt>1</tt> (groovy), <tt>1</tt> (Junit)<br/><br/>
+        <li>Execute <bc>gradle init</bc> and select  Java-application, Groovy),  Junit<br/><br/>
 		   <center><img src="./img/gradlew.png" alt="gradlew.png" width="60%" height="60%"></center><br/><br/>
 		</li>
+		<li>Look at <tt>gradle/gradle-wrapper.properties</tt>.</li>
 		<li>Look at the generated files:
 		
 <table style="width:58%">
@@ -241,6 +234,10 @@ table, th, td {
 <kc># Ignore Gradle build output directory</kc>
 build		
 			</m></pre>
+			
+<div class="remark"><m>
+Note the directory <ks>Test</ks> and the file <tt>AppTest</tt>.</m>
+</div>			
 	</td>
 	</tr>
  </table>	
@@ -278,6 +275,7 @@ The resullt is:
 BUILD SUCCESSFUL in 10s
 2 actionable tasks: 2 executed
 </pre>	
+
 	</td>
 	</tr>
  </table>		
@@ -286,7 +284,7 @@ BUILD SUCCESSFUL in 10s
 
 
 
-	<h2> Add GIT and experiment</h2>	
+	<h3> GRADLE project | Add GIT and experiment</h3>	
 	<ul>
 	<li>Execute <bc>git init</bc> within directory  <tt>iss2020</tt> introduced above. </li>
 	<li>Execute <bc>git status</bc>.</li>
@@ -302,7 +300,7 @@ BUILD SUCCESSFUL in 10s
 	<li></li>
 	<li>Execute <bc>git commit -m "First"</bc> and <bc>git status</bc>.</li>
 	<li>Execute <bc>git log</bc>.</li>
-	<li></li>
+<!--	<li></li>
 	<li>Execute <bc>git rm file.txt (--cached file.txt)</bc>  to delete (remove) files.</li>
 
 	<li>Execute <bc>git config --list</bc>.</li>
@@ -310,31 +308,36 @@ BUILD SUCCESSFUL in 10s
 
 
 	<li>Edit the file <a href="../.gitignore" target="code">.gitignore</a></li>
- 	</ul>
- 	
-	<h2>START: A JAVA APP</h2>
+ -->	</ul>
+ 
+	<h2>From Java to Kotlin using IntelliJ IDEA</h2> 
+	<ol>
+		<li>Copy <tt>App.java</tt> in a new class named <tt>AppOriginal.java</tt></li>
+		<li>Open the current working folder (mouse on it) as <m><ks>IntelliJ IDEA Community Edition Project</ks></m>.  
+		Note the selection on <tt>use defualt gradlew wrapper (reccomended)</tt>.</li>
+		<li>Select <tt>App.java</tt> and click on <i>Convert Java file to Kotlin file</i> (<tt>CTRL-ALT-SHIFT-K</tt>)
+		and click on the link pop-up <m><ks>configure kotlin</ks></m> and on <m><ks>enable auto-import</ks></m>.
+		Note the tasks added in <ks>build.gradle</ks></li>
+		<li>compare the generated <tt>App.kt</tt> with the original <tt>App.java</tt></li>
+		<!-- <li>In <a href="../build.gradle" target="code">build.gradle</a>, set <tt>mainClassName='App<k>Kt</k>'</tt></li> -->
+		<li>Execute <bc>gradle run</bc> </li>
+	</ol>
+
+	
+	<h2>Using Eclipse</h2>
 	<ol>
 
-        <li>Add the folder <tt>src/main/java</tt> </li>
-       <li>Add the class <a href="../src/main/java/issStart2019/AppJava.java" target="code">AppJava.java</a> in             
-            <tt>src/main/java/issStart2019</tt> </li>
-		<li>In <a href="../build.gradle" target="code">build.gradle</a>, set <tt>mainClassName='issStart2019.AppJava'</tt></li>
-        <li>Execute <bc>gradlew build</bc></li>
-        <li>Look at the directory <tt>build</tt>, and execute <bc>gradlew run</bc>. The result is:
-		<pre>Hello world FROM JAVA.</pre>
-		</li>
+        <li>Open Eclipse in a new  workspace  </li>
+        <li>Select <m><ks>Import projects -> Gradle -> existing Gradle project</ks></m> ...  the project in  <tt>iss2020</tt>.</li>
+		<li>Look at the generated files <tt>.classpath</tt> and <tt>.project</tt></li>
+ 		<li>Look at the file <tt>Test.java</tt> that now contains errors.</li>
+		<li>Mouse on project, click rigth and select <m> <ks>Configure Kotlin -> add kotlin nature</ks></m> </li>
+		<li>Observe that <tt>Test.java</tt> still contains errors.</li>
+		<li>In <tt>build.gradle</tt> add  <ks>id 'eclipse'</ks> within <ks>plugins</ks></li>
+        <li>Execute <bc>gradle build eclipse </bc></li>
+        <li>Run the Test with Junit	</li>
  	</ol>
     
-	<h2>FROM Java TO Kotlin USING IntelliJ IDEA</h2> 
-	<ol>
-		<li>Copy <tt>AppJava.java</tt> in a new class named <tt>AppKtFromJava.java</tt></li>
-		<li>Open the current working folder (mpuse on it) as <tt>IntelliJ IDEA Community Edition Project</tt>.</li>
-		<li>Select <tt>AppJava.java</tt> and click on <i>Convert Java file to Kotlin file</i> (<tt>CTRL-ALT-SHIFT-K</tt>)
-		and compare the generated <a href="../src/main/java/issStart2019/AppKtFromJava.kt" target="code">AppKtFromJava.kt</a>
-		with the original <a href="../src/main/kotlin/issStart2019/App.kt" target="code">AppK.kt</a></li>
-		<li>In <a href="../build.gradle" target="code">build.gradle</a>, set <tt>mainClassName='it.unibo.bls19.AppKtFromJava'</tt></li>
-		<li>Execute <bc>gradlew run</bc> </li>
-	</ol>
 	
 
 
