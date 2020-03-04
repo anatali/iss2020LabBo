@@ -5,8 +5,6 @@
 <script type="text/javascript" src="../css/issStyle.js"></script>
 -->
 <style type="text/css">
-<!--
-
 body
 {
     margin-left:  30px;
@@ -90,12 +88,34 @@ bc{
     color: #990000;
 	background-color: #fcf8c7;
 }
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
 pre{
 	font-family: "Helvetica";
-	font-size: 80%;
+	font-size: 90%;
 	background-color: #fcf8c7;
 	border: 1px solid blue;
-	width: 700px;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
 }
 div.body{
 	width: 800px;
@@ -109,43 +129,188 @@ div.req{
     padding: 15px;
     margin: 10px;
 }       
-    
-  -->
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}     
 </style>
     
 <head>
    
-<title>Lab0ISS2019</title></head>
+<title>Lab0ISS2020</title></head>
     
 <body>
-<div id="top">
-<!--    CESENA
-<h1>81614 - LABORATORIO DI SISTEMI SOFTWARE <font size="5"> : <a href="./LectureBologna1819.html" target="isslm">LabSS-lectures site</a></font> </h1>
-<a href="http://www.ingegneriarchitettura.unibo.it/it/corsi/insegnamenti/insegnamento/2017/412677" target="isslm">SITO WEB di Ateneo</a>
--->    
-<h1>72939 - LAB0 | Start-up</h1> 
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/LectureBologna1819.html" target="isslm">LabISS-lectures site</a></font> 
-</div>     
+<h1>LAB0 | Tools</h1> 
+     
 
 <div class="body"> 
-    <h2>START: GRADLE</h2>
-    
+	<h2>GIT </h2> 
+	There are many info sources; for example: <a href="https://www.youtube.com/watch?v=HVsySz-h9r4"  target="web">GIT Command Line Basic (video)c</a>
+	and <a href="https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html"  target="code">Basic Git commands</a>.
+	
+	
+	<h3>GIT | clone the iss2020Lab</h3>
+	<ol>
+	<li>Open a new, <b>empty</b> directory (e.g. <bc>iss2020Lab</bc>) and work in it.</li>
+	<li>Execute <bc>git clone  https://github.com/anatali/iss2019Lab.git </bc></li>
+	<li>Execute <bc>git remote -v</bc>
+	<li>Use the files as a <u>read-only reference</u>: never change them</li>
+	<li>Execute <bc>git pull</bc> when needed</li>
+	</ol>
+	
+	
+	<h3>GIT | useful commands </h3> 
+	<ul>
+	<li><pre>git config --global core.autocrlf input</pre>
+	Convert all CRLF line endings to LF before it stores it in the commit.<br/>
+	When we clone a project that was created on the MS Windows platform
+	MS Windows typically put append a hidden CR + LF characters on the end of each line of a text file.
+	</li>
+	<li><pre>git status --h</pre>
+	<li><pre>git status --ignored</pre>
+	<!-- <li><pre>git rm --cached build -r</pre> REMOVE from Staging area</li> -->
+	</li>
+	</ul>
+
+	
+	
+
+
+
+
+
+    <h2>GRADLE</h2>
+    See <a href="https://gradle.org/guides/" target="web">Gradle Tutorials and Guides</a> 
+	
     <ol>
-        <li>Download <tt>gradle</tt> (using <tt>zip</tt> or <tt>SDKMAN</tt>). Current version: <tt>5.2.1</tt>.</li>
+        <li> See <a href="https://riptutorial.com/it/gradle" target="web">Gradle Tutorials and Guides</a> and <br/>
+		<a href="https://gradle.org/install/" target="code">Download <tt>gradle</tt></a> (using <tt>zip</tt> or <tt>SDKMAN</tt>). Current version: <tt>6.2.1</tt>.</li>
         <li>Set <tt>GRADLE_HOME</tt> to the unpacked Gradle files and add <tt>GRADLE_HOME/bin</tt> to your <tt>PATH</tt> environment variable</li>
-        <li>Create a work dir (e.g. <tt>issStart2019</tt>) and work in it</li>
-        <li>Execute <bc>gradle wrapper</bc> 
-		(see <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html" target="web">https://docs.gradle.org/current/userguide/gradle_wrapper.html</a>)</li>
-        <li>Execute <bc>gradlew init</bc> and select <tt>8</tt> (kotlin-application), <tt>1</tt> (groovy) 
-		   <center><img src="./gradlew.png" alt="gradlew" width="60%" height="60%"></center>
+        <li>Create a work dir (e.g. <tt>iss2020</tt>) and work in it.</li>
+        <!-- <li>Execute <bc>gradle wrapper</bc> 
+		(see <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html" target="web">https://docs.gradle.org/current/userguide/gradle_wrapper.html</a>)
+		</li> -->
+        <li>Execute <bc>gradle init</bc> and select <tt>6</tt> (Java-application), <tt>1</tt> (groovy), <tt>1</tt> (Junit)<br/><br/>
+		   <center><img src="./img/gradlew.png" alt="gradlew.png" width="60%" height="60%"></center><br/><br/>
 		</li>
-		<li>Look at the generated file <a href="../src/main/kotlin/issStart2019/App.kt" target="code">AppK.kt</a>
-		<li>Execute <bc>gradlew run</bc>. The resullt is:
+		<li>Look at the generated files:
+		
+<table style="width:58%">
+ <tr>
+	<td style="width:50%">	 
+	<h3>build.gradle</h3>
+	<pre><m><kc>/*
+ * This file was generated by the Gradle 'init' task...
+ */</kc>
+<k>plugins</k> {
+    <kc>// Apply the java plugin to add support for Java</kc>
+    id 'java'
+
+    <kc>// Apply the application plugin to add support 
+	// for building an application</kc>
+    id 'application'
+}
+<k>repositories</k> {
+    <kc>// Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.</kc>
+    jcenter()
+}
+<k>dependencies</k> {
+    <kc>// This dependency is found on compile classpath
+    // 	of this component and consumers.</kc>
+    implementation 'com.google.guava:guava:27.0.1-jre'
+
+    <kc>// Use JUnit test framework</kc>
+    testImplementation 'junit:junit:4.12'
+}
+<kc>// Define the main class for the application</kc>
+<k>mainClassName</k> = 'iss2020.App'</m></pre>
+	</td>
+	<td style="width:50%"> 
+	<h3>.gitignore</h3>
+		<pre><m>
+<kc># Ignore Gradle project-specific cache directory</kc>
+.gradle
+
+<kc># Ignore Gradle build output directory</kc>
+build		
+			</m></pre>
+	</td>
+	</tr>
+ </table>	
+ <br/>
+</li>
+		
+<li>		 
+Execute the generated Application:<br/><br/>
+<table style="width:80%">
+ <tr>
+		
+     <td style="width:50%"><h3>App.java</h3>
+<pre><m><kc>/*
+ * This Java source file was generated ...
+ */</kc>
+package iss2020;
+
+public class App {
+    public String getGreeting() {
+        return "Hello world.";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(
+			new App().getGreeting());
+    }
+}			</m></pre>
+	</td>
+	<td>
+Execute <bc>gradle run</bc>. <br/><br/>
+The resullt is:
 <pre>Task :run
-Hello world.</pre>
-		</li>
+<ks>Hello world.</ks>
+
+BUILD SUCCESSFUL in 10s
+2 actionable tasks: 2 executed
+</pre>	
+	</td>
+	</tr>
+ </table>		
+ 		</li>
     </ol>
-	    
+
+
+
+	<h2> Add GIT and experiment</h2>	
+	<ul>
+	<li>Execute <bc>git init</bc> within directory  <tt>iss2020</tt> introduced above. </li>
+	<li>Execute <bc>git status</bc>.</li>
+	<li></li>
+	<li>Execute <bc>git add -A</bc> and <bc>git status</bc>.</li>
+	<li>Execute <bc>git reset</bc> to undo staging.</li>
+	<li></li>
+	<li>Execute <bc>git remote add origin https://github.com/... </bc> to connect to a remote <tt>GIT</tt>.</li> 
+	<!-- git remote add origin https://github.com/anatali/lss0 -->
+	<li>Execute <bc>git remote -v</bc>
+	<li>Execute <bc>git checkout master</bc> and  <bc>git merge origin/master --allow-unrelated-histories</bc> if needed. </li>
+	<li>Execute <bc>git push origin master</bc> to update the remote <tt>GIT</tt> </li>
+	<li></li>
+	<li>Execute <bc>git commit -m "First"</bc> and <bc>git status</bc>.</li>
+	<li>Execute <bc>git log</bc>.</li>
+	<li></li>
+	<li>Execute <bc>git rm file.txt (--cached file.txt)</bc>  to delete (remove) files.</li>
+
+	<li>Execute <bc>git config --list</bc>.</li>
+	<li>Execute <bc>git config --global user.name "Your Name"</bc>, <bc>git config --global user.email "Your Email"</bc> </li>
+
+
+	<li>Edit the file <a href="../.gitignore" target="code">.gitignore</a></li>
+ 	</ul>
  	
 	<h2>START: A JAVA APP</h2>
 	<ol>
@@ -171,47 +336,8 @@ Hello world.</pre>
 		<li>Execute <bc>gradlew run</bc> </li>
 	</ol>
 	
-	<h2>GIT : starting </h2> 
-	There are many info sources; for example: <a href="https://www.youtube.com/watch?v=HVsySz-h9r4"  target="web">GIT Command Line Basic (video)c</a>
-	and <a href="https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html"  target="code">Basic Git commands</a>.
-	<ol>
-	<li>Execute <bc>git init</bc> in the dir <tt>issStart2019</tt>. </li>
-	<li>Execute <bc>git status</bc>.</li>
-	<li>Edit the file <a href="../.gitignore" target="code">.gitignore</a></li>
-	<li>Execute <bc>git log</bc>.</li>
-	<li>Execute <bc>git add -A</bc> and <bc>git status</bc>.</li>
-	<li>Execute <bc>git reset</bc> to undo staging.</li>
-	<li>Excute <bc>git config --global user.name "Your Name"</bc>, <bc>git config --global user.email "Your Email"</bc> </li>
-	<li>Execute <bc>git config --list</bc>.</li>
-	<li>Execute <bc>git commit -m "First"</bc> and <bc>git status</bc>.</li>
-	<li>Execute <bc>git log</bc>.</li>
-	<li>Execute <bc>git rm file.txt (--cached file.txt)</bc>  to delete (remove) files.</li>
-	<li>Execute <bc>git remote add origin https://github.com/... </bc> to connect to a remote <tt>GIT</tt>.</li>
-	<li>Execute <bc>git checkout master</bc>  <bc>git merge origin/master --allow-unrelated-histories</bc> if needed. </li>
-	<li>Execute <bc>git push origin master</bc> to update the remote <tt>GIT</tt> </li>
-	</ol>
-	
-	<h2>GIT : clone the iss2019Lab</h2>
-	<ol>
-	<li>Open a new, <b>empty</b> directory (e.g. <bc>iss2019Lab</bc>) and work in it.</li>
-	<li>Execute <bc>git clone  https://github.com/anatali/iss2019Lab.git </bc></li>
-	<li>Execute <bc>git remote -v</bc>
-	<li>Use the files as a <u>read-only reference</u>: never change them</li>
-	<li>Execute <bc>git pull</bc> when needed</li>
-	</ol>
-	
-	<h2>GIT : useful commands </h2> 
-	<ul>
-	<li><pre>git config --global core.autocrlf input</pre>
-	Convert all CRLF line endings to LF before it stores it in the commit.<br/>
-	When we clone a project that was created on the MS Windows platform
-	MS Windows typically put append a hidden CR + LF characters on the end of each line of a text file.
-	</li>
-	<li><pre>git status --h</pre>
-	<li><pre>git status --ignore</pre>
-	<li><pre>git rm --cached build -r</pre> REMOVE from Staging area</li>
-	</li>
-	</ul>
+
+
 	
 </div>  
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
