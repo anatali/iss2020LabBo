@@ -180,15 +180,58 @@ table, th, td {
     <h2>GRADLE</h2>
     See <a href="https://gradle.org/guides/" target="web">Gradle Tutorials and Guides</a> 
 	
+	<h3>Gradle | Basic concepts</h3>
+	<ul>
+	<li>Created in 2008 by Gradleware, <a href="https://docs.gradle.org/current/userguide/userguide.html" target="web">Gradle</a> 
+	is mostly implemented in Java 5, with an outer layer in Groovy or Kotlin.</li>
+	<li><m><k>Gradle project</k></m>: the semantics is up to us (e.g. build a library JAR, a web application ...).
+	A project does not necessarily represent a <i>thing to be built</i>. It might represent a  <m><k>thing to be done</k></m>, 
+		such as deploying your application to staging or production environments. 
+		Each project is made up of one or more <m><ks>tasks</ks></m>.</li>
+	<li><m><k>Gradle task</k></m>: atomic piece of work (e.g. compiling some classes, creating a JAR,...) which a build performs. </li>
+	<li><m><k>Gradle build script</k></m>:  Gradle executes <m><ks>build.gradle</ks></m> as a set of 'declarative' sentences written as a Groovy or Kotlin script. 
+	These languages promote the creation of <a href="https://en.wikipedia.org/wiki/Domain-specific_language" target="web">Domain-specific language (DSL)</a>.
+	In particular:
+		<ul>
+		<li>Every task has a list of <m><k>actions</k></m>, and when it executes it runs all of them in the order they are declared.	</li>
+		<li>The default task has only actions <tt>doFirst</tt> and <tt>doLast</tt>.</li>
+		<li>Tasks can declare dependencies among each other: one task may need other tasks to complete successfully.</li>
+		<li>The less dependencies are declared, the faster is the build (due to parallelization).</li>
+		<li>Transitive dependencies are resolved automatically (if available in the repository <m><k>Maven Central / JCenter</k></m>).</li>
+		</ul>
+</li>
+	<li><m><k>Gradle plugin</k></m>: Gradle at its core intentionally provides very little for real world
+automation. All of the useful features, are added by plugins (written in Groovy), that provide concepts, configuration blocks, and tasks  reusable across projects.
+	</li>
+	<li><m><k>Gradle Java plugin</k></m>: introduces the concept of source set, with an associated compile classpath
+and runtime classpath, with defaults that copy the Maven conventions:
+		<ul>
+		<li>main containing <m><ks>src/main/java</ks></m>  and <m><ks>src/main/resources</ks></m> </li>
+		<li>test containing <m><ks>src/test/java</ks></m>  and <m><ks>src/test/resources</ks></m> </li>
+		</ul>
+	</li>
+	<li><m><k>Gradle <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html" target="web">wrapper</a></k></m>: 
+		a script that invokes a declared version of Gradle, downloading it beforehand if necessary.
+	
+		<ul>
+ 		<li><tt>gradle/wrapper/gradle-wrapper.properties</tt>, stores the information about the Gradle distribution.</li>
+		<li><m><ks>gradle wrapper --gradle-version 2.11</ks></m> downloads <tt>version 2.11</tt>. </li>
+		<li><m><ks>./gradlew <task></ks></m> runs <tt><task></tt> with that exact version.</li>
+ 
+		</ul>
+	</li>
+	</ul>
+	<h3>Gradle | Hands on</h3>
     <ol>
         <li> See <a href="https://riptutorial.com/it/gradle" target="web">Gradle Tutorials and Guides</a> and <br/>
 		<a href="https://gradle.org/install/" target="code">Download <tt>gradle</tt></a> (using <tt>zip</tt> or <tt>SDKMAN</tt>). Current version: <tt>6.2.2</tt>.</li>
-        <li>Set <tt>GRADLE_HOME</tt> to the unpacked Gradle files and add <tt>GRADLE_HOME/bin</tt> to your <tt>PATH</tt> environment variable</li>
+        <li>Set <tt>GRADLE_HOME</tt> to the unpacked Gradle files and add <tt>GRADLE_HOME/bin</tt> to your <tt>PATH</tt> environment variable.
+		Execute <bc>gradle -v</bc>.</li>
         <li>Create a work dir (e.g. <tt>iss2020</tt>) and work in it.</li>
         <!-- <li>Execute <bc>gradle wrapper</bc> 
 		(see <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html" target="web">https://docs.gradle.org/current/userguide/gradle_wrapper.html</a>)
 		</li> -->
-        <li>Execute <bc>gradle init</bc> and select  Java-application, Groovy),  Junit<br/><br/>
+        <li>Execute <bc>gradle init</bc> and select  Java-application, Groovy,  Junit<br/><br/>
 		   <center><img src="./img/gradlew.png" alt="gradlew.png" width="60%" height="60%"></center><br/><br/>
 		</li>
 		<li>Look at <tt>gradle/gradle-wrapper.properties</tt>.</li>
@@ -314,7 +357,8 @@ BUILD SUCCESSFUL in 10s
 	<ol>
 		<li>Copy <tt>App.java</tt> in a new class named <tt>AppOriginal.java</tt></li>
 		<li>Open the current working folder (mouse on it) as <m><ks>IntelliJ IDEA Community Edition Project</ks></m>.  
-		Note the selection on <tt>use defualt gradlew wrapper (reccomended)</tt>.</li>
+		Note the selection on <tt>use default gradlew wrapper (reccomended)</tt>. If you have upgraded gradle, 
+		you should also select <tt>file -> invalidate cache and restart</tt> or (better) update IntelliJ to the latest stable version.</li>
 		<li>Select <tt>App.java</tt> and click on <i>Convert Java file to Kotlin file</i> (<tt>CTRL-ALT-SHIFT-K</tt>)
 		and click on the link pop-up <m><ks>configure kotlin</ks></m> and on <m><ks>enable auto-import</ks></m>.
 		Note the tasks added in <ks>build.gradle</ks></li>
@@ -324,7 +368,7 @@ BUILD SUCCESSFUL in 10s
 	</ol>
 
 	
-	<h2>Using Eclipse</h2>
+	<h2>From Gradle to Eclipse</h2>
 	<ol>
 
         <li>Open Eclipse in a new  workspace  </li>
@@ -338,9 +382,26 @@ BUILD SUCCESSFUL in 10s
         <li>Run the Test with Junit	</li>
  	</ol>
     
-	
-
-
+	<h3>Iss-unibo specific configuration</h3>
+	<ol>
+	 	<li>Add <tt>plugin for Kotlin</tt> </li>
+ 		<li>Add  a <tt>Terminal</tt> </li>
+		<li>Copy into the directory <k>dropins</k>:
+			<ul>
+			<li><tt>it.unibo.issLabStart\resources\plugins\it.unibo.Qactork_x.y.z.jar</tt></li>
+			<li><tt>it.unibo.issLabStart\resources\plugins\it.unibo.Qactork.ide_x.y.z.jar</tt></li>
+			<li><tt>it.unibo.Qactork.ui_x.y.z.jar</tt></li>
+			</ul>
+		</li>
+		<li>Restart Eclipse</li>
+	</ol>
+<h2>Working in Kotlin</h2>
+	<ol>
+	 	<li>Execute <bc>gradle init</bc> and select Kotlin-application, Groovy, Junit </li>
+		<li>In Eclipse select <m><ks>Import projects -> Gradle -> existing Gradle project</ks></m> ... the created project.</m></li>
+		<li>select the <bc>project -> Configure Kotlin -> Add a Kotlin nature</bc> to the project. This action allows us to run <m><ks>App.kt</ks></m>.</li>
+	</ol>
+ 
 	
 </div>  
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
