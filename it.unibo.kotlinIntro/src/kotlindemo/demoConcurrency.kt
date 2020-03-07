@@ -14,8 +14,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.channels.Channel
 
-var counter = 0
-
 var counterAtomic = java.util.concurrent.atomic.AtomicInteger()
 
 suspend fun CoroutineScope.massiveRun( action: suspend () -> Unit ) {
@@ -34,10 +32,7 @@ suspend fun CoroutineScope.massiveRun( action: suspend () -> Unit ) {
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
-	/*
-    GlobalScope.massiveRun { counter++ }
-    println("BYE with Counter = $counter")
-*/
+ 
     GlobalScope.massiveRun{counterAtomic.incrementAndGet()}
  
     println("BYE with Counter = $counterAtomic")

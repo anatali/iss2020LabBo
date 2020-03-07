@@ -14,16 +14,26 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.channels.Channel
 
 val cpus = Runtime.getRuntime().availableProcessors();
+
+inline fun measureTimeMillis(block: () -> Unit): Long {
+    val start = System.currentTimeMillis()
+    block()
+    return System.currentTimeMillis() - start
+}
 		
 fun curThread() : String { 
-	return "thread=${Thread.currentThread().name} / nthreads=${Thread.activeCount()}" 
+	return "thread=${Thread.currentThread().name} | nthreads=${Thread.activeCount()}" 
 }
 
-
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
+fun myDemoWork(){
+	println("Hello from myDemoWork"); 
+}
+//@kotlinx.coroutines.ObsoleteCoroutinesApi
+//@kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
-
+	
+    println( "work done in time= ${measureTimeMillis(  { myDemoWork() } )}"  )
+	
     println("ENDS ${curThread()}")
 }
