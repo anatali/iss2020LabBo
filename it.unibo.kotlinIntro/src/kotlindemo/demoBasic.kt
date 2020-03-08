@@ -1,19 +1,4 @@
 package kotlindemo
-
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.async
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.channels.Channel
-
-
  val base : Int = 10 			//Immutable reference.
 
  var counter = 0				//Mutable reference. The Type Int is inferred

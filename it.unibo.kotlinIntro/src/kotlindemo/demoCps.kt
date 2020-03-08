@@ -69,18 +69,30 @@ fun doJobAsynchCps( n: Int  ){
     )//getInputAsynchCps
 }
 
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
+fun closureDemo(){
+    val c1 = counterCreate()
+    for( i in 1..3 ) c1("inc")
+    println("c1=${c1("val")}")
+    println("---------------------------------")
+    doJob( 100 )
+    println("---------------------------------")//      doJobCps( 10  )
+ 	
+}
+
+//@kotlinx.coroutines.ObsoleteCoroutinesApi
+//@kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
+	/*
     println("BEGINS ${curThread()}")
-//    val c1 = counterCreate()
-//    for( i in 1..3 ) c1("inc")
-//    println("c1=${c1("val")}")
-//    println("---------------------------------")
-//    doJob( 100 )
-//    println("---------------------------------")//      doJobCps( 10  )
-//    println("---------------------------------")
      doJobAsynchCps( 10 )
      println("ENDS ${curThread()}")
+*/
+    println("BEGINS CPU=$cpus ${curThread()}")
+	
+    println( "work done in time= ${measureTimeMillis(  { closureDemo() } )}"  )
+	
+    println("ENDS ${curThread()}")
+
+
 }
 
