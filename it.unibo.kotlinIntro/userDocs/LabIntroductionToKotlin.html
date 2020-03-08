@@ -525,7 +525,12 @@ like any function </m> </td>
 
 
 <h2><a id="lambda"/>Using lambda</h2>
-These examples are reported in  <a href="../src/kotlindemo/demoLambda.kt" target="code">demoLambda.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
+Java 8 introduced lambda expressions along with functional interfaces.<br/> 
+A functional interface is an interface with a single method. They are commonly referred to as single abstract method or SAM.
+<br/> 
+Lambda expressions represents these functional interfaces in a more concise way to deal with functional programming. 
+<br/><br/>
+The examples hereunder are reported in  <a href="../src/kotlindemo/demoLambda.kt" target="code">demoLambda.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
 <br/><br/>
 
 <center><table style="width:95%">
@@ -757,6 +762,8 @@ ENDS thread=main
  
 
 <h2><a id="clos"/>Closures and Callbacks</h2>
+These examples are reported in  <a href="../src/kotlindemo/demoCps.kt" target="code">demoCps.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
+<br/><br/>
 
 <center><table style="width:95%">
 <tbody>	
@@ -774,15 +781,15 @@ fun counterCreate()  : ( cmd : String ) -> Int {
     }
 }
 
-val c1 = counterCreate()
+val c1 = <k>counterCreate()</k>
 <kc>------</kc>
-for( i in 1..3 ) c1("inc")
-println("c1=${c1("val")}")	      //c1=3
+for( i in 1..3 ) <k>c1("inc")</k>
+println("c1=${<k>c1("val")</k>}")	      <kc>//c1=3</kc>
 
-val c2 = counterCreate()	//another instance
+val c2 = <k>counterCreate()</k>		<kc>//another instance</kc>
 <kc>------</kc>
-for( i in 1..3 ) c2("dec")
-println("c2=${c2("val")}")	     //c2=-3
+for( i in 1..3 ) <k>c2("dec")</k>
+println("c2=${<k>c2("val")</k>}")	     <kc>//c2=-3</kc>
 </pre> </td>
 <td><h3>Lexical Closures</h3>
 <m>The <em>closure</em> returned by <bc>counterCreate</bc> is "closed over" the variable <bc>localCounter</bc>.<br/>
@@ -840,45 +847,131 @@ ENDS thread=main / nthreads=2
 
 <tr>
 <td><pre>
-fun getInput() : String{
-    println("Input  ... | ${curThread()} ")
+fun showAction( msg: String ){
+    println( msg )
+}
+fun readAction() : String{
+    println("readaction  ... | ${curThread()}")
     return "myinput"
 }
-fun submit( v: Int, msg: String ) : String{
-    println("Submit ... | ${curThread()} ")
-    return "$msg-$v"
-}
-fun handle( msg: String ){
-    println("Handle $msg ${curThread()}")
-}
-fun doJob(n:Int){
-    val s = getInput()
-    val v = submit( n, s )
-    handle( v )
+fun evalAction( v: Int, msg: String ) : String{
+    println("evalaction ... | ${curThread()}")
+    return "$msg:$v"
 }
 
-fun main() {
-    println("BEGINS")
-    doJob(10)
-    println("ENDS")
+fun doJobNormal(n:Int){	<kc>//<k>print- eval-read</k> pattern</kc>
+    val s = readAction()
+    val v = evalAction( n, s )
+    showAction( v )
+}
+
+-----------------------
+   doJobNormal(10)		<kc>//output : myinput:100</kc>
 }
 
 </pre> </td>
-<td>
-<m>
-<h3>CPS (Continuation Passing Style)</h3>
-With reference to the set of functions on the left, let us execute a <em>Normal call sequence</em>:
+<td><h3>Normal flow</h3>
+ With reference to the set of functions on the left, let us execute a <em>Normal call sequence</em>:
 The output is:</m>
 <pre>
 <kc>//OUPUT</kc>
-BEGINS thread=main / nthreads=2
-Input  ... | thread=main / nthreads=2
-Submit ... | thread=main / nthreads=2
-Handle myinput: 100 | thread=main / nthreads=2
-ENDS thread=main / nthreads=2
+readaction  ... | thread=main | nthreads=1
+evalaction ...  | thread=main | nthreads=1
+myinput:100
 </pre>
-<m>Now, let us suppose that the operation <bc>getInput</bc> takes a long time and that we do not want to block
-the computation. As a solution we could introduce:
+
+ 
+</td>
+</tr>
+
+<tr>
+<td><pre>
+fun showAction( msg: String ){ println( msg ) }
+
+fun readCps( <ks>callback</ks>:<k>( String )-> Unit</k> ) :Unit {
+    println("readCps  ... | ${curThread()}")
+    <ks>callback</ks>:( "myinputcps" )
+}
+
+---------------------
+  readCps( { msg -> showAction(msg) }
+</pre> </td>
+<td><h3>Callbacks</h3>
+<m><em>Callbacks</em> are quite common in <bc>event-loop</bc> architectures such as <b>JavaScript</b>.
+The idea is to pass one function as a parameter to another function, and have this one invoked once the process has completed.
+<br/>
+</m> 
+<pre>
+<kc>//OUPUT</kc>
+readCps  ... | thread=main | nthreads=1
+myinputcps
+</pre>
+<m>  The usage of callbacks leads to the
+ <em>Continuation-passing style</em>  (see <a href="https://en.wikipedia.org/wiki/Continuation-passing_style" target="web">CPS</a>),
+ which is quite diffused to handle 
+ <a href="https://en.wikipedia.org/wiki/Asynchronous_I/O" target="web">Asynchronous I/O</a>
+</m>
+</td>
+</tr>
+
+<tr>
+<td><pre>
+fun readCps( <ks>callback</ks>:<k>(String)-> Unit</k>  ):Unit{
+    println("readCps  ... | ${curThread()}")
+    <ks>callback</ks>( "myinputcps" )
+}
+fun evalCps(v:Int, msg:String, <ks>callback</ks>:<k>(String)-> Unit</k> ){
+    println("evalCps ... | ${curThread()}")
+    <ks>callback</ks>( "$msg: $v" )
+}
+
+fun <i>doJobCpsNoShortcut</i>( n: Int  ){
+    readCps( <kc>//lambda</kc>
+        { input : String-> evalCps( n, input, {  
+              msg ->  showAction( msg )  
+            } 
+        )}<kc>//evalCps</kc>
+     )<kc>//readCps</kc>	
+}
+
+fun <b>doJobCps</b>( n: Int  ){ <kc>//using lambda shortcut</kc>
+	<k>readCps{evalCps( n, it) { showAction( it )}} </k> 
+} 
+---------------------
+  doJobCps( 10 }
+</pre> </td>
+<td>
+<h3>CPS  (Continuation Passing Style)</h3>
+<m>The example on the left trasforms the normal <ks>print-eval-read pattern</ks> into a 
+pattern <k>read-and-after-do</k>
+</m>
+
+<pre>
+<kc>//OUPUT</kc>
+readCps  ... | thread=main | nthreads=1
+evalCps ... | thread=main | nthreads=1
+myinputcps:10
+</pre>
+<m>
+<h3>Callback hell</h3>
+In order to avoid the <bc>anti-pattern</bc> known as
+ <a href="http://callbackhell.com/">callback hell</a>, people use other approaches such as <em>promises</em> or 
+<em>Reactive Extensions</em> (<bc>Rx</bc>) (<tt>C#</tt>, <tt>.NET</tt>) .
+</m> 
+
+</td>
+</tr>
+
+
+
+<tr>
+<td><h3>Towards ASYNCHRONOUS PROGRAMMING</h3>
+Let us suppose that the operation <bc>readCps</bc> takes a long time and that we do not want to block
+the computation. </td>
+<td>
+
+
+As a solution modern langauages do introduce:
 
 <ol>
 <li>Threading</li>
@@ -888,7 +981,7 @@ the computation. As a solution we could introduce:
 <li>Coroutines</li>
 </ol>
 
-</m>
+<m></m>
 </td>
 </tr>
 
@@ -896,50 +989,49 @@ the computation. As a solution we could introduce:
 
 <tr>
 <td><pre>
-fun getInputAsynchCps(  callback : ( String ) -> Unit ) : Unit{
-  kotlin.concurrent.thread(start = true) {
-    println("Input  ... | ${curThread()} ")
-    Thread.sleep(1000)
-	println("Input received ")
-    callback( "myinputasynchcps" )
+fun readCpsAsynch( <ks>callback</ks>:<k>(String)-> Unit</k> ) : Unit{
+  <k>kotlin.concurrent.thread(start = true)</k> {
+	println("readCpsAsynch  ... | ${curThread()} ")
+	<ks>Thread.sleep(3000)</ks>	<kc>//Long-term action</kc>
+	println("readCpsAsynch received ")
+	<ks>callback</ks>( "myinputasynchcps" )
   }
 }
+
 fun doJobAsynchCps( n: Int  ){
-  getInputAsynchCps(
-   { input -> submitCps( n, input, {
-                 msg ->  handle( msg )
-             }//handle
-     )}//submitCps
-  )//getInputAsynchCps	
+	readCpsAsynch{evalCps( n, it) { showAction( it )}} 
 }
 
-fun main() = runBlocking{
-    println("BEGINS CPU=$cpus ${curThread()}")
+--------------------------
     doJobAsynchCps( 10  )
-    println("ENDS ${curThread()}")
-}
-</pre> </td>
+</pre> 
+<m>
+This example is reported in  <a href="../src/kotlindemo/demoCpsAsynch.kt" target="code">demoCpsAsynch.kt</a>  (project <ks>it.unibo.kotlinIntro</ks>).
+</m>
+</td>
 <td><m>
 <h3>ASYNCHRONOUS PROGRAMMING WITH CPS</h3>
 As an example of <a href="https://en.wikipedia.org/wiki/Continuation-passing_style" target="web">CPS</a> in <em>Asynchronous programming</em>
 (see <a href="https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)" target="web">asynchronous</a> ),
-let us simulate here the <tt>getInput</tt> operation as an activity that runs in its own <bc>thread</bc>  and ends after <tt>1 sec</tt>.
+let us simulate here the <tt>readCpsAsynch</tt> operation as an activity that runs in its own <bc>thread</bc>  and ends after <tt>1 sec</tt>.
 <br/> 
 Now, the <tt>main</tt> program ends immediately; the computation is executed in the thread activated for the input.
-<br/><br/>
-Note the <a href="https://kotlinlang.org/docs/reference/java-interop.html#sam-conversions">Single Abstract Method conversion</a> 
-(<bc>SAM</bc>) in <tt>kotlin.concurrent.thread</tt>: when an object implements a <tt>SAM</tt> interface, we can pass a lambda instead.
 </m> 
 <pre>
 <kc>//OUPUT</kc>
-BEGINS thread=main / nthreads=2
-ENDS thread=main / nthreads=3
-Input  ...
-Input received 
-Submit ... | thread=Thread-0 / nthreads=3
-Handle myinputasynchcps: 10 | thread=Thread-0 / nthreads=3
-
+BEGINS CPU=8 thread=main | nthreads=1
+work done in time= 6
+ENDS thread=main | nthreads=2
+readCpsAsynch  ... | thread=Thread-0 | nthreads=1 
+readCpsAsynch received 
+evalCps ... | thread=Thread-0 | nthreads=2
+myinputasynchcps:10
 </pre>
+<m> 
+Note the <a href="https://kotlinlang.org/docs/reference/java-interop.html#sam-conversions" target="web">Single Abstract Method conversion</a> 
+(<bc>SAM</bc>) in <tt>kotlin.concurrent.thread</tt>: when an object implements a <tt>SAM</tt> interface, we can pass a lambda instead.
+</m> 
+
 </td>
 </tr>
 
@@ -949,7 +1041,7 @@ Handle myinputasynchcps: 10 | thread=Thread-0 / nthreads=3
 <h2><a id="suspend"/>Suspending functions and coroutines</h2>
 
 <ul>
-<m>
+
 <li>Essentially, a <em>Coroutine</em> is a light-weight thread that can be activated with a 
 <em>Coroutine builder</em> into a <em>CoroutineScope</em>.
 <br/><br/></li>
@@ -985,7 +1077,7 @@ Every <tt>coroutine builder</tt> functions (<bc>launch</bc>,<bc>async</bc>,...) 
 an additional parameter according to the <bc>CPS</bc> style. The compiler produces a <em>state machine</em> to handle suspension.
 </li>
 
-</m>
+<m></m>
 </ul>
 
 

@@ -16,83 +16,72 @@ fun counterCreate()  : ( cmd : String ) -> Int {
 }
 
 //------------------ NORMAL -----------------------------
-fun handle( msg: String ){
-    println("Handle $msg | ${curThread()}")
+fun showAction( msg: String ){
+    println( msg )
 }
 
-fun getInput() : String{
-    println("Input  ... | ${curThread()}")
+fun readAction() : String{
+    println("readaction  ... | ${curThread()}")
     return "myinput"
 }
-fun submit( v: Int, msg: String ) : String{
-    println("Submit ... | ${curThread()}")
-    return "$msg: $v"
+fun evalAction( v: Int, msg: String ) : String{
+    println("evalaction ... | ${curThread()}")
+    return "$msg:$v"
 }
 
-fun doJob(n:Int){
-    val s = getInput()
-    val v = submit( n, s )
-    handle( v )
+fun doJobNormal(n:Int){	//print- eval-read pattern
+    val s = readAction()
+    val v = evalAction( n, s )
+    showAction( v )
 }
+
 //------------------ CPS -----------------------------
-fun doJobCps( n: Int  ){
-    //getInputCps(callback = { input : String -> println("doJobCps $n, $input") })
-    //getInputCps { input : String -> println("doJobCps $n, $input") }
-    //getInputCps(callback = { input -> submitCps( n, input, { msg ->  handle( msg ) })}
-    //getInputCps  { input -> submitCps( n, input, { msg ->  handle( msg ) }  ) }   //lambda shortcut
-    getInputCps  { input -> submitCps( n, input) { handle( it ) } }   //lambda shortcut
-}//doJobCps
-
-//getInputCps { input : String -> println("doJobCps $n, $input") }
-
-fun getInputCps( callback:( String )-> Unit ):Unit{
-    println("Input  ... | ${curThread()}")
+fun readCps( callback: (String)->Unit ):Unit{
+    println("readCps  ... | ${curThread()}")
     callback( "myinputcps" )
 }
-fun submitCps(v:Int,msg:String,callback:(String)->Unit){
-    println("Submit ... | ${curThread()}")
-    callback( "$msg: $v" )
+fun evalCps(v:Int, msg:String, callback:(String)->Unit){
+    println("evalCps ... | ${curThread()}")
+    callback( "$msg:$v" )
 }
-
-//------------------ ASYNCH CPS -----------------------------
-
-fun getInputAsynchCps(  callback : ( String ) -> Unit ) : Unit{
-    kotlin.concurrent.thread(start = true) {
-        println("Input  ... | ${curThread()} ")
-        Thread.sleep(1000)
-        println("Input received ")
-        callback( "myinputasynchcps" )
-    }
+fun doJobCpsNoShortcut( n: Int  ){
+    readCps( //lambda
+        { input : String-> evalCps( n, input, {  
+              msg ->  showAction( msg )  
+            } 
+        )}//evalCps
+     )//readCps	
 }
-fun doJobAsynchCps( n: Int  ){
-    getInputAsynchCps( { input -> submitCps( n, input, { msg ->  handle( msg ) })}//submitCps
-    )//getInputAsynchCps
-}
+fun doJobCps( n: Int  ){
+     readCps{evalCps( n, it) { showAction( it )}}   //lambda shortcut
+} 
 
+ 
+
+//=========================================================================
 fun closureDemo(){
     val c1 = counterCreate()
+	val c2 = counterCreate()
     for( i in 1..3 ) c1("inc")
-    println("c1=${c1("val")}")
-    println("---------------------------------")
-    doJob( 100 )
-    println("---------------------------------")//      doJobCps( 10  )
- 	
-}
+    println("c1=${c1("val")}")		  //c1=3
+    for( i in 1..3 ) c2("dec")
+	println("c2=${c2("val")}")	     //c2=-3
+    println("doJobNormal --------------------------")
+    doJobNormal( 100 )			//output : myinput:100
 
-//@kotlinx.coroutines.ObsoleteCoroutinesApi
-//@kotlinx.coroutines.ExperimentalCoroutinesApi
-fun main() = runBlocking{
-	/*
-    println("BEGINS ${curThread()}")
-     doJobAsynchCps( 10 )
-     println("ENDS ${curThread()}")
-*/
+	println("callback      ----------------------- ") 
+	readCps( { msg -> showAction(msg) } )		//output : myinputcps
+	
+	println("doJobCps      ----------------------- ")   
+	doJobCps( 10  )
+	
+ }
+
+fun main() {
     println("BEGINS CPU=$cpus ${curThread()}")
 	
     println( "work done in time= ${measureTimeMillis(  { closureDemo() } )}"  )
 	
     println("ENDS ${curThread()}")
-
-
 }
 
