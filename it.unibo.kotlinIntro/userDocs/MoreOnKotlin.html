@@ -1597,16 +1597,225 @@ ENDS thread=main | nthreads=6
 </table></center>
 
 
+<h2><a id="concur"/>Concurrency</h2>
+
+Let us introduce an example taken from<a href="https://github.com/Kotlin/kotlinx.coroutines/blob/master/docs/shared-mutable-state-and-concurrency.md#actors" target="web">
+Kotlin coroutines: Shared mutable state and concurrency</a>:<br/>
+<li><tt><b>n=100</b></tt> coroutines are launched to execute <tt><b>k=1000</b></tt> times a given <ks>action</ks> of signature <tt>suspend () -> Unit</tt></li>
+<li>the  action  will be the increment of the shared variable <bc>counter</bc> 
+<hr/>
+<pre>
+var counter = 0
+
+<k>suspend</k> fun <ks>CoroutineScope.massiveRun</ks>( <ks>action</ks>: <k>suspend () -> Unit</k> ) {
+    val n=100		<kc>//number of coroutines to launch</kc>
+    val k=1000		<kc>//times an action is repeated by each coroutine</kc>
+    val time = <b>measureTimeMillis</b> {
+        val jobs = List(n) {
+            <k>launch</k> { <ks>repeat(k)</ks> { <ks>action()</ks> }  }
+        }
+        jobs.forEach { it.join() } <kc>//wait for termination of all coroutines</kc>
+    }
+    println("Completed ${n * k} actions in $time ms")    
+}
+</pre> 
+<hr/>
+
+<center><table style="width:95%">
+<!--
+<tr>
+<td style="width:45%"> <pre></pre> </td>
+<td><m><em> </em></m> </td>
+</tr>
+
+<tr>
+<td style="width:45%">
+<m><h3 id="CounterIncCoroutines">Case study: CounterIncCoroutines</h3></m>
+<pre>
+var counter = 0
+
+suspend fun CoroutineScope.massiveRun(
+				action: suspend () -> Unit) {
+    val n=100  //number of coroutines to launch
+    val k=1000 //times an action is repeated by each coroutine
+    val time = measureTimeMillis {
+        val jobs = List(n) {
+            launch {
+                repeat(k) { action() }
+            }
+        }
+        jobs.forEach { it.join() }
+    }
+    println("Completed ${n * k} actions in $time ms")    
+}
+</pre> </td>
+<td><m>
  
+<em>Concurrency</em>. Let us introduce an example taken from<a href="https://github.com/Kotlin/kotlinx.coroutines/blob/master/docs/shared-mutable-state-and-concurrency.md#actors" target="web">
+Kotlin coroutines: Shared mutable state and concurrency</a>:<br/>
+<li><tt>n=100</tt> coroutines are launched to execute <tt>k=1000</tt> times a given <b>action</b> of signature <tt>suspend () -> Unit</tt></li>
+<li>the  action  will be the increment of the shared variable <bc>counter</bc> </li>
+</m>
+</td>
+</tr>
+-->
+<tr>
+<td style="width:45%">
+<m><h3>No synchronization</h3>
+Since the increment operation <tt>counter++</tt> is <bc>not atomic</bc> some increment is lost
+and the final value is less then <tt>10000</tt>.</m>
+<pre>
+fun main() = runBlocking<Unit>{
+	println("BEGINS CPU=$cpus ${curThread()}")
+	<ks>GlobalScope.massiveRun { counter++ }</ks>
+ 	println("BYE with Counter = $counter")
+	println("ENDS ${curThread()}")
+}
+</pre> </td>
+<td><m>We use the multi-threaded <bc>Dispatcher.Defaults</bc> within a computer with <tt>4</tt> cores.
+
+</m>
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=4 thread=main / nthreads=2
+Completed 100000 actions in 82 ms
+BYE with Counter = 95798
+ENDS thread=main / nthreads=6
+</pre>
+</td>
+</tr>
+
+<tr>
+<td>
+<m><h3>Thread-safe data</h3>
+Thread-safe (<i>synchronized, linearizable, atomic</i>) data structure  are a general solution 
+that works both for threads and for coroutines.</m>
+<pre>
+var counter = <k>java.util.concurrent.atomic.AtomicInteger()</k>
+
+fun main() = runBlocking<Unit>{
+    println("BEGINS CPU=$cpus ${curThread()}")
+    <ks>GlobalScope.massiveRun{counter.incrementAndGet()}</ks>
+	println("BYE with Counter = $counter")
+    println("ENDS with Counter = ${counter.get()}")
+}
+</pre> </td>
+<td>
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=4 thread=main / nthreads=2
+Completed 100000 actions in 105 ms
+BYE with Counter = 100000
+ENDS thread=main / nthreads=6
+</pre>
+<m>However, <em>Thread-safe data</em> does not easily scale to complex state or to complex operations.</m> 
+</td>
+</tr>
+
+
+
+<tr>
+<td>
+<m><h3>Thread-confinement (fine-grained)</h3>
+Each coroutine is launched with <tt>DefaultDispathcer</tt>, but each increment is confined
+to a single-threaded context. 
+</m>
+<pre>
+var counter = 0  
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+suspend fun runMassiveWithIncConfined(){
+  val <k>counterContext=newSingleThreadContext("CC")</k>
+  <ks>GlobalScope.massiveRun {</ks>
+   <kc>//run each coroutine with DefaultDispathcer</kc> 
+   <k>withContext(counterContext) {</k>
+      <kc>//confine each increment to single-threaded context</kc>
+      counter++	
+   }
+ }
+}
+
+
+
+fun main() = runBlocking<Unit>{
+  println("BEGINS CPU=$cpus ${curThread()}")
+  runMassiveWithIncConfined()
+  println("BYE with Counter = $counter")
+  println("ENDS ${curThread()}")
+}
+</pre> </td>
+<td>
+
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=4 thread=main / nthreads=1
+Completed 100000 actions in 910 ms
+BYE with Counter = 100000
+ENDS thread=main / nthreads=6
+</pre>
+<m>Each individual increment switches from multi-threaded <bc>Dispatchers.Default</bc> context to the 
+<bc>newSingleThreadContext</bc> using <bc>withContext</bc> block. 
+<br/><br/>
+Thus, the code works more slowly.
+</m> </td>
+</tr>
+
+
+<tr>
+<td>
+<m><h3>Critical section</h3>
+A <em>Critical section</em> protects all modifications of a shared state so that is never executed concurrently 
+(it is accessed in <bc>mutual exclusion</bc>). The Coroutine's alternative to  <tt>synchronized</tt> operations is <bc>Mutex</bc>.
+</m>
+<pre>
+var counter = 0
+
+suspend fun runMassiveWithMutex(){
+val  <k>mutex = kotlinx.coroutines.sync.Mutex()</k>
+	ks>GlobalScope.massiveRun{</ks> 
+		<k>mutex.withLock</k><ks>{counter++}}</ks>
+}
+val <k>mutex = kotlinx.coroutines.sync.Mutex()</k>
+
+fun main() = runBlocking<Unit>{
+	println("BEGINS CPU=$cpus ${curThread()}")
+	runMassiveWithMutex()
+    println("BYE with Counter = $counter")
+	println("ENDS ${curThread()}")	
+}
+</pre> </td>
+<td>
+<pre>
+<kc>//OUTPUT</kc> 
+BEGINS CPU=4 thread=main / nthreads=1
+Completed 100000 actions in 427 ms
+BYE with Counter = 100000
+ENDS thread=main / nthreads=5
+</pre>
+<m>
+The locking here is fine-grained and the execution is quite slow. However, it can be  it is a good solution
+ when there is no natural thread in which we can confine a shared state to be modified.</m>
+ </td>
+</tr>
+<!--
+<tr>
+<td>
+<m><h3>Actor-based solution</h3>
+ </td>
+ <td>See <a href="#actorconcur">Overcoming concurrency problems with actors</a></td>
+</tr>
+-->
+</tbody>	
+</table></center>
+
 <h2><a id="channels"/>Channels</h2>
-Channels provide a way to transfer a <tt>streams of values</tt>. <br/>
-<bc>send</bc> and <bc> receive</bc>  are
+<m>Channels provide a way to transfer a <tt>stream of values</tt>. <bc>send</bc> and <bc> receive</bc>  are
 <em>suspending functions</em> used for providing and consuming objects from the channel, implemented with a <tt>FIFO</tt>
 strategy.
 <br/><br/>
-<m>The sender is suspended when the channel is full
+The sender is suspended when the channel is full
 and resumes as soon as the receiver consumes the data. This concept is often referred to as <k>Backpressure</k> and helps to
-prevent a channel from being flooded with more elements than the receivers can actually process.</m>
+prevent a channel from being flooded with more elements than the receivers can actually process.
 <br/><br/>
 Kotlin defines several types of channels:
 <br/>
@@ -1622,59 +1831,63 @@ Kotlin defines several types of channels:
 <li><bc>ArrayChannel</bc></li>
 <li><bc>ConflatedChannel</bc> (the buffer has capacity <tt>1</tt> and the sender overrides an element not cosumed)</li>
 </ul>
-<hr/>
-The examples hereunder are reported in  <a href="../src/kotlindemo/demoChannels.kt" target="code">demoChannels.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
-<br/><br/>
- 
+
+</m>
 <center><table style="width:95%">
 <tbody>	
 <tr>
 <td style="width:45%"><pre>
-<k>suspend</k> fun channelTest(scope : CoroutineScope){
-val n = 5
-val <ks>channel</ks> = <k>Channel&ltInt>(2)</k>
+<k>suspend</k> fun channelTest(){
+ val timeElapsed = measureTimeMillis {
+     val n = 5
+     val <ks>channel</ks> = <k>Channel&ltInt>(2)</k>
 
-     val sender = scope.launch {
+     val sender = GlobalScope.launch {
          repeat( n ) {
              <ks>channel</ks><k>.send( <ks>it</ks> )</k>
              println("SENDER | sent $it in ${curThread()}")
          }
      }
-     
-	 <ks>delay(500)</ks> <kc>//The receiver starts after a while ...</kc>
-     
-	 val receiver = scope.launch {
+     <ks>delay(500)</ks> <kc>//The receiver starts after a while ...</kc>
+     val receiver = GlobalScope.launch {
          for( i in 1..n ) {
              val v = <ks>channel</ks><k>.receive()</k>
              println("RECEIVER | receives $v in ${curThread()}")
          }
      }
+
+     delay(3000)
+ }
+ println("Done. time=$timeElapsed")
 }
- 
+</pre> </td>
+<td><m>
+The example shows the usage of an <bc>ArrayChannel</bc> of capacity <tt>2</tt>. 
+<pre>
 fun main() = runBlocking{
 	println("BEGINS CPU=$cpus ${curThread()}")
 	<ks>channelTest()</ks>
+	println("BYE" )
 	println("ENDS ${curThread()}")
 }
- </pre> </td>
-<td><m>
-The example shows the usage of an <bc>ArrayChannel</bc> of capacity <tt>2</tt>. 
+</pre>
 </m>
 
 <pre>
 <kc>//OUTPUT</kc>
-BEGINS CPU=4 thread=main | nthreads=4
-SENDER | sent 0 in thread=main | nthreads=4
-SENDER | sent 1 in thread=main | nthreads=4
-ENDS thread=main | nthreads=4
-RECEIVER | receives 0 in thread=main | nthreads=4
-RECEIVER | receives 1 in thread=main | nthreads=4
-RECEIVER | receives 2 in thread=main | nthreads=4
-SENDER | sent 2 in thread=main | nthreads=4
-SENDER | sent 3 in thread=main | nthreads=4
-SENDER | sent 4 in thread=main | nthreads=4
-RECEIVER | receives 3 in thread=main | nthreads=4
-RECEIVER | receives 4 in thread=main | nthreads=4
+BEGINS CPU=4 thread=main / nthreads=2
+SENDER | sent 0 in thread=DefaultDispatcher-worker-1 / nthreads=5
+SENDER | sent 1 in thread=DefaultDispatcher-worker-1 / nthreads=5
+RECEIVER | receives 0 in thread=DefaultDispatcher-worker-1 / nthreads=5
+RECEIVER | receives 1 in thread=DefaultDispatcher-worker-1 / nthreads=5
+RECEIVER | receives 2 in thread=DefaultDispatcher-worker-1 / nthreads=5
+SENDER | sent 2 in thread=DefaultDispatcher-worker-2 / nthreads=5
+SENDER | sent 3 in thread=DefaultDispatcher-worker-2 / nthreads=5
+SENDER | sent 4 in thread=DefaultDispatcher-worker-2 / nthreads=5
+RECEIVER | receives 3 in thread=DefaultDispatcher-worker-1 / nthreads=5
+RECEIVER | receives 4 in thread=DefaultDispatcher-worker-1 / nthreads=5
+Done. time=3573
+ENDS thread=main / nthreads=5
 </pre>
 
 
@@ -1685,12 +1898,279 @@ RECEIVER | receives 4 in thread=main | nthreads=4
 </table></center>
 
 <div class="remark">
-Motto: Do not communicate by sharing memory; instead, share memory by communicating.
+Do not communicate by sharing memory; instead, share memory by communicating.
 </div>
 
+<h2><a id="dispatchers"/>Dispatchers</h2>
+<center><table style="width:95%">
+<tbody>	
+<tr>
+<td>
+
+<pre>
+<h3 id="Dispatchers">Dispatchers</h3>
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+fun testDispatchers() {
+runBlocking {
+   <k>launch {</k> <kc>//context of the parent runBlocking </kc> 
+   println("1) runBlocking | ${curThread()}")
+ }
+ <k>launch( Dispatchers.Unconfined)</k> { <kc>//in main thread </kc> 
+   println("2) Unconfined | ${curThread()}")
+ }
+ <k>launch( Dispatchers.Default)</k> { <kc>//DefaultDispatcher </kc> 
+   println("3) Default | ${curThread()}")
+ }
+ <k>launch( newSingleThreadContext("MyThr"))</k> { <kc>//new thread </kc> 
+   println("4) newSingleThreadContext | ${curThread()}")
+ }
+}
+}
+fun main(){
+    println("BEGINS CPU=$cpus ${curThread()}")
+	testDispatchers()
+	println("BYE")
+    println("ENDS ${curThread()}")
+}
+</pre> </td>
+<td><m>
+All the <tt>coroutine builder</tt> functions (<bc>launch</bc>,<bc>async</bc>,...) accept as parameter one of the
+following main Dispatchers:
+
+<ul>
+<li><bc>Default</bc>: for CPU-intensive tasks. It can use as many threads as CPU cores</li>
+<li><bc>IO</bc>: IO-intensive tasks  waiting for an answer from another system. 
+The size of this thread pool is 64</li>
+<li><bc>newSingleThreadContext</bc> creates a new thread for the coroutine to run</li>
+<li><bc>Unconfined</bc>: not confined -- will work with main thread (don’t use it unless you’re very sure of what you’re doing)</li>
+<li><bc>Main</bc>: a special dispatcher that is included in <tt>UI</tt> related coroutine libraries
+(see <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-main.html" target="web">kotlinx.coroutines.Main</a>)</li>
+
+</ul>
+
+
+<!--
+-Dkotlinx.coroutines.debug JVM option https://play.kotlinlang.org/koans/overview
+-->
+</m> 
+<pre>
+<kc>//OUPUT</kc>
+BEGINS CPU=4 thread=main / nthreads=2
+2) Unconfined | thread=main / nthreads=2
+3) Default | thread=DefaultDispatcher-worker-1 / nthreads=5
+1) runBlocking | thread=main / nthreads=6
+4) newSingleThreadContext | thread=MyThr / nthreads=6
+BYE
+ENDS thread=main / nthreads=6
+</pre>
+</td>
+</tr>
+
+<!--
+ <tr>
+<td><pre>
+fun main() = runBlocking{
+    println("BEGINS")
+    val job = GlobalScope.launch {
+        ioBoundFun()
+    }
+    println("ENDS")
+}
+
+<kc>//OUPUT</kc>
+BEGINS thread=main
+ENDS thread=main
+IO operation thread=DefaultDispatcher-worker-1
+
+</pre> </td>
+<td><m>
+A <em>Dispatcher</em> determines the thread in which a coroutine will be executed. It can be provided by the<tt> Coroutine Scope</tt>
+or specified using a builder.
  
+<br/>
+The example shows that the coroutine works with reference to the <bc>Dispather.Deafault</bc>. Since
+we do not await for coroutine completion, the programs ends before that the coroutine is done.
+<br/><br/> 
+ This dispatcher can be provided in two ways:
+
+<ul>
+<li><bc>Explicitly</bc>: the coroutine builder receives a coroutine context as a first parameter</li>
+<li><bc>By the coroutine scope</bc></li>
+</ul>
+
+</m> 
+<pre>
+</pre>
+</td>
+</tr>
+ 
+ 
+<tr>
+<td><pre>
+fun main() = runBlocking{
+    println("BEGINS ${curThread()}")
+    val job = GlobalScope.launch {
+        ioBoundFun()
+    }
+    job.join()
+    println("ENDS ${curThread()}")
+}
+
+<kc>//OUPUT</kc>
+BEGINS thread=main
+IO operation thread=DefaultDispatcher-worker-2
+Done, time=514
+ENDS thread=main
+</pre> </td>
+<td><m>Coroutines started by <bc>launch</bc> return a  <em>Job</em> immediately, which we can use to <tt>cancel</tt> 
+the computation or <em>await</em> its completion with <bc>join</bc></m> </td>
+</tr>
+
+
+<tr>
+<td><pre>
+fun main() = runBlocking{
+    println("BEGINS ${curThread()}")
+    val job = launch {
+        ioBoundFun()
+    }
+    //job.join()
+    println("ENDS ${curThread()}")
+}
+
+<kc>//OUPUT</kc>
+BEGINS thread=main
+ENDS thread=main
+IO operation thread=main
+Done, time=511
+</pre> </td>
+<td><m>
+<h5>Structured concurrency</h5>
+
+If we change <bc>GlobalScope.launch</bc> to just <bc>launch</bc>, then the coroutine is launched in the
+scope of the outer <bc>runBlocking</bc> coroutine.
+<br/><br/>
+This is an example of  <em>structured concurrency</em>: coroutines confined to different scopes 
+are more maintainable and manageable.
+<br/><br/>
+We can remove the explicit <bc>join</bc>, since <tt>runBlocking</tt> won't complete before all of its 
+child coroutines finish.
+</m>
+ </td>
+</tr>
+-->
+
+
+<tr>
+<td style="width:45%">
+
+<pre>
+<h3>withContext</h3> 
+suspend fun actionWithContext( n: Int){
+ <k>withContext</k>(<ks>Dispatchers.Default</ks>) {
+   println("$n) thread=${Thread.currentThread().name}")  
+   delay(1000)
+   println("ActionWithContext $n done")
+ }
+}
+fun main() = runBlocking{
+   println("BEGINS CPU=$cpus ${curThread()}")
+   for(i in 1..3) launch{ actionWithContext(i) } 
+   println("ENDS ${curThread()}")
+}
+</pre> </td>
+<td><m><em>withContext</em>: allows to 
+change the context that will be used to run a part of the code inside a coroutine.
+</m> 
+<pre>
+<kc>//OUPUT</kc>
+BEGINS CPU=4 thread=main / nthreads=1
+BYE
+ENDS thread=main / nthreads=1
+2) thread=DefaultDispatcher-worker-2
+1) thread=DefaultDispatcher-worker-1
+3) thread=DefaultDispatcher-worker-3
+ActionWithContext 3 done
+ActionWithContext 2 done
+ActionWithContext 1 done
+</pre>
+See <a href="https://proandroiddev.com/demystifying-coroutinecontext-1ce5b68407ad" target="web">Demystifying CoroutineContext</a>.
+
+</td>
+</tr>
+
+<!-- WARNING: Continuation experimenatal droppend in kotlin 1.4 xxx
+ <tr>
+<td>
+<h3>Continuation</h3> 
+<pre>
+fun main(){
+    val cpus = Runtime.getRuntime().availableProcessors();
+    println("AT START | CPU=$cpus ")
+    println("BEGINS ${curThread()}")
+    println("MAIN | ${curThread()}")
+    var <ks>continuation</ks>: <k>Continuation<Unit>?</k> = null
+    GlobalScope.launch( <ks>Dispatchers.Unconfined</ks> ) {
+        println("COROUTINE |  started")
+        <k>suspendCoroutine&lt;Int></k> {
+            println("COROUTINE | suspended ${curThread()}")
+            <ks>continuation</ks> = it
+        }
+        println("COROUTINE|resumes&finish ${curThread()}")
+    }
+    println("MAIN | resumes continuation ${curThread()}")
+    <ks>continuation!!.resume(Int)</ks> ?: println("MAIN | no contin")
+    println("MAIN |  back after resume")
+    println("ENDS ${curThread()}")
+}
+</pre> </td>
+<td><m>
+A <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines.experimental/-continuation/index.html" target="web">Continuation</a> 
+is added to every suspending function as 
+an additional parameter according to the <bc>CPS</bc> style. In the example:
+<ol>
+<li><tt>main</tt> activates a coroutine with <bc>Unconfined dispatcher</bc> that doesn't do any dispatching: the coroutine
+code works within <tt>main</tt> thread</li>
+<li>The coroutine suspends its work by using  <bc>suspendCoroutine</bc>.</li>
+<li>The control returns to the <tt>main</tt> that uses a <bc>Continuation<Unit></bc>  set by the coroutine
+to resume it.</li>
+<li>The coroutine ends and the control is given back to the <tt>main</tt> that ends</li>
+
+</ol>
+<pre>
+<kc>//OUTPUT</kc>
+AT START |  CPU=4  
+BEGINS thread=main
+MAIN | thread=main
+COROUTINE |  started
+COROUTINE | suspended thread=main
+MAIN | resumes continuation thread=main
+COROUTINE|resumes&finish thread=main
+MAIN |  back after resume
+ENDS thread=main
+</pre>
+
+If we launch the coroutine with <bc>Dispatchers.Default</bc> (or some other confined form), the output will be:
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS thread=main
+MAIN | thread=main
+MAIN | resumes continuation thread=main
+MAIN | no contin
+MAIN |  back after resume
+ENDS thread=main
+
+</pre>
+</m>
+</td>
+</tr>
+-->
+
  
 
+</tbody>	
+</table></center>
 
 <h2><a id="kotlinprodcons"/>Producers-consumers in Kotlin</h2>
 <m>
@@ -1720,29 +2200,26 @@ a specific <tt>CoroutineContext</tt> (as with <bc>launch</bc> or <bc>async</bc>)
 <td style="width:45%">
 <h3 id="produce">Coroutine builder <bc>produce</bc> </h3>
 <pre>
- 
-val <ks>simpleProducer : ReceiveChannel&lt;Int>?</ks> = null
-fun startProducer(scope : CoroutineScope ){
-	simpleProducer =
-	scope.produce {
-		for( i in 1..3 ){
-			println( "producer produces $i in  ${curThread()}")
-			<k>send( i )</k>
-		}
+val <ks>simpleProducer</ks> : <tt>ReceiveChannel&lt;Int></tt> =
+  <k>GlobalScope.produce {</k>
+    for( i in 1..3 ){
+        println( "simpleProducer produces $i in  ${curThread()}")
+        <k>send( i )</k>
+    }
   }
 
 <k>suspend</k> fun consume(){
-    val v = <ks>simpleProducer!!</ks>.<k>receive()</k>
+    val v = <ks>simpleProducer</ks>.<k>receive()</k>
     println( "consume receives ${v} in ${curThread()}" )
-    <ks>simpleProducer!!</ks>.<k>consumeEach</k> {
+    <ks>simpleProducer</ks>.<k>consumeEach</k> {
       println( "consume receives $it in ${curThread()}" )
     }
 }
 
 fun main() = runBlocking{
-    println("BEGINS CPU=$cpus ${curThread()}")
-    <ks>startProducer(this); consume()</ks>
-    println("ENDS ${curThread()}")
+     println("BEGIN")
+    consume()
+    println( "END")
 }
 </pre>
 </td>
@@ -1755,14 +2232,14 @@ The channel has <b>no buffer by default</b>; it is closed when the coroutine com
 <br/> 
 <pre>
 <kc>//OUTPUT</kc>
-BEGINS CPU=4 thread=main | nthreads=1
-simpleProducer produces 1 in  thread=main | nthreads=1
-simpleProducer produces 2 in  thread=main | nthreads=1
-consume receives 1 in thread=main | nthreads=1
-consume receives 2 in thread=main | nthreads=1
-simpleProducer produces 3 in  thread=main | nthreads=1
-consume receives 3 in thread=main | nthreads=1
-ENDS thread=main | nthreads=1
+simpleProducer produces 1 in thread=DefaultDispatcher-worker-2 / nthreads=5
+BEGINS CPU=4 thread=main / nthreads=5
+simpleProducer produces 2 in thread=DefaultDispatcher-worker-2 / nthreads=5
+consume receives 1 in thread=main / nthreads=5
+consume receives 2 in thread=main / nthreads=5
+simpleProducer produces 3 in thread=DefaultDispatcher-worker-2 / nthreads=5
+consume receives 3 in thread=main / nthreads=5
+ENDS thread=main / nthreads=5
 </pre>
 <m> The full code is in <a href="../src/prodCons/simpleProducerKotlin.kt" target="code">simpleProducerKotlin.kt</a></m>
  

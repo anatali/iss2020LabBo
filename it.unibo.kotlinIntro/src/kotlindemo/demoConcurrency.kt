@@ -28,8 +28,8 @@ suspend fun CoroutineScope.massiveRun( action: suspend () -> Unit ) {
     println("Completed ${n * k} actions in $time ms")
 }
 
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
+//@kotlinx.coroutines.ObsoleteCoroutinesApi
+//@kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
  
