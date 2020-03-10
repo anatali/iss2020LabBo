@@ -38,31 +38,12 @@ val channel = Channel<Int>(2)
 //    println("Done. time=$timeElapsed")
 }
 //-------------------- PROD CONS ------------------------
-var simpleProducer : ReceiveChannel<Int>? = null
-
-fun startProducer(scope : CoroutineScope ){
-	simpleProducer =
-        scope.produce {
-            for( i in 1..3 ){
-                println( "producer produces $i in  ${curThread()}")
-                send( i )
-            }
-        }
-}
-
-suspend fun consume(){
-    val v = simpleProducer!!.receive()
-    println( "consume receives ${v} in ${curThread()}" )
-    simpleProducer!!.consumeEach {
-        println( "consume receives $it in ${curThread()}" )
-    }
-}
 
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
-    //channelTest( this )    		  //(1)
+    channelTest( this )    		  //(1)
 	
-	startProducer(this); consume()	  //(2)
+	//startProducer(this); consume()	  //(2)
            		   
     println("ENDS ${curThread()}")
 }

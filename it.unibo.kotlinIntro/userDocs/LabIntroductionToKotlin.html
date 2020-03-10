@@ -188,23 +188,24 @@ loosing in performance.</li>
 <tbody>	
 <tr>
 <td style="width:55%">
-<h3>INDEX</h3>
+<h3 id="index">INDEX</h3>
 
 <ol>
 <li><a href="#data">Data, Types and Variables</a></li>
 <li><a href="#funs">Functions</a></li>
 <li><a href="#lambda">Using lambda</a></li>
 <li><a href="#clos">Closures and Callbacks</a></li>
-<li><a href="#suspend">Introduction to coroutines</a></li>  
-<li><a href="#suspend">Suspending functions and coroutines</a></li>
-<li><a href="#dispatch">Dispatchers</a></li>
-<li><a href="#concur">Concurrency</a></li>
+<li><a href="#coroutinesIntro">Introduction to coroutines</a></li>  
+<li><a href="#suspend">Suspending functions</a></li>
+<!-- <li><a href="#dispatch">Dispatchers</a></li> 
+<li><a href="#concur">Concurrency</a></li> -->
 <li><a href="#channels">Channels</a></li>
-<li><a href="#kotlinprodcons">Producers-consumers</a></li>
-<li><a href="#actors">Actors</a></li>
+<li><a href="#kotlinprodcons">Producers-consumers in Kotlin</a></li>
+<li><a href="#actors">Kotlin Actors</a></li>
+<!--
 <li><a href="#sequence">Sequences (suspendable)</a></li>
 <li><a href="#classes">Classes</a></li>
-
+-->
  
   
 </ol>
@@ -367,12 +368,13 @@ println( "firstEl=${arr[0]}  lastEl=${arr[arr.size-1]}")
 </table></center>
 
 <br/><br/> 	
-For the examples hereunder, start from <a href="../src/kotlindemo/demo0.kt" target="code">demo0.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>)
-that introduces also:
+ 
 <h3>Utility functions</h3>
+For the examples hereunder, start from <a href="../src/kotlindemo/demoTemplate.kt" target="code">demoTemplate.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>)
+that introduces:
 
 <pre>
-val cpus = Runtime.getRuntime().availableProcessors();
+val <k>cpus</k> = Runtime.getRuntime().availableProcessors();
 
 fun <k>curThread()</k> : String { 
 	return "thread=${Thread.currentThread().name} / nthreads=${Thread.activeCount()}" 
@@ -383,40 +385,27 @@ inline fun <k>measureTimeMillis</k>(block: () -> Unit): Long {
     block()
     return System.currentTimeMillis() - start
 }
-<!--
-suspend fun <k>CoroutineScope.massiveRun</k>( action: suspend () -> Unit) {
-    val n=100  //number of coroutines to launch
-    val k=1000 //times an action is repeated by each coroutine
-    val time = measureTimeMillis {
-        val jobs = List(n) {
-            launch {
-                repeat(k) { action() }
-            }
-        }
-        jobs.forEach { it.join() }
-    }
-    println("Completed ${n * k} actions in $time ms")    
-}
--->
 </pre>
 
 <h2><a id="funs"/>Functions </h2>
 
 These examples are reported in  <a href="../src/kotlindemo/demoFun.kt" target="code">demoFun.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
 <br/><br/>
-Our symbol for a function is: <img src="./img/symFun.png" alt="gradlew.png" width="8%"/>.
+ 
 
 <center><table style="width:95%">
 <tbody>	
 <tr>
 <td style="width:45%"><pre>
-fun fsum(a:Int, b:Int) : Int {
+fun <k>fsum(a:Int, b:Int) : Int</k> {
   return a+b
 }
 <kc>------</kc>
 println( " ${fsum(3,6)} " ) 	<kc>//9</kc>
 </pre> </td>
 <td><m>A <em>Top-level function</em> that returns a value.<br/>
+
+<center><img src="./img/fun0.png" alt="fun0.png" width="50%"/></center>
  
  </m>
  </td>
@@ -424,21 +413,24 @@ println( " ${fsum(3,6)} " ) 	<kc>//9</kc>
 
 <tr>
 <td><pre>var fcounter = 0
-fun incCounter() : Unit{ fcounter++ }
-fun decCounter() { fcounter-- }
+fun <k>incCounter() : Unit</k>{ fcounter++ }
+fun <k>decCounter()</k> { fcounter-- }
 <kc>------</kc>
-println( "pre=$fcounter  " ) //pre=0
+println( "pre=$fcounter  " ) 	<kc>//pre=0</kc>
 incCounter()
-println( "post=$fcounter " ) //post=1
+println( "post=$fcounter " ) 	<kc>//post=1</kc>
 </pre> </td>
-<td><m>Top-level functions that <em>do not </em> return a value. The return type <bc>Unit</bc> can be omitted</m></td>
+<td><m>Top-level functions that <em>do not </em> return a value. The return type <bc>Unit</bc> can be omitted</m><br/>
+
+<center><img src="./img/funUnit.png" alt="funUnit.png" width="40%"/></center>
+</td>
 </tr>
 
 <tr>
 
 <tr>
 <td><pre>
-fun fsquare(v: Int) = v * v
+fun fsquare<k>(v: Int) = v * v</k>
 <kc>------</kc>
 println(  fsquare(3)  ) 	<kc>//9</kc>
 </pre> </td>
@@ -473,16 +465,16 @@ A  way to provide a value function is to use a <em>function literal</em>:
 
 <tr>
 <td><pre>
-ftaction	= <k>{</k> println("hello") <k>}</k>  <kc>//lambda expression</kc>
+<k>ftaction= {</k> println("hello") <k>}</k>  <kc>//lambda expression</kc>
 <kc>------</kc>
 ftaction() 		<kc>//hello</kc>
 
-ftsum = <k>{</k>  x:Int, y:Int -> x+y <k>}</k>  <kc>//lambda expression</kc>
+<k>ftsum = {</k>  x:Int, y:Int -> x+y <k>}</k>  <kc>//lambda expression</kc>
 val fva = ftsum(1,2)
 <kc>------</kc>
 println("fva=$fva")	      <kc>//fva=3</kc>
 
-ftgreet = <k>{</k>  m: String -> { println(m)}   <k>}</k>
+<k>ftgreet = {</k>  m: String -> { println(m)}   <k>}</k>
 <kc>------</kc>
 ftgreet( "Hello World" )() 	<kc>//Hello World</kc>
 
@@ -490,12 +482,12 @@ println( { println( "Welcome" ) } )		<kc>//() -> kotlin.Unit</kc>
 println( { println( "Welcome" ) }() )	<kc>//Welcome  kotlin.Unit</kc>
 
 
-val fel = <k>{</k>  print( "Last exp val:" ); 100  <k>}</k>
+val <k>fel = {</k>  print( "Last exp val:" ); 100  <k>}</k>
 <kc>------</kc>
-println( "${fel()}" )  <kc>//Last exp val=100</kc>
+println( "${ <k>fel()</k> }" )  <kc>//Last exp val=100</kc>
 </td>
-<td><m><h3>Lambda Expression literal</h3>
-it can be assigned to a variable, just like any other literal. <br/><br/>
+<td><h3>Lambda Expression literal</h3>
+<m>it can be assigned to a variable, just like any other literal. <br/><br/>
 A call returns (the value of the) <bc>last</bc> expression </m> </td>
 </tr>
 
@@ -1110,80 +1102,6 @@ A current job can be retrieved from a current coroutine's context.
 </ul>
 <br/>
 
-<h3>A closer look</h3>
-From  <a href="https://medium.com/@elizarov/coroutine-context-and-scope-c8b255d59055"  target="web">Elizarov</a> we know that:
-<ul>
- 
-
-<li>
-A coroutine is typically launched using <m><k>launch coroutine builder</k></m>:
-<pre>
-fun <k>CoroutineScope.launch</k>(		//<kc>extension function on CoroutineScope</kc>
-    <ks>context</ks>: CoroutineContext = EmptyCoroutineContext,		//<kc>parameter</kc>
-    // ...	
-): <k>Job</k>
-</pre>
-<m><k>launch</k></m> is defined as an extension function of the
-<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/"  target="web">CoroutineScope</a> interface
-that consists of a sole property (<m><kc>val  coroutineContext: CoroutineContext</kc></m>).
-<br/>
- CoroutineScope  merges (using the <m><k>plus</k></m> operator of the context) the scope context with the <m><ks>context</ks></m> parameter, 
-whose elements are taking precedence over the elements from the scope context. <br/>
-The resulting context is 
-the parent context of the new coroutine. The new coroutine creates its own child <m><k>Job</k></m> instance (using a job from this context as its parent) 
-and defines its child context as a parent context plus its job.<br/>
-
-<center><img src="./img/coroutinesScopes.png" alt="coroutinesScopes.png" width="70%"/></center>
-<br/><br/></li>
-
-<li>
-By convention, a context in <m><kc>CoroutineScope</kc></m> contains a <m><k>Job</k></m> that is going to become a parent of new coroutine 
-(with the exception of <m><k>GlobalScope</k></m> that you should avoid anyway - see: 
-<a href="https://medium.com/@elizarov/the-reason-to-avoid-globalscope-835337445abc" target="web">The reason to avoid GlobalScope</a>).
-<br/><br/></li>
-
- 
-<li>
-The difference between a context and a scope is in their intended purpose:
-	<ul>
-	<li>
-	The intended purpose of <m><kc>CoroutineScope</kc></m> receiver in launch and in all the other coroutine builders is to reference 
-	a scope in which new coroutine is launched.
-	</li>
-
-	<li>
-	The intended purpose of <m><kc>context: CoroutineContext</kc></m> parameter in launch is to provide additional context elements to override elements 
-	that would be otherwise inherited from a parent scope.
-	</li>
-	</ul>
-<br/></li> 
-<li>Every coroutine builder function (like <tt>launch</tt>, <tt>async</tt>, <tt>runBlocking</tt>, etc.) :
-	
-	<ul>
-	<li>is an extension on <em>CoroutineScope</em> interface
-	and inherits its abstract read-only property <tt>coroutineContext: CoroutineContext</tt> to  automatically propagate both context elements and cancellation.
-	<ul>
-		<li><bc>GlobalScope</bc>: the coroutine affects the whole Application</li>
-		<li><bc>CoroutineScope</bc>: defines a scope for new coroutines</li>
-	</ul>
-	 </li>
-
-	<li>
-	accepts as parameter one of the main <em>Dispatcher</em> (<tt>Default, IO, newSingleThreadContext , Unconfined, Main</tt>)
-	 </li>
-
-	<li>	
-	  like every scoping function (<tt>coroutineScope, withContext</tt>, etc) 
-	  provides its own scope with its own <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html" target="web">Job</a>
-	  instance into the inner block of code it runs. <br/>
-	  By convention, they all wait for all the coroutines inside their block to complete before completing themselves, 
-	  thus enforcing the discipline of <m><k>structured concurrency</k></m>.
-	</li>
-	</ul>
-
-
- 	</ul>
-
 
 <h3>Examples</h3>
 The examples hereunder are reported in  <a href="../src/kotlindemo/demoCoroutinesIntro.kt" target="code">demoCoroutinesIntro.kt</a>  
@@ -1414,6 +1332,82 @@ Question: why the final value of the counter is not <tt>n*k = 10000000</tt>?.
 
 </tbody>	
 </table></center>
+
+<h3>A closer look to coroutines</h3>
+From  <a href="https://medium.com/@elizarov/coroutine-context-and-scope-c8b255d59055"  target="web">Elizarov</a> we know that:
+<ul>
+ 
+
+<li>
+A coroutine is typically launched using <m><k>launch coroutine builder</k></m>:
+<pre>
+fun <k>CoroutineScope.launch</k>(		//<kc>extension function on CoroutineScope</kc>
+    <ks>context</ks>: CoroutineContext = EmptyCoroutineContext,		//<kc>parameter</kc>
+    // ...	
+): <k>Job</k>
+</pre>
+<m><k>launch</k></m> is defined as an extension function of the
+<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/"  target="web">CoroutineScope</a> interface
+that consists of a sole property (<m><kc>val  coroutineContext: CoroutineContext</kc></m>).
+<br/>
+ CoroutineScope  merges (using the <m><k>plus</k></m> operator of the context) the scope context with the <m><ks>context</ks></m> parameter, 
+whose elements are taking precedence over the elements from the scope context. <br/>
+The resulting context is 
+the parent context of the new coroutine. The new coroutine creates its own child <m><k>Job</k></m> instance (using a job from this context as its parent) 
+and defines its child context as a parent context plus its job.<br/>
+
+<center><img src="./img/coroutinesScopes.png" alt="coroutinesScopes.png" width="70%"/></center>
+<br/><br/></li>
+
+<li>
+By convention, a context in <m><kc>CoroutineScope</kc></m> contains a <m><k>Job</k></m> that is going to become a parent of new coroutine 
+(with the exception of <m><k>GlobalScope</k></m> that you should avoid anyway - see: 
+<a href="https://medium.com/@elizarov/the-reason-to-avoid-globalscope-835337445abc" target="web">The reason to avoid GlobalScope</a>).
+<br/><br/></li>
+
+ 
+<li>
+The difference between a context and a scope is in their intended purpose:
+	<ul>
+	<li>
+	The intended purpose of <m><kc>CoroutineScope</kc></m> receiver in launch and in all the other coroutine builders is to reference 
+	a scope in which new coroutine is launched.
+	</li>
+
+	<li>
+	The intended purpose of <m><kc>context: CoroutineContext</kc></m> parameter in launch is to provide additional context elements to override elements 
+	that would be otherwise inherited from a parent scope.
+	</li>
+	</ul>
+<br/></li> 
+<li>Every coroutine builder function (like <tt>launch</tt>, <tt>async</tt>, <tt>runBlocking</tt>, etc.) :
+	
+	<ul>
+	<li>is an extension on <em>CoroutineScope</em> interface
+	and inherits its abstract read-only property <tt>coroutineContext: CoroutineContext</tt> to  automatically propagate both context elements and cancellation.
+	<ul>
+		<li><bc>GlobalScope</bc>: the coroutine affects the whole Application</li>
+		<li><bc>CoroutineScope</bc>: defines a scope for new coroutines</li>
+	</ul>
+	 </li>
+
+	<li>
+	accepts as parameter one of the main <em>Dispatcher</em> (<tt>Default, IO, newSingleThreadContext , Unconfined, Main</tt>)
+	 </li>
+
+	<li>	
+	  like every scoping function (<tt>coroutineScope, withContext</tt>, etc) 
+	  provides its own scope with its own <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html" target="web">Job</a>
+	  instance into the inner block of code it runs. <br/>
+	  By convention, they all wait for all the coroutines inside their block to complete before completing themselves, 
+	  thus enforcing the discipline of <m><k>structured concurrency</k></m>.
+	</li>
+	</ul>
+
+
+ 	</ul>
+
+
 
 <h2><a id="suspend"/>Suspending functions</h2>
 The examples hereunder are reported in  <a href="../src/kotlindemo/demoSuspended.kt" target="code">demoSuspended.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
@@ -1702,25 +1696,36 @@ Motto: Do not communicate by sharing memory; instead, share memory by communicat
 
 
 <h2><a id="kotlinprodcons"/>Producers-consumers in Kotlin</h2>
-<m>
-The pattern where a coroutine is producing a sequence of elements is quite common. 
+
+<ul>
+<li>The pattern where a coroutine is  producing a sequence of elements is quite common. 
 This is a part of <em>producer-consumer pattern</em> that is often found in concurrent code. 
-You could abstract such a producer into a function that takes channel as its parameter, 
+You could abstract such a producer into a function that takes <bc>channel</bc> as its parameter, 
 but this goes contrary to common sense that results must be returned from functions.
 <br/><br/>
-There is a convenient coroutine builder named <bc>produce</bc> that makes it easy to do it right on producer side, 
+</li>
+<li>There is a convenient coroutine builder named 
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/produce.html"  target="web"><bc>produce</bc></a>
+ that makes it easy to do it right on producer side, 
 and an extension function <bc>consumeEach</bc>, that replaces a for loop on the consumer side.
 <br/><br/>
-A <em>Producer</em> is associated with the channel that it sends elements to (a <bc>ReceiveChannel</bc> interface) and works as follows:
+</li>
+<li>The coroutine builder 
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/produce.html"  target="web"><bc>produce</bc></a> 
+is associated with the channel that it sends elements to (a 
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/"  target="web"><bc>ReceiveChannel</bc> </a>
+interface) requires a specific <tt>CoroutineContext</tt> (as with <bc>launch</bc> or <bc>async</bc>) and works as follows:
 <ul>
 <li>suspends after a value is produced and  resumes when a new value is requested (similar to suspending sequences and iterators)</li>
-<li>can be built with the coroutine builder <bc>produce</bc> and 
-a specific <tt>CoroutineContext</tt> (as with <bc>launch</bc> or <bc>async</bc>) </li>
+ 
 <li>the body of the suspending lambda that is passed can suspend at any point</li>
 <li>a value from a producer can only be received in a suspending computation </li>
 <li>the channel has no buffer by default is closed when the coroutine completes</li>
 </ul>
-</m>
+</li>
+ 
+</ul>
+<m></m>
  
 <center><table style="width:98%">
 <tbody>	
@@ -1750,16 +1755,19 @@ fun startProducer(scope : CoroutineScope ){
 
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
-    <ks>startProducer(this); consume()</ks>
+    <ks>startProducer(this); 
+	consume()</ks>
     println("ENDS ${curThread()}")
 }
 </pre>
 </td>
 <td>
+This example is reported in <a href="../src/prodCons/simpleProducerKotlin.kt" target="code">simpleProducerKotlin.kt</a>
+<br/><br/>
 <m>  
-The coroutine builder <bc>produce</bc> takes a suspending lambda as a parameter; only the code within 
-this lambda can send items to the channel.
-The channel has <b>no buffer by default</b>; it is closed when the coroutine completes
+The coroutine builder <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/produce.html" target="web"><bc>produce</bc></a> 
+takes a suspending lambda as a parameter; only the code within this lambda can send items to the channel.
+The channel has <em>no buffer by default</em>; it is closed when the coroutine completes
 </m>
 <br/> 
 <pre>
@@ -1773,7 +1781,7 @@ producer produces 3 in  thread=main | nthreads=1
 consume receives 3 in thread=main | nthreads=1
 ENDS thread=main | nthreads=1
 </pre>
-<m> The full code is in <a href="../src/prodCons/simpleProducerKotlin.kt" target="code">simpleProducerKotlin.kt</a></m>
+<m> </m>
  
 </td>
 </tr>
@@ -1781,10 +1789,24 @@ ENDS thread=main | nthreads=1
 <tr>
 <td>
 <h3>Many-type producer</h3>
+
 <pre>
 val context = newSingleThreadContext("myThread")
+var producer : <k>ReceiveChannel<Any>?</k> <ks>= null</ks>
 
-val <ks>producer</ks>: <tt>ReceiveChannel</tt><k>&lt;Any></k> =
+fun createProducer(scope : CoroutineScope ){
+    producer =
+    <k>scope.produce(context, 0)</k>{
+        println( "producer sends 5.2   in ${curThread()}")
+        <k>send(5.2)</k>
+        println( "producer sends a   in ${curThread()}")
+        <k>send("a")</k>
+        println( "producer sends 100 in ${curThread()}")
+        <k>send(100)</k>
+    }
+}
+
+val <ks>producer</ks>: <k>ReceiveChannel&lt;Any></k> =
     GlobalScope.produce(context, 1){
         println( "producer sends 5   in ${curThread()}")
         <k>send(5.2)</k>
@@ -1794,42 +1816,46 @@ val <ks>producer</ks>: <tt>ReceiveChannel</tt><k>&lt;Any></k> =
         <k>send(100)</k>
     }
 
-suspend fun consumer(){
- val v = <ks>producer</ks>.<k>receive()</k>
- println( "consumer receives1 $v in ${curThread()}")
- <ks>producer</ks>.<k>consumeEach</k> { 
-  println( "consumer receives2 $it in ${curThread()}")}
+suspend fun doconsume(){
+    val v = <k>producer!!.receive()</k>		<kc>//the first item</kc>
+    println( "doconsume receives1 $v in ${curThread()}")
+    <k>producer!!.consumeEach</k> { 
+	  println( "doconsume receives2 $it in ${curThread()}") }
 }
+
 </pre>
 </td>
 <td>
+This example is reported in <a href="../src/prodCons/prodConsKotlin.kt" target="code">prodConsKotlin.kt</a>
+<br/><br/>
+
 <m>When channel <bc>capacity = 0</bc> (default), the output is:</m> 
 <pre>
 <kc>//OUTPUT</kc>
-BEGIN
-producer sends 5.2   in thread=myThread
-producer sends a   in thread=myThread
-consumer receives1 5.2 in thread=main
-consumer receives2 a in thread=main
-producer sends 100 in thread=myThread
-consumer receives2 100 in thread=main
-END
+BEGINS CPU=4 thread=main | nthreads=1
+producer sends 5.2   in thread=myThread / nthreads=2
+producer sends a   in thread=myThread / nthreads=2
+doconsume receives1 5.2 in thread=main / nthreads=2
+doconsume receives2 a in thread=main / nthreads=2
+producer sends 100 in thread=myThread / nthreads=2
+doconsume receives2 100 in thread=main / nthreads=2
+ENDS thread=main | nthreads=2
 </pre>
-<m>When channel <bc>capacity = 3</bc>, the output is:</m></m>
+<m>When channel <bc>capacity = 3</bc>, the output is:</m>
 <pre>
 <kc>//OUTPUT</kc>
-producer sends 5.2   in thread=myThread
-BEGIN
-producer sends a   in thread=myThread
-producer sends 100 in thread=myThread
-consumer receives 5.2 in thread=main
-consumer receives a in thread=main
-consumer receives 100 in thread=main
-END
+BEGINS CPU=4 thread=main | nthreads=1
+producer sends 5.2   in thread=myThread / nthreads=2
+producer sends a   in thread=myThread / nthreads=2
+producer sends 100 in thread=myThread / nthreads=2
+doconsume receives1 5.2 in thread=main / nthreads=2
+doconsume receives2 a in thread=main / nthreads=2
+doconsume receives2 100 in thread=main / nthreads=2
+ENDS thread=main | nthreads=2
 </pre>
-<m>The full code is in <a href="../src/main/kotlin/it/unibo/qak/prodConsKotlin/prodConsKotlin.kt" target="code">prodConsKotlin.kt</a>.<br/>
-When channel <bc>capacity = 1</bc>, the output is:</m>
-
+ 
+ 
+ 
 </td>
 </tr>
 
@@ -1837,7 +1863,7 @@ When channel <bc>capacity = 1</bc>, the output is:</m>
 <td style="width:45%">
 <h3>Many consumers</h3>
 <pre>
-val <ks>aProducer</ks> : <tt>ReceiveChannel&lt;Int></tt> = <k>GlobalScope.produce</k>{
+val <ks>aProducer</ks>:<k>ReceiveChannel&lt;Int>=GlobalScope.produce</k>{
     for( i in 1..3 ){
         println( "aProducer produces $i in ${curThread()}")
         <k>send( i )</k>
@@ -1870,19 +1896,22 @@ fun main() = runBlocking{
 </pre>
 </td>
 <td>
+This example is reported in <a href="../src/prodCons/prodManyConsKotlin.kt" target="code">prodManyConsKotlin.kt</a>
+<br/><br/>
+
 <br/>The output is:</m>
 <pre>
 <kc>//OUTPUT</kc>
-aProducer produces 1 in thread=DefaultDispatcher-worker-1 / nthreads=5
-BEGINS CPU=4 thread=main / nthreads=5
-ENDS thread=main / nthreads=5
-consumer2 receives 1 in thread=main / nthreads=5
-aProducer produces 2 in thread=DefaultDispatcher-worker-1 / nthreads=5
-aProducer produces 3 in thread=DefaultDispatcher-worker-1 / nthreads=5
-consumer1 receives 2 in thread=main / nthreads=6
-consumer2 receives 3 in thread=main / nthreads=6
+aProducer produces 1 in thread=DefaultDispatcher-worker-1 / nthreads=4
+BEGINS CPU=4 thread=main | nthreads=4
+ENDS thread=main | nthreads=4
+consumer2 receives 1 in thread=main / nthreads=4
+aProducer produces 2 in thread=DefaultDispatcher-worker-1 / nthreads=4
+aProducer produces 3 in thread=DefaultDispatcher-worker-1 / nthreads=4
+consumer1 receives 2 in thread=main / nthreads=4
+consumer2 receives 3 in thread=main / nthreads=5
 </pre>
-<m>The full code is in <a href="../src/prodCons/prodManyConsKotlin.kt" target="code">prodManyConsKotlin.kt</a>.
+ 
  
 </td>
 </tr>
