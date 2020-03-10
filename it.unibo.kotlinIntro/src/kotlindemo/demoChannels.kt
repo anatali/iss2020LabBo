@@ -44,7 +44,7 @@ fun startProducer(scope : CoroutineScope ){
 	simpleProducer =
         scope.produce {
             for( i in 1..3 ){
-                println( "simpleProducer produces $i in  ${curThread()}")
+                println( "producer produces $i in  ${curThread()}")
                 send( i )
             }
         }
