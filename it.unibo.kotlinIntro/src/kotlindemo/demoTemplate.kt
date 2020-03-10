@@ -7,7 +7,7 @@ import kotlinx.coroutines.runBlocking
 
 val cpus = Runtime.getRuntime().availableProcessors();
 
-inline fun measureTimeMillis(block: () -> Unit): Long {
+inline fun measureTimeMillis( block: () -> Unit ): Long {
     val start = System.currentTimeMillis()
     block()
     return System.currentTimeMillis() - start
