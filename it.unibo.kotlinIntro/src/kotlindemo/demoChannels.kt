@@ -12,11 +12,13 @@ import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
+
 suspend fun channelTest( scope : CoroutineScope ){
-val df = Dispatchers.Default
+//val df = Dispatchers.Default
 val n = 5
 val channel = Channel<Int>(2)
-
+		println( channel )	//ArrayChannel capacity=2 size=0
+	
         val sender = scope.launch {
             repeat( n ) {
                 channel.send( it )
@@ -41,6 +43,7 @@ val channel = Channel<Int>(2)
 
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
+	
     channelTest( this )    		  //(1)
 	
 	//startProducer(this); consume()	  //(2)

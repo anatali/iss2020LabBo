@@ -15,8 +15,8 @@ fun startProducer(scope : CoroutineScope ){
 	simpleProducer =
         scope.produce  {
             for( i in 1..3 ){
-                println( "producer produces $i in  ${curThread()}")
                 send( i )
+                println( "producer produced $i in  ${curThread()}")
             }
         }
 }
@@ -36,7 +36,7 @@ suspend fun consume(){
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${kotlindemo.curThread()}")
-
+    println( this ) //BlockingCoroutine{Active}@799f7e29	
     startProducer(this);
 	consume()
 	

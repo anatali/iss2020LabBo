@@ -54,12 +54,11 @@ val k=1000		//times an action is repeated by each Thread or Coroutine
 
 fun manyThreads(){
 	var counter=0
- 	var iter = 0;
+ 	var iter = 0
 	val time = measureTimeMillis{
 		val jobs = List(n){
 			kotlin.concurrent.thread(start = true) {
-				iter++	 
-				//println("thread $iter starts ")
+				//println("thread ${iter++}starts ")
 				repeat( k ){ counter++}
 				//println("thread  $iter ends counter=$counter ")
 			}
@@ -72,9 +71,13 @@ fun manyThreads(){
 fun manyCoroutines(){
 	val scope = CoroutineScope( Dispatchers.Default )
 	var counter=0
+	var iter = 0
 	scope.launch{
 	    val time = measureTimeMillis {
- 	        val jobs = List(n) { scope.launch { repeat(k) { counter++ } } }
+ 	        val jobs = List(n) {
+				//println("coroutine ${iter++} starts ")
+				scope.launch { repeat(k) { counter++ } }
+			}
 			//println("manyCoroutines ENDS LANUCH ")
 			jobs.forEach { it.join() }
 			//println("manyCoroutines END ALL JOBS")

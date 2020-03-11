@@ -21,14 +21,13 @@ var producer : ReceiveChannel<Any>? = null
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 fun createProducer(scope : CoroutineScope ){
     producer =
-    scope.produce(context, 3){
-        println( "producer sends 5.2   in ${curThread()}")
-        send(5.2)
-        println( "producer sends a   in ${curThread()}")
-        send("a")
-        println( "producer sends 100 in ${curThread()}")
-        send(100)
-    }
+    scope.produce(context, 1){
+		send(5.2)
+		println( "producer sent 5.2 in ${curThread()}")
+		send("a")
+		println( "producer sent a   in ${curThread()}")
+		send(100)
+		println( "producer sent 100 in ${curThread()}")    }
 }
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @kotlinx.coroutines.ObsoleteCoroutinesApi

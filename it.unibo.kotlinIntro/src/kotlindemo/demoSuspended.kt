@@ -27,11 +27,12 @@ suspend fun ioBoundFun(){
 }
 
 //------------------ASYNC -----------------------------
-suspend fun activate(){	
-    val job1 =  CoroutineScope( Dispatchers.Default ).async {
+suspend fun activate(){
+	val scope = CoroutineScope( Dispatchers.Default ) 
+    val job1 =  scope.async {
         ioBoundFun()
     }
-    val job2 = CoroutineScope( Dispatchers.Default ).async{
+    val job2 = scope.async{
         ioBoundFun()
     }
     if(! job1.isCompleted || ! job2.isCompleted) println("Waiting for completion")
@@ -94,15 +95,15 @@ suspend fun wrapDemo(){
  
 fun main() = runBlocking {
     println("BEGINS CPU=$cpus ${curThread()}")
-// 	val job =
-//		launch{  runBlockThread()  }
-//	job.join()
+//  	val job =
+// 		launch{  runBlockThread()  }
+//  	job.join()
+ 	
+// 	ioBoundFun()
 	
-//	ioBoundFun()
+// 	launch{ ioBoundFun() }
 	
-//	launch{ ioBoundFun() }
-	
-	activate()
+ 	activate()
 	
     println("ENDS ${curThread()}")	
 }		
