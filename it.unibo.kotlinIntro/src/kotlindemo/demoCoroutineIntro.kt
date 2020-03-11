@@ -57,35 +57,40 @@ fun manyThreads(){
  	var iter = 0;
 	val time = measureTimeMillis{
 		val jobs = List(n){
-			Thread(){
-				run(){
-					iter++	 
-					//println("thread $iter starts ")
-					repeat( k ){ counter++}
-					//println("thread  $iter ends counter=$counter ")
-				}
-			}			
-		}
-		jobs.forEach{ it.start() }
-		jobs.forEach{ it.join()  }
+			kotlin.concurrent.thread(start = true) {
+				iter++	 
+				//println("thread $iter starts ")
+				repeat( k ){ counter++}
+				//println("thread  $iter ends counter=$counter ")
+			}
+		}			
+		jobs.forEach{ it.join()  }  //wait for termination of all threads
  	}
 	println("manyThreads time= $time counter=$counter")
 }
 
 fun manyCoroutines(){
+	val scope = CoroutineScope( Dispatchers.Default )
 	var counter=0
-    val time = measureTimeMillis {
-        val jobs = List(n) {
-            CoroutineScope( Dispatchers.Default ).launch {
-				repeat(k) { counter++ }
-			}
-        }
-        CoroutineScope( Dispatchers.Default ).launch {
-			jobs.forEach { it.join() } //wait for termination of all coroutines
-		}
+	scope.launch{
+	    val time = measureTimeMillis {
+ 	        val jobs = List(n) { scope.launch { repeat(k) { counter++ } } }
+			//println("manyCoroutines ENDS LANUCH ")
+			jobs.forEach { it.join() }
+			//println("manyCoroutines END ALL JOBS")
+	    }
+	    println("manyCoroutines time= $time counter=$counter")
 	}
-	println("manyCoroutines time= $time counter=$counter")
 }
+//    val time = measureTimeMillis {
+//		val scope = CoroutineScope( Dispatchers.Default )
+//        val jobs = List(n) { scope.launch { repeat(k) { counter++ } } }
+//        scope.launch {
+//			jobs.forEach { it.join() } //wait for termination of all coroutines
+//			println("manyCoroutines joined ")
+//		}
+//	}
+//	println("manyCoroutines time= $time counter=$counter")
  
 //=================================================================
 var demoTodo : () -> Unit = { println("nothing to do") }

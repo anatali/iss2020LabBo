@@ -30,9 +30,7 @@ fun evalAction( v: Int, msg: String ) : String{
 }
 
 fun doJobNormal(n:Int){	//print- eval-read pattern
-    val s = readAction()
-    val v = evalAction( n, s )
-    showAction( v )
+    showAction( evalAction( n, readAction() )  )
 }
 
 //------------------ CPS -----------------------------
@@ -40,6 +38,7 @@ fun readCps( callback: (String)->Unit ):Unit{
     println("readCps  ... | ${curThread()}")
     callback( "myinputcps" )
 }
+//------------------ CPS -----------------------------
 fun evalCps(v:Int, msg:String, callback:(String)->Unit){
     println("evalCps ... | ${curThread()}")
     callback( "$msg:$v" )
@@ -53,7 +52,7 @@ fun doJobCpsNoShortcut( n: Int  ){
      )//readCps	
 }
 fun doJobCps( n: Int  ){
-     readCps{evalCps( n, it) { showAction( it )}}   //lambda shortcut
+     readCps{ evalCps( n, it) { showAction( it )}}   //lambda shortcut
 } 
 
  
@@ -70,7 +69,8 @@ fun closureDemo(){
     doJobNormal( 100 )			//output : myinput:100
 
 	println("callback      ----------------------- ") 
-	readCps( { msg -> showAction(msg) } )		//output : myinputcps
+	//readCps( { msg -> showAction(msg) } )		//output : myinputcps
+	readCps( { showAction(it) } )		//output : myinputcps
 	
 	println("doJobCps      ----------------------- ")   
 	doJobCps( 10  )

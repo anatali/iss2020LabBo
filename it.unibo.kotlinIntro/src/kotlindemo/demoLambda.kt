@@ -24,15 +24,13 @@ fun testRunFunction() {
     val logo = "Starting"
     val v1 = run{ 
         println("First start:$logo  ${curThread()}")
-        Thread.sleep(200)
-        val logo = "First"
+        val logo = "First"	//local
         println("First ended : $logo")
         logo
     }
     val v2 = run {
         println("Second start:$logo ${curThread()}")
-        Thread.sleep(300)
-        val logo = "Second"
+        val logo = "Second"	//local
         println("Second ended: $logo ")
         logo
     }
@@ -57,7 +55,8 @@ println("it    -------------- ")
 	println( p2{ it  } )   			 //2
 	println( p2{ it -> it * it } )   //4
 	println( p2{ it * it / 2 } )     //2
-println("modulo -------------- ")	
+
+	println("modulo -------------- ")	
 	println(  modulo(3)(5) ) 		//2
 	println(  modulo(5)(3) )		//3
 
@@ -72,7 +71,7 @@ println("function ref -------- ")
 	val sToNref = ::sToN
 	println( sToNref )	//fun sToN(kotlin.String, kotlin.Int): kotlin.Int
 	println( exec23( ::add ) )				//5
-	val x = (::add)(5,6)
+	val x = (::add)(5,6)		//call using a funref
 	println( x ) 				//11
 
 println("let   -------------- ")
@@ -80,6 +79,7 @@ println("let   -------------- ")
  	str.let { println("$it!!") }		//Hello World!!
  	137.let { println("$it!!") }		//137!!
 	
+println("run   -------------- ")
 	testRunFunction()
 }
 

@@ -24,9 +24,12 @@ val fva = ftsum(1,2)
 val fel = {  print( "Last exp val:" ); 100  }
 
 
-val faction: ()-> Unit   = fun() { println("Hello from faction") }
-val fsquare: (Int)->Int  = fun(x) = x * x
-val greet: (String) -> () -> Unit = fun(m:String) = fun(){ println("Printing $m") }
+//val faction: ()-> Unit   = fun() { println("Hello from faction") }
+val faction  = fun() { println("Hello from faction") }
+//val fsquare: (Int)->Int  = fun(x) = x * x
+val fsquare  = fun(x:Int) = x * x
+//val greet: (String) -> () -> Unit = fun(m:String) = fun(){ println("Printing $m") }
+val greet = fun(m:String) = fun(){ println("Printing $m") }
 
 fun fexec23( op:(Int, Int)->Int ) : Int { return op(2,3) }  
 

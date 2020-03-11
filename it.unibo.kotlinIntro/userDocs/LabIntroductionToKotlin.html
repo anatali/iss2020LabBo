@@ -194,7 +194,8 @@ loosing in performance.</li>
 <li><a href="#data">Data, Types and Variables</a></li>
 <li><a href="#funs">Functions</a></li>
 <li><a href="#lambda">Using lambda</a></li>
-<li><a href="#clos">Closures and Callbacks</a></li>
+<li><a href="#clos">Closures, Callbacks and CPS</a></li>
+<li><a href="#async">Towards Asynchronous Programming</a></li>
 <li><a href="#coroutinesIntro">Introduction to coroutines</a></li>  
 <li><a href="#suspend">Suspending functions</a></li>
 <!-- <li><a href="#dispatch">Dispatchers</a></li> 
@@ -401,7 +402,7 @@ fun <k>fsum(a:Int, b:Int) : Int</k> {
   return a+b
 }
 <kc>------</kc>
-println( " ${fsum(3,6)} " ) 	<kc>//9</kc>
+println( " ${<ks>fsum(3,6)</ks>} " ) 	<kc>//9</kc>
 </pre> </td>
 <td><m>A <em>Top-level function</em> that returns a value.<br/>
 
@@ -417,7 +418,7 @@ fun <k>incCounter() : Unit</k>{ fcounter++ }
 fun <k>decCounter()</k> { fcounter-- }
 <kc>------</kc>
 println( "pre=$fcounter  " ) 	<kc>//pre=0</kc>
-incCounter()
+<ks>incCounter()</ks>
 println( "post=$fcounter " ) 	<kc>//post=1</kc>
 </pre> </td>
 <td><m>Top-level functions that <em>do not </em> return a value. The return type <bc>Unit</bc> can be omitted</m><br/>
@@ -432,7 +433,7 @@ println( "post=$fcounter " ) 	<kc>//post=1</kc>
 <td><pre>
 fun fsquare<k>(v: Int) = v * v</k>
 <kc>------</kc>
-println(  fsquare(3)  ) 	<kc>//9</kc>
+println(  <ks>fsquare(3)</ks>  ) 	<kc>//9</kc>
 </pre> </td>
 <td><m><em>One line function</em>. Braces can be omitted. Return type can be omitted (it is inferred)</m> </td>
 </tr>
@@ -467,24 +468,24 @@ A  way to provide a value function is to use a <em>function literal</em>:
 <td><pre>
 <k>ftaction= {</k> println("hello") <k>}</k>  <kc>//lambda expression</kc>
 <kc>------</kc>
-ftaction() 		<kc>//hello</kc>
+<ks>ftaction()</ks> 		<kc>//hello</kc>
 
 <k>ftsum = {</k>  x:Int, y:Int -> x+y <k>}</k>  <kc>//lambda expression</kc>
-val fva = ftsum(1,2)
+val fva = <ks> ftsum(1,2)</ks> 
 <kc>------</kc>
 println("fva=$fva")	      <kc>//fva=3</kc>
 
 <k>ftgreet = {</k>  m: String -> { println(m)}   <k>}</k>
 <kc>------</kc>
-ftgreet( "Hello World" )() 	<kc>//Hello World</kc>
+<ks> ftgreet( "Hello World" )<k>()</k></ks>  	<kc>//Hello World</kc>
 
-println( { println( "Welcome" ) } )		<kc>//() -> kotlin.Unit</kc>
-println( { println( "Welcome" ) }() )	<kc>//Welcome  kotlin.Unit</kc>
+println( <ks> { println( "Welcome" ) }</ks>)	<kc>//() -> kotlin.Unit</kc>
+println( <ks> { println( "Welcome" ) }<k>()</k>)</ks> <kc>//Welcome  kotlin.Unit</kc>
 
 
 val <k>fel = {</k>  print( "Last exp val:" ); 100  <k>}</k>
 <kc>------</kc>
-println( "${ <k>fel()</k> }" )  <kc>//Last exp val=100</kc>
+println( "${ <ks>fel()</ks> }" )  <kc>//Last exp val=100</kc>
 </td>
 <td><h3>Lambda Expression literal</h3>
 <m>it can be assigned to a variable, just like any other literal. <br/><br/>
@@ -517,7 +518,8 @@ val v23 =  fexec23( <ks>fun(x:Int,y:Int):Int{return x+y}</ks> )
 println("$v23")         					<kc>//5</kc>
 println( fexec23( { x:Int, y:Int -> x*y } )	 )	<kc>//6</kc>
 </pre> </td>
-<td><m><em>Anonymous function</em>; another way to write a block of code instead of a Lambda expression. Needs <bc>return</bc>
+<td><h3>Anonymous function</h3>
+<m>another way to write a block of code instead of a Lambda expression. Needs <bc>return</bc>
 like any function </m> </td>
 </tr>
 
@@ -527,10 +529,13 @@ like any function </m> </td>
 
 
 <h2><a id="lambda"/>Using lambda</h2>
-Java 8 introduced lambda expressions along with functional interfaces.<br/> 
-A <m><k>functional interface</k></m> is an interface with a single method. They are commonly referred to as <i>Single Abstract Method</i> or <m><k>SAM</k></m>.
+Java 8 introduced lambda expressions along with functional interfaces..<br/> 
+A <m><k>functional interface</k></m> 
+(see <a href="http://tutorials.jenkov.com/java-functional-programming/functional-interfaces.html"  target="web">Tutorial on Java Functional Interfaces</a>)
+is an interface with a single method. They are commonly referred to as <i>Single Abstract Method</i> or <m><k>SAM</k></m>.
 <br/> 
-<m><k>Lambda expressions</k></m> represents these functional interfaces in a more concise way, to deal with functional programming. 
+A Java functional interface can be implemented by a Java <m><k>Lambda Expression</k></m>
+(see <a href="http://tutorials.jenkov.com/java/lambda-expressions.html"  target="web">Tutorial on Java Lambda Expressions</a>).
 <br/><br/>
 The examples hereunder are reported in  <a href="../src/kotlindemo/demoLambda.kt" target="code">demoLambda.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
 <br/><br/>
@@ -541,7 +546,7 @@ The examples hereunder are reported in  <a href="../src/kotlindemo/demoLambda.kt
 
 <tr>
 <td><pre>
-fun exec23( op:(Int,Int) -> Int ) : Int { return op(2,3) }
+fun exec23( <k>op:(Int,Int) -> Int</k> ) : Int { return op(2,3) }
 
 val sum = { x:Int, y:Int -> x+y }
 val mul = { x:Int, y:Int -> x*y }
@@ -550,7 +555,10 @@ println("${ exec23(sum) }")	      <kc>//5</kc>
 println("${ exec23(mul) }")	      <kc>//6</kc>
 
 </td>
-<td><m><em>Higher order functions</em>. </m> </td>
+<td><h3>Higher order functions</h3>
+<center><img src="./img/funArgFun.png" alt="funArgFun.png" width="40%"/></center>
+ 
+<m> </m> </td>
 </tr>
 
 
@@ -600,13 +608,15 @@ p2 { it*it }
 
 
 <td><pre>
-fun modulo(k:Int): (Int) -> Int   <k> //SIGNATURE</k>
-            = { it % k  }               <k>//BODY</k>	
+fun modulo(k:Int): <k>(Int) -> Int</k>   <kc> //SIGNATURE</kc>
+            = { it % k  }               <kc>//BODY</kc>	
 <kc>------</kc>
-println(  modulo(3)(5) ) 	<kc>//2</kc>
-println(  modulo(5)(3) ) 	<kc>//3</kc>
+println(  <ks>modulo(3)<k>(5)</k></ks>     ) 	<kc>//2</kc>
+println(  <ks>modulo(5)<k>(3)</k></ks>     ) 	<kc>//3</kc>
 </pre> </td>
-<td><m><em>Function as return value</em>.  </m> </td>
+<td><h3>Function as return value</h3>
+<center><img src="./img/funRetFun.png" alt="funRetFun.png" width="30%"/></center>
+<m>  </m> </td>
 </tr>
 
 
@@ -638,7 +648,7 @@ println( " ${ sToN( <k>s=</k>"123") } " ) 	<kc>//123</kc>
 
 <tr>
 <td><pre>
-fun mirror(v: Int) : Pair&ltInt,Int> {
+fun mirror(v: Int) : <k>Pair&ltInt,Int></k> {
 	return Pair(v, -v)
 }
 val v = mirror(2)
@@ -664,9 +674,9 @@ println( sToNref )
 	<kc> //fun sToN(kotlin.String, kotlin.Int): kotlin.Int</kc> 
 -------------------------
 fun add( x:Int, y:Int ) : Int { return x+y }
-println( exec23( <k>::</k>add ) )				<kc>//5</kc>
+println( <ks>exec23( <k>::add</k> )</ks> )				<kc>//5</kc>
 
-val x = <k>(::add)(5,6)</k>
+val x = <ks>(<k>::add</k>)(5,6)</ks>	<kc>//call using a funref</kc>
 println( x ) 		<kc>//11</kc>
 
 </pre> 
@@ -677,7 +687,8 @@ println( x ) 		<kc>//11</kc>
 </pre>
 -->
 </td>
-<td><em>Function reference</em>. <m>The</m> <bc>::</bc>  <m>operator creates a member reference or a (statically known) class reference.<br/>
+<td><h3>Function reference</h3>
+<m>The</m> <bc>::</bc>  <m>operator creates a member reference or a (statically known) class reference.<br/>
 The <em>reference</em> is a value of type <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html" target="web">KClass</a>.<br/>
 A Kotlin class reference is not the same as a Java class reference. To obtain a Java class reference, 
 use the <bc>.java</bc> property on a <tt>KClass</tt> instance.</m>
@@ -687,84 +698,76 @@ use the <bc>.java</bc> property on a <tt>KClass</tt> instance.</m>
  <tr>
 <td><pre>
 var str = "Hello World"
-str<k> .let</k> { println("$it!!") }	<kc>//Hello World!!</kc>
+<ks>str</ks><k>.let</k> { println("$<k>it</k>!!") }	<kc>//Hello World!!</kc>
 
-137<k> .let</k>  { println("$it!!") }	<kc>//137!!</kc>
+<ks>137</ks><k>.let</k>  { println("$<k>it</k>!!") }	<kc>//137!!</kc>
  </pre> </td>
-<td><m>
-<h5>Standard library function <k>let</k></h5> 
-
+<td>
+<h3>Standard library function <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/let.html" target="web"><k>let</k></a></h3> 
+<m>
 <em>let</em>  takes the object it is invoked upon as the parameter and returns the result of the lambda expression.<br/>
-It is a <bc>scoping function</bc>, wherein the variables declared inside the expression cannot be used outside.
-<!-- https://www.journaldev.com/19467/kotlin-let-run-also-apply-with 
-useful higher order functions implementing idiomatic patterns.
--->
+It is a 
+<a href="https://kotlinlang.org/docs/reference/scope-functions.html" target="web"><k>scope function</k></a>,
+ wherein the variables declared inside the expression cannot be used outside.
+<!-- https://www.journaldev.com/19467/kotlin-let-run-also-apply-with  useful higher order functions implementing idiomatic patterns.-->
 </m>
  
 </td>
 </tr>
 
-<!--
+<tr>
+
+ 
 <tr>
 <td><pre>
 fun testRunFunction() {
-    val logo = "Global-logo"
-    val v1 = run{ 
+    val logo = "Starting"
+    val <k>v1 = run { </k>
         println("First start:$logo  ${curThread()}")
-        Thread.sleep(200)
-        val logo = "First-run"
+        val logo = "First"	<kc>//local</kc>
         println("First ended : $logo")
         logo
-    }
-    val v2 = run {
+    <k>}</k>
+    val <k>v2 = run { </k>
         println("Second start:$logo ${curThread()}")
-        Thread.sleep(300)
-        val logo = "Second-run"
+        val logo = "Second"	<kc>//local</kc>
         println("Second ended: $logo ")
         logo
-    }
-    println("logo=$logo v1=$v1 v2=$v2" )
+    <k>}</k>
+    println("logo=$logo v1=$<ks>v1</ks> v2=$<ks>v2</ks>" )
 }
 
-fun main(args: Array<String>) {
-    println("BEGINS")
-    testRunFunction()
-    println("ENDS")
-}
+testRunFunction()
+
 </pre> 
 </td>
-</tr>
-
  
-<td><m>
-<h5>Standard library function <k>run</k></h5> 
-
+<td> 
+<h3>Standard library function <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/run.html" target="web"><k>run</k></a></h3> 
+<m>
 <em>run </em> calls the specified function block and returns its result.<br/>
-    It is a combination of <bc>with()</bc> and <bc>let()</bc> library functions.<br/>
+    It is a combination of <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/with.html" target="web"><k>with</k></a> and 
+	<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/let.html" target="web"><k>let</k></a>
+	library functions.<br/>
 	Similar to the <tt>let</tt> function, the run function returns the last statement.<br/>
-	Unlike <tt>let</tt>, the <tt>run</tt> function doesn’t support the <bc>it</bc> keyword.
- https://www.journaldev.com/19467/kotlin-let-run-also-apply-with 
-useful higher order functions implementing idiomatic patterns.
-
-</m>
+	Unlike <tt>let</tt>, the <tt>run</tt> function <k>doesn’t support the it</k> keyword.
+ </m>
 <pre>
 <kc>//OUTPUT</kc>
-BEGINS thread=main
-Second start: Global-logo thread=main
-First start : Global-logo thread=main
-First ended : First-run
-Second ended: Second-run 
-logo=Global-logo v1=StandaloneCoroutine{.. v2=Second-run
-ENDS thread=main
+First start:Starting  thread=main | nthreads=1
+First ended : First
+Second start:Starting thread=main | nthreads=1
+Second ended: Second 
+logo=Starting v1=First v2=Second
 </pre>
 </td>
 </tr>
--->
+ 
 </tbody>	
 </table></center>
  
 
-<h2><a id="clos"/>Closures and Callbacks</h2>
+<h2><a id="clos"/>Closures, Callbacks and CPS</h2>
 These examples are reported in  <a href="../src/kotlindemo/demoCps.kt" target="code">demoCps.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
 <br/><br/>
 
@@ -784,69 +787,23 @@ fun counterCreate()  : ( cmd : String ) -> Int {
     }
 }
 
-val c1 = <k>counterCreate()</k>
+val c1 = <ks>counterCreate()</ks>
 <kc>------</kc>
-for( i in 1..3 ) <k>c1("inc")</k>
-println("c1=${<k>c1("val")</k>}")	      <kc>//c1=3</kc>
+for( i in 1..3 ) <ks>c1("inc")</ks>
+println("c1=${<ks>c1("val")</ks>}")	      <kc>//c1=3</kc>
 
-val c2 = <k>counterCreate()</k>		<kc>//another instance</kc>
+val c2 = <ks>counterCreate()</ks>		<kc>//another instance</kc>
 <kc>------</kc>
-for( i in 1..3 ) <k>c2("dec")</k>
-println("c2=${<k>c2("val")</k>}")	     <kc>//c2=-3</kc>
+for( i in 1..3 ) <ks>c2("dec")</ks>
+println("c2=${<ks>c2("val")</ks>}")	     <kc>//c2=-3</kc>
 </pre> </td>
-<td><h3>Lexical Closures</h3>
+<td>
+<h3>Lexical Closures</h3>
 <m>The <em>closure</em> returned by <bc>counterCreate</bc> is "closed over" the variable <bc>localCounter</bc>.<br/>
-We are reproducing oo programming style (<i>instance</i> and <i>state encapsulation</i>)</m> </td>
+We are reproducing <ks>oo</ks> programming style (<i>instance</i> and <i>state encapsulation</i>)</m> </td>
 </tr>
-<tr>
-<td><pre>
-fun doJobCps( n: Int  ){
-    getInputCps( <kc>//lambda</kc>
-        { input : String-> submitCps( n, input, {  
-              msg ->  handle( msg )  
-            } 
-        )}<kc>//submitCps</kc>
-     )<kc>//getInputCps</kc>	
-}
-fun getInputCps(<k>callback:( String )-> Unit</k>):Unit{
-    println("Input  ... | ${curThread()}")
-    callback( "myinputcps" )
-}
-fun submitCps(v:Int,msg:String,<k>callback:(String)->Unit</k>){
-    println("Submit ... | ${curThread()}")
-    callback( "$msg-$v" )
-}
-fun main() = runBlocking{
-    println("BEGINS CPU=$cpus ${curThread()}")
-    doJobCps( 10  )
-    println("ENDS ${curThread()}")
-}
-</pre> </td>
-<td><h3>Callbacks</h3>
-<m><em>Callbacks</em> are quite common in <bc>event-loop</bc> architectures such as <b>JavaScript</b>.
-The idea is to pass one function as a parameter to another function, and have this one invoked once the process has completed.
-<br/>
-In order to avoid the <bc>anti-pattern</bc> known as
- <a href="http://callbackhell.com/">callback hell</a>, people use other approaches such as <em>promises</em> or 
-<em>Reactive Extensions</em> (<bc>Rx</bc>) (<tt>C#</tt>, <tt>.NET</tt>) .
 
- <br/><br/>
- The usage of callbacks leads to the
- <em>Continuation-passing style</em>  (see <a href="https://en.wikipedia.org/wiki/Continuation-passing_style" target="web">CPS</a>),
- quite diffused to handle 
- <a href="https://en.wikipedia.org/wiki/Asynchronous_I/O" target="web">Asynchronous I/O</a>
-</m> 
-<pre>
-<kc>//OUPUT</kc>
-BEGINS thread=main / nthreads=2
-Input  ... | thread=main / nthreads=2
-Submit ... | thread=main / nthreads=2
-Handle myinputcps: 10 | thread=main / nthreads=2
-ENDS thread=main / nthreads=2
-</pre>
- 
-</td>
-</tr>
+
 
 <tr>
 <td><pre>
@@ -862,12 +819,9 @@ fun evalAction( v: Int, msg: String ) : String{
     return "$msg:$v"
 }
 
-fun doJobNormal(n:Int){	<kc>//<k>print- eval-read</k> pattern</kc>
-    val s = readAction()
-    val v = evalAction( n, s )
-    showAction( v )
+fun doJobNormal(n:Int){	<kc>//<ks>print- eval-read</ks> pattern</kc>
+    <k>showAction( evalAction( n,readAction() )  )</k>
 }
-
 -----------------------
    doJobNormal(10)		<kc>//output : myinput:100</kc>
 }
@@ -889,20 +843,22 @@ myinput:100
 
 <tr>
 <td><pre>
-fun showAction( msg: String ){ println( msg ) }
-
 fun readCps( <ks>callback</ks>:<k>( String )-> Unit</k> ) :Unit {
     println("readCps  ... | ${curThread()}")
-    <ks>callback</ks>:( "myinputcps" )
+    <k>callback( "myinputcps" )</k>
 }
 
 ---------------------
-  readCps( { msg -> showAction(msg) }
+  readCps( <ks>{ msg -> showAction(msg)</ks>  }
+  readCps( <ks>showAction(<k>it</k>)</ks>  } <kc>//using  lambda  shortcut</kc>
 </pre> </td>
-<td><h3>Callbacks</h3>
-<m><em>Callbacks</em> are quite common in <bc>event-loop</bc> architectures such as <b>JavaScript</b>.
+<td> 
+<h3><a href="https://en.wikipedia.org/wiki/Callback_(computer_programming)" target="web">Callbacks</a></h3> 
+<m>
+are quite common in <bc>event-loop</bc> architectures such as 
+<a href="https://en.wikipedia.org/wiki/JavaScript" target="web"><b>JavaScript</b></a> /
+<a href="https://en.wikipedia.org/wiki/Node.js" target="web"><b>Node.js</b></a>.
 The idea is to pass one function as a parameter to another function, and have this one invoked once the process has completed.
-<br/>
 </m> 
 <pre>
 <kc>//OUPUT</kc>
@@ -930,7 +886,7 @@ fun evalCps(v:Int, msg:String, <ks>callback</ks>:<k>(String)-> Unit</k> ){
 
 fun <i>doJobCpsNoShortcut</i>( n: Int  ){
     readCps( <kc>//lambda</kc>
-        { input : String-> evalCps( n, input, {  
+        { input : String-> evalCps( n, input, {<kc>//lambda</kc>
               msg ->  showAction( msg )  
             } 
         )}<kc>//evalCps</kc>
@@ -938,7 +894,7 @@ fun <i>doJobCpsNoShortcut</i>( n: Int  ){
 }
 
 fun <b>doJobCps</b>( n: Int  ){ <kc>//using lambda shortcut</kc>
-	<k>readCps{evalCps( n, it) { showAction( it )}} </k> 
+	<ks>readCps</ks><k>{ evalCps( n, it) { <ks>showAction( it )</ks>} } </k> 
 } 
 ---------------------
   doJobCps( 10 }
@@ -955,32 +911,44 @@ readCps  ... | thread=main | nthreads=1
 evalCps ... | thread=main | nthreads=1
 myinputcps:10
 </pre>
-<m>
+ 
 <h3>Callback hell</h3>
+<m>
 In order to avoid the <bc>anti-pattern</bc> known as
- <a href="http://callbackhell.com/">callback hell</a>, people use other approaches such as <em>promises</em> or 
-<em>Reactive Extensions</em> (<bc>Rx</bc>) (<tt>C#</tt>, <tt>.NET</tt>) .
-</m> 
+ <a href="http://callbackhell.com/">callback hell</a>, people use other approaches such as 
+ <a href="https://en.wikipedia.org/wiki/Futures_and_promises" target="web"><b>futures / promises</b></a> or 
+<a href=" https://en.wikipedia.org/wiki/Reactive_extensions" target="web"><b>Reactive Extensions (Rx)</b></a>
+(from <tt>C#</tt>, <tt>.NET</tt>) .
+ </m> 
 
 </td>
 </tr>
 
+</tbody>	
+</table></center>
 
+<h2 id="async">Towards Asynchronous Programming</h2>
+This example is reported in  <a href="../src/kotlindemo/demoCpsAsynch.kt" target="code">demoCpsAsynch.kt</a>  
+(project <m><ks>it.unibo.kotlinIntro</ks></m>).
+<br/><br/>
+<center><table style="width:95%">
+<tbody>	
 
 <tr>
-<td><h3>Towards ASYNCHRONOUS PROGRAMMING</h3>
+<td style="width:50%">
 Let us suppose that the operation <bc>readCps</bc> takes a long time and that we do not want to block
 the computation. </td>
 <td>
 
 
-As a solution modern langauages do introduce:
+As a solution, modern langauages do introduce:
 
 <ol>
 <li>Threading</li>
 <li>Callbacks</li>
-<li>Futures, Promises et al.</li>
-<li>Reactive Extensions</li>
+<li> <a href="https://en.wikipedia.org/wiki/Futures_and_promises" target="web"><b>futures / promises</b></a>  
+</li>
+<li><a href=" https://en.wikipedia.org/wiki/Reactive_extensions" target="web"><b>Reactive Extensions (Rx)</b></a></li>
 <li>Coroutines</li>
 </ol>
 
@@ -991,42 +959,51 @@ As a solution modern langauages do introduce:
 
 
 <tr>
-<td><pre>
+<td>
+<m>
+As an example of <a href="https://en.wikipedia.org/wiki/Continuation-passing_style" target="web">CPS</a> in 
+ <a href="https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)" target="web">Asynchronous</a> programming,
+let us simulate here the <tt>readCpsAsynch</tt> operation as an activity that runs in its own <bc>thread</bc>  and ends after <tt>3 sec</tt>.
+</m>
+<pre>
 fun readCpsAsynch( <ks>callback</ks>:<k>(String)-> Unit</k> ) : Unit{
   <k>kotlin.concurrent.thread(start = true)</k> {
 	println("readCpsAsynch  ... | ${curThread()} ")
 	<ks>Thread.sleep(3000)</ks>	<kc>//Long-term action</kc>
-	println("readCpsAsynch received ")
+	println("readCpsAsynch done")
 	<ks>callback</ks>( "myinputasynchcps" )
   }
 }
 
 fun doJobAsynchCps( n: Int  ){
-	readCpsAsynch{evalCps( n, it) { showAction( it )}} 
+	<ks>readCpsAsynch</ks>{ <k>evalCps( n, it)</k> { <ks>showAction( it )</ks>}} 
 }
+</pre>
+<m>
+The package <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.concurrent/" target="web"> kotlin.concurrent</a> includes 
+utility functions for concurrent programming.
+The function <k>thread</k> creates a thread that runs the specified 
+<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.concurrent/thread.html#kotlin.concurrent$thread(kotlin.Boolean,%20kotlin.Boolean,%20java.lang.ClassLoader,%20kotlin.String,%20kotlin.Int,%20kotlin.Function0((kotlin.Unit)))/block" target="web">block</a>
+of code.
 
+</m>
+<pre>
 --------------------------
     doJobAsynchCps( 10  )
 </pre> 
-<m>
-This example is reported in  <a href="../src/kotlindemo/demoCpsAsynch.kt" target="code">demoCpsAsynch.kt</a>  (project <ks>it.unibo.kotlinIntro</ks>).
-</m>
+ 
 </td>
-<td><m>
+<td>
 <h3>ASYNCHRONOUS PROGRAMMING WITH CPS</h3>
-As an example of <a href="https://en.wikipedia.org/wiki/Continuation-passing_style" target="web">CPS</a> in <em>Asynchronous programming</em>
-(see <a href="https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)" target="web">asynchronous</a> ),
-let us simulate here the <tt>readCpsAsynch</tt> operation as an activity that runs in its own <bc>thread</bc>  and ends after <tt>1 sec</tt>.
-<br/> 
-Now, the <tt>main</tt> program ends immediately; the computation is executed in the thread activated for the input.
+<m>Now, the <tt>main</tt> program ends immediately; the computation is executed in the thread activated for the input.
 </m> 
 <pre>
 <kc>//OUPUT</kc>
-BEGINS CPU=8 thread=main | nthreads=1
-work done in time= 6
+BEGINS CPU=4 thread=main | nthreads=1
+work done in time= 4
 ENDS thread=main | nthreads=2
 readCpsAsynch  ... | thread=Thread-0 | nthreads=1 
-readCpsAsynch received 
+readCpsAsynch done 
 evalCps ... | thread=Thread-0 | nthreads=2
 myinputasynchcps:10
 </pre>
@@ -1034,7 +1011,6 @@ myinputasynchcps:10
 Note the <a href="https://kotlinlang.org/docs/reference/java-interop.html#sam-conversions" target="web">Single Abstract Method conversion</a> 
 (<bc>SAM</bc>) in <tt>kotlin.concurrent.thread</tt>: when an object implements a <tt>SAM</tt> interface, we can pass a lambda instead.
 </m> 
-
 </td>
 </tr>
 
@@ -1100,12 +1076,10 @@ A current job can be retrieved from a current coroutine's context.
 
 <m></m>
 </ul>
-<br/>
-
 
 <h3>Examples</h3>
 The examples hereunder are reported in  <a href="../src/kotlindemo/demoCoroutinesIntro.kt" target="code">demoCoroutinesIntro.kt</a>  
-(project <m><ks>it.unibo.kotlinIntro</ks></m>).
+(project <m><ks>it.unibo.kotlinIntro</ks></m>).<br/>
 The main program now waits for a command from the user to select the demo to run:
 <hr/>
 <pre>
@@ -1170,7 +1144,7 @@ ENDS thread=main | nthreads=1
 
 <tr>
 <td>
- <h3>GlobalScope</h3> 
+ <h3><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-global-scope/" target="web"><k>GlobalScope</k></a></h3> 
 <m><ks>GlobalScope.launch</ks>  is used to launch <tt>top-level coroutines</tt>, which operate on the whole application lifetime. 
 </m>
 <pre>
@@ -1199,12 +1173,13 @@ The output after <ks>></ks> appears since our main waits for input. </m>
 <td>
 <m>
 The example above  shows that the coroutine works with reference to the <bc>Dispather.Deafault</bc>. <br/>
-A <em>Dispatcher</em> determines the thread in which a coroutine will be executed. It can be provided by the<tt> Coroutine Scope</tt>
-or specified using a builder.
+A <a href="https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html" target="web"><k>Dispatcher</k></a>
+determines the thread in which a coroutine will be executed. It can be provided by the <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html" target="web"> 
+Coroutine Scope</a> or specified using a builder.
 
 </td>
 <td>
-<h3>On Dispatchers</h3> 
+<h3>On <a href="https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html" target="web"><k>Dispatchers</k></a></h3> 
 <m>
 A dispatcher can be provided in two ways:
 
@@ -1213,7 +1188,8 @@ A dispatcher can be provided in two ways:
 See  also <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html" target="web"> 
 Coroutine Scope</a> <br/><br/></li>
 <li><bc>Explicitly</bc>: the coroutine builder receives a coroutine context as a first parameter.
-See  <a href="#Dispatchers">Dispatchers</a> later on.</li>
+<!-- See  <a href="#Dispatchers">Dispatchers</a> later on. -->
+</li>
 </ul>
 </m>
 </td>
@@ -1221,13 +1197,17 @@ See  <a href="#Dispatchers">Dispatchers</a> later on.</li>
 
 <tr>
 <td>
- <h3>CoroutineScope</h3> 
-  <m><ks>CoroutineScope.</ks>  defines a scope for new coroutines. 
-  Every coroutine builder is an extension on CoroutineScope and inherits its <tt>coroutineContext</tt> to automatically propagate both context elements and cancellation.
+ <h3><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html" target="web"> 
+<k>Coroutine Scope</k></a></h3> 
+  <m><ks>CoroutineScope.</ks>  defines a 
+  <a href="https://en.wikipedia.org/wiki/Scope_(computer_science)" target="web"> <k>Scope</k></a> for new coroutines. 
+  Every coroutine builder is an extension on CoroutineScope and inherits its 
+  <a href="https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html" target="web"><k>coroutineContext</k></a>
+  to automatically propagate both context elements and cancellation.
  </m>  
 <pre>
 fun scopeDemo (){
-	val scope = CoroutineScope( Dispatchers.Default )
+	val scope = <k>CoroutineScope( Dispatchers.Default )</k>
 	println( <ks>scope.coroutineContext</ks> )
 	<k>scope.launch</k>{ runBlockThread() } 	
 }
@@ -1255,22 +1235,18 @@ thread sleeps ... : thread=DefaultDispatcher-worker-2 | nthreads=4
 val n=10000	<m><kc>//number of Thread or Coroutines to launch</kc></m>
 val k=1000	<m><kc>//times an action is repeated by each Thread or Coroutine</kc></m>
 
-
 fun <ks>manyThreads()</ks>{
 	var counter=0
  	var iter = 0;
 	val time = measureTimeMillis{
-	  val jobs = List(n){
-		Thread(){
-			run(){
-				iter++	 
-				//println("thread $iter starts ")
-				repeat( k ){ counter++}
- 			}
-		}			
+		val jobs = List(n){
+		<ks>kotlin.concurrent.thread(start = true)</ks> {
+			iter++	 
+			<kc>//println("thread $iter starts ")</kc>
+			repeat( k ){ counter++}
+ 		}
 		}
-		jobs.forEach{ it.start() }
-		jobs.forEach{ it.join()  }
+		jobs.forEach{<k>it.join()</k>} <m><kc>//wait for termination of all threads</kc></m>
  	}
 	println("manyThreads time= $time counter=$counter")
 }
@@ -1298,19 +1274,16 @@ ENDS thread=main | nthreads=1
 
 <pre>
 fun <ks>manyCoroutines()</ks>{
+	val <k>scope</k> = CoroutineScope( Dispatchers.Default )
 	var counter=0
-    val time = measureTimeMillis {
-	  val jobs = List(n) {
-		  <k>CoroutineScope( Dispatchers.Default ).launch</k> {
-			repeat(k) { counter++ }
-	  }
+	
+	val time = measureTimeMillis {
+		val jobs = List(n) { <k>scope.launch</k>{ repeat(k) { counter++ } } }
+		jobs.forEach { it.join() } <m><kc>//wait for termination of all coroutines</kc></m>
 	}
-	CoroutineScope( Dispatchers.Default ).launch {
-		jobs.forEach { <k>it.join()</k> } <m><kc>//wait for termination of all coroutines</kc></m>
-	}
-	}
+	
 	println("manyCoroutines time= $time counter=$counter")
-}
+ }
 </pre> </td>
 <td>
  <h3>Many Coroutines</h3> 
@@ -1320,9 +1293,9 @@ fun <ks>manyCoroutines()</ks>{
 <pre>
 <kc>//OUTPUT</kc>
 BEGINS CPU=4 thread=main | nthreads=1
-manyCoroutines time= 151 counter=<k>9875922</k>
-work done in time= <k>152</k>  <kc>//!!!!!!!!!!!!!</kc>
-ENDS thread=main | nthreads=5
+work done in time= 11
+ENDS thread=main | nthreads=3
+>manyCoroutines time= 186 counter=9790039 <kc>//!!!</kc>
 </pre>
 <m>The execution time is now much less than the case of using threads.<br/>
 Question: why the final value of the counter is not <tt>n*k = 10000000</tt>?.
