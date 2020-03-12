@@ -57,6 +57,7 @@ println("it    -------------- ")
 	println( p2{ it * it / 2 } )     //2
 
 	println("modulo -------------- ")	
+	println(  modulo(3)  ) 		    //(kotlin.Int) -> kotlin.Int
 	println(  modulo(3)(5) ) 		//2
 	println(  modulo(5)(3) )		//3
 

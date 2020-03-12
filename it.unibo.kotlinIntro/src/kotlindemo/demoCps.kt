@@ -60,13 +60,16 @@ fun doJobCps( n: Int  ){
 //=========================================================================
 fun closureDemo(){
     val c1 = counterCreate()
+	println("closureDemo")
+	println( c1 )			 //(kotlin.String) -> kotlin.Int
+	println( c1("val") ) 	//0
 	val c2 = counterCreate()
     for( i in 1..3 ) c1("inc")
     println("c1=${c1("val")}")		  //c1=3
     for( i in 1..3 ) c2("dec")
 	println("c2=${c2("val")}")	     //c2=-3
     println("doJobNormal --------------------------")
-    doJobNormal( 100 )			//output : myinput:100
+    doJobNormal( 10 )			//output : myinput:100
 
 	println("callback      ----------------------- ") 
 	//readCps( { msg -> showAction(msg) } )		//output : myinputcps

@@ -18,9 +18,10 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    flatDir { //grazie Mattia Piretti
-       dirs '/C:/Didattica2018Work/iss2019Lab/libs'	//full path
-   }
+    jcenter()
+ //   flatDir { //grazie Mattia Piretti
+ //      dirs '/C:/Didattica2018Work/iss2019Lab/libs'	//full path
+ //  }
 }
 
 dependencies {

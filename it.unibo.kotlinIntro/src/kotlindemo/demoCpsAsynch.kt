@@ -11,7 +11,8 @@ fun readCpsAsynch( callback:(String)-> Unit ) : Unit{
 }
 
 fun doJobAsynchCps( n: Int  ){
-	readCpsAsynch{evalCps( n, it) { showAction( it )}} 
+	readCpsAsynch{evalCps( n, it) { showAction( it )}}
+	println("qui posso cotinuare ... ")
 }
  
 fun main() {
