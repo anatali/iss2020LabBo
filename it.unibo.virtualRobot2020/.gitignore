@@ -1,0 +1,13 @@
+bin
+bin/default
+.metadata
+build
+
+#node
+node
+*.lck
+package-lock.json
+
+
+
+
