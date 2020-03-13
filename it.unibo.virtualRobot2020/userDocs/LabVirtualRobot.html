@@ -88,6 +88,24 @@ bc{
     color: #990000;
 	background-color: #fcf8c7;
 }
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
 pre{
 	font-family: "Helvetica";
 	font-size: 70%;
@@ -112,11 +130,17 @@ div.req{
     margin: 10px;
 }    
 
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
 }
-
 </style>
 <head>
    
@@ -131,7 +155,7 @@ table, th, td {
 target="isslm">LabISS-lectures site</a> 
 
 <h2>INTRODUCTION</h2>
-Our company (<tt>Unibo</tt>) has developed  a virtual environment (named <em>WEnv</em>) that includes a virtual robot.
+Our company (<tt>Unibo</tt>) has developed  a virtual environment (named <em>WEnv</em>) that includes a virtual robot (named <em>WENV-ROBOT</em>).
 <br/> 
 The virtual environment  has been mainly built by <i>Pierfrancesco Soffritti</i> using the
 <a href=" https://threejs.org/">three.js</a> JavaScript library (see
@@ -153,8 +177,8 @@ The scene of the <tt>WEnv</tt> is built from a description can be easily defined
 <tbody>	
 
 <tr>
-<td><center><img src="./wenvscene.png" alt="wenvscene" width="60%" height="60%"></center></td>
-<td><center><img src="./wenvscene1.png" alt="wenvscene1" width="60%" height="60%"></center></td>
+<td><center><img src="./img/wenvscene.png" alt="wenvscene" width="60%" height="60%"></center></td>
+<td><center><img src="./img/wenvscene1.png" alt="wenvscene1" width="60%" height="60%"></center></td>
 </tr>
 </tbody>	
 </table></center>
@@ -224,8 +248,8 @@ export default config;
 
 <h3>INTERACTION</h3> 
 	
-The virtual robot accepts commands sent on a <tt>TCP</tt> connection on port <tt>8999</tt>.
-The commands are described in the file <tt>README.md</tt>.
+The <em>WENV-ROBOT</em> accepts commands sent on a <tt>TCP</tt> connection on port <tt>8999</tt>.
+The format of commands (<tt>JSON</tt>) is described in the file  <a href="../node/WEnv/README.md" target="code">README.md</a>.
 
  For example:
 <pre>
@@ -239,8 +263,8 @@ stop : `{ "type": "alarm" }`
 </pre>
 Moreover, the virtual environment <em>sends</em> to the connected client (via <tt>TCP</tt> on port <tt>8999</tt>):
 <ul>
-<li>Data emitted by the sonars included in the scene when they detect the robot </li>
-<li>Data emitted by the sonars on board of the robot, when they detect an obstacle (fixed or mobile) </li>
+<li>data emitted by a sonar included in the scene (<em>scene-sonar</em>) when it detects the robot </li>
+<li>data emitted by the sonars on board of the robot  (<em>robot-sonar</em>), when they detect an obstacle (fixed or mobile) </li>
 </ul>
 
 <pre>
@@ -257,29 +281,61 @@ collision : `{
 
 
 
-<h3>USING THE WENV ROBOT WITH KOTLIN</h3>
+<h3>USING THE WENV-ROBOT WITH KOTLIN</h3>
 
-Let us report an example of a client written in Kotlin that sends some command to the robot:
+Let us report an example of a client written in Kotlin that sends some command to the robot:<br/><br/>
+<center><table style="width:95%">
+<tbody>	
+<tr>
+<td style="width:40%">
+ 
+<a href="clientWenvTcpObj.kt" target="code">clientWenvTcpObj.kt</a><br/><br/>
+<m>This file is also included in project <i>it.unibo.kotlinintro</i>, directory <i>virtualRobotUsage</i>.</m>
+</td>
+<td> 
+<center><img src="./img/clientObj.png" alt="clientObj" width="90%" height="60%"></center>
+</td>
+</tr>
+	</tbody>	
+</table></center>
+
+
+<h3>USING WENV-ROBOT WITH KOTLIN ACTORS</h3>
+Let us report an example of an actor written in Kotlin that 'provides services' for the robot:<br/><br/>
+
 <center><table style="width:95%">
 <tbody>	
 
 <tr>
 <td style="width:40%">
-<a href="clientWenvTcpObj.kt" target="code">clientWenvTcpObj.kt</a>
-</td>
-<td><m><em>Client for interaction with WEnv</em><br/>
-This file is also included in project <i>it.unibo.kotlinintro</i>, directory <i>virtualRobotUsage</i>.
-
-</m></td>
-</tr>
  
-
-
+<a href="robotActor.kt" target="code">robotActor.kt</a><br/><br/>
+<m>This file is also included in project <i>it.unibo.kotlinintro</i>, directory <i>virtualRobotUsage</i>.</m>
+</td>
+<td>
+<center><img src="./img/robotActor.png" alt="robotActor" width="100%" height="60%"></center><br/>
+ </td>
+</tr>
 </tbody>	
 </table></center>
+<br/>
+In this solution, the <a href="robotActor.kt" target="code">robotActor.kt</a> works as a service able to handle a set
+of commands represented by Strings. It works in a <bc>message-driven</bc> way, according to the first part of the command-string:
+ <ul>
+ <li><k>init</k>: starts its job</li>
+ <li><k>end</k>: terminates its job</li>
+ <li><k>move</k>: sends a move-command to <em>WENV-ROBOT</em> using the  <bc>object</bc> <m><ks>robotSupport</ks></m> as an utility</li>
+ <li><k>collision</k>: 'reacts' to a <i>collision message</i> sent by  <m><ks>robotSupport</ks></m> when a <em>robot-sonar</em> detects an obstacle</li>
+ <li><k>sensor</k>: 'reacts' to a <i>sensor message</i> sent by  <m><ks>robotSupport</ks></m> when a <em>scene-sonar</em> detects the robot</li>
+</ul>
 
+The behavior of the <a href="robotActor.kt" target="code">robotActor.kt</a> could be extended according to the first requirement of our
+of 
+<a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/72939LabISSIntro.html#Application0" 
+target="web">Application0</a>:
+<br/>
 
-<h3>USING WENV WITH KOTLIN ACTORS</h3>
+<i>when the actor receives the command <k>explore</k>, it starts to explore in a systematic and autonomous way the room</i>.
 
 
 <br/><br/>

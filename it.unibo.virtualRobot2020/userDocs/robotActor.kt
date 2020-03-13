@@ -1,5 +1,5 @@
 package virtualRobotUsage
-//clientWenvTcpActor.kt
+//robotActor.kt
 
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.channels.actor
@@ -33,18 +33,17 @@ Behavior  msg-driven
 		val msgFunctor  = msgSplitted[0]
 		//println("robotActor msgFunctor $msgFunctor ")
 		when( msgFunctor ){
+			"init"      -> robotSupport.initClientConn()
 			"end"       -> state = "end"
 			"sensor"    -> println("robotActor receives $msg")
 			"collision" -> {
 				println("robotActor receives $msg");
-				state = "collision"
-				val back =  "{ 'type': 'moveBackward', 'arg': 100 }"
-				clientWenvTcpActor.sendMsg( back  )  // not for plasticBox
-				state = "working"  
-			}
+ 				val goback =  "{ 'type': 'moveBackward', 'arg': 100 }"
+				robotSupport.move( goback  )  // not for plasticBox : the business logic is more complex ...
+ 			}
 			"cmd"       -> {
- 				val msgBody = msgSplitted[1].replace(")","")
- 				clientWenvTcpActor.sendMsg( msgBody )
+ 				val cmd = msgSplitted[1].replace(")","")
+ 				robotSupport.move( cmd )
 			}
 			else -> println("robotActor DOES NOT HANDLE $msg")
 		}		
@@ -53,11 +52,11 @@ Behavior  msg-driven
 }
 
 /*
- clientWenvTcpActor becomes a support
+ robotSupport is a support for using the virtual robot
  */
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-object clientWenvTcpActor {
+object robotSupport {
         private var hostName = "localhost"
         private var port     = 8999
         private val sep      = ";"
@@ -68,19 +67,19 @@ object clientWenvTcpActor {
             port             = Integer.parseInt(portStr)
              try {
                  val clientSocket = Socket(hostName, port)
-                 println("clientWenvTcpActor |  CONNECTION DONE")
-                  outToServer  = PrintWriter(clientSocket.getOutputStream())
+                 println("robotSupport |  CONNECTION DONE")
+                 outToServer  = PrintWriter(clientSocket.getOutputStream())
                  startSensorObserver( clientSocket )
              }catch( e:Exception ){
-                 println("clientWenvTcpActor | ERROR $e")
+                 println("robotSupport | ERROR $e")
              }
 	}
 
 /*
- 	Send a message wriiten in JSON on the TCP connection
+ 	Performs a move 
 */		
-         fun sendMsg(jsonString: String) {
-            val jsonObject = JSONObject(jsonString)
+        fun move(cmd: String) {	//cmd is written in JSON 
+            val jsonObject = JSONObject(cmd)
             val msg = "$sep${jsonObject.toString()}$sep"
             outToServer?.println(msg)
             outToServer?.flush()
@@ -93,13 +92,13 @@ object clientWenvTcpActor {
 		val inFromServer = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
 		val scope : CoroutineScope = CoroutineScope( Dispatchers.Default )
 	    scope.launch {
-//			println("clientWenvTcpActor | startSensorObserver STARTING ")
+//			println("robotSupport | startSensorObserver STARTS ")
                 while (true) {
                     try {
                         val inpuStr = inFromServer.readLine()
                         val jsonMsgStr =
                             inpuStr!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
-                        //println("clientWenvTcpActor | inpuStr= $jsonMsgStr")
+                        //println("robotSupport | inpuStr= $jsonMsgStr")
                         val jsonObject = JSONObject(jsonMsgStr)
                         //println( "type: " + jsonObject.getString("type"));
                         when (jsonObject.getString("type")) {
@@ -129,10 +128,10 @@ object clientWenvTcpActor {
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 suspend fun doJob(   ) {
-    clientWenvTcpActor.initClientConn( )
+    robotActor.send("init")
     var jsonString  : String
 	val time = 800
-    for (i in 1..3) {
+    for (i in 1..2) {
         jsonString = "{ 'type': 'moveForward', 'arg': $time }"
         robotActor.send("cmd($jsonString)")
         delay(1000)
