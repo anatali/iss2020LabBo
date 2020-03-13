@@ -329,14 +329,18 @@ of commands represented by Strings. It works in a <bc>message-driven</bc> way, a
  <li><k>sensor</k>: 'reacts' to a <i>sensor message</i> sent by  <m><ks>robotSupport</ks></m> when a <em>scene-sonar</em> detects the robot</li>
 </ul>
 
-The behavior of the <a href="robotActor.kt" target="code">robotActor.kt</a> could be extended according to the first requirement of our
-of 
+<h2>Towards more complex behavior</h2>
+The <a href="robotActor.kt" target="code">robotActor.kt</a> implements the business logic
+related to each message it can recieve. However, since it is an active entity, we can now extend its behavior  
+so to satisfy the first requirement of our
 <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/72939LabISSIntro.html#Application0" 
-target="web">Application0</a>:
-<br/>
-
-<i>when the actor receives the command <k>explore</k>, it starts to explore in a systematic and autonomous way the room</i>.
-
+target="web">Application0</a>. For example,we can say that:
+<hr/>
+<i>the robot starts to explore in a systematic and autonomous way the room after receiving the command '<k>explore</k>' </i>.
+<hr/>
+The problem to face now is the design and development of a behavior that msut be both <bc>proactive</bc> (the robot must perform
+the exploration activity in autonomous way) and <bc>reactive</bc> 
+(while exploring, the robot should not lose its capability to handle other messages, for example <k>end</k> and <k>collision</k>).
 
 <br/><br/>
 
