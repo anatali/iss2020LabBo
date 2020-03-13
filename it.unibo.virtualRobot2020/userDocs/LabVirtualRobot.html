@@ -5,8 +5,6 @@
 <script type="text/javascript" src="../css/issStyle.js"></script>
 -->
 <style type="text/css">
-<!--
-
 body
 {
     margin-left:  30px;
@@ -119,18 +117,18 @@ table, th, td {
   border-collapse: collapse;
 }
 
-  -->
 </style>
 <head>
    
-<title>Lab9ISS</title></head>
+<title>LabVirtualRobot.</title></head>
     
 <body>
 
 <div class="body"> 
 
-<h1>72939 - LAB9 | Interacting with a virtual robot</h1> 
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/LectureBologna1819.html" target="isslm">LabISS-lectures site</a></font> 
+<h1>LabVirtualRobot | Interacting with a virtual robot</h1> 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/LectureBologna1920.html" 
+target="isslm">LabISS-lectures site</a> 
 
 <h2>INTRODUCTION</h2>
 Our company (<tt>Unibo</tt>) has developed  a virtual environment (named <em>WEnv</em>) that includes a virtual robot.
@@ -163,7 +161,7 @@ The scene of the <tt>WEnv</tt> is built from a description can be easily defined
 	
   
 The scene description is stroed in a configuration file (named <bc>sceneConfig.js</bc>) stored in the
-directory <tt>WebGLScene</tt>. For example the description of the scene on the right of the figure above is:
+directory <tt>WEnv/WebGLScene</tt>. For example the description of the scene on the right of the figure above is:
 <pre>
 const config = {
     floor: {
@@ -259,9 +257,9 @@ collision : `{
 
 
 
-<h3>USING THE WENV ROBOT</h3>
+<h3>USING THE WENV ROBOT WITH KOTLIN</h3>
 
-Let us report an example of a client written in Node.js that sends some command to the robot:
+Let us report an example of a client written in Kotlin that sends some command to the robot:
 <center><table style="width:95%">
 <tbody>	
 
@@ -269,7 +267,10 @@ Let us report an example of a client written in Node.js that sends some command 
 <td style="width:40%">
 <a href="clientWenvTcpObj.kt" target="code">clientWenvTcpObj.kt</a>
 </td>
-<td><m><em>Client Node for interaction with WEnv</em></m></td>
+<td><m><em>Client for interaction with WEnv</em><br/>
+This file is also included in project <i>it.unibo.kotlinintro</i>, directory <i>virtualRobotUsage</i>.
+
+</m></td>
 </tr>
  
 
@@ -277,6 +278,11 @@ Let us report an example of a client written in Node.js that sends some command 
 </tbody>	
 </table></center>
 
+
+<h3>USING WENV WITH KOTLIN ACTORS</h3>
+
+
+<br/><br/>
 
 <!--
 

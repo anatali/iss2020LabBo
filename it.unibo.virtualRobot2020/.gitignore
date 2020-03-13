@@ -4,7 +4,8 @@ bin/default
 build
 
 #node
-node
+node/WEnv/server/node_modules
+node/WEnv/WebGLScene/node_modules
 *.lck
 package-lock.json
 
