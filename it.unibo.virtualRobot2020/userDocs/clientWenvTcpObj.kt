@@ -10,16 +10,18 @@ import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
 import org.json.JSONObject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
     object clientWenvTcpObj {
         private var hostName = "localhost"
         private var port     = 8999
         private val sep      = ";"
         private var outToServer: PrintWriter?     = null
-        private var inFromServer: BufferedReader? = null
+        private var inFromServer: BufferedReader? = null 
 
 
-         fun initClientConn(hostNameStr: String = hostName, portStr: String = "$port"  ) {
+         fun initClientConn( hostNameStr: String = hostName, portStr: String = "$port"  ) {
             hostName         = hostNameStr
             port             = Integer.parseInt(portStr)
              try {
@@ -27,12 +29,15 @@ import org.json.JSONObject
                  println("clientWenvTcp |  CONNECTION DONE")
                  inFromServer = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
                  outToServer  = PrintWriter(clientSocket.getOutputStream())
-                 startTheReader()
+                 startTheReader( )
              }catch( e:Exception ){
                  println("clientWenvTcp | ERROR $e")
              }
         }
 
+/*
+ 	Send a message wriiten in JSON on the TCP connection
+*/		
          fun sendMsg(jsonString: String) {
             val jsonObject = JSONObject(jsonString)
             val msg = "$sep${jsonObject.toString()}$sep"
@@ -40,11 +45,17 @@ import org.json.JSONObject
             outToServer?.flush()
         }
 
-        private fun startTheReader(   ) {
-            GlobalScope.launch {
+/*
+ 		Launch a coroutine that waits for data from the TCP connection
+ */		
+		
+        private fun startTheReader(  ) {
+	    val scope : CoroutineScope = CoroutineScope( Dispatchers.Default )
+        scope.launch {
+//				println("clientWenvTcp | startTheReader STARTING ")
                 while (true) {
                     try {
-                        val inpuStr = inFromServer?.readLine()
+                         val inpuStr = inFromServer?.readLine()
                         val jsonMsgStr =
                             inpuStr!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
                         //println("clientWenvTcp | inpuStr= $jsonMsgStr")
@@ -76,17 +87,18 @@ import org.json.JSONObject
 }//clientTcp
 
 
-suspend fun doJobObject() {
-    clientWenvTcpObj.initClientConn()
+suspend fun doJobObject(   ) {
+    clientWenvTcpObj.initClientConn( )
     var jsonString  : String
+	val time = 1300
     for (i in 1..3) {
-        jsonString = "{ 'type': 'moveForward', 'arg': 1200 }"
+        jsonString = "{ 'type': 'moveForward', 'arg': $time }"
          clientWenvTcpObj.sendMsg(jsonString)
-        delay(1000)
+         delay(1000)
 
-        jsonString = "{ 'type': 'moveBackward', 'arg': 1200 }"
+        jsonString = "{ 'type': 'moveBackward', 'arg': $time }"
          clientWenvTcpObj.sendMsg(jsonString)
-        delay(1000)
+         delay(1000)
     }
 }
  
@@ -94,5 +106,7 @@ fun main( ) = runBlocking {
     println("==============================================")
     println("PLEASE, ACTIVATE WENV ")
     println("==============================================")
-    doJobObject()
+	//Create a new scope to launche
+    doJobObject(   )
+    println("BYE")
 }

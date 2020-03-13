@@ -156,7 +156,7 @@ table, th, td {
 <h1>LabKotlin | Introduction to <a href="https://kotlinlang.org/" target="web">KOTLIN</a></h1> 
 
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/LectureBologna1920.html" 
-target="isslm">LabISS-lectures site</a></font> 
+target="isslm">LabISS-lectures site</a> 
 </div> 
 <h2><a id="basics"/>OVERVIEW</h2>
 
@@ -1917,6 +1917,13 @@ consumer2 receives 3 in thread=main / nthreads=5
  
  
 <h2><a id="actors"/><a href="https://kotlinlang.org/docs/reference/coroutines/shared-mutable-state-and-concurrency.html#actors" target="web">Kotlin Actors</a></h2>
+<!-
+Writing complex actors #87   https://github.com/Kotlin/kotlinx.coroutines/issues/87#issuecomment-317207589
+->
+Using coroutines and channels, we can build a system that encapsulate mutable state in a manner that do not need 
+any locks and synchronization and instead leverage a protocol of messages to handle concurrent updates of that state.
+Such a model is called an actor. It is not a new concept, instead it has been around for years and is the underlying concept 
+of Erlang and can also be used in Java and Scala using Akka.
 <ul>
 <li>An actor is an entity made up of a combination of a <em>coroutine</em>, the state that is confined and encapsulated into this coroutine, 
 and a <em>channel</em> to communicate with other coroutines. 

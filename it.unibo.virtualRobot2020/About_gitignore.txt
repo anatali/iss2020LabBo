@@ -1,0 +1,4 @@
+There is a .gitignore in the dirs:
+node/WEnv
+node/WebGLScene
+
