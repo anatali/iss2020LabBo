@@ -8,7 +8,7 @@ val initMsg         = AppMsg.create("init","main","robotactor")
 val endMsg          = AppMsg.create("end","main","robotactor")
 val moveForwardMsg  = AppMsg.create("move","main","robotactor","w") 
 val moveBackwardMsg = AppMsg.create("move","main","robotactor","s") 
-val haltRobotMsg     = AppMsg.create("move","main","robotactor","h") 
+val haltRobotMsg    = AppMsg.create("move","main","robotactor","h") 
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi

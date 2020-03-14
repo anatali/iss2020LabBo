@@ -89,7 +89,7 @@ object virtualRobotSupport {
                                 val sonarName = jsonArg.getString("sonarName")
                                 val distance  = jsonArg.getInt("distance")
 								val dataMsg   = AppMsg.create("sensor","vr","robotactor","$sonarName-$distance")
-								robotActor.send( dataMsg.toString() ) //"sensor($sonarName, $distance)"
+								robotActor.send( dataMsg.toString() )  
  
                             }
                             "collision" -> {

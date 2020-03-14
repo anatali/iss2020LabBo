@@ -1,5 +1,5 @@
 package virtualRobotUsage
-//robotActorCril.kt
+//robotActorTry.kt
 
 //import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.channels.actor
@@ -13,15 +13,15 @@ import kotlinx.coroutines.channels.Channel
 //Actor that includes the business logic; the behavior is message-driven 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-val robotActorCril  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).actor {
+val robotActorTry  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).actor {
 	var state    = "working"
 	
 	fun doInit() = virtualRobotSupport.initClientConn() 
 	fun doEnd()  = { state = "end"  }
-	fun doSensor(msg : String){ println("robotActorCril receives $msg") }
+	fun doSensor(msg : String){ println("robotActorTry receives $msg") }
 	
 	suspend fun doCollision(msg : String){
-		println("robotActorCril handles $msg going back a little");
+		println("robotActorTry handles $msg going back a little");
 		val goback =  "{ 'type': 'moveBackward', 'arg': 100 }"
 		virtualRobotSupport.domove( goback  )  // not for plasticBox : the business logic is more complex ...
 		delay(500)		
@@ -34,10 +34,10 @@ val robotActorCril  : SendChannel<String>	= CoroutineScope( Dispatchers.Default 
 	
 	while( state == "working" ){
 		var msg = channel.receive()
-		println("robotActorCril receives: $msg ")
+		println("robotActorTry receives: $msg ")
 		val msgSplitted = msg.split('(')
 		val msgFunctor  = msgSplitted[0]
-		//println("robotActorCril msgFunctor $msgFunctor ")
+		//println("robotActorTry msgFunctor $msgFunctor ")
 		when( msgFunctor ){
 			"init"      -> doInit()
 			"end"       -> doEnd()
@@ -47,7 +47,7 @@ val robotActorCril  : SendChannel<String>	= CoroutineScope( Dispatchers.Default 
 			else        -> println("NO HANDLE for $msg")
 		}		
  	}
- 	println("robotActorCril ENDS state=$state")
+ 	println("robotActorTry ENDS state=$state")
 }
 
  

@@ -1,15 +1,12 @@
 package virtualRobotUsage
 //robotActor.kt
 
-//import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.channels.Channel
- 
+  
 //Actor that includes the business logic; the behavior is message-driven 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi

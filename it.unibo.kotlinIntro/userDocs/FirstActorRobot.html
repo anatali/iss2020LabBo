@@ -172,20 +172,20 @@ Let us report, as an example,  an actor written in Kotlin that 'provides service
 <tbody>	
 <tr>
 <td style="width:40%">
-<a href="robotActor.kt" target="code">robotActor.kt</a><br/><br/>
+<a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a><br/><br/>
 <m>This file is also included in project <i>it.unibo.kotlinintro</i>, directory <i>virtualRobotUsage</i>.</m>
 </td>
 <td>
-<center><img src="./img/robotActor.png" alt="robotActor" width="100%" height="60%"></center><br/>
+<center><img src="./img/robotActorTry.png" alt="robotActorTry" width="100%" height="60%"></center><br/>
  </td>
 </tr>
 </tbody>	
 </table></center>
 <br/>
-In this solution, the <a href="robotActor.kt" target="code">robotActor.kt</a> works as a service able to handle a set
+The <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> works as a service able to handle a set
 of commands represented by Strings. 
 
-Its behavior is <bc>message-driven</bc>, since the actor executes actions related to the (staring part) of the first command received:
+Its behavior is <bc>message-driven</bc>, since the actor executes actions related to the (starting part) of the first command received:
  <ul>
  <li><k>init</k>: starts its job</li>
  <li><k>end</k>: terminates its job</li>
@@ -197,8 +197,8 @@ Its behavior is <bc>message-driven</bc>, since the actor executes actions relate
  <m><a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a></m> when a <em>scene-sonar</em> detects the robot</li>
 </ul>
 
-<h2>The Actor as a <a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="web">Finite State Machine</a></a></h2>
-The behavior of the <a href="robotActor.kt" target="code">robotActor.kt</a> 
+<h3>The Actor as a <a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="web">Finite State Machine</a></a></h3>
+The behavior of the <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> 
 can be modelled as a <a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="web">Finite State Machine</a>:<br/><br/>
 
 <center><table style="width:95%">
@@ -223,7 +223,7 @@ can be modelled as a <a href="https://en.wikipedia.org/wiki/Finite-state_machine
 </pre>
 </td>
 <td>
-<center><img src="./img/robotActorFsm.png" alt="robotActorFsm" width="70%" height="60%"></center><br/>
+<center><img src="./img/robotActorFsm.png" alt="robotActorFsm" width="70%"  ></center><br/>
  </td>
 </tr>
 </tbody>	
@@ -231,32 +231,119 @@ can be modelled as a <a href="https://en.wikipedia.org/wiki/Finite-state_machine
 <br/>
 Each <bc>state</bc> is mapped into a <bc>function</bc> whose body specifies the <bc>actions</bc> to be executed in that state.
 
-<h3>Application messages</h3>
-While the <a href="robotActor.kt" target="code">robotActor.kt</a> begins to look a 'service', its behavior is still strongly 
-related to the JSON language of the virtual robot (<i>concrete-robot interaction language</i> or <em>cril</em>).
+<h2>Application messages</h2>
+The <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> is a active entity that works as a message-driven 'service'.
+However, its behavior is still strongly 
+related to the <tt>JSON</tt>-based language of the virtual robot (<i>concrete-robot interaction language</i> or <em>cril</em>).
 To overcome such a further  technology-dependency, let us introduce the definition of messages at application level:
+
 <br/><br/>
-<center><table style="width:95%">
+<center><table style="width:98%">
 <tbody>	
 <tr>
 <td style="width:40%">
+The class <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg.kt</a> implements our idea of messages at application-level.
+<br/><br/>
+The external representation of an <tt>AppMsg</tt> is a String written in Prolog syntax as a Prolog-Term with 5 arguments:
+
 <pre>
 msg( MSGID, MSGTYPE, SENDER, RECEIVER, CONTENT, SEQNUM )
 </pre>
 </td>
 <td>
- 
+<h3>Message types</h3>
+We distinguish among different types of messages: 
+<pre>
+enum class AppMsgType{ <k>event, dispatch, request, reply, invitation</k> }
+</pre>
+We have alrady introduced our symbolic representation for most of them:<br/><br/>
+<center><img src="./img/msgTypes.png" alt="msgTypes" width="50%" ></center><br/>
  </td>
 </tr>
 </tbody>	
 </table>
 </center>
 <br/>
+
+Now, if we send to the actor a <tt>AppMsg</tt>-representation String, 
+our robot actor can distiguish the input message by looking at its <tt>MSGID</tt>:
+
+<br/><br/>
+<center><table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:40%">
+<pre>
+	while( state == "working" ){
+		var msg = channel.receive()
+		<m><kc>//msg : msg(MSGID,MSGTYPE,SENDER,RECEIVER,CONTENT,SEQNUM)</kc></m>	
+		val <ks>applMsg</ks> = <k>AppMsg.create(msg)</k> <kc>//Factory method</kc>
+  		when( <ks>applMsg</ks>.<k>MSGID</k> ){
+			"<ks>init</ks>"      -> doInit()
+			"<ks>end</ks>"       -> doEnd()
+			"<ks>sensor</ks>"    -> doSensor(msg)
+			"<ks>collision</ks>" -> doCollision(msg)
+			"<ks>move</ks>"      -> doMove(<k>applMsg.CONTENT</k>)
+			else        -> println("NO HANDLE for $msg")
+		}		
+ 	}//while
+</pre>
+</td>
+<td>
+The new version of our robot actor based on <tt>AppMsg</tt> can be found in:
+<a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor.kt</a><br/><br/>
+
+<center><img src="./img/robotActor.png" alt="robotActor" width="100%" ></center>
+</td>
+</tr>
+</tbody>	
+</table>
+</center>
+<br/>
+
+<h3>Towards standards in messaging</h3>
+
+The class <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg.kt</a>  defines from now on a standard reference
+for our applications. In this way, we assure that each message will contain, besides its <tt>MSGID</tt> and some <tt>CONTENT</tt>, 
+also the name of the sender (actor) and the name of the receiver (actor).
+<br/><br/>
+As regards the message <tt>CONTENT</tt>, its structure is of course decided by the specific application. In our case we state
+that:
+<ul>
+<li> <k>w</k>: means '<i>go forward forever</i>'</li>
+<li> <k>s</k>: means '<i>go backward forever</i>'</li>
+<li> <k>h</k>: means '<i>stop the robot movement</i>'</li>
+<li> <k>a</k>: means '<i>rotate left forever</i>'</li>
+<li> <k>d</k>: means '<i>rotate right forever</i>'</li>
+<li> <k>l</k>: means '<i>rotate left 90</i>'</li>
+<li> <k>r</k>: means '<i>rotate right 90</i>'</li>
+</ul>
+
+<h3>Interacting with the  <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor.kt</a></h3>
+
+
+
+Let us introduce a set of application messages:
+<pre>
+val initMsg         = AppMsg.create("init","main","robotactor")
+val moveForwardMsg  = AppMsg.create("move","main","robotactor","w") 
+val haltRobotMsg    = AppMsg.create("move","main","robotactor","h") 
+</pre>
+An example of interaction with the is:
+<pre>
+forward( initMsg )
+...
+forward( moveForwardMsg )
+...
+forward( haltRobotMsg )
+</pre>
+
+
 Moreover, let us delegate to the robot support the task of translating the application level in the  <em>cril</em>  and viceversa.
 
 <br/>
 <h2>Towards more complex behavior</h2>
-The <a href="robotActor.kt" target="code">robotActor.kt</a> implements the business logic
+The <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> implements the business logic
 related to each message it can receive. However, since it is an active entity, we can now extend its behavior  
 so to satisfy the first requirement of our
 <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/72939LabISSIntro.html#Application0" 
