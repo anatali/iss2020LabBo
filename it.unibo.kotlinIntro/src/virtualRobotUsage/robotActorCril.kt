@@ -1,5 +1,5 @@
 package virtualRobotUsage
-//robotActor.kt
+//robotActorCril.kt
 
 //import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.channels.actor
@@ -13,39 +13,41 @@ import kotlinx.coroutines.channels.Channel
 //Actor that includes the business logic; the behavior is message-driven 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-val robotActor  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).actor {
+val robotActorCril  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).actor {
 	var state    = "working"
 	
 	fun doInit() = virtualRobotSupport.initClientConn() 
 	fun doEnd()  = { state = "end"  }
-	fun doSensor(msg : String){ println("robotActor receives $msg") }
+	fun doSensor(msg : String){ println("robotActorCril receives $msg") }
 	
 	suspend fun doCollision(msg : String){
-		println("robotActor handles $msg going back a little");
-		virtualRobotSupport.doApplMove( "s" )
+		println("robotActorCril handles $msg going back a little");
+		val goback =  "{ 'type': 'moveBackward', 'arg': 100 }"
+		virtualRobotSupport.domove( goback  )  // not for plasticBox : the business logic is more complex ...
 		delay(500)		
-		virtualRobotSupport.doApplMove( "h" )
 	}
 	
-	fun doMove( move: String ){
-  		virtualRobotSupport.doApplMove( move )		//move in the application-language 
+	fun doMove(msgSplitted : List<String> ){
+		val cmd = msgSplitted[1].replace(")","")
+		virtualRobotSupport.domove( cmd )		
 	}
 	
 	while( state == "working" ){
 		var msg = channel.receive()
-		println("robotActor receives: $msg ")
-		val applMsg = AppMsg.create(msg)
- 		//println("robotActor applMsg.MSGID=${applMsg.MSGID} ")
-		when( applMsg.MSGID ){
+		println("robotActorCril receives: $msg ")
+		val msgSplitted = msg.split('(')
+		val msgFunctor  = msgSplitted[0]
+		//println("robotActorCril msgFunctor $msgFunctor ")
+		when( msgFunctor ){
 			"init"      -> doInit()
 			"end"       -> doEnd()
 			"sensor"    -> doSensor(msg)
 			"collision" -> doCollision(msg)
-			"move"      -> doMove(applMsg.CONTENT)
+			"move"      -> doMove(msgSplitted)
 			else        -> println("NO HANDLE for $msg")
 		}		
- 	}//while
- 	println("robotActor ENDS state=$state")
+ 	}
+ 	println("robotActorCril ENDS state=$state")
 }
 
  

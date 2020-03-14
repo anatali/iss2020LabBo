@@ -1,5 +1,5 @@
 package virtualRobotUsage
-//clientWenvTcpObj.kt
+//clientWenvTcpObj.kt in it.unibo.kotlinIntro\src\virtualRobotUsage\clientWenvTcpObj.kt
  
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -13,7 +13,7 @@ import org.json.JSONObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-    object clientWenvTcpObj {
+object clientWenvTcpObj {
         private var hostName = "localhost"
         private var port     = 8999
         private val sep      = ";"
@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
         private var inFromServer: BufferedReader? = null 
 
 
-         fun initClientConn( hostNameStr: String = hostName, portStr: String = "$port"  ) {
+        fun initClientConn( hostNameStr: String = hostName, portStr: String = "$port"  ) {
             hostName         = hostNameStr
             port             = Integer.parseInt(portStr)
              try {
@@ -35,24 +35,19 @@ import kotlinx.coroutines.Dispatchers
              }
         }
 
-/*
- 	Send a message wriiten in JSON on the TCP connection
-*/		
-         fun sendMsg(jsonString: String) {
-            val jsonObject = JSONObject(jsonString)
-            val msg = "$sep${jsonObject.toString()}$sep"
-            outToServer?.println(msg)
-            outToServer?.flush()
-        }
 
-/*
- 		Launch a coroutine that waits for data from the TCP connection
- */		
-		
+//Send a message wriiten in JSON on the TCP connection
+	fun sendMsg(jsonString: String) {
+		val jsonObject = JSONObject(jsonString)
+		val msg = "$sep${jsonObject.toString()}$sep"
+		outToServer?.println(msg)
+	}
+
+ 
+//Launch a coroutine that waits for data from the TCP connection
         private fun startTheReader(  ) {
 	    val scope : CoroutineScope = CoroutineScope( Dispatchers.Default )
         scope.launch {
-//				println("clientWenvTcp | startTheReader STARTING ")
                 while (true) {
                     try {
                          val inpuStr = inFromServer?.readLine()
@@ -84,10 +79,10 @@ import kotlinx.coroutines.Dispatchers
                 }
             }
          }//startTheReader
-}//clientTcp
+}//clientWenvTcpObj
 
 
-suspend fun doJobObject(   ) {
+suspend fun sendSomeCommand(   ) {
     clientWenvTcpObj.initClientConn( )
     var jsonString  : String
 	val time = 1300
@@ -106,7 +101,6 @@ fun main( ) = runBlocking {
     println("==============================================")
     println("PLEASE, ACTIVATE WENV ")
     println("==============================================")
-	//Create a new scope to launche
-    doJobObject(   )
+    sendSomeCommand(   )
     println("BYE")
 }
