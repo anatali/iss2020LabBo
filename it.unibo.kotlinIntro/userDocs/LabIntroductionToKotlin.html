@@ -196,18 +196,18 @@ loosing in performance.</li>
 <li><a href="#lambda">Using lambda</a></li>
 <li><a href="#clos">Closures, Callbacks and CPS</a></li>
 <li><a href="#async">Towards Asynchronous Programming</a></li>
-<li><a href="#coroutinesIntro">Introduction to coroutines</a></li>  
+<li><a href="#coroutinesIntro">Introduction to coroutines</a></li> 
+<li><a href="#dispatchers">Dispatchers</a></li>  
 <li><a href="#suspend">Suspending functions</a></li>
-<!-- <li><a href="#dispatch">Dispatchers</a></li> 
-<li><a href="#concur">Concurrency</a></li> -->
+<!-- <li><a href="#concur">Concurrency</a></li> -->
 <li><a href="#channels">Kotlin Channels</a></li>
 <li><a href="#kotlinprodcons">Producers-consumers in Kotlin</a></li>
 <li><a href="#actors">Kotlin Actors</a></li>
-<!--
-<li><a href="#sequence">Sequences (suspendable)</a></li>
-<li><a href="#classes">Classes</a></li>
--->
- 
+<li><a href="#sequences">Sequences (suspendable)</a></li>
+<!--<li><a href="#classes">Classes</a></li>-->
+
+<br/><br/>
+See <a href="https://kotlinlang.org/docs/kotlin-docs.pdf" target="web">Kotlin Language Documentation</a>
   
 </ol>
 </td>
@@ -1372,16 +1372,206 @@ The difference between a context and a scope is in their intended purpose:
 
 	<li>	
 	  like every scoping function (<tt>coroutineScope, withContext</tt>, etc) 
-	  provides its own scope with its own <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html" target="web">Job</a>
+	  provides its own scope with its own 
+	  <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html" target="web">Job</a>
 	  instance into the inner block of code it runs. <br/>
 	  By convention, they all wait for all the coroutines inside their block to complete before completing themselves, 
-	  thus enforcing the discipline of <m><k>structured concurrency</k></m>.
+	  thus enforcing the discipline of <m><k>structured concurrency</k></m>.<br/><br/>
 	</li>
 	</ul>
 
+	<li>
+All the <tt>coroutine builder</tt> functions (<bc>launch</bc>,<bc>async</bc>,...) accept as parameter one of the
+following main Dispatchers:
+
+<ul>
+<li><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-default.html" target="web">
+<em>Default</em></a>: for CPU-intensive tasks. It can use as many threads as CPU cores.</li>
+<li><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-i-o.html" target="web">
+<em>IO</em></a>: IO-intensive tasks  waiting for an answer from another system. 
+The size of this thread pool is 64.</li>
+<li><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/new-single-thread-context.html" target="web">
+<em>newSingleThreadContext</em></a> creates a new thread for the coroutine to run.</li>
+<li><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-unconfined.html" target="web">
+<em>Unconfined</em></a>: not confined -- will work with main thread (don’t use it unless you’re very sure of what you’re doing).</li>
+<li><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-main.html" target="web">
+<em>Main</em></a>: a special dispatcher that is included in <tt>UI</tt> related coroutine libraries.
+
+</ul>
+	
+	</li>
 
  	</ul>
 
+<h2><a id="dispatchers"/>Dispatchers</h2>
+The examples hereunder are reported in  <a href="../src/kotlindemo/demoDispatchers.kt" target="code">demoDispatchers.kt</a>  
+(project <m><ks>it.unibo.kotlinIntro</ks></m>).<br/>
+
+<center><table style="width:95%">
+<tr>
+<td "width:45%">
+<pre><kc>@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi</kc>
+fun testDispatchers() {
+runBlocking {
+   <k>launch {</k> <kc>//context of the parent runBlocking </kc> 
+   println("1) runBlocking | ${curThread()}")
+  }
+  <k>launch( <ks>Dispatchers.Unconfined</ks> )</k> { <kc>//in main thread </kc> 
+   println("2) Unconfined | ${curThread()}")
+  }
+  <k>launch( <ks>Dispatchers.Default</ks> )</k> { <kc>//DefaultDispatcher </kc> 
+   println("3) Default | ${curThread()}")
+  }
+  <k>launch( <ks>newSingleThreadContext("MyThr")</ks> )</k> { <kc>//new thread </kc> 
+   println("4) newSingleThreadContext | ${curThread()}")
+  }
+}
+}
+fun main(){
+    println("BEGINS CPU=$cpus ${curThread()}")
+	testDispatchers()
+	println("BYE")
+    println("ENDS ${curThread()}")
+}
+</pre> </td>
+<td><m></m>
+<!--
+-Dkotlinx.coroutines.debug JVM option https://play.kotlinlang.org/koans/overview
+-->
+ 
+<pre>
+<kc>//OUPUT</kc>
+BEGINS CPU=4 thread=main / nthreads=2
+2) Unconfined | thread=main / nthreads=2
+3) Default | thread=DefaultDispatcher-worker-1 / nthreads=5
+1) runBlocking | thread=main / nthreads=6
+4) newSingleThreadContext | thread=MyThr / nthreads=6
+BYE
+ENDS thread=main / nthreads=6
+</pre>
+</td>
+</tr>
+
+</tbody>	
+</table></center>
+
+<h3>Experiments with Dispatchers</h3>
+<ul>
+<li>Coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, 
+or let it run unconfined.</li>
+<li>Coroutines can be executed concurrently using a multi-threaded dispatcher.</li>
+<li>Coroutines can suspend on one thread and resume on another thread.</li>
+</ul>
+
+The examples hereunder are reported in  <a href="../src/kotlindemo/demoDispatcherPatterns.kt" target="code">demoDispatcherPatterns.kt</a>  
+(project <m><ks>it.unibo.kotlinIntro</ks></m>).<br/>
+
+<center><table style="width:95%">
+<tr>
+<td "width:45%">
+ <pre>
+fun action(i : Int) { println("hello $i ${curThread()}") }
+
+suspend fun launchWithDefault(i:Int, <ks>scope</ks>:CoroutineScope){
+    <ks>scope</ks>.launch( <k>Dispatchers.Default</k> ){ action(i) }
+}
+
+fun main() = runBlocking {
+	println("BEGINS CPU=$cpus ${curThread()}")
+    for (i in 1..6) <ks>launchWithDefault( i,this ) </ks>
+	println("ENDS ${curThread()}")	
+}
+</pre> </td>
+<td><h3>Dispatch.Default</h3>
+<m>The actions are executed by as many Threads as the CPU cores</m> 
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+hello 1 thread=DefaultDispatcher-worker-1 | nthreads=4
+hello 2 thread=DefaultDispatcher-worker-1 | nthreads=4
+hello 3 thread=DefaultDispatcher-worker-1 | nthreads=4
+hello 4 thread=DefaultDispatcher-worker-2 | nthreads=4
+hello 5 thread=DefaultDispatcher-worker-2 | nthreads=6
+hello 6 thread=DefaultDispatcher-worker-1 | nthreads=6
+ENDS thread=main | nthreads=7
+</pre> 
+</td>
+</tr>
+
+<tr>
+<td><pre>
+suspend fun launchAction(i:Int,scope:CoroutineScope){
+	launchIO(i,scope)
+}
+suspend fun launchIO( i:Int,<ks>scope</ks>:CoroutineScope){
+    <ks>scope</ks>.launch( <k>Dispatchers.IO</k> ){ action(i) }
+}
+fun main() = runBlocking {
+	println("BEGINS CPU=$cpus ${curThread()}")
+    for (i in 1..10) <ks>launchWithDefault( i,this ) </ks>
+	println("ENDS ${curThread()}")	
+}
+
+</pre> </td>
+<td><h3>Dispatch.IO</h3>
+<m>The actions are executed by a pool of (<tt>64</tt>) Threads.</m> 
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+hello 1 thread=DefaultDispatcher-worker-2 | nthreads=4
+hello 2 thread=DefaultDispatcher-worker-2 | nthreads=4
+hello 3 thread=DefaultDispatcher-worker-1 | nthreads=6
+hello 4 thread=DefaultDispatcher-worker-3 | nthreads=7
+hello 5 thread=DefaultDispatcher-worker-1 | nthreads=10
+hello 7 thread=DefaultDispatcher-worker-1 | nthreads=11
+hello 8 thread=DefaultDispatcher-worker-3 | nthreads=12
+hello 10 thread=DefaultDispatcher-worker-1 | nthreads=13
+hello 9 thread=DefaultDispatcher-worker-5 | nthreads=13
+ENDS thread=main | nthreads=13
+hello 6 thread=DefaultDispatcher-worker-6 | nthreads=13
+</pre> 
+</td>
+</tr>
+
+<tr>
+<td><pre>
+val th = newSingleThreadContext("My Thread")
+
+suspend fun launchAction(i:Int,scope:CoroutineScope){
+	launchSingle(i,scope)
+}
+suspend fun launchSingle(i:Int,scope:CoroutineScope){
+    scope.launch( th ){ action(i) }
+}
+
+fun main() = runBlocking {
+	println("BEGINS CPU=$cpus ${curThread()}")
+    for (i in 1..10) <ks>launchWithDefault( i,this ) </ks>
+	println("ENDS ${curThread()}")	
+}
+ 
+</pre> </td>
+<td><h3>Thread confinement </h3>
+<m>The actions are executed one a e time (in <tt>mutual exclusion</tt>).</m> 
+by a <bc>single thread</bc>
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+hello 1 thread=My Thread | nthreads=2
+hello 2 thread=My Thread | nthreads=2
+hello 3 thread=My Thread | nthreads=2
+ENDS thread=main | nthreads=2
+hello 4 thread=My Thread | nthreads=2
+hello 5 thread=My Thread | nthreads=2
+hello 6 thread=My Thread | nthreads=2
+</pre> 
+</td>
+</tr>
+
+
+</tbody>	
+</table></center>
 
 
 <h2><a id="suspend"/>Suspending functions</h2>
@@ -1571,12 +1761,16 @@ IO operation | Done, TIME=1011
 All jobs done; end1=kotlin.Unit end2=kotlin.Unit
 ENDS thread=main | nthreads=6
 </pre>
+
+See also
+<a href="https://kotlinlang.org/docs/reference/coroutines/composing-suspending-functions.html" target="web">Composing Suspending Functions</a>
 </td>
 </tr>
 
+
+
 </tbody>	
 </table></center>
-
 
  
 <h2><a id="channels"/>Kotlin Channels</h2>
@@ -2031,7 +2225,9 @@ from concurrent coroutines without external synchronization.<br/><br/>
 </li>
 
 
-<li>We will use also an Extension function on <tt>CoroutineScope</tt> that 
+<li>We will use also (in function <tt>sendManyMessages</tt>) an 
+<a href="https://kotlinlang.org/docs/reference/extensions.html" target="web">
+<bc>Extension function</bc></a> on <tt>CoroutineScope</tt> that 
 launches <tt>n</tt> coroutines all doing the same action <tt>k</tt> times and measures the completion time:
 <pre>
 suspend fun <k>CoroutineScope.manyRun</k>( action: <k>suspend () -> Unit</k> ) {
@@ -2054,19 +2250,22 @@ suspend fun <k>CoroutineScope.manyRun</k>( action: <k>suspend () -> Unit</k> ) {
 
 <m></m>
 <br/>
+This example is reported in  <a href="../src/kotlindemo/demoActorCounter.kt" target="code">demoActorCounter.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
+<br/><br/> 
+
 <center><table style="width:95%">
 <tbody>	
 
 <tr>
 <td>
 <pre>
-class <ks>CounterMsg</ks>(
+class <kc>CounterMsg</kc>(
 	val cmd:String,
-	val response: <k>CompletableDeferred<Int></k>?<ks>=null</ks>){
+	val response: <k>CompletableDeferred&ltInt></k>?<ks>=null</ks>){
 }
 
-fun <ks>createCounter</ks>( scope : CoroutineScope ) : SendChannel<CounterMsg>  {
- val counterActor = <k>scope.actor<CounterMsg></k> {
+fun <ks>createCounter</ks>(scope : CoroutineScope):SendChannel&ltCounterMsg>{
+ val counterActor = <k>scope.actor&lt;<kc>CounterMsg</kc>></k> {
 	var k = 0 	<kc>//actor state</kc>
 	for (<k>msg in channel</k>) { <kc>// iterate over incoming messages</kc>
 	   <m>if( k>0 && k % 10000 == 0  && msg.cmd != "GET" )
@@ -2082,31 +2281,32 @@ fun <ks>createCounter</ks>( scope : CoroutineScope ) : SendChannel<CounterMsg>  
  return counterActor
 }
 
-<k>suspend</k> fun <ks>getIntialValue</ks>(counterActor: SendChannel<CounterMsg>){
-    val initVal = CompletableDeferred<Int>()
-    <k>counterActor.send(CounterMsg("GET", initVal))</k>
+<k>suspend</k> fun <ks>getIntialValue</ks>(
+		<ks>counterActor</ks>: SendChannel&lt;CounterMsg>){
+    val initVal = CompletableDeferred&lt;Int>()
+    <ks>counterActor</ks>.<k>send</k>(<kc>CounterMsg</kc><ks>("GET", initVal))</ks>
     println("Counter INITIAL VALUE=${<k>initVal.await()</k>}")	
 }
 
-<k>suspend</k> fun <ks>sendManyMessages</ks>( 
-			scope : CoroutineScope, counterActor: SendChannel<CounterMsg>){
-	<ks>scope.manyRun</ks> {
-        <k>counterActor.send</k>( <ks>CounterMsg("INC")</ks> )
+<k>suspend</k> fun <ks>sendManyMessages</ks>( <ks>scope</ks> : CoroutineScope, 
+		<ks>counterActor</ks>: SendChannel&lt;CounterMsg>){
+	<ks>scope</ks>.<k>manyRun</k> {
+		<ks>counterActor</ks>.<k>send</k>( <kc>CounterMsg</kc><ks>("INC")</ks> )
     }
-    val finalVal = CompletableDeferred<Int>()
-    <k>counterActor.send</k>( )<ks>CounterMsg("GET", finalVal))</ks>)
+    val finalVal = CompletableDeferred&lt;Int>()
+    <ks>counterActor</ks>.<k>send</k>( <kc>CounterMsg</kc><ks>("GET", finalVal) )</ks>
     println("Counter FINAL VALUE= = ${<ks>finalVal</ks>.<k>await()</k>}")	
 }
 
 fun main() = <k>runBlocking</k>{
     println("BEGINS CPU=$cpus ${curThread()}")
 	
-	val counterActor = createCounter( this )	
-	getIntialValue( counterActor )
+	val <ks>counter</ks> = createCounter( this )	
+	getIntialValue( <ks>counter</ks> )
 	
-	sendManyMessages(this, counterActor)
+	sendManyMessages(this, <ks>counter</ks>)
 	
-	counterActor.close() <kc>//shutdown the actor</kc>
+	<ks>counter</ks>.close() <kc>//shutdown the actor</kc>
 
     println("ENDS ${curThread()}")
 }
@@ -2114,8 +2314,6 @@ fun main() = <k>runBlocking</k>{
 <m></m> 
 </td>
 <td>
-This example is reported in  <a href="../src/kotlindemo/demoActorCounter.kt" target="code">demoActorCounter.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
-<br/><br/> 
 <center><img src="./img/demoActorCounter.png" alt="demoActorCounter.png" width="50%"/></center>
 <pre>
 <kc>//OUTPUT</kc>
@@ -2142,7 +2340,121 @@ ENDS thread=main | nthreads=1
 <!--
 A simple actor can be written as a function, but an actor with a complex state  is better suited for a class.<br/>
 -->
- 
+
+<h2 id="sequences">SEQUENCES (SUSPENDABLE)</h2> 
+
+The examples hereunder are reported in  <a href="../src/kotlindemo/demoSequences.kt" target="code">demoSequences.kt</a>  (project <m><ks>it.unibo.kotlinIntro</ks></m>).
+<br/><br/>
+
+<center><table style="width:95%">
+<tbody>	
+ <tr>
+<td style="width:45%">
+<pre>
+data class Person(val name: String, val age: Int)
+
+val <ks>persons</ks> = listOf(
+    Person("Peter", 16),
+    Person("Alice", 23),
+    Person("Anna",  25),
+    Person("Anna",  28),
+    Person("Sonya", 39)
+)
+
+val names = <ks>persons</ks><k>.asSequence()</k>
+    .filter { it.age > 18 }
+    .map { it.name }
+    .distinct()
+    .sorted()
+    .toList()
+
+fun testSequence(){
+ 	println(names)
+}
+	
+fun main(){
+    println("BEGINS CPU=$cpus ${curThread()}")
+	<m>println( "work done in time= ${measureTimeMillis({testSequence()})}")</m>
+    println("ENDS ${curThread()}")
+}	
+</pre>
+</td>
+<td>
+<h3>Sequences</h3>
+<m>are a key abstraction to functional programming in Kotlin, a concept quite similar to <tt>Java 8</tt> <em>Streams</em>.
+They represent <bc>lazily evaluated collections</bc>.  
+See <a href="https://winterbe.com/posts/2018/07/23/kotlin-sequence-tutorial/" target="web">Kotlin Sequence Tutorial</a>.
+<br/><br/>
+</m>
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+[Alice, Anna, Sonya]
+work done in time= 0
+ENDS thread=main | nthreads=1
+</pre>
+<m>Sequences are <bc>stateless</bc> and they reset after being used.</m>
+</td>
+</tr>
+
+<tr id="yield">
+<td>
+<pre>
+val fiboSeq = sequence{
+    var a = 0
+    var b = 1 
+    <k>yield(1)</k>   <kc>//first</kc>
+    while (true) {
+        <k>yield(a + b)</k>   <kc>//next</kc>
+        val tmp = a + b
+        a = b
+        b = tmp
+    }
+}
+
+fun useFibonacciSeq(){
+   val v = <k>fibonacciSeq.elementAt(2)</k>
+    println("element at 2=$v")
+    val firstNums = <k>fibonacciSeq.take(5)</k>  <kc>//calculated later</kc> 
+    println("firstNums=${firstNums}")
+    println("firstNums=${<k>firstNums.joinToString()</k>}")	
+}
+
+fun testSequence(){
+ 	useFibonacciSeq()
+}
+fun main(){
+    println("BEGINS CPU=$cpus ${curThread()}")
+	<m>println( "work done in time= ${measureTimeMillis({testSequence()})}")</m>
+    println("ENDS ${curThread()}")
+}
+</pre> 
+</td>
+
+<td>
+<h3>Suspendable Sequences</h3>
+<m>A <em>suspend function</em> can suspend its execution while waiting for the execution of one or more computations to happen.
+<br/><br/>
+Instead, a <em>suspendable sequence</em> is a coroutine builder that can suspend between invocation by using the <bc>yield()</bc> function.
+<br/>
+</m>
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+element at 2=2
+firstNums=kotlin.sequences.TakeSequence@28ba21f3
+firstNums=1, 1, 2, 3, 5
+work done in time= 13
+ENDS thread=main | nthreads=1</pre>
+
+
+</m> 
+</td>
+</tr> 
+
+</tbody>	
+</table></center>
+
  
 <br/><br/> 
 </div>  

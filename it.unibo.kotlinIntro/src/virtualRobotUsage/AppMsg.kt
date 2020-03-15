@@ -7,9 +7,10 @@ open class AppMsg( val MSGID: String, val MSGTYPE: String,
                        val CONTENT: String, val SEQNUM: String  )  {
   companion object {
 	  private var n = 0;
+	  //Factory method
 	  fun create(MSGID: String, SENDER: String, RECEIVER: String, CONTENT: String="none", 
-                 MSGTYPE: String=AppMsgType.dispatch.toString() ) : AppMsg{
-		  return AppMsg(MSGID,MSGTYPE,SENDER,RECEIVER,CONTENT,"${n++}")
+                 MSGTYPE: AppMsgType=AppMsgType.dispatch ) : AppMsg{
+		  return AppMsg(MSGID,MSGTYPE.toString(),SENDER,RECEIVER,CONTENT,"${n++}")
 	  }
 	  fun create( msg: String ) : AppMsg{
 		  val msgSplitted = msg.split('(')

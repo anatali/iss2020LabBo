@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import java.io.InputStreamReader
 import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlinx.coroutines.channels.SendChannel
 
  //A support for using the virtual robot
  
@@ -21,8 +22,12 @@ object virtualRobotSupport {
         private val sep      = ";"
         private var outToServer : PrintWriter?     = null
  	
+        private var targetRobot : SendChannel<String> = robotActor
         private val applCmdset = setOf("w","s","a","d","z","x","r","l","h"  )
 	
+	fun setRobotTarget( robot : SendChannel<String> ){
+		targetRobot = robot
+	}
 	fun initClientConn( hostNameStr: String = hostName, portStr: String = "$port"  ) {
             hostName         = hostNameStr
             port             = Integer.parseInt(portStr)
@@ -66,7 +71,21 @@ object virtualRobotSupport {
             outToServer?.flush()
         }
 	
-
+suspend fun sendMsgToRobot(msg : String){
+	if( targetRobot == robotActor ) forward( msg )
+    else sendJSON_message("sensor($msg)")
+}
+suspend private fun sendJSON_message(msg : String){
+	println("virtualRobotSupport | sendJSON_message $msg to $targetRobot")
+	targetRobot.send( msg  ) 
+}
+suspend private fun forward( msgContent : String ){
+	println("virtualRobotSupport | forward $msgContent to $targetRobot")
+	val dataMsg   = AppMsg.create("sensor","vr","robotactor","$msgContent")
+	targetRobot.send( dataMsg.toString() )  
+}
+	
+	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
         private fun startSensorObserver( clientSocket : Socket ) {
@@ -88,15 +107,17 @@ object virtualRobotSupport {
                                 val jsonArg   = jsonObject.getJSONObject("arg")
                                 val sonarName = jsonArg.getString("sonarName")
                                 val distance  = jsonArg.getInt("distance")
-								val dataMsg   = AppMsg.create("sensor","vr","robotactor","$sonarName-$distance")
-								robotActor.send( dataMsg.toString() )  
+//								sendJSON_message("sensor($sonarName-$distance)")
+//								forward( "$sonarName-$distance" )
+								sendMsgToRobot( "$sonarName-$distance" )
  
                             }
                             "collision" -> {
                                 val jsonArg    = jsonObject.getJSONObject("arg")
                                 val objectName = jsonArg.getString("objectName")
-								val dataMsg    = AppMsg.create("sensor","vr","robotactor","collision-$objectName")
-								robotActor.send( dataMsg.toString() )
+//								sendJSON_message("sensor(collision-$objectName)")
+//								forward( "collision-$objectName" )
+								sendMsgToRobot( "collision-$objectName" )
                              }
                         }
                     } catch (e: IOException) {

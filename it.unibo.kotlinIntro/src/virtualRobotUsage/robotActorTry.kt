@@ -18,7 +18,7 @@ val robotActorTry  : SendChannel<String>	= CoroutineScope( Dispatchers.Default )
 	
 	fun doInit() = virtualRobotSupport.initClientConn() 
 	fun doEnd()  = { state = "end"  }
-	fun doSensor(msg : String){ println("robotActorTry receives $msg") }
+	fun doSensor(msg : String){ println("robotActorTry should handle: $msg") }
 	
 	suspend fun doCollision(msg : String){
 		println("robotActorTry handles $msg going back a little");
@@ -34,7 +34,7 @@ val robotActorTry  : SendChannel<String>	= CoroutineScope( Dispatchers.Default )
 	
 	while( state == "working" ){
 		var msg = channel.receive()
-		println("robotActorTry receives: $msg ")
+		println("robotActorTry receives: $msg ") //
 		val msgSplitted = msg.split('(')
 		val msgFunctor  = msgSplitted[0]
 		//println("robotActorTry msgFunctor $msgFunctor ")

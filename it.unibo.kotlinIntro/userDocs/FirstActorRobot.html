@@ -176,7 +176,14 @@ Let us report, as an example,  an actor written in Kotlin that 'provides service
 <m>This file is also included in project <i>it.unibo.kotlinintro</i>, directory <i>virtualRobotUsage</i>.</m>
 </td>
 <td>
-<center><img src="./img/robotActorTry.png" alt="robotActorTry" width="100%" height="60%"></center><br/>
+<center><img src="./img/robotActorTry.png" alt="robotActorTry" width="100%" height="60%"></center>
+<m>
+The <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport</a> 
+owns a <bc>reference</bc> to the <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor</a>
+and sends to it <tt>JSON</tt> messages,
+whose content gives infornmation about a <tt>collision</tt> (or a sonar value).
+</m>
+
  </td>
 </tr>
 </tbody>	
@@ -230,6 +237,9 @@ can be modelled as a <a href="https://en.wikipedia.org/wiki/Finite-state_machine
 </table></center>
 <br/>
 Each <bc>state</bc> is mapped into a <bc>function</bc> whose body specifies the <bc>actions</bc> to be executed in that state.
+<br/><br/>
+An example of using the <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> can be found in 
+<a href="../src/virtualRobotUsage/robotActorTryUsage.kt" target="code">robotActorTryUsage.kt</a>
 
 <h2>Application messages</h2>
 The <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> is a active entity that works as a message-driven 'service'.
@@ -251,13 +261,39 @@ msg( MSGID, MSGTYPE, SENDER, RECEIVER, CONTENT, SEQNUM )
 </pre>
 </td>
 <td>
-<h3>Message types</h3>
-We distinguish among different types of messages: 
+We distinguish among different application-message types:
 <pre>
 enum class AppMsgType{ <k>event, dispatch, request, reply, invitation</k> }
 </pre>
+ </td>
+</tr>
+</tbody>	
+</table>
+</center>
+<br/>
+
+<h3>Application message types</h3>
+ 
+<center><table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:60%">
+From the point of view of an application designer, we say that:
+ 
+<ul>
+<li><bc>Dispatch</bc>: a message '<i>fire and forget</i>': the sender does not expect any answer.</li>
+<li><bc>Request</bc>: the sender expects an <tt>answer</tt>.</li>
+<li><bc>Invitation</bc>: the sender expects an <tt>ack</tt>.</li>
+<li><bc>Event</bc>: the sender '<i>emits information</i>' without specifying any receiver. </li>
+</ul>
+
+The class <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg.kt</a> provides two functions <m><ks>AppMsg.create(...)</ks></m> 
+that can be used as <a href="https://en.wikipedia.org/wiki/Factory_method_pattern" target="web">Factory methods</a>.
+
+</td>
+<td>
 We have alrady introduced our symbolic representation for most of them:<br/><br/>
-<center><img src="./img/msgTypes.png" alt="msgTypes" width="50%" ></center><br/>
+<center><img src="./img/msgTypes.png" alt="msgTypes" width="80%" ></center><br/>
  </td>
 </tr>
 </tbody>	
@@ -266,7 +302,7 @@ We have alrady introduced our symbolic representation for most of them:<br/><br/
 <br/>
 
 Now, if we send to the actor a <tt>AppMsg</tt>-representation String, 
-our robot actor can distiguish the input message by looking at its <tt>MSGID</tt>:
+it can distiguish the input message by looking at its <tt>MSGID</tt>:
 
 <br/><br/>
 <center><table style="width:98%">
@@ -279,11 +315,10 @@ our robot actor can distiguish the input message by looking at its <tt>MSGID</tt
 		<m><kc>//msg : msg(MSGID,MSGTYPE,SENDER,RECEIVER,CONTENT,SEQNUM)</kc></m>	
 		val <ks>applMsg</ks> = <k>AppMsg.create(msg)</k> <kc>//Factory method</kc>
   		when( <ks>applMsg</ks>.<k>MSGID</k> ){
-			"<ks>init</ks>"      -> doInit()
-			"<ks>end</ks>"       -> doEnd()
-			"<ks>sensor</ks>"    -> doSensor(msg)
-			"<ks>collision</ks>" -> doCollision(msg)
-			"<ks>move</ks>"      -> doMove(<k>applMsg.CONTENT</k>)
+			"<k>init</k>"      -> doInit()
+			"<k>end</k>"       -> doEnd()
+			"<k>sensor</k>"    -> doSensor(msg)
+			"<k>move</k>"      -> doMove(<k>applMsg.CONTENT</k>)
 			else        -> println("NO HANDLE for $msg")
 		}		
  	}//while
@@ -293,7 +328,13 @@ our robot actor can distiguish the input message by looking at its <tt>MSGID</tt
 The new version of our robot actor based on <tt>AppMsg</tt> can be found in:
 <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor.kt</a><br/><br/>
 
-<center><img src="./img/robotActor.png" alt="robotActor" width="100%" ></center>
+<center><img src="./img/robotActor.png" alt="robotActor" width="100%" ></center><br/> 
+<m>
+The <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport</a> 
+sends to the <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor</a>
+messages of type <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg</a>,
+whose content gives infornmation about a <tt>collision</tt> (or a sonar value).
+</m>
 </td>
 </tr>
 </tbody>	
@@ -305,10 +346,10 @@ The new version of our robot actor based on <tt>AppMsg</tt> can be found in:
 
 The class <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg.kt</a>  defines from now on a standard reference
 for our applications. In this way, we assure that each message will contain, besides its <tt>MSGID</tt> and some <tt>CONTENT</tt>, 
-also the name of the sender (actor) and the name of the receiver (actor).
+also a <tt>name</tt> for the sender (actor) and a name for the receiver (actor).
 <br/><br/>
-As regards the message <tt>CONTENT</tt>, its structure is of course decided by the specific application. In our case we state
-that:
+As regards the message <tt>CONTENT</tt>, its structure is of course matter of the specific application. In our case, let us introduce
+our specific <bc>robot-move language</bc>:
 <ul>
 <li> <k>w</k>: means '<i>go forward forever</i>'</li>
 <li> <k>s</k>: means '<i>go backward forever</i>'</li>
@@ -319,27 +360,42 @@ that:
 <li> <k>r</k>: means '<i>rotate right 90</i>'</li>
 </ul>
 
-<h3>Interacting with the  <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor.kt</a></h3>
 
 
-
-Let us introduce a set of application messages:
+<h3>An example</h3>
+ 
+An example of using the <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor.kt</a> can be found in 
+<a href="../src/virtualRobotUsage/robotActorUsage.kt" target="code">robotActorUsage.kt</a>.
+In this example, we first introduce a set of application messages:
 <pre>
-val initMsg         = AppMsg.create("init","main","robotactor")
-val moveForwardMsg  = AppMsg.create("move","main","robotactor","w") 
-val haltRobotMsg    = AppMsg.create("move","main","robotactor","h") 
+val initMsg			= AppMsg.create(<k>"init"</k>,		"main","robotactor")		<kc>//content="none" by default</kc>
+val moveForwardMsg	= AppMsg.create(<k>"move"</k>,	"main","robotactor",		<k>"w"</k>,<k>AppMsgType.dispatch</k>) 
+val haltRobotMsg		= AppMsg.create(<k>"move"</k>,	"main","robotactor",		<k>"h"</k>) 
 </pre>
-An example of interaction with the is:
+
+Afterwards, we define a method <tt>forward</tt> to send messages of type <bc>dispatch</bc> (<tt>AppMsgType.dispatch</tt>)  to the robot-actor:
+
 <pre>
+suspend fun forward(  msg: AppMsg ){
+	robotActor.send( msg.toString()  )
+}
+...
 forward( initMsg )
 ...
 forward( moveForwardMsg )
-...
+delay(1000)
 forward( haltRobotMsg )
 </pre>
 
-
-Moreover, let us delegate to the robot support the task of translating the application level in the  <em>cril</em>  and viceversa.
+ 
+The task of translating the 'application level language' into  <em>cril</em>  and viceversa is delegated to
+the <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a>.
+In this way, the <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor.kt</a> is made independent
+of the specific concrete robot to be used; 
+the  role of the <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a>
+as a <a href="https://en.wikipedia.org/wiki/Translator_(computing)" target="web"><bc>language translator</bc></a> 
+(see the functions <tt>doApplMove</tt> and <tt>sendMsgToRobot</tt>) can be viewed as a sort of
+<a href="https://en.wikipedia.org/wiki/Adapter_pattern" target="web"><bc>adapter</bc></a>  in the message-passing world.
 
 <br/>
 <h2>Towards more complex behavior</h2>
@@ -351,7 +407,7 @@ target="web">Application0</a>. For example,we can say that:
 <hr/>
 <i>the robot starts to explore in a systematic and autonomous way the room after receiving the command '<k>explore</k>' </i>.
 <hr/>
-The problem to face now is the design and development of a behavior that msut be both <bc>proactive</bc> (the robot must perform
+As <em>analysts</em>, we can say that the problem to face now is the design and development of a behavior that msut be both <bc>proactive</bc> (the robot must perform
 the exploration activity in autonomous way) and <bc>reactive</bc> 
 (while exploring, the robot should not lose its capability to handle other messages, for example <k>end</k> and <k>collision</k>).
 

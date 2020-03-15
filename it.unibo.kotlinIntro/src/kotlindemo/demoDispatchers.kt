@@ -13,6 +13,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.channels.Channel
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 fun testDispatchers() {
     runBlocking {
         launch { //context of the parent runBlocking
@@ -35,6 +37,5 @@ fun testDispatchers() {
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
     testDispatchers()
-    println("BYE")
     println("ENDS ${curThread()}")
 }

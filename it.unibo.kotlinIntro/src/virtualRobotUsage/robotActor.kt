@@ -15,13 +15,16 @@ val robotActor  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).ac
 	
 	fun doInit() = virtualRobotSupport.initClientConn() 
 	fun doEnd()  = { state = "end"  }
-	fun doSensor(msg : String){ println("robotActor receives $msg") }
-	
-	suspend fun doCollision(msg : String){
-		println("robotActor handles $msg going back a little");
+		
+	suspend fun doCollision(msg : AppMsg){
+		println("robotActor handles ${msg.CONTENT} by going back a little");
 		virtualRobotSupport.doApplMove( "s" )
-		delay(500)		
+		delay(100)		
 		virtualRobotSupport.doApplMove( "h" )
+	}
+	suspend fun doSensor(msg : AppMsg){
+		println("robotActor handles: ${msg.CONTENT}")
+		if( msg.CONTENT.startsWith("collision") ) doCollision(msg)
 	}
 	
 	fun doMove( move: String ){
@@ -36,9 +39,8 @@ val robotActor  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).ac
 		when( applMsg.MSGID ){
 			"init"      -> doInit()
 			"end"       -> doEnd()
-			"sensor"    -> doSensor(msg)
-			"collision" -> doCollision(msg)
-			"move"      -> doMove(applMsg.CONTENT)
+			"sensor"    -> doSensor(applMsg)
+ 			"move"      -> doMove(applMsg.CONTENT)
 			else        -> println("NO HANDLE for $msg")
 		}		
  	}//while

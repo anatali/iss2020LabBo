@@ -5,21 +5,23 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.delay
 
 val initMsg         = AppMsg.create("init","main","robotactor")
-val endMsg          = AppMsg.create("end","main","robotactor")
-val moveForwardMsg  = AppMsg.create("move","main","robotactor","w") 
+val endMsg          = AppMsg.create("end", "main","robotactor")
+val moveForwardMsg  = AppMsg.create("move","main","robotactor","w", AppMsgType.dispatch) 
 val moveBackwardMsg = AppMsg.create("move","main","robotactor","s") 
 val haltRobotMsg    = AppMsg.create("move","main","robotactor","h") 
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-suspend fun forward(  msg: AppMsg ){
-	robotActor.send( msg.toString()  )
+suspend fun forward(  msg : AppMsg ){
+ 	robotActor.send( msg.toString()  )
 }
  
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 suspend fun sendCommands(   ) {
-    forward( initMsg )
+	virtualRobotSupport.setRobotTarget( robotActor  ) //Configure - Inject
+
+	forward( initMsg )
     for (i in 1..2) {
 		 forward( moveForwardMsg )
          delay(1000)
