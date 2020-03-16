@@ -284,7 +284,7 @@ From the point of view of an application designer, we say that:
 <li><bc>Dispatch</bc>: a message '<i>fire and forget</i>': the sender does not expect any answer.</li>
 <li><bc>Request</bc>: the sender expects an <tt>answer</tt>.</li>
 <li><bc>Invitation</bc>: the sender expects an <tt>ack</tt>.</li>
-<li><bc>Event</bc>: the sender '<i>emits information</i>' without specifying any receiver. </li>
+<li><bc>Event</bc>: the sender '<i>emits information</i>' without specifying any receiver (<tt>RECEIVER=none</tt>). </li>
 </ul>
 
 The class <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg.kt</a> provides two functions <m><ks>AppMsg.create(...)</ks></m> 
@@ -345,9 +345,33 @@ whose content gives infornmation about a <tt>collision</tt> (or a sonar value).
 <h3>Towards standards in messaging</h3>
 
 The class <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg.kt</a>  defines from now on a standard reference
-for our applications. In this way, we assure that each message will contain, besides its <tt>MSGID</tt> and some <tt>CONTENT</tt>, 
+for our applications. In this way, we assure that each message will contain, besides its <tt>MSGID</tt> and some <tt>CONTENT</tt>,
 also a <tt>name</tt> for the sender (actor) and a name for the receiver (actor).
-<br/><br/>
+<hr/>
+<div class="remark">
+From now on, we are interested in (at least) three 'layers' of standards:
+<ol>
+<li>standard in <em>message semantics</em>: at the moment we will make reference to our <tt>enum class AppMsgType</tt>. </li>
+<li>standard in <em>message content</em>: this level is matter of the specific application.</li>
+<li>standard in message-communication <em>protocols</em> with particuar reference to:
+	<ul>
+	<li> 
+	 <a href="https://www.deviceplus.com/arduino/arduino-communication-protocols-tutorial/" target="web">Arduino protcols</a> (mainly
+	 <a href="https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter" target="web">UART </a>).
+	 </li>	
+	<li>point-to-point, two-way protocols like <a href="https://en.wikipedia.org/wiki/User_Datagram_Protocol" target="web">UDP</a>,	
+	<a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol" target="web">TCP</a>,
+	<a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" target="web">HTTP</a> </li>
+	<li>publish-subscribe protocols, like <a href="https://en.wikipedia.org/wiki/MQTT" target="web">MQTT</a></li>
+	<li><a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol" target="web">CoAP</a>, as 
+	a lightweight <a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="web">REST</a>  protocol 
+	for <a href="https://en.wikipedia.org/wiki/Machine_to_machine" target="web">M2M interaction</a> 
+ 	</li>
+	</ul>
+	 </li>
+</ol>
+</div>
+<hr/>
 As regards the message <tt>CONTENT</tt>, its structure is of course matter of the specific application. In our case, let us introduce
 our specific <bc>robot-move language</bc>:
 <ul>
@@ -398,6 +422,7 @@ as a <a href="https://en.wikipedia.org/wiki/Translator_(computing)" target="web"
 <a href="https://en.wikipedia.org/wiki/Adapter_pattern" target="web"><bc>adapter</bc></a>  in the message-passing world.
 
 <br/>
+<!--
 <h2>Towards more complex behavior</h2>
 The <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> implements the business logic
 related to each message it can receive. However, since it is an active entity, we can now extend its behavior  
@@ -410,7 +435,7 @@ target="web">Application0</a>. For example,we can say that:
 As <em>analysts</em>, we can say that the problem to face now is the design and development of a behavior that msut be both <bc>proactive</bc> (the robot must perform
 the exploration activity in autonomous way) and <bc>reactive</bc> 
 (while exploring, the robot should not lose its capability to handle other messages, for example <k>end</k> and <k>collision</k>).
-
+-->
 <br/><br/>
 
 <!--

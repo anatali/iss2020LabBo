@@ -204,7 +204,19 @@ loosing in performance.</li>
 <li><a href="#kotlinprodcons">Producers-consumers in Kotlin</a></li>
 <li><a href="#actors">Kotlin Actors</a></li>
 <li><a href="#sequences">Sequences (suspendable)</a></li>
-<li><a href="#classes">Classes and Objects in Kotlin</a></li> 
+<li><a href="#classes">Classes and Objects in Kotlin</a>
+	<ul>
+	<li><a href="#kotlinObject">Kotlin object</a> </li>
+	<li><a href="#kotlinclass">Kotlin class</a></li>
+	<li><a href="#propdeleg">Property delegation</a></li>
+	<li><a href="#dataclass">data class</a></li>
+	<li><a href="#companionobj">companion object</a></li>
+	<li><a href="#enumclass">enum class</a></li>
+	<li><a href="#ill">init, lateinit, lazy</a></li>
+	<li><a href="#inheritance">Inheritance</a></li>
+	<li><a href="#sealedclass">Sealed class</a></li>
+	</ul>
+</li> 
 
 <br/><br/>
 See <a href="https://kotlinlang.org/docs/kotlin-docs.pdf" target="web">Kotlin Language Documentation</a>
@@ -2478,10 +2490,10 @@ public class SingleCounter {
 </pre> 
 </td>
 <td>
-<h3>Java to Kotlin </h3>
+<h3  id="kotlinObject">Java to Kotlin: object </h3>
 The equivalent in Kotlin is:
 <pre>
-<k>object</k> SingleCounter {
+<k>object</k> <ks>SingleCounter</ks> {
     private var counter = 0
     fun value(): Int { return counter }
     fun inc() { counter++ }
@@ -2498,21 +2510,21 @@ The equivalent in Kotlin is:
 <tr>
 <td><h3>Using Kotlin Object</h3>
 <pre>
-fun p2( c:SingleCounter ) : Int { 
+fun p2( c:<ks>SingleCounter</ks> ) : Int { 
 	return c.value()*c.value() }
 
 fun testObject(){
-    val c = SingleCounter
-    val d = SingleCounter
+    val c = <ks>SingleCounter</ks>
+    val d = <ks>SingleCounter</ks>
     for( i in 1..3 ) c.inc()
-    val v = p2( SingleCounter )
+    val v = p2( <ks>SingleCounter</ks> )
     println("testObject | 
 	 c=${<k>c.value()</k>} d=${<k>d.value()</k>} 
-	 obj=${<k>SingleCounter.value()</k>} v=$v")
-    <k>SingleCounter.reset()</k>
+	 obj=${<k><ks>SingleCounter</ks>.value()</k>} v=$v")
+    <k><ks>SingleCounter</ks>.reset()</k>
     println("testObject | 
 	  c=${<k>c.value()</k>} d=${<k>d.value()</k>} 
-	  obj=${<k>SingleCounter.value()</k>}")	
+	  obj=${<k><ks>SingleCounter</ks>.value()</k>}")	
 }
 
 fun main(){
@@ -2565,7 +2577,7 @@ The initializer, getter and setter are optional.
 </pre> 
 
 </td>
-<td><h3>Java to Kotlin </h3>
+<td><h3 id="kotlinclass">Java to Kotlin: class </h3>
 
 <m>The result of automatic conversion done by the <a href="https://www.jetbrains.com/idea/" target="web">IntelliJ IDEA</a> is:</m>
 <center><img src="./img/PersonKotlin.png" alt="PersonKotlin" width="100%" ></center>
@@ -2590,7 +2602,7 @@ This is why we can use
 
 
 <tr>
-<td><h3>Using Kotlin Class</h3>
+<td><h3 id="kotlinclassuse">Using Kotlin Class</h3>
 <pre>
 <k>class</k> Person(val name: String) { <kc>//Primary constructor</kc>
     var age : Int = 0     		<kc>//Kotlin property</kc>
@@ -2677,7 +2689,7 @@ or if we use the default accessor implementation.</m>
 
 <tr>
 <td>
-<h3><a href="https://kotlinlang.org/docs/reference/delegated-properties.html" target="web"><k>Property delegation</k></a></h3>
+<h3 id="propdeleg"><a href="https://kotlinlang.org/docs/reference/delegated-properties.html" target="web"><k>Property delegation</k></a></h3>
 <pre>
 class ExampleDelegate {
     var p: String  <k>by</k> <ks>Delegate</ks>()  <kc>//delegated property</kc>
@@ -2737,7 +2749,7 @@ public void setName(String name) { this.name = name; }
 </tr>
 
 <tr>
-<td><h3>Kotlin data class</h3>
+<td><h3 id="dataclass">Kotlin data class</h3>
 <pre>
 <k>data class</k> PersonData(val name: String) { <kc>//Primary constructor</kc>
     var age : Int = 0     		<kc>//public</kc>
@@ -2779,7 +2791,7 @@ ENDS thread=main | nthreads=1
 
 <tr>
 <td>
-<h3>Companion object</h3>
+<h3 id="companionobj">Companion object</h3>
 <pre>
 class PersonCO <k>private constructor</k>( val name: String ){
     var age : Int = 0
@@ -2864,86 +2876,11 @@ ENDS thread=main | nthreads=1
 </pre>
  </td>
 </tr>
-<!--
-<tr>
-<td><pre>
-class Person(val name: String) {
-  var age : Int = 0
-  var married = false
-    set( value ){
-      if(age < 14) println("WARNING:too young for marriage")
-      //else married = value  //Stack overflow
-      }
-  val isAdult: Boolean
-        get(){ return age >= 18} //custom getter
-}
-
-fun main(){
-    val p = Person("Bob")
-    p.age = 10
-    p.married = true
-    println( "name=${p.name}, age=${p.age}, 
-	   married=${p.married} adult=${p.isAdult} ")
-}
-</pre> 
-</td>
-<td><m><em>Custom setter accessor</em>: it is called every time we assign a value to the property.</m> 
-<pre>
-//OUTPUT
-WARNING: too young for marriage
-name=Bob, age=10, married=false adult=false 
-</pre>
-
-<m><em>Problem</em>: if we try to set <tt>married = value</tt> we generate <bc>Stack overflow</bc></m> 
-</td>
-</tr>
-
-
-
-
-<tr>
-<td><pre>
-class Person(val name: String) {
-  var age : Int = 0
-  var married = false
-    set( value ){
-      if(age<14) println("WARNING: too joung for marriage")
-      else field = true   
-    }
-  val isAdult: Boolean
-        get(){ return age >= 18} //custom getter
-}
-
-fun main(){
-    val p = Person("Bob")
-    p.age = 22
-    p.married = true
-    println( "name=${p.name}, age=${p.age}, 
-		married=${p.married} adult=${p.isAdult} ")
-}
-</pre> </td>
-<td>
-<m><h3 id="backingfield">Backing field</h3>
-Fields cannot be declared directly in Kotlin classes. 
-However, when a property needs a backing field, Kotlin provides it automatically.
-A <bc>backing field</bc>  is a field <i>generated</i> by the compiler if we reference it explicitly 
-or if we use the default accessor implementation.</m>
-
-<pre>
-//OUTPUT
-name=Bob, age=22, married=true adult=true 
-</pre>
-<br/>
-<m>
-The special identifier <bc>field</bc> is used to access the <tt>backing field</tt></m>
  
- </td>
-</tr>
--->
 
 <tr>
 <td>
-<h3><a href="https://kotlinlang.org/docs/reference/enum-classes.html">Enum Classes</a></h3>
+<h3 id="enumclass"><a href="https://kotlinlang.org/docs/reference/enum-classes.html">Enum Classes</a></h3>
 <pre>
 enum class <ks>Color</ks>(var r: Int, val g: Int, val b: Int){ <kc>//properties</kc>
 <kc>//Property values for each constant</kc>
@@ -2982,7 +2919,7 @@ ENDS thread=main | nthreads=1
 </tr>
 
 <tr>
-<td><h3>About initialization</h3>
+<td><h3 id="ill">About initialization</h3>
 <pre>
 <k>enum</k> class <ks>Origin</ks>{
     asia, africa, europa, america, australia
@@ -3075,7 +3012,7 @@ it can't be compiled to a final field, thus no immutability can be guaranteed.</
 
 <tr>
 <td>
-<h3>Inheritance</h3>
+<h3 id="inheritance">Inheritance</h3>
 <pre>
 <k>open class</k> PersonILL(val name:String, ...
 
@@ -3131,7 +3068,7 @@ Therefore we can properly hold state in abstract classes
 
 <tr>
 <td>
-<h3>Sealed class</h3>
+<h3 id="sealedclass">Sealed class</h3>
 <pre>
 <k>sealed class</k> <ks>Expr</ks>{
     <k>class</k> <ks>Num</ks>( val value:Int):Expr()
