@@ -2579,7 +2579,6 @@ Note that:
 <li>properties that stores a value</li>
 <li>properties with <bc>custom accessors</bc> that calculates values at each access</li>
 <li>Properties are defined by their accessors. A property does not need to include any field at all. </li>
-<li></li>
 <li>When we define custom accessors that are not using any field, then the field is not generated.
 This is why we can use 
 <a href="https://kotlinlang.org/docs/reference/delegated-properties.html" target="web"><bc>property delegation</bc></a>.
@@ -2597,11 +2596,12 @@ This is why we can use
     var age : Int = 0     		<kc>//Kotlin property</kc>
        <k>set</k>( value ){
 	      if(value < 0) println("ERROR: age value wrong")
+		  else field = value	<bc>//backing field</bc>
       }
    var married = false   		<kc>//Kotlin property</kc>
       <k>set</k>( value ){
       if(value && age < 14) println("WARNING:too young for marriage")
-		<kc>//else married = value  //Stack overflow</kc>
+		<kc>//else married = value  //WRONG!! Stack overflow</kc>
 		else <k>field =</k> value
       }
    val isAdult: Boolean
@@ -2659,6 +2659,18 @@ work done in time= 2
 ENDS thread=main | nthreads=1
 </pre>
 
+<h3 id="backingfield">Backing field</h3>
+<ul>
+<li>Fields cannot be declared directly in Kotlin classes.
+<m>However, when a property needs a backing field, Kotlin provides it automatically.</m></li>
+<li>A <em>backing field</em>  is a field <i>generated</i> by the compiler <m>if we reference it explicitly 
+or if we use the default accessor implementation.</m>
+</li>
+<li>The special identifier <bc>field</bc> is used to access the backing field.</li>
+</ul>
+ 
+
+ 
 
 </td>
 </tr>
@@ -2671,14 +2683,16 @@ class ExampleDelegate {
     var p: String  <k>by</k> <ks>Delegate</ks>()  <kc>//delegated property</kc>
 }
 class <ks>Delegate</ks> {
-	private var myval : String = "delegateInitialValue"
-    operator fun <k>getValue</k>(thisRef: Any?, property: KProperty<*>): String {
-		println("... object $thisRef delegates '${property.name}' to $this!")
-        return myval
+	private var <ks>myval</ks> : String = "delegateInitialValue"
+    operator fun <k>getValue</k>(
+			thisRef: Any?, property: KProperty<*>): String {
+	   println("... object $thisRef delegates '${property.name}' to $this!")
+	   return <ks>myval</ks>
     } 
-    operator fun <k>setValue</k>(thisRef: Any?, property: KProperty<*>, value: String) {
-		println("... $this assigns $value to '${property.name}' in $thisRef.")
-		myval = value
+    operator fun <k>setValue</k>(
+			thisRef: Any?, property: KProperty<*>, value: String) {
+	   println("... $this assigns $value to '${property.name}' in $thisRef.")
+	  <ks> myval = value</ks>
     }
 }
 
@@ -2798,7 +2812,7 @@ class PersonCO <k>private constructor</k>( val name: String ){
 		}
 	}<kc>//Info</kc>
     
-	<k>object NameComparator</k> <ks>: Comparator&lt;PersonCO></ks>{ <kc>//Implements</kc>
+	<k>object NameComparator</k><ks>:Comparator&lt;PersonCO></ks>{<kc>//Interface</kc>
 		<k>override</k> fun <ks>compare</ks>(p1:PersonCO, p2:PersonCO):Int =
 				p1.name.compareTo(p2.name)
 	}<kc>//NameComparator</kc>
@@ -2819,7 +2833,7 @@ fun testCompanion(){
 
 fun main(){
     println("BEGINS CPU=$cpus ${curThread()}")
-    println( "work done in time= ${measureTimeMillis(  { testCompanion() } )}"  )
+    println( "work done in time= ${measureTimeMillis({testCompanion()})}")
     println("ENDS ${curThread()}")
 }
 </pre> </td>
@@ -2850,7 +2864,7 @@ ENDS thread=main | nthreads=1
 </pre>
  </td>
 </tr>
-
+<!--
 <tr>
 <td><pre>
 class Person(val name: String) {
@@ -2912,7 +2926,8 @@ fun main(){
 <m><h3 id="backingfield">Backing field</h3>
 Fields cannot be declared directly in Kotlin classes. 
 However, when a property needs a backing field, Kotlin provides it automatically.
-A <bc>backing field</bc>  is a field <i>generated</i> by the compiler if we reference it explicitly or if we use the default accessor implementation.</m>
+A <bc>backing field</bc>  is a field <i>generated</i> by the compiler if we reference it explicitly 
+or if we use the default accessor implementation.</m>
 
 <pre>
 //OUTPUT
@@ -2924,27 +2939,28 @@ The special identifier <bc>field</bc> is used to access the <tt>backing field</t
  
  </td>
 </tr>
+-->
 
 <tr>
-<td><pre>
-enum class Color( //properties
-    var r: Int, val g: Int, val b: Int){
-//Property values for each constant
-    RED(255,0,0),
-    YELLOW(255,255,0) //declares its own anonymous class
-    { override fun toString():String{
-				return "YELLOW_COLOR"} },
-    GREEN(0,255,0), BLUE(0,0, 255)
-    ; //semicolon is is mandatory if define methods
+<td>
+<h3><a href="https://kotlinlang.org/docs/reference/enum-classes.html">Enum Classes</a></h3>
+<pre>
+enum class <ks>Color</ks>(var r: Int, val g: Int, val b: Int){ <kc>//properties</kc>
+<kc>//Property values for each constant</kc>
+	RED(255,0,0) <k>,</k> 
+	YELLOW(255,255,0) <kc>//declares its own anonymous class</kc>
+	{<k>override</k> fun toString():String{ return "YELLOW_COLOR"} } <k>,</k> 
+	GREEN(0,255,0) <k>,</k> 
+	BLUE(0,0, 255)
+    <k>;</k> <kc>//semicolon is is mandatory if define methods</kc>
 
-    fun rgb() = (r * 256 + g) * 256 + b
-    override fun toString() : String { 
-        return "${super.toString()}($r,$g,$b)" }
+	fun rgb() = (r * 256 + g) * 256 + b
+	<k>override</k> fun toString():String{return "${<k>super.</k>toString()}($r,$g,$b)"}
 }
 
 fun main(){
-    val y = Color.YELLOW
-    val b = Color.BLUE
+    val y = <ks>Color</ks>.YELLOW
+    val b = <ks>Color</ks>.BLUE
     println("$y = ${y.rgb()} | $b = ${b.rgb()} ")
 }
 </pre> </td>
@@ -2953,8 +2969,12 @@ that introduces a set of constant objects, each instanc eof the class.
 Each object can be initalized and declare methods.</m> 
 
 <pre>
-//OUTPUT
-YELLOW_COLOR = 16776960 | BLUE(0,0,255) = 255
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+YELLOW_COLOR = 16776960 | BLUE(0,0,255) = 255 
+work done in time= 5
+ENDS thread=main | nthreads=1
+
 </pre>
  
 
@@ -2962,155 +2982,193 @@ YELLOW_COLOR = 16776960 | BLUE(0,0,255) = 255
 </tr>
 
 <tr>
-<td><pre>
-enum class Origin{
+<td><h3>About initialization</h3>
+<pre>
+<k>enum</k> class <ks>Origin</ks>{
     asia, africa, europa, america, australia
 }
 
-class Person(val name: String, 
-				val nickname: String = "rambo") {
-    var age : Int = 0
-    var married = false
-        set( value ){
-            if( age &lt; 14 ) 
-			  println("WARNING: too joung for marriage")
-            else field = true
-        }
-    val isAdult: Boolean
-        get(){ return age >= 18} //custom getter
-
-     lateinit var country  : Origin //visible from outside
-     protected var  voter  : Boolean //not visible
+<kc>//open: see Inheritance</kc>
+<k>open class</k> PersonILL(val name:String,	<kc>//ILL=>Init,Late,Lazy</kc>
+		val nickname: String = "rambo") {<kc>//default value</kc>
+    var age      = 0
+    var married   = false
+    val isAdult: Boolean <k>by lazy</k>{ println("lazy fired");age>18 }
+    <k>lateinit var</k> country  : Origin  <kc>//visible</kc>
+    protected var  voter  : Boolean 	<kc>//not visible</kc>
         get(){ return isAdult }
-    init{
-        //country = Origin.europa
-        voter  =  (age > 18)   //expression
+    <k>init{</k> <kc>//country = Origin.europa</kc>
+        voter  =  (age > 18)   <kc>//expression</kc>
     }
-    //custom accessor
+    <kc>//custom accessor</kc>
     fun voter():Boolean{ return voter }
 }
 
-fun main(){
- val p = Person("Bob")
-  println("name=${p.name} age=${p.age} "+
-     " married=${p.married} " +
-     " adult=${p.isAdult} nickname=${p.nickname}" +
-     " voter=${p.voter()}") // p.country not initialized
+fun testILL(){
+ val p = PersonILL("Bob")
+  println("name=${p.name} age=${p.age} married=${p.married} " +
+     " nickname=${p.nickname}  ") // p.country not initialized
   p.age     = 22
   p.married = true
   p.country = Origin.europa
-  println("name=${p.name} age=${p.age}"+
-      " married=${p.married} " +
-      " adult=${p.isAdult} nickname=${p.nickname}" +
-      " country=${p.country} voter=${p.voter()}")
- 
+  println("Bob property-set done ")
+  println("Bob is adult=${p.isAdult} - lazy fired")  
+  println("name=${p.name} age=${p.age} married=${p.married}")
+  println("	adult=${p.isAdult} nickname=${p.nickname}")
+  println("	country=${p.country} voter=${p.voter()}")	
 }
-
+ 
+fun main(){
+	println("BEGINS CPU=$cpus ${curThread()}")
+	println( "work done in time= ${measureTimeMillis({testILL()})}")	
+	println("ENDS ${curThread()}")
+}
+</pre>
+<hr/>
+<pre><kc>//OUTPUT</kc>
+Bob property-set done 
+<ks>lazy fired</ks>
+Bob is adult=true - lazy fired
+name=Bob age=22 married=true
+	adult=true nickname=rambo
+	country=europa voter=true  <kc>//no more lazy fired</kc>
+work done in time= 46
+ENDS thread=main | nthreads=1
 </pre> </td>
-<td><m>
+<td> 
 
 
-<em>default parameter values</em>: set default values for properties. Their usage avoids the introduction
-of secondary constructors
+<h3>default parameter values</h3>
+set default values for properties. Their usage avoids the introduction of secondary constructors
+<br/><br/>
+<h3>init block</h3>
+
+ <em>init</em> is a keyword that introduces an 
+<a href="https://www.callicoder.com/kotlin-classes-objects-constructors-initializers/"><bc>initializer block</bc></a>
+ 
 
 <br/><br/>
-<em>init</em>: keyword that introduces an <bc>initializer block</bc>
 
-<br/><br/>
-
-<em>lateinit</em>: a modifier that allows us to introduce a <bc>var</bc> property without an initializer.
-It is not applicable to primitive types.
+<h3>lateinit</h3>
+ a modifier that allows us to introduce a <bc>var</bc> property without an initializer.
+It is not applicable to primitive types. 
 
 <br/><br/>
 A common use is for <a href="https://it.wikipedia.org/wiki/Dependency_injection" target="web">dependency injection</a>.
-</m> 
+ 
+<h3>lazy</h3> 
+variable will not be initialized unless you use that variable in your code. 
+It will be initialized <em>only once</em> after that we always use the same value.
 
-<pre>
-//OUTPUT
-name=Bob age=0  married=false  adult=false nickname=rambo voter=false
-name=Bob age=22 married=trueadult=true 
-	nickname=rambo country=europa voter=true
-</pre>
+<h3>Guidelines</h3>
+<ul>
+<li>If variable are mutable (i.e. might change at a later stage) use <bc>lateinit</bc>.<br/>
+ <bc>lateinit var</bc> can be initialized from anywhere the object is seen from.</li>
+<li><bc>lazy</bc> can only be used for <bc>val</bc> properties,<m> whereas lateinit can only be applied to var because 
+it can't be compiled to a final field, thus no immutability can be guaranteed.</m></li>
+<li>If its only meant to initialized once and shared by all, and it's more internally set 
+(dependent on variable internal to the class), then use <bc>lazy</bc>. </li>
+</ul>
 
 </td>
 </tr>
 
 <tr>
-<td><pre>
-open class Person(val name: String, 
-	val nickname: String = "rambo") {
-	...
+<td>
+<h3>Inheritance</h3>
+<pre>
+<k>open class</k> PersonILL(val name:String, ...
+
+class <ks>Student</ks>(name: String,
+	nickname: String="nerd") <k>: Person(name, nickname)</k> {
+	override fun toString() : String{
+		return "student(name($name),age($age),married($married),"+
+		"adult($isAdult),nickname($nickname),"+
+		"country($country),voter($voter))" 
+	}
 }
 
-class Student(name: String,
-	nickname: String="nerd") : Person(name, nickname) {
-
+fun testInheritance(){
+  val p = <ks>Student</ks>("alice", "batterfly")
+  p.age		= 24
+  p.country	= Origin.asia
+  println( p )
 }
 
 fun main(){
-  val p = Student("Alice", "batterfly")
-  p.age     = 24
-  println("name=${p.name} age=${p.age} "+
-     " married=${p.married} " +
-     " adult=${p.isAdult} nickname=${p.nickname}" +
-     " voter=${p.voter()}") // p.country not initialized
-  p.country = Origin.asia
-  println("name=${p.name} age=${p.age}"+
-      " married=${p.married} " +
-      " adult=${p.isAdult} nickname=${p.nickname}" +
-      " country=${p.country} voter=${p.voter()}")
-
+	println("BEGINS CPU=$cpus ${curThread()}")
+	println( "work done in time= ${measureTimeMillis({testInheritance()})}")	
+	println("ENDS ${curThread()}")
 }
 
 </pre> </td>
 <td>
-<h5>Inheritance</h5>
-<m><em>open</em>: a modifier that makes it possible to define subclasses.
+
+ <bc>open</bc>: a modifier that makes it possible to define subclasses.
+ <br/><br/>
 Whereas Java's classes and methods are open by default, in Kotlin they are <bc>final</bc>,
 in order to overcome the <a href="https://en.wikipedia.org/wiki/Fragile_base_class" target="web">fragile base class problem</a>.
-<br/><br/>
-An <em>abstract</em> class is <bc>open</bc> by default.
-
- </m> 
 
 <pre>
-//OUTPUT
-name=Alice age=24  married=false  adult=true nickname=batterfly voter=true
-name=Alice age=24 married=false  adult=true 
-	nickname=batterfly country=asia voter=true
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+lazy fired
+<m>student(name(alice),age(24),married(false),adult(true),nickname(batterfly),country(asia),voter(true))</m>
+work done in time= 47
+ENDS thread=main | nthreads=1
 </pre>
+<h3>Abstract classes</h3>
+
+An <em>abstract</em> class is <bc>open</bc> by default.
+<br/><br/>
+Abstract classes can have everything that interfaces can, and additionally, 
+they can have fields and constructors. 
+Therefore we can properly hold state in abstract classes 
+
+
 </td>
 </tr>
 
 <tr>
-<td><pre>
-sealed class Expr{
-    class Num( val value:Int):Expr()
-    class Add( val left:Expr, val right:Expr):Expr()
+<td>
+<h3>Sealed class</h3>
+<pre>
+<k>sealed class</k> <ks>Expr</ks>{
+    <k>class</k> <ks>Num</ks>( val value:Int):Expr()
+    <k>class</k> <ks>Add</ks>( val left:Expr, val right:Expr):Expr()
     fun eval():Int{
-        when( this ){
-            is Num -> return value
-            is Add -> return left.eval() + right.eval()
-            //no deafult branch
+        when( <k>this</k> ){
+            <k>is Num</k> -> return value
+            <k>is Add</k> -> return left.eval() + right.eval()
+            <kc>//no deafult branch</kc>
         }
     }
 }
 
-
-fun main(){
+fun testSealedClass(){
     val v1 = Expr.Num(10)
     val v2 = Expr.Num(20)
     val sum = Expr.Add(v1,v2)
-    println("${v1.eval()} + ${v2.eval()} = ${sum.eval()}")
+    println("${v1.eval()} + ${v2.eval()} = ${sum.eval()}")	
+}
+
+fun main(){
+	println("BEGINS CPU=$cpus ${curThread()}")
+	println( "work done in time= ${measureTimeMillis({testSealedClass()})}")	
+	println("ENDS ${curThread()}")
 }
 </pre> </td>
-<td><h5>Sealed class</h5>
-<m><em>sealed </em>: a modifier which restricts the possible subclasses of a class. All the possible subclasses
-must be nested in the superclass </m> 
+<td>
+<bc>sealed </bc>: a modifier which restricts the possible subclasses of a class. All the possible subclasses
+must be nested in the superclass.
 
 <pre>
-//OUTPUT
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
 10 + 20 = 30
+work done in time= 7
+ENDS thread=main | nthreads=1
+
 </pre>
 </td>
 </tr>

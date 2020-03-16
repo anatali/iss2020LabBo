@@ -16,13 +16,13 @@ class Person(val name: String) {
     var age : Int = 0     //public
       set( value ){
 	      if(value < 0) println("ERROR: age value wrong")
-		  else field = value	//
+		  else field = value	//backing field
       }
     var married = false   //public
       set( value ){
       if(value && age < 14) println("WARNING:too young for marriage")
       		//else married = value  //Stack overflow
-		  field = value
+		  field = value		//backing field
       }
     val isAdult: Boolean
     	get(){ return age >= 18} //custom getter
@@ -90,6 +90,64 @@ class PersonCO private constructor( val name: String ){
     }//NameComparator
 }//PersonCO
 
+enum class Color( //properties
+    var r: Int, val g: Int, val b: Int){
+//Property values for each constant
+    RED(255,0,0),
+    YELLOW(255,255,0) //declares its own anonymous class
+    { override fun toString():String{
+				return "YELLOW_COLOR"} },
+    GREEN(0,255,0), BLUE(0,0, 255)
+    ; //semicolon is is mandatory if define methods
+
+    fun rgb() = (r * 256 + g) * 256 + b
+    override fun toString() : String { 
+        return "${super.toString()}($r,$g,$b)" }
+}
+
+enum class Origin{
+    asia, africa, europa, america, australia
+}
+
+open class PersonILL(val name:String,	//Init,Late,Lazy
+		val nickname: String = "rambo") {//default value
+    var age      = 0
+    var married   = false
+    val isAdult: Boolean by lazy{ println("lazy fired");age>18 }
+    lateinit var country  : Origin  //visible
+    protected var  voter  : Boolean //not visible
+        get(){ return isAdult }
+    init{
+	    //country = Origin.europa	//makes lateinit unnecessary
+        voter  =  (age > 18)   //expression
+    }
+    //custom accessor
+    fun voter():Boolean{ return voter }
+}
+
+class Student(name: String,
+	nickname: String="nerd") : PersonILL(name, nickname) {
+	override fun toString() : String{
+		return "student(name($name),age($age),married($married),"+
+		"adult($isAdult),nickname($nickname),"+
+		"country($country),voter($voter))" 
+	}
+}
+
+
+sealed class Expr{
+    class Num( val value:Int):Expr()
+    class Add( val left:Expr, val right:Expr):Expr()
+    fun eval():Int{
+        when( this ){
+            is Num -> return value
+            is Add -> return left.eval() + right.eval()
+            //no deafult branch
+        }
+    }
+}
+
+//=======================================================================
 fun p2( c:SingleCounter ) : Int { 
 	return c.value()*c.value() }
 
@@ -156,14 +214,54 @@ fun testCompanion(){
     PersonCO.Info.showAllAdults()	
 }
 
+fun testEnum(){
+    val y = Color.YELLOW
+    val b = Color.BLUE
+    println("$y = ${y.rgb()} | $b = ${b.rgb()} ")	
+}
+
+
+fun testILL(){
+ val p = PersonILL("Bob")
+  println("name=${p.name} age=${p.age} married=${p.married} " +
+     " nickname=${p.nickname}  ") // p.country not initialized
+  p.age     = 22
+  p.married = true
+  p.country = Origin.europa
+  println("Bob property-set done ")
+  println("Bob is adult=${p.isAdult} - lazy fired")  
+  println("name=${p.name} age=${p.age} married=${p.married}")
+  println("	adult=${p.isAdult} nickname=${p.nickname}")
+  println("	country=${p.country} voter=${p.voter()}")	
+}
+
+fun testInheritance(){
+  val p = Student("alice", "batterfly")
+  p.age     = 24
+  p.country = Origin.asia
+  println( p )
+}
+
+
+fun testSealedClass(){
+    val v1 = Expr.Num(10)
+    val v2 = Expr.Num(20)
+    val sum = Expr.Add(v1,v2)
+    println("${v1.eval()} + ${v2.eval()} = ${sum.eval()}")	
+}
+
+
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
 	
 //    println( "work done in time= ${measureTimeMillis(  { testObject() } )}"  )
 //     println( "work done in time= ${measureTimeMillis(  { testClass() } )}"  )
-     println( "work done in time= ${measureTimeMillis(  { testPropertyDelegate() } )}"  )
+//     println( "work done in time= ${measureTimeMillis(  { testPropertyDelegate() } )}"  )
 //    println( "work done in time= ${measureTimeMillis(  { testDataClass() } )}"  )
 //    println( "work done in time= ${measureTimeMillis(  { testCompanion() } )}"  )
-	
+//     println( "work done in time= ${measureTimeMillis(  { testEnum() } )}"  )
+//     println( "work done in time= ${measureTimeMillis(  { testILL() } )}"  )
+//    println( "work done in time= ${measureTimeMillis(  { testInheritance() } )}"  )
+	println( "work done in time= ${measureTimeMillis(  { testSealedClass() } )}"  )
     println("ENDS ${curThread()}")
 }
