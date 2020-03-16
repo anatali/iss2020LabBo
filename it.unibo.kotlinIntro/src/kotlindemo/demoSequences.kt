@@ -2,14 +2,14 @@ package kotlindemo
 //demoSequences
 import kotlinx.coroutines.runBlocking
 
-data class Person(val name: String, val age: Int)
+data class APerson(val name: String, val age: Int)
 
 val persons = listOf(
-    Person("Peter", 16),
-    Person("Alice", 23),
-    Person("Anna",  25),
-    Person("Anna",  28),
-    Person("Sonya", 39)
+    APerson("Peter", 16),
+    APerson("Alice", 23),
+    APerson("Anna",  25),
+    APerson("Anna",  28),
+    APerson("Sonya", 39)
 )
 
 val names = persons.asSequence()
