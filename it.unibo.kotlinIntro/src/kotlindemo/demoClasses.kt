@@ -2,6 +2,7 @@ package kotlindemo
 //demoClasses.kt
 
 import kotlinx.coroutines.runBlocking
+import kotlin.reflect.KProperty
 
 object SingleCounter {
     private var counter = 0
@@ -13,10 +14,36 @@ object SingleCounter {
 
 class Person(val name: String) {
     var age : Int = 0     //public
+      set( value ){
+	      if(value < 0) println("ERROR: age value wrong")
+		  else field = value	//
+      }
     var married = false   //public
+      set( value ){
+      if(value && age < 14) println("WARNING:too young for marriage")
+      		//else married = value  //Stack overflow
+		  field = value
+      }
     val isAdult: Boolean
-    get(){ return age >= 18} //custom getter
+    	get(){ return age >= 18} //custom getter
+
 }
+
+class ExampleDelegate {
+    var p: String  by Delegate()  //property
+}
+class Delegate {
+	private var myval : String = "delegateInitialValue"
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+		println("... object $thisRef delegates '${property.name}' to $this!")
+        return myval
+    } 
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
+        println("... $this assigns $value to '${property.name}' in $thisRef.")
+		myval = value
+    }
+}
+
 
 data class PersonData(val name: String) {
     var age : Int = 0     //public
@@ -92,8 +119,22 @@ fun testClass(){
     println( "equals:  ${p1.equals(p3)}" )	//false
     println( "==:      ${p1 == p3}" )	//false
     println( "===:     ${p1 === p3}" )	//false
+	
+	println("------ testClass set")
+	p1.married = true
+    println( "name=${p1.name}, age=${p1.age},married=${p1.married} adult=${p1.isAdult} ")
+	p1.age     = 18
+	p1.married = true
+    println( "name=${p1.name}, age=${p1.age},married=${p1.married} adult=${p1.isAdult} ")
 }
 
+fun testPropertyDelegate(){
+	println("------ testPropertyDelegate")
+	val v = ExampleDelegate()
+	println(v.p)
+	v.p = "Bob"
+	println(v.p)
+}
 fun testDataClass(){
     val p1 = PersonData("Bob")
     p1.age=20
@@ -119,9 +160,10 @@ fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
 	
 //    println( "work done in time= ${measureTimeMillis(  { testObject() } )}"  )
-//    println( "work done in time= ${measureTimeMillis(  { testClass() } )}"  )
+//     println( "work done in time= ${measureTimeMillis(  { testClass() } )}"  )
+     println( "work done in time= ${measureTimeMillis(  { testPropertyDelegate() } )}"  )
 //    println( "work done in time= ${measureTimeMillis(  { testDataClass() } )}"  )
-    println( "work done in time= ${measureTimeMillis(  { testCompanion() } )}"  )
+//    println( "work done in time= ${measureTimeMillis(  { testCompanion() } )}"  )
 	
     println("ENDS ${curThread()}")
 }

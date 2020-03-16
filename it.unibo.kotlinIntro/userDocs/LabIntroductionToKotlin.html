@@ -2542,9 +2542,9 @@ ENDS thread=main | nthreads=1
 Let us introduce a conventional class in Java:
 <pre>
 public class Person {
-    private final String name;
-    private int age=0;
-    private boolean isMarried = false;
+    private final String name;			<kc>//Java field</kc>
+    private int age=0;				<kc>//Java field</kc>
+    private boolean isMarried = false;	<kc>//Java field</kc>
     public Person(String name){ this.name = name; }
     public String getName(){ return name;  }
     public int getAge(){ return age;  }
@@ -2562,32 +2562,50 @@ KOTLIN syntax for properties
     [&lt;setter>]
 </ks>
 The initializer, getter and setter are optional.
-</pre> </td>
+</pre> 
+
+</td>
 <td><h3>Java to Kotlin </h3>
 
 <m>The result of automatic conversion done by the <a href="https://www.jetbrains.com/idea/" target="web">IntelliJ IDEA</a> is:</m>
 <center><img src="./img/PersonKotlin.png" alt="PersonKotlin" width="100%" ></center>
- 
-<m>While Java stores class data into <bc>fields</bc>, classes in Kotlin do introduce <bc>properties</bc> 
+
+<h3>Kotlin properties</h3>
+<m>While Java stores class data into <em>fields</em>, classes in Kotlin do introduce <em>properties</em> 
 (<tt>fields</tt> together with <tt>accessors</tt> methods) as a first-class language feature 
 (see <a href="https://kotlinlang.org/docs/reference/properties.html" target="web">Kotlin Properties and Fields</a>). 
-We can have:
+Note that:
 <ul>
 <li>properties that stores a value</li>
-<li>properties with custom accessors that calculates values at each access</li>
-</ul>
-</m>
+<li>properties with <bc>custom accessors</bc> that calculates values at each access</li>
+<li>Properties are defined by their accessors. A property does not need to include any field at all. </li>
+<li></li>
+<li>When we define custom accessors that are not using any field, then the field is not generated.
+This is why we can use 
+<a href="https://kotlinlang.org/docs/reference/delegated-properties.html" target="web"><bc>property delegation</bc></a>.
+</li>
+</ul></m>
 </td>
 </tr>
+
+
 
 <tr>
 <td><h3>Using Kotlin Class</h3>
 <pre>
 <k>class</k> Person(val name: String) { <kc>//Primary constructor</kc>
-    var age : Int = 0     		<kc>//public</kc>
-    var married = false   		<kc>//public</kc>
-    val isAdult: Boolean
-      get(){ return age >= 18}	<kc>//custom getter</kc>
+    var age : Int = 0     		<kc>//Kotlin property</kc>
+       <k>set</k>( value ){
+	      if(value < 0) println("ERROR: age value wrong")
+      }
+   var married = false   		<kc>//Kotlin property</kc>
+      <k>set</k>( value ){
+      if(value && age < 14) println("WARNING:too young for marriage")
+		<kc>//else married = value  //Stack overflow</kc>
+		else <k>field =</k> value
+      }
+   val isAdult: Boolean
+      <k>get</k>(){ return age >= 18}	<kc>//custom getter</kc>
 }
 
 fun testClass(){
@@ -2625,6 +2643,8 @@ fun main(){
 	</li>
 <li>Custom <a href="http://kotlin-quick-reference.com/101-R-getter-setter-properties.html" target="web"><bc> getter accessors</bc></a>
 : allows us to implement a computed property </li>
+<li>Custom <a href="http://kotlin-quick-reference.com/101-R-getter-setter-properties.html" target="web"><bc> setter accessors</bc></a>
+: it is called every time we assign a value to the property.</li>
 </ul>
  
 <pre>
@@ -2644,7 +2664,67 @@ ENDS thread=main | nthreads=1
 </tr>
 
 <tr>
-<td><pre>
+<td>
+<h3><a href="https://kotlinlang.org/docs/reference/delegated-properties.html" target="web"><k>Property delegation</k></a></h3>
+<pre>
+class ExampleDelegate {
+    var p: String  <k>by</k> <ks>Delegate</ks>()  <kc>//delegated property</kc>
+}
+class <ks>Delegate</ks> {
+	private var myval : String = "delegateInitialValue"
+    operator fun <k>getValue</k>(thisRef: Any?, property: KProperty<*>): String {
+		println("... object $thisRef delegates '${property.name}' to $this!")
+        return myval
+    } 
+    operator fun <k>setValue</k>(thisRef: Any?, property: KProperty<*>, value: String) {
+		println("... $this assigns $value to '${property.name}' in $thisRef.")
+		myval = value
+    }
+}
+
+fun testPropertyDelegate(){
+	val v = ExampleDelegate()
+	println(v.p)
+	v.p = "Bob"
+	println(v.p)
+}
+
+fun main() = runBlocking{
+    println("BEGINS CPU=$cpus ${curThread()}")
+    println( "work done in time= 
+		${measureTimeMillis(  { testPropertyDelegate() } )}"  )
+	println("ENDS ${curThread()}")
+}
+</pre>
+ 
+
+</td>
+<td>
+<pre>
+<kc>//OUTPUT</kc>
+BEGINS CPU=8 thread=main | nthreads=1
+<m>... object kotlindemo.ExampleDelegate@1175e2db delegates 'p' to kotlindemo.Delegate@36aa7bc2!</m>
+delagteDefaultValue
+<m>... kotlindemo.Delegate@36aa7bc2 assigns Bob to 'p' in kotlindemo.ExampleDelegate@1175e2db.
+... object kotlindemo.ExampleDelegate@1175e2db delegates 'p' to kotlindemo.Delegate@36aa7bc2!</m>
+Bob
+work done in time= 44
+ENDS thread=main | nthreads=1
+
+</pre>
+
+<h3>Java equivalent of a Kotlin property</h3>
+<pre>
+private String name = "Bob";
+public String getName() { return name; }
+public void setName(String name) { this.name = name; }
+</pre>
+</td>
+</tr>
+
+<tr>
+<td><h3>Kotlin data class</h3>
+<pre>
 <k>data class</k> PersonData(val name: String) { <kc>//Primary constructor</kc>
     var age : Int = 0     		<kc>//public</kc>
     var married = false   		<kc>//public</kc>
@@ -2661,7 +2741,7 @@ fun main(){
     println( "equals:  ${<k>p1.equals</k>(p3)}" )	<kc>//<ks>equals</ks> generated</kc>
 }
 </pre> </td>
-<td><h3>Kotlin data class</h3>
+<td>
 Kotlin generates the methods:
 <ul>
 <li><bc>equals</bc></li>
@@ -2684,7 +2764,9 @@ ENDS thread=main | nthreads=1
  
 
 <tr>
-<td><pre>
+<td>
+<h3>Companion object</h3>
+<pre>
 class PersonCO <k>private constructor</k>( val name: String ){
     var age : Int = 0
     var married = false
@@ -2828,7 +2910,9 @@ fun main(){
 </pre> </td>
 <td>
 <m><h3 id="backingfield">Backing field</h3>
-is a field <i>generated</i> by the compiler if we reference it explicitly or if we use the default accessor implementation.</m>
+Fields cannot be declared directly in Kotlin classes. 
+However, when a property needs a backing field, Kotlin provides it automatically.
+A <bc>backing field</bc>  is a field <i>generated</i> by the compiler if we reference it explicitly or if we use the default accessor implementation.</m>
 
 <pre>
 //OUTPUT
