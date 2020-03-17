@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.async
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.withLock
@@ -16,19 +17,29 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.coroutineScope
+import java.util.concurrent.Executors
 
-fun runBlockThread(){
-    run { //Calls a function block; returns its result
-        println("thread sleeps ... : ${curThread()}")
-        Thread.sleep(1500)
-        println("thread ends : ${curThread()}")
-    } 
+ 
+//import kotlinx.coroutines.io.parallelis.IO_PARALLELISM_PROPERTY_NAME
+
+var thcounter=0
+val delayTime=0L
+//val dispatcher = Executors.newFixedThreadPool(128).asCoroutineDispatcher()
+
+fun runBlockThread( delay : Long = 0L ){
+//     run { //Calls a function block; returns its result
+//       println("thread sleeps ... : ${curThread()}")
+         Thread.sleep( delay )
+         thcounter++
+//         println("thread ends : ${curThread()} thcounter=${thcounter}")
+//     } 
 }
 
 fun scopeDemo (){
+	thcounter=0
 	val scope = CoroutineScope( Dispatchers.Default )
 	println( scope.coroutineContext )
-	scope.launch{ runBlockThread() } 	
+	scope.launch{ runBlockThread(1500) } 	
 }
  
 
@@ -52,49 +63,40 @@ fun scopeAsyncDemo (){
 val n=10000		//number of Thread or Coroutines to launch
 val k=1000		//times an action is repeated by each Thread or Coroutine
 
-fun manyThreads(){
-	var counter=0
- 	var iter = 0
-	val time = measureTimeMillis{
+fun manyThreads(){  
+ 	thcounter=0
+ 	val time = measureTimeMillis{
 		val jobs = List(n){
-			kotlin.concurrent.thread(start = true) {
-				//println("thread ${iter++}starts ")
-				repeat( k ){ counter++}
-				//println("thread  $iter ends counter=$counter ")
+			kotlin.concurrent.thread(start = true) { 
+  				repeat( k ){ runBlockThread() }
 			}
 		}			
 		jobs.forEach{ it.join()  }  //wait for termination of all threads
  	}
-	println("manyThreads time= $time counter=$counter")
+ 	println("manyThreads time= $time thcounter=$thcounter ")
 }
 
+//Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+
 fun manyCoroutines(){
-	val scope = CoroutineScope( Dispatchers.Default )
-	var counter=0
-	var iter = 0
-	scope.launch{
+	//val d = newFixedThreadPoolContext(650,"d")
+	val d = Dispatchers.Default 
+	val scope = CoroutineScope( d  ) 
+	thcounter=0
+ 	scope.launch{ 
 	    val time = measureTimeMillis {
  	        val jobs = List(n) {
 				//println("coroutine ${iter++} starts ")
-				scope.launch { repeat(k) { counter++ } }
-			}
+ 				scope.launch { repeat(k) { runBlockThread() } }
+ 			} 
 			//println("manyCoroutines ENDS LANUCH ")
 			jobs.forEach { it.join() }
 			//println("manyCoroutines END ALL JOBS")
 	    }
-	    println("manyCoroutines time= $time counter=$counter")
+	    println("manyCoroutines time= $time  thcounter=$thcounter  ")
 	}
 }
-//    val time = measureTimeMillis {
-//		val scope = CoroutineScope( Dispatchers.Default )
-//        val jobs = List(n) { scope.launch { repeat(k) { counter++ } } }
-//        scope.launch {
-//			jobs.forEach { it.join() } //wait for termination of all coroutines
-//			println("manyCoroutines joined ")
-//		}
-//	}
-//	println("manyCoroutines time= $time counter=$counter")
- 
+
 //=================================================================
 var demoTodo : () -> Unit = { println("nothing to do") }
 
@@ -103,8 +105,8 @@ fun readInt() : Int { print(">"); return readLine()!!.toInt() }
 fun doDemo( input : Int ) = runBlocking{  
 	println("BEGINS CPU=$cpus ${curThread()}")
 	when( input ){
-		1 ->  demoTodo =  { runBlockThread()                      	}
-		2 ->  demoTodo =  { GlobalScope.launch{ runBlockThread() }	}
+		1 ->  demoTodo =  { runBlockThread(1500 )                      	}
+		2 ->  demoTodo =  { thcounter=0; GlobalScope.launch{ runBlockThread(1500) }	}
 		3 ->  demoTodo =  { scopeDemo()								}
  		4 ->  demoTodo =  { scopeAsyncDemo()             	        }
  		5 ->  demoTodo =  { manyThreads()                	        }
@@ -124,29 +126,5 @@ fun main() {
 		}
   	    println( "BYE") 
 }
-		
-     
-/*
-    runBlockThread()                             //(1)
 
-    GlobalScope.launch{ runBlockThread() }       //(2)
-    println("BYE")                               //(2)
-
-    Thread.sleep(1600) // To see the output      //(2)
- 
-    launch{  runBlockThread()  }                 //(3)
-    println("BYE")                               //(3)
-	Thread.sleep(3000)
- 
-    val job = launch{  runBlockThread()  }       //(4)
-    job.join()                                   //(4)
-    println("BYE")                               //(4)
-
-    ioBoundFun()                              //(5)
-    launch{ ioBoundFun() }                    //(6)
-*/
-    // activate()                              //(7)
-/*
-    println("BYE")
- */
      

@@ -12,10 +12,18 @@ inline fun measureTimeMillis( block: () -> Unit ): Long {
     block()
     return System.currentTimeMillis() - start
 }
-		
+
+//var maxNumThreads = 0
+
 fun curThread() : String { 
-	return "thread=${Thread.currentThread().name} | nthreads=${Thread.activeCount()}" 
+ 	val nt = Thread.activeCount()
+//	if( maxNumThreads < nt ) maxNumThreads = nt
+	return "thread=${Thread.currentThread().name} / nthreads=${nt}  " 
 }
+		
+//fun curThread() : String { 
+//	return "thread=${Thread.currentThread().name} | nthreads=${Thread.activeCount()}" 
+//}
 
 fun myDemoWork(){
 	println("Hello from myDemoWork"); 

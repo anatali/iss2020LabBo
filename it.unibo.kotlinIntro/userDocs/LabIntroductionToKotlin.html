@@ -1031,31 +1031,46 @@ Note the <a href="https://kotlinlang.org/docs/reference/java-interop.html#sam-co
 
 <h2><a id="coroutinesIntro"/>Introduction to coroutines</h2>
 
+Overview:
+<ol>
+<li>A function can be activated as a <bc>coroutine</bc>, i.e. as a a sort of 'light-weight thread'.</li>
+<li>A coroutine can invoke other functions; it can also <bc>suspend</bc> its behavior (without blocking its running thread). </li>
+<li>Interaction among <a href="https://en.wikipedia.org/wiki/Concurrency_(computer_science) ">concurrent</a> activities (coroutines) can be
+supported by <bc>channels</bc> that provide suspensive send/receive operations.
+</li>
+<li>Combining a coroutine with a channel to communicate with other coroutines makes the idea of <bc>actor</bc>.</li>
+</ol>
+<hr/>
 <ul>
-
- 
-
-<li>Essentially, a <em>Coroutine</em> is a light-weight thread that can be activated with a 
-<em>Coroutine builder</em> into a <em>CoroutineScope</em>.
+<li>Essentially, a 
+  <a href="https://kotlinlang.org/docs/reference/coroutines/basics.html" target="web"><em>Coroutine</em></a> 
+  is a light-weight thread that can be activated with a 
+   <a href="https://www.educative.io/edpresso/coroutine-builders-launching-coroutines-in-kotlin" target="web"><em>Coroutine builder</em></a> 
+ into a 
+ <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/" target="web"><em>CoroutineScope</em></a>.
 <br/><br/></li>
 
 
 <li>
-Coroutines can be executed concurrently using a multi-threaded dispatcher like the 
+Coroutines can be executed concurrently using a multi-threaded 
+ <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/index.html" target="web"><em>CoroutineDispatcher</em></a>
+like the 
 <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-default.html"  target="web">Dispatchers.Default</a>.
 It presents all the usual concurrency problems. 
 See <a href="https://kotlinlang.org/docs/reference/coroutines/shared-mutable-state-and-concurrency.html" target="web">Kotlin Shared mutable state and concurrency</a>.
 <br/><br/></li>
 
-<li>By default, coroutines are run on a shared pool of threads. 
-Threads still exist in a program based on coroutines, but one thread can run many coroutines, so there's no need for too many threads.
+<li>By default, coroutines are run on a <b>shared pool of threads</b>. 
+Threads still exist in a program based on coroutines, but <bc>one thread can run many coroutines</bc>, so there's no need for too many threads.
+
+<center><img src="./img/coroutines.png" alt="coroutines.png" width="40%"/></center>
 <br/><br/></li> 
 
 <li>
 Kotlin Coroutines enhance <a href="https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)" target="web">Asynchronous</a> programming 
 by being lightweight and essentially faster than a thread as they are <em>stackless</em>. 
 What this means from a multiprocessing perspective, is that Kotlin Coroutines don't map on the native CPU thread, 
-hence there's no context-switching on the processor.
+hence there's <bc>no context-switching</bc> on the processor.
 <br/><br/></li>
 
 <li>The execution of a coroutine always happens inside a 
@@ -1073,8 +1088,11 @@ A context is a set of elements and current coroutine context is available via <m
 A <m><k>scope</k></m> is just a reference to a context.
 <br/><br/></li>
 
-<li>Coroutines are computations that can be <m><k>suspended</k></m> without blocking a thread.
+<li>Coroutines are <bc>computations that can be  suspended</bc></m> without blocking a thread.
 They are based on the concept of <em>Continuation-passing style</em> (<m><k>CPS</k></m>) programming.
+
+
+<center><img src="./img/coroutineSuspend.png" alt="coroutineSuspend.png" width="40%"/></center>
 <br/><br/></li>
 
 <li>Coroutines do not rely on features of the <tt>Operating System</tt> or the <tt>JVM</tt>. Instead, a <bc>Continuation</bc> is added to every suspending function as 
@@ -1098,11 +1116,13 @@ The examples hereunder are reported in  <a href="../src/kotlindemo/demoCoroutine
 The main program now waits for a command from the user to select the demo to run:
 <hr/>
 <pre>
+var demoTodo : () -> Unit = { println("nothing to do") }
+
 fun readInt() : Int { print(">"); return readLine()!!.toInt() }
 
-fun doDemo( input : Int ){
+fun <ks>doDemo</ks>( input : Int ){
 	println("BEGINS CPU=$cpus ${curThread()}")
-	when( input ){<m>
+	<k>when( input )</k>{<m>
 		1 ->  demoTodo =  { runBlockThread() }
 		2 ->  demoTodo =  { GlobalScope.launch{ runBlockThread() } }
 		3 ->  demoTodo =  { scopeDemo()								}
@@ -1117,7 +1137,7 @@ fun doDemo( input : Int ){
 fun main() {
 		var input =  readInt()
 		while( input != 0 ){
-			doDemo( input )
+			<ks>doDemo( input )</ks>
 			demoTodo = 	{ println("nothing to do") }    
 			input    =  readInt()
 		}
@@ -1133,22 +1153,24 @@ fun main() {
 <td>
 <h3>Conventional (Java) code</h3>
 <pre>
-fun <ks>runBlockThread()</ks>{	    
- <k>run {</k> <kc>//Calls a function block; returns its result</kc>
-    println("thread sleeps ... : ${curThread()}")
-    Thread.sleep(1500) 
-    println("thread ends: ${curThread()}")
+var <ks>thcounter</ks>=0
+
+fun <ks>runBlockThread( delay : Long = 0L )</ks>{	    
+    //println("thread sleeps ... : ${curThread()}")
+    <k>Thread.sleep(delay)</k> 
+	thcounter++
+	println("thread ends : ${curThread()} thcounter=${thcounter}")
  <k>}</k>
-}
+ <!-- <k>run {</k> <kc>//Calls a function block; returns its result</kc> -->
+<!-- } -->
 ------------------
-runBlockThread()
+runBlockThread(1500 )
 </pre> </td>
 <td><m>The current Thread (<tt>main</tt>) waits for <tt>1500</tt> msecs.<br></m>
 <pre>
 <kc>//OUTPUT</kc>
 BEGINS CPU=4 thread=main | nthreads=1
-thread sleeps ... : thread=main | nthreads=1
-thread ends : thread=main | nthreads=1
+thread ends : thread=main | nthreads=1 thcounter=1
 work done in time= 1501
 ENDS thread=main | nthreads=1
 </pre>
@@ -1171,10 +1193,9 @@ The <tt>runBlockThread</tt> is now called in the default Thread devoted to Corou
 <pre>
 <kc>//OUTPUT</kc>
 BEGINS CPU=4 thread=main | nthreads=1
-work done in time= 96
+work done in time= 6
 ENDS thread=main | nthreads=3
-<ks>></ks>thread sleeps ... : thread=<k>DefaultDispatcher-worker-2</k> | nthreads=4
-thread ends : thread=<k> DefaultDispatcher-worker-2</k>  | nthreads=4
+<ks>></ks><m>thread ends : thread=<k> DefaultDispatcher-worker-1</k>  | nthreads=4 thcounter=1</m>
 </pre>
 <m>
 Note that the 'program' ends immediately. <br/>
@@ -1199,9 +1220,8 @@ Coroutine Scope</a> or specified using a builder.
 A dispatcher can be provided in two ways:
 
 <ul>
-<li>By the <bc>coroutine scope</bc>.
-See  also <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html" target="web"> 
-Coroutine Scope</a> <br/><br/></li>
+<li>By the<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html" target="web">. 
+CoroutineScope</a> <br/><br/></li>
 <li><bc>Explicitly</bc>: the coroutine builder receives a coroutine context as a first parameter.
 <!-- See  <a href="#Dispatchers">Dispatchers</a> later on. -->
 </li>
@@ -1214,7 +1234,7 @@ Coroutine Scope</a> <br/><br/></li>
 <td>
  <h3><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html" target="web"> 
 <k>Coroutine Scope</k></a></h3> 
-  <m><ks>CoroutineScope.</ks>  defines a 
+  <m>defines a 
   <a href="https://en.wikipedia.org/wiki/Scope_(computer_science)" target="web"> <k>Scope</k></a> for new coroutines. 
   Every coroutine builder is an extension on CoroutineScope and inherits its 
   <a href="https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html" target="web"><k>coroutineContext</k></a>
@@ -1228,16 +1248,15 @@ fun scopeDemo (){
 }
 </pre> </td>
 <td><m>
-The <tt>runBlockThread</tt> is now called in a new Coroutine scope. 
+The <b>runBlockThread</b> is now called in a new Coroutine scope. 
 </m>
 <pre>
 <kc>//OUTPUT</kc>
-BEGINS CPU=4 thread=main | nthreads=5
+BEGINS CPU=4 thread=main | nthreads=4
 <ks>[JobImpl{Active}@606d8acf, DefaultDispatcher]</ks>
 work done in time= 2
-ENDS thread=main | nthreads=5
-thread sleeps ... : thread=DefaultDispatcher-worker-2 | nthreads=4
->thread ends : thread=DefaultDispatcher-worker-2 | nthreads=4
+ENDS thread=main | nthreads=4
+><m>thread ends : thread=DefaultDispatcher-worker-2 | nthreads=4 thcounter=1</m>
 </pre>
 <m>
 </m>
@@ -1251,18 +1270,17 @@ val n=10000	<m><kc>//number of Thread or Coroutines to launch</kc></m>
 val k=1000	<m><kc>//times an action is repeated by each Thread or Coroutine</kc></m>
 
 fun <ks>manyThreads()</ks>{
-	var counter=0
- 	var iter = 0;
-	val time = measureTimeMillis{
+	thcounter=0
+ 	val time = measureTimeMillis{
 		val jobs = List(n){
 		<ks>kotlin.concurrent.thread(start = true)</ks> {
 			<kc>//println("thread ${iter++} starts ")</kc>
-			repeat( k ){ counter++}
+			repeat( k ){ runBlockThread() }
  		}
 		}
-		jobs.forEach{<k>it.join()</k>} <m><kc>//wait for termination of all threads</kc></m>
+		jobs.forEach{<k>it.join()</k>} <kc>//wait for termination of all threads</kc> 
  	}
-	println("manyThreads time= $time counter=$counter")
+	println("manyThreads time= $time thcounter=$thcounter")
 }
 </pre> </td>
 <td>
@@ -1273,11 +1291,11 @@ fun <ks>manyThreads()</ks>{
 <pre>
 <kc>//OUTPUT</kc>
 BEGINS CPU=4 thread=main | nthreads=1
-manyThreads time= 1893 counter=<k>9989342</k>
-work done in time= <k>1897</k>
+manyThreads time= <k>14811</k> counter=<k>9924712</k>
+work done in time= 14812
 ENDS thread=main | nthreads=1
 </pre>
-<m>Question: why the final value of the counter is not <tt>n*k = 10000000</tt>?.
+<m>Question: why the final value of the <tt>thcounter</tt> is not <tt>n*k = 10000000</tt>?.
 </m>
 </td>
 </tr>
@@ -1309,10 +1327,10 @@ fun <ks>manyCoroutines()</ks>{
 BEGINS CPU=4 thread=main | nthreads=1
 work done in time= 11
 ENDS thread=main | nthreads=3
->manyCoroutines time= 186 counter=9790039 <kc>//!!!</kc>
+>manyCoroutines time= <k>4271</k> thcounter=9478141 <kc>//!!!</kc>
 </pre>
 <m>The execution time is now much less than the case of using threads.<br/>
-Question: why the final value of the counter is not <tt>n*k = 10000000</tt>?.
+Question: why the final value of the <tt>thcounter</tt> is not <tt>n*k = 10000000</tt>?.
 </m>
 </td>
 </tr>
@@ -1326,29 +1344,39 @@ From  <a href="https://medium.com/@elizarov/coroutine-context-and-scope-c8b255d5
  
 
 <li>
-A coroutine is typically launched using <m><k>launch coroutine builder</k></m>:
+A coroutine is typically launched using 
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/launch.html"  target="web"><bc>launch</bc></a>
+coroutine builder:
 <pre>
 fun <k>CoroutineScope.launch</k>(		//<kc>extension function on CoroutineScope</kc>
     <ks>context</ks>: CoroutineContext = EmptyCoroutineContext,		//<kc>parameter</kc>
     // ...	
 ): <k>Job</k>
 </pre>
-<m><k>launch</k></m> is defined as an extension function of the
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/launch.html"  target="web"><bc>launch</bc></a>
+ is defined as an extension function of the
 <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/"  target="web">CoroutineScope</a> interface
 that consists of a sole property (<m><kc>val  coroutineContext: CoroutineContext</kc></m>).
 <br/>
- CoroutineScope  merges (using the <m><k>plus</k></m> operator of the context) the scope context with the <m><ks>context</ks></m> parameter, 
+ <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/"  target="web">CoroutineScope</a>   merges (using the 
+ <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/plus.html"  target="web"><bc>plus</bc></a>
+operator of the context) the scope context with the <m><ks>context</ks></m> parameter, 
 whose elements are taking precedence over the elements from the scope context. <br/>
 The resulting context is 
-the parent context of the new coroutine. The new coroutine creates its own child <m><k>Job</k></m> instance (using a job from this context as its parent) 
+the parent context of the new coroutine. The new coroutine creates its own child 
+<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html" target="web">Job</a> instance (using a job from this context as its parent) 
 and defines its child context as a parent context plus its job.<br/>
 
 <center><img src="./img/coroutinesScopes.png" alt="coroutinesScopes.png" width="70%"/></center>
 <br/><br/></li>
 
 <li>
-By convention, a context in <m><kc>CoroutineScope</kc></m> contains a <m><k>Job</k></m> that is going to become a parent of new coroutine 
-(with the exception of <m><k>GlobalScope</k></m> that you should avoid anyway - see: 
+By convention, a context in 
+<a href="https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html#coroutine-scope"  target="web">CoroutineScope</a> 
+contains a <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html" target="web">Job</a> 
+that is going to become a parent of new coroutine 
+(with the exception of <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-global-scope/" target="web">GlobalScope</a>
+that you should avoid anyway - see: 
 <a href="https://medium.com/@elizarov/the-reason-to-avoid-globalscope-835337445abc" target="web">The reason to avoid GlobalScope</a>).
 <br/><br/></li>
 
@@ -1357,12 +1385,14 @@ By convention, a context in <m><kc>CoroutineScope</kc></m> contains a <m><k>Job<
 The difference between a context and a scope is in their intended purpose:
 	<ul>
 	<li>
-	The intended purpose of <m><kc>CoroutineScope</kc></m> receiver in launch and in all the other coroutine builders is to reference 
+	The intended purpose of  <a href="https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html#coroutine-scope"  target="web">CoroutineScope</a>
+	receiver in launch and in all the other coroutine builders is to reference 
 	a scope in which new coroutine is launched.
 	</li>
 
 	<li>
-	The intended purpose of <m><kc>context: CoroutineContext</kc></m> parameter in launch is to provide additional context elements to override elements 
+	The intended purpose of 
+	<m><kc>context:<a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/coroutine-context.html"  target="web">CoroutineContext</a> </kc></m> parameter in launch is to provide additional context elements to override elements 
 	that would be otherwise inherited from a parent scope.
 	</li>
 	</ul>
@@ -1370,11 +1400,12 @@ The difference between a context and a scope is in their intended purpose:
 <li>Every coroutine builder function (like <tt>launch</tt>, <tt>async</tt>, <tt>runBlocking</tt>, etc.) :
 	
 	<ul>
-	<li>is an extension on <em>CoroutineScope</em> interface
+	<li>is an extension on <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/"  target="web">CoroutineScope</a> interface
 	and inherits its abstract read-only property <tt>coroutineContext: CoroutineContext</tt> to  automatically propagate both context elements and cancellation.
 	<ul>
-		<li><bc>GlobalScope</bc>: the coroutine affects the whole Application</li>
-		<li><bc>CoroutineScope</bc>: defines a scope for new coroutines</li>
+		<li><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-global-scope/" target="web">GlobalScope</a>: the coroutine affects the whole Application</li>
+		<li><a href="https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html#coroutine-scope"  target="web">CoroutineScope</a>: 
+		defines a scope for new coroutines</li>
 	</ul>
 	 </li>
 
@@ -1427,16 +1458,16 @@ The examples hereunder are reported in  <a href="../src/kotlindemo/demoDispatche
 fun testDispatchers() {
 runBlocking {
    <k>launch {</k> <kc>//context of the parent runBlocking </kc> 
-   println("1) runBlocking | ${curThread()}")
+   println("1) runBlocking | ${<ks>curThread()</ks>}")
   }
   <k>launch( <ks>Dispatchers.Unconfined</ks> )</k> { <kc>//in main thread </kc> 
-   println("2) Unconfined | ${curThread()}")
+   println("2) Unconfined | ${<ks>curThread()</ks>}")
   }
   <k>launch( <ks>Dispatchers.Default</ks> )</k> { <kc>//DefaultDispatcher </kc> 
-   println("3) Default | ${curThread()}")
+   println("3) Default | ${<ks>curThread()</ks>)}")
   }
   <k>launch( <ks>newSingleThreadContext("MyThr")</ks> )</k> { <kc>//new thread </kc> 
-   println("4) newSingleThreadContext | ${curThread()}")
+   println("4) newSingleThreadContext | ${<ks>curThread()</ks>}")
   }
 }
 }
@@ -1587,6 +1618,13 @@ hello 6 thread=My Thread | nthreads=2
 
 
 <h2><a id="suspend"/>Suspending functions</h2>
+A suspending function is just a regular Kotlin function with an additional <bc>suspend</bc> modifier which indicates that 
+the function can suspend the execution of a coroutine. 
+<center><img src="./img/coroutineSuspend1.png" alt="coroutineSuspend1.png" width="40%"/></center>
+
+
+Suspending functions can invoke any other regular functions, but to actually suspend the execution, it has to be another suspending function.
+<br/><br/>
 The examples hereunder are reported in  <a href="../src/kotlindemo/demoSuspended.kt" target="code">demoSuspended.kt</a>  
 (project <m><ks>it.unibo.kotlinIntro</ks></m>).
 <br/><br/>
@@ -1642,7 +1680,8 @@ to be used in main functions and in tests. -->
 <tr>
 <td>
 <h3>Launch and join</h3> 
-<m>Coroutines started by  <bc>launch</bc> return a  <k>Job</k> immediately,  which we can use to <tt>cancel</tt> 
+<m>Coroutines started by  <bc>launch</bc> return a <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html" target="web">Job</a>
+ immediately,  which we can use to <tt>cancel</tt> 
 the computation or <em>await</em> its completion with <bc>join</bc>.</m> 
 <pre>
 fun main() =  <k>runBlocking</k> {  
@@ -1774,6 +1813,9 @@ All jobs done; end1=kotlin.Unit end2=kotlin.Unit
 ENDS thread=main | nthreads=6
 </pre>
 
+<m>There is a laziness option to async using an optional start parameter with a value of <bc>CoroutineStart.LAZY</bc>. 
+It starts coroutine only when its result is needed by some await or if a start function is invoked.</m>
+<br/><br/>
 See also
 <a href="https://kotlinlang.org/docs/reference/coroutines/composing-suspending-functions.html" target="web">Composing Suspending Functions</a>
 </td>
@@ -1787,8 +1829,12 @@ See also
  
 <h2><a id="channels"/>Kotlin Channels</h2>
 <ul>
-<li><a href="https://kotlinlang.org/docs/reference/coroutines/channels.html" target="web">Kotlin Channels</a>
+<li>Kotlin <a href="https://kotlinlang.org/docs/reference/coroutines/channels.html" target="web">Channels</a>
+(see also
+<a href="https://play.kotlinlang.org/hands-on/Introduction%20to%20Coroutines%20and%20Channels/08_Channels" target="web">Kotlin Channels</a>
+in  <a href="https://play.kotlinlang.org/hands-on/overview" target="web">Kotlin Hands-On</a>)
  provide a way to transfer a <tt>streams of values</tt>.
+ <center><img src="./img/UsingChannelManyCoroutines.png" alt=" UsingChannelManyCoroutines.png" width="70%"/></center>
  <br/><br/></li>
  
  <li>
@@ -1798,6 +1844,10 @@ See also
  and instead of a blocking <tt>take</tt> operation it has a <bc> suspending receive</bc>.
  They are used for providing and consuming objects from the channel, implemented with a <tt>FIFO</tt>
 strategy.
+
+<center><img src="./img/liveCoroutine.gif" alt="liveCoroutine.gif" width="50%"/></center>
+
+
   <br/><br/></li>
  
  
@@ -2128,8 +2178,12 @@ Writing complex actors #87   https://github.com/Kotlin/kotlinx.coroutines/issues
 ->
 Using coroutines and channels, we can build a system that encapsulate mutable state in a manner that do not need 
 any locks and synchronization and instead leverage a protocol of messages to handle concurrent updates of that state.
-Such a model is called an actor. It is not a new concept, instead it has been around for years and is the underlying concept 
-of Erlang and can also be used in Java and Scala using Akka.
+Such a model is called an <bc>actor</bc>. <br/><br/>
+It is not a new concept, instead it has been around for years 
+(see <a href="https://en.wikipedia.org/wiki/Actor_model" target="web">Actor model</a> ) 
+and is the underlying concept of <a href="https://www.erlang.org/" target="web">Erlang</a>
+ and can also be used in Java and Scala using 
+<a href="https://doc.akka.io/docs/akka/current/typed/guide/introduction.html" target="web">Akka</a>.
 <ul>
 <li>An actor is an entity made up of a combination of a <em>coroutine</em>, the state that is confined and encapsulated into this coroutine, 
 and a <em>channel</em> to communicate with other coroutines. 
@@ -2696,7 +2750,7 @@ class ExampleDelegate {
 }
 class <ks>Delegate</ks> {
 	private var <ks>myval</ks> : String = "delegateInitialValue"
-    operator fun <k>getValue</k>(
+    opercoator fun <k>getValue</k>(
 			thisRef: Any?, property: KProperty<*>): String {
 	   println("... object $thisRef delegates '${property.name}' to $this!")
 	   return <ks>myval</ks>
