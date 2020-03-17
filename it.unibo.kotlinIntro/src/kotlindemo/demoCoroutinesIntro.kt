@@ -21,7 +21,6 @@ import java.util.concurrent.Executors
 
  
 //import kotlinx.coroutines.io.parallelis.IO_PARALLELISM_PROPERTY_NAME
-
 var thcounter=0
 val delayTime=0L
 //val dispatcher = Executors.newFixedThreadPool(128).asCoroutineDispatcher()
@@ -31,7 +30,7 @@ fun runBlockThread( delay : Long = 0L ){
 //       println("thread sleeps ... : ${curThread()}")
          Thread.sleep( delay )
          thcounter++
-//         println("thread ends : ${curThread()} thcounter=${thcounter}")
+         println("thread ends : ${curThread()} thcounter=${thcounter}")
 //     } 
 }
 
@@ -73,7 +72,7 @@ fun manyThreads(){
 		}			
 		jobs.forEach{ it.join()  }  //wait for termination of all threads
  	}
- 	println("manyThreads time= $time thcounter=$thcounter ")
+  	println("manyThreads time= $time thcounter=$thcounter ")
 }
 
 //Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()

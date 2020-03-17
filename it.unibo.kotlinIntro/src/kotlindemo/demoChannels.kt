@@ -44,7 +44,7 @@ val channel = Channel<Int>(2)
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
 	
-    channelTest( this )    		  //(1)
+     channelTest( this )    		  //(1)
 	
 	//startProducer(this); consume()	  //(2)
            		   

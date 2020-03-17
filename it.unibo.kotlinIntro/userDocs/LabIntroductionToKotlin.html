@@ -1158,7 +1158,7 @@ var <ks>thcounter</ks>=0
 fun <ks>runBlockThread( delay : Long = 0L )</ks>{	    
     //println("thread sleeps ... : ${curThread()}")
     <k>Thread.sleep(delay)</k> 
-	thcounter++
+	thcounter++  <kc>//thcounter = thcounter + 1 NON ATOMICA</kc>
 	println("thread ends : ${curThread()} thcounter=${thcounter}")
  <k>}</k>
  <!-- <k>run {</k> <kc>//Calls a function block; returns its result</kc> -->
@@ -1310,7 +1310,7 @@ fun <ks>manyCoroutines()</ks>{
 	var counter=0
 	
 	val time = measureTimeMillis {
-		val jobs = List(n) { <k>scope.launch</k>{ repeat(k) { counter++ } } }
+		val jobs = List(n) { <k>scope.launch</k>{ repeat(k) { runBlockThread() } } }
 		jobs.forEach { it.join() } <m><kc>//wait for termination of all coroutines</kc></m>
 	}
 	
@@ -1734,7 +1734,6 @@ but only from <k>another suspend</k> function or from a <em>Coroutine</em>.
 fun main() =  <k>runBlocking</k> {  
 	println("BEGINS CPU=$cpus ${curThread()}")
 	<ks>ioBoundFun()</ks>
-	println("BYE")
 	println("ENDS ${curThread()}")
 }
 </pre> </td>
@@ -1905,7 +1904,7 @@ val <ks>channel</ks> = <k>Channel&ltInt>(2)</k> <kc>//ArrayChannel capacity=2 si
  
 fun main() = runBlocking{
 	println("BEGINS CPU=$cpus ${curThread()}")
-	<ks>channelTest()</ks>
+	<ks>channelTest( this )</ks>
 	println("ENDS ${curThread()}")
 }
  </pre> </td>

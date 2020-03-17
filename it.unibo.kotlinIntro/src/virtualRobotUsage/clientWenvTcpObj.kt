@@ -40,7 +40,9 @@ object clientWenvTcpObj {
 	fun sendMsg(jsonString: String) {
 		val jsonObject = JSONObject(jsonString)
 		val msg = "$sep${jsonObject.toString()}$sep"
+	println("clientWenvTcp | sendMsg $msg")
 		outToServer?.println(msg)
+		outToServer?.flush()		//QUITE IMPORTANT!!
 	}
 
  

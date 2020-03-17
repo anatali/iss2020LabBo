@@ -353,7 +353,7 @@ BUILD SUCCESSFUL in 10s
 	<li>Edit the file <a href="../.gitignore" target="code">.gitignore</a></li>
  -->	</ul>
  
-	<h2>From Java to Kotlin using IntelliJ IDEA</h2> 
+	<h3>From Java to Kotlin using IntelliJ IDEA</h3> 
 	<ol>
 		<li>Copy <tt>App.java</tt> in a new class named <tt>AppOriginal.java</tt></li>
 		<li>Open the current working folder (mouse on it) as <m><ks>IntelliJ IDEA Community Edition Project</ks></m>.  
@@ -368,24 +368,26 @@ BUILD SUCCESSFUL in 10s
 	</ol>
 
 	
-	<h2>From Gradle to Eclipse</h2>
+	<h3>From Gradle to Eclipse</h3>
+	
 	<ol>
-
-        <li>Open Eclipse in a new  workspace  </li>
+         <li>Open Eclipse in a new  workspace  </li>
         <li>Select <m><ks>Import projects -> Gradle -> existing Gradle project</ks></m> ...  the project in  <tt>iss2020</tt>.</li>
 		<li>Look at the generated files <tt>.classpath</tt> and <tt>.project</tt></li>
  		<li>Look at the file <tt>Test.java</tt> that now contains errors.</li>
-		<li>Mouse on project, click rigth and select <m> <ks>Configure Kotlin -> add kotlin nature</ks></m> </li>
+		<li>Mouse on project, click rigtht and select <m> <ks>Configure Kotlin -> add kotlin nature</ks></m> </li>
 		<li>Observe that <tt>Test.java</tt> still contains errors.</li>
 		<li>In <tt>build.gradle</tt> add  <ks>id 'eclipse'</ks> within <ks>plugins</ks></li>
         <li>Execute <bc>gradle build eclipse </bc></li>
         <li>Run the Test with Junit	</li>
  	</ol>
     
-	<h3>Iss-unibo specific configuration</h3>
+	<h2>Iss-unibo specific configuration</h2>
 	<ol>
+		<li>Download <a href="https://www.eclipse.org/downloads/packages/release/juno/sr2/eclipse-ide-java-and-dsl-developers" target="web"><bc>Eclipse - DSL</bc></a></li>
 	 	<li>Add <tt>plugin for Kotlin</tt> </li>
- 		<li>Add  a <tt>Terminal</tt> </li>
+ 		<li>Add <b>Kotlin nature</b>  to a project:  <bc>kotlin-stdlib.jar, kotlin-reflect.jar</bc> were added to the project classpath.</li>
+		<li>Add  a <tt>Terminal</tt> (optional)</li>
 		<li>Copy into the directory <k>dropins</k>:
 			<ul>
 			<li><tt>it.unibo.issLabStart\resources\plugins\it.unibo.Qactork_x.y.z.jar</tt></li>
@@ -395,13 +397,14 @@ BUILD SUCCESSFUL in 10s
 		</li>
 		<li>Restart Eclipse</li>
 	</ol>
+<!--	
 <h2>Working in Kotlin</h2>
 	<ol>
 	 	<li>Execute <bc>gradle init</bc> and select Kotlin-application, Groovy, Junit </li>
 		<li>In Eclipse select <m><ks>Import projects -> Gradle -> existing Gradle project</ks></m> ... the created project.</m></li>
 		<li>select the <bc>project -> Configure Kotlin -> Add a Kotlin nature</bc> to the project. This action allows us to run <m><ks>App.kt</ks></m>.</li>
 	</ol>
- 
+--> 
 	
 </div>  
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
