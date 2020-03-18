@@ -12,7 +12,7 @@ import kotlinx.coroutines.channels.Channel
  
 //Actor that includes the business logic; the behavior is message-driven 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi 
 val robotActorTry  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).actor {
 	var state    = "working"
 	

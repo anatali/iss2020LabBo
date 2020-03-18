@@ -158,7 +158,7 @@ table, th, td {
 	<h3>GIT | clone the iss2020Lab</h3>
 	<ol>
 	<li>Open a new, <b>empty</b> directory (e.g. <tt>iss2020</tt>)and work in it.</li>
-	<li>Execute <bc>git clone  https://github.com/anatali/iss2020Lab.git </bc></li>
+	<li>Execute <bc>git clone  https://github.com/anatali/iss2020LabBo.git </bc></li>
 	<li>Execute <bc>git remote -v</bc>
 	<li>Use the files as a <u>read-only reference</u>: never change them</li>
 	<li>Execute <bc>git pull</bc> when needed</li>
@@ -174,6 +174,8 @@ table, th, td {
 	<li><pre>git status --h</pre>
 	<li><pre>git status --ignored   <m><kc>//To see the ignored files</kc></m></pre>
 	<!-- <li><pre>git rm --cached build -r</pre> REMOVE from Staging area</li> -->
+	<li><pre>git reset --hard  <m><kc>//Resets the index and working tree. 
+					Any changes to tracked files in the working tree are discarded.</kc></m></pre> </li>
 	</li>
 	</ul>
  
@@ -382,12 +384,17 @@ BUILD SUCCESSFUL in 10s
         <li>Run the Test with Junit	</li>
  	</ol>
     
-	<h2>Iss-unibo specific configuration</h2>
+	<h3>“Missing Gradle project configuration file” issue in Buildship</h3>
+	This would happen if you have a checked in <bc>.project</bc> file with the buildship nature, but no checked in settings file.
+ 	The choice is between checking in both or checking in neither and using the Gradle import wizard.<br/>
+	See <a href="https://www.eclipse.org/community/eclipse_newsletter/2018/february/buildship.php" target="web">
+	Build Gradle projects with Eclipse Buildship</a>
+	
+	<h2 id="uniboactions">Iss-unibo specific configuration and actions</h2>
 	<ol>
 		<li>Download <a href="https://www.eclipse.org/downloads/packages/release/juno/sr2/eclipse-ide-java-and-dsl-developers" target="web"><bc>Eclipse - DSL</bc></a></li>
 	 	<li>Add <tt>plugin for Kotlin</tt> </li>
- 		<li>Add <b>Kotlin nature</b>  to a project:  <bc>kotlin-stdlib.jar, kotlin-reflect.jar</bc> were added to the project classpath.</li>
-		<li>Add  a <tt>Terminal</tt> (optional)</li>
+ 		<li>Add  a <tt>Terminal</tt> (optional)</li>
 		<li>Copy into the directory <k>dropins</k>:
 			<ul>
 			<li><tt>it.unibo.issLabStart\resources\plugins\it.unibo.Qactork_x.y.z.jar</tt></li>
@@ -396,7 +403,20 @@ BUILD SUCCESSFUL in 10s
 			</ul>
 		</li>
 		<li>Restart Eclipse</li>
+ 	</ol>
+<hr/>	
+	<ol>
+ 		<li>With reference to the cloned repo  <tt>https://github.com/anatali/iss2020LabBo.git </tt>, select a project using<br/>
+          <m><ks>File -> Import  -> General -> Existing projects into Workspace</ks></m> ...  a <bc>COPY IT</bc> in  <tt>iss2020</tt>.</li>
+		<li>With reference to the included file <em>build.gradle</em>, execute <bc>gradle build eclipse</bc> and give the time to build or run <bc>refresh (F5)</bc>.
+		<br/>
+		Looking at the generated file<bc>.project</bc>, you will see that the project usually has <em>java</em>, <em>kotlin</em> and <em>gradle</em> nature.
+		<br/>
+		Looking at the generated file<bc>.classpath</bc>, you will see that the library set that solves dependencies..
+		</li>
+		<li>If needed, select <b>Configure Kotlin -> Add Kotlin nature</b> : it says that <bc>kotlin-stdlib.jar, kotlin-reflect.jar</bc> are added to the project classpath.</li>
 	</ol>
+	
 <!--	
 <h2>Working in Kotlin</h2>
 	<ol>

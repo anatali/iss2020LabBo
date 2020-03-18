@@ -171,7 +171,7 @@ Let us report, as an example,  an actor written in Kotlin that 'provides service
 <center><table style="width:95%">
 <tbody>	
 <tr>
-<td style="width:40%">
+<td style="width:30%">
 <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a><br/><br/>
 
 </td>
@@ -203,6 +203,16 @@ Its behavior is <bc>message-driven</bc>, since the actor executes actions relate
  <li><k>sensor</k>: 'reacts' to a <i>sensor message</i> sent by  
  <m><a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a></m> when a <em>scene-sonar</em> detects the robot</li>
 </ul>
+
+<h3>The role of the <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a></h3>
+
+The <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a> works as a 'bridge'
+between the high-level actor (<a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a>)
+and the virtual robot. Thus, it provides the method <em>setRobotTarget</em> to allow the 'injection' of a reference to the 
+high-level actor.
+<br/>
+The method <em>sendMsgToRobot</em> is used by the internal <bc>startSensorObserver coroutine</bc>  to sends message
+(about the <em>robot-sonar</em> data) to the high-level actor.
 
 <h3>The Actor as a <a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="web">Finite State Machine</a></a></h3>
 The behavior of the <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> 
@@ -292,7 +302,7 @@ that can be used as <a href="https://en.wikipedia.org/wiki/Factory_method_patter
 
 </td>
 <td>
-We have alrady introduced our symbolic representation for most of them:<br/><br/>
+We have already introduced our symbolic representation for most of them:<br/><br/>
 <center><img src="./img/msgTypes.png" alt="msgTypes" width="80%" ></center><br/>
  </td>
 </tr>
@@ -310,18 +320,18 @@ it can distiguish the input message by looking at its <tt>MSGID</tt>:
 <tr>
 <td style="width:40%">
 <pre>
-	while( state == "working" ){
-		var msg = channel.receive()
-		<m><kc>//msg : msg(MSGID,MSGTYPE,SENDER,RECEIVER,CONTENT,SEQNUM)</kc></m>	
-		val <ks>applMsg</ks> = <k>AppMsg.create(msg)</k> <kc>//Factory method</kc>
-  		when( <ks>applMsg</ks>.<k>MSGID</k> ){
-			"<k>init</k>"      -> doInit()
-			"<k>end</k>"       -> doEnd()
-			"<k>sensor</k>"    -> doSensor(msg)
-			"<k>move</k>"      -> doMove(<k>applMsg.CONTENT</k>)
-			else        -> println("NO HANDLE for $msg")
-		}		
- 	}//while
+while( state == "working" ){
+  var msg = channel.receive()
+  <m><kc>//msg : msg(MSGID,MSGTYPE,SENDER,RECEIVER,CONTENT,SEQNUM)</kc></m>	
+  val <ks>applMsg</ks> = <k>AppMsg.create(msg)</k> <m><kc>//Factory method</kc></m>
+  when( <ks>applMsg</ks>.<k>MSGID</k> ){
+	"<k>init</k>"    -> doInit()
+	"<k>end</k>"    -> doEnd()
+	"<k>sensor</k>" -> doSensor(msg)
+	"<k>move</k>"   -> doMove(<k>applMsg.CONTENT</k>)
+	else            -> println("NO HANDLE for $msg")
+  }		
+}//while
 </pre>
 </td>
 <td>
@@ -350,10 +360,11 @@ also a <tt>name</tt> for the sender (actor) and a name for the receiver (actor).
 <hr/>
 <div class="remark">
 From now on, we are interested in (at least) three 'layers' of standards:
+</div>
 <ol>
-<li>standard in <em>message semantics</em>: at the moment we will make reference to our <tt>enum class AppMsgType</tt>. </li>
-<li>standard in <em>message content</em>: this level is matter of the specific application.</li>
-<li>standard in message-communication <em>protocols</em> with particuar reference to:
+<li>standard in <bc>message semantics</bc>: at the moment we will make reference to our <tt>enum class AppMsgType</tt>. </li>
+<li>standard in <bc>message content</bc>: this level is matter of the specific application.</li>
+<li>standard in message-communication <bc>protocols</bc> with particuar reference to:
 	<ul>
 	<li> 
 	 <a href="https://www.deviceplus.com/arduino/arduino-communication-protocols-tutorial/" target="web">Arduino protcols</a> (mainly
@@ -370,10 +381,10 @@ From now on, we are interested in (at least) three 'layers' of standards:
 	</ul>
 	 </li>
 </ol>
-</div>
+
 <hr/>
 As regards the message <tt>CONTENT</tt>, its structure is of course matter of the specific application. In our case, let us introduce
-our specific <bc>robot-move language</bc>:
+our specific high-level <bc>robot-move language</bc>:
 <ul>
 <li> <k>w</k>: means '<i>go forward forever</i>'</li>
 <li> <k>s</k>: means '<i>go backward forever</i>'</li>
@@ -400,9 +411,7 @@ val haltRobotMsg		= AppMsg.create(<k>"move"</k>,	"main","robotactor",		<k>"h"</k
 Afterwards, we define a method <tt>forward</tt> to send messages of type <bc>dispatch</bc> (<tt>AppMsgType.dispatch</tt>)  to the robot-actor:
 
 <pre>
-suspend fun forward(  msg: AppMsg ){
-	robotActor.send( msg.toString()  )
-}
+suspend fun forward(  msg: AppMsg ){ <ks>robotActor</ks>.<k>send</k>( msg.toString()  ) }
 ...
 forward( initMsg )
 ...
@@ -413,15 +422,34 @@ forward( haltRobotMsg )
 
  
 The task of translating the 'application level language' into  <em>cril</em>  and viceversa is delegated to
-the <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a>.
+the <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a> 
+(see the functions <tt>translate</tt>, <tt>doApplMove</tt> and <tt>sendMsgToRobot</tt>).
+<br/><br/>
 In this way, the <a href="../src/virtualRobotUsage/robotActor.kt" target="code">robotActor.kt</a> is made independent
 of the specific concrete robot to be used; 
 the  role of the <a href="../src/virtualRobotUsage/virtualRobotSupport.kt" target="code">virtualRobotSupport.kt</a>
 as a <a href="https://en.wikipedia.org/wiki/Translator_(computing)" target="web"><bc>language translator</bc></a> 
-(see the functions <tt>doApplMove</tt> and <tt>sendMsgToRobot</tt>) can be viewed as a sort of
+ can be viewed as a sort of
 <a href="https://en.wikipedia.org/wiki/Adapter_pattern" target="web"><bc>adapter</bc></a>  in the message-passing world.
 
-<br/>
+<h2 id="todoBoundary">Work to do</h2>
+ 
+We want define an actor that manages a virtual robot working in a empty, rectangular room. 
+The virtual robot is initially located in the left-upper corner of the room (<tt>home</tt> location).<br/>
+We want to give to the actor a <bc>goal</bc>: <i>walk along the boundary</i> of the room. 
+<hr/>
+The detailed requirements are:
+<div class="req">
+<ol>
+<li>the actor initially waits for a command <em>start</em>;</li>
+<li>after receiving  <em>start</em>, the actor begins its goal-work, by moving along the room boundary, until it reaches the <tt>home</tt> again;
+<center><img src="./img/boundary.png" alt="boundary" width="20%" ></center><br/> 
+
+</li>
+<li>while doing its goal-work, the actor must be able to react to the commands <em>stop</em>, by 'immediately' stopping the work;
+<li>while stopped, the actor waits for a commands <em>resume</em> to continue its goal-work from the point reached before stopping.
+</ol>
+</div>
 <!--
 <h2>Towards more complex behavior</h2>
 The <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> implements the business logic

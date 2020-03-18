@@ -4,16 +4,21 @@
 	<comment></comment>
 	<projects/>
 	<natures>
-		<nature>org.jetbrains.kotlin.core.kotlinNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.jetbrains.kotlin.core.kotlinNature</nature>
+		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
 	</natures>
 	<buildSpec>
 		<buildCommand>
-			<name>org.jetbrains.kotlin.ui.kotlinBuilder</name>
+			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments/>
 		</buildCommand>
 		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
+			<name>org.eclipse.buildship.core.gradleprojectbuilder</name>
+			<arguments/>
+		</buildCommand>
+		<buildCommand>
+			<name>org.jetbrains.kotlin.ui.kotlinBuilder</name>
 			<arguments/>
 		</buildCommand>
 	</buildSpec>

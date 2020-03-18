@@ -50,23 +50,28 @@ object virtualRobotSupport {
             outToServer?.println(msg)
             outToServer?.flush()
         }
-	//translates application-language in cril
-        fun doApplMove(cmd: String) {	//cmd is written in application-language
+//translates application-language in cril
+        fun translate(cmd: String) : String{ //cmd is written in application-language
 		var jsonMsg = "{ 'type': 'alarm', 'arg': -1 }"
-		when( cmd ){
-			"msg(w)", "w" -> jsonMsg = "{ 'type': 'moveForward', 'arg': -1 }"
-			"msg(s)", "s" -> jsonMsg = "{ 'type': 'moveBackward', 'arg': -1 }"
-			"msg(a)", "a" -> jsonMsg = "{ 'type': 'turnLeft', 'arg': -1 }"
-			"msg(d)", "d" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1 }"
-			"msg(l)", "l" -> jsonMsg = "{ 'type': 'turnLeft', 'arg': -1 }"
-			"msg(r)", "r" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1 }"
-			"msg(z)", "z" -> jsonMsg = "{ 'type': 'turnLeft', 'arg': -1 }"
-			"msg(x)", "x" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1 }"
-			"msg(h)", "h" -> jsonMsg = "{ 'type': 'alarm', 'arg': -1 }"
-			else -> println("mbotSupport command $cmd unknown")
-		}
+			when( cmd ){
+				"msg(w)", "w" -> jsonMsg = "{ 'type': 'moveForward', 'arg': -1 }"
+				"msg(s)", "s" -> jsonMsg = "{ 'type': 'moveBackward', 'arg': -1 }"
+				"msg(a)", "a" -> jsonMsg = "{ 'type': 'turnLeft', 'arg': -1 }"
+				"msg(d)", "d" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1 }"
+				"msg(l)", "l" -> jsonMsg = "{ 'type': 'turnLeft', 'arg': -1 }"
+				"msg(r)", "r" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1 }"
+				"msg(z)", "z" -> jsonMsg = "{ 'type': 'turnLeft', 'arg': -1 }"
+				"msg(x)", "x" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1 }"
+				"msg(h)", "h" -> jsonMsg = "{ 'type': 'alarm', 'arg': -1 }"
+				else -> println("mbotSupport command $cmd unknown")
+			}
             val jsonObject = JSONObject( jsonMsg )
             val msg = "$sep${jsonObject.toString()}$sep"
+			return msg
+		}
+	
+        fun doApplMove(cmd: String) {	//cmd is written in application-language
+			val msg = translate( cmd )
             outToServer?.println(msg)
             outToServer?.flush()
         }
@@ -91,7 +96,7 @@ suspend private fun forward( msgContent : String ){
         private fun startSensorObserver( clientSocket : Socket ) {
 		val inFromServer = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
 		val scope : CoroutineScope = CoroutineScope( Dispatchers.Default )
-	    scope.launch {
+	    val sensorObserver = scope.launch {
 //			println("virtualRobotSupport | startSensorObserver STARTS ")
                 while (true) {
                     try {
@@ -107,16 +112,12 @@ suspend private fun forward( msgContent : String ){
                                 val jsonArg   = jsonObject.getJSONObject("arg")
                                 val sonarName = jsonArg.getString("sonarName")
                                 val distance  = jsonArg.getInt("distance")
-//								sendJSON_message("sensor($sonarName-$distance)")
-//								forward( "$sonarName-$distance" )
 								sendMsgToRobot( "$sonarName-$distance" )
  
                             }
                             "collision" -> {
                                 val jsonArg    = jsonObject.getJSONObject("arg")
                                 val objectName = jsonArg.getString("objectName")
-//								sendJSON_message("sensor(collision-$objectName)")
-//								forward( "collision-$objectName" )
 								sendMsgToRobot( "collision-$objectName" )
                              }
                         }
