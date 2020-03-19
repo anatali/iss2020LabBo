@@ -88,7 +88,7 @@ suspend fun sendSomeCommand(   ) {
     clientWenvTcpObj.initClientConn( )
     var jsonString  : String
 	val time = 1300
-    for (i in 1..3) {
+//    for (i in 1..2) {
         jsonString = "{ 'type': 'moveForward', 'arg': $time }"
          clientWenvTcpObj.sendMsg(jsonString)
          delay(1000)
@@ -96,7 +96,7 @@ suspend fun sendSomeCommand(   ) {
         jsonString = "{ 'type': 'moveBackward', 'arg': $time }"
          clientWenvTcpObj.sendMsg(jsonString)
          delay(1000)
-    }
+//    }
 }
  
 fun main( ) = runBlocking {

@@ -10,16 +10,16 @@ suspend fun sendCrilCommands(   ) {
 	virtualRobotSupport.setRobotTarget( robotActorTry, appMsg = false ) //Configure - Inject
     robotActorTry.send("init")
     var jsonString  : String
-	val time = 1000	//time = 1000 => collision
-    for (i in 1..2) {
+	val time = 2000L	//time = 1000 => collision
+//    for (i in 1..2) {
         jsonString = "{ 'type': 'moveForward', 'arg': $time }"
         robotActorTry.send("move($jsonString)")
-        delay(1000)
+        delay(time)
 
         jsonString = "{ 'type': 'moveBackward', 'arg': ${time} }"
 		robotActorTry.send("move($jsonString)")
         delay(1000)
-    }
+//    }
 	robotActorTry.send("end")
 }
 

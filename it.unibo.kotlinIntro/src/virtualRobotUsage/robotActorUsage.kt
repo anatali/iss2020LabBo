@@ -13,7 +13,8 @@ val haltRobotMsg    = AppMsg.create("move","main","robotactor","h")
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 suspend fun forward(  msg : AppMsg ){
- 	robotActor.send( msg.toString()  )
+	if( msg.MSGTYPE  == AppMsgType.dispatch.toString() )
+		robotActor.send( msg.toString()  )
 }
  
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -22,7 +23,7 @@ suspend fun sendCommands(   ) {
 	virtualRobotSupport.setRobotTarget( robotActor  ) //Configure - Inject
 
 	forward( initMsg )
-    for (i in 1..2) {
+//    for (i in 1..2) {
 		 forward( moveForwardMsg )
          delay(1000)
 		 forward( haltRobotMsg )
@@ -32,7 +33,7 @@ suspend fun sendCommands(   ) {
          delay(1000)
  		 forward( haltRobotMsg )
          delay(500)
-   }
+//   }
 	forward( endMsg )
 }
 
