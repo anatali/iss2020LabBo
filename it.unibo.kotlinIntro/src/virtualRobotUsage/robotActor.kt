@@ -27,7 +27,7 @@ val robotActor  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).ac
 		if( msg.CONTENT.startsWith("collision") ) doCollision(msg)
 	}
 	
-	fun doMove( move: String ){
+	suspend fun doMove( move: String ){
   		virtualRobotSupport.doApplMove( move )		//move in the application-language 
 	}
 	

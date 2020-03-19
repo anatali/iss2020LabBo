@@ -300,12 +300,15 @@ using a <tt>TCP</tt> socket:<br/><br/>
 	</tbody>	
 </table></center>
 <br/> 
-The coroutine launched by <a href="clientWenvTcpObj.kt" target="code">clientWenvTcpObj.kt</a> waits for the sonar-data sent
+The <bc>coroutine</bc> launched by <a href="clientWenvTcpObj.kt" target="code">clientWenvTcpObj.kt</a> waits for the sonar-data sent
 by the virtual robot environment along the <tt>TCP</tt>  connection; it simply extracts values from the received <tt>JSON</tt> string and
 prints these values.
 <hr/>
+<div class="remark">
 This low-level approach to the usage of a (virtual)robot should be replaced by a higher-level, more technology-independent code,
-written after an application-oriented design. For such a change, please  read 
+written after an application-oriented (top-down) design. 
+</div>
+For such a change, please  read 
 <a href="../../it.unibo.kotlinIntro/userDocs/FirstActorRobot.html" target="code">it.unibo.kotlinIntro\userDocs\FirstActorRobot.html</a>.
 <br/><br/>
 

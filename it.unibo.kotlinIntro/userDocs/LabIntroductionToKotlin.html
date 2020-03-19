@@ -2177,7 +2177,7 @@ Writing complex actors #87   https://github.com/Kotlin/kotlinx.coroutines/issues
 ->
 Using coroutines and channels, we can build a system that encapsulate mutable state in a manner that do not need 
 any locks and synchronization and instead leverage a protocol of messages to handle concurrent updates of that state.
-Such a model is called an <bc>actor</bc>. <br/><br/>
+Such a model is called an <bc>actor</bc>. <br/> 
 It is not a new concept, instead it has been around for years 
 (see <a href="https://en.wikipedia.org/wiki/Actor_model" target="web">Actor model</a> ) 
 and is the underlying concept of <a href="https://www.erlang.org/" target="web">Erlang</a>
@@ -2276,7 +2276,7 @@ This example is reported in  <a href="../src/kotlindemo/demoActors.kt" target="c
  
 <ul>
 
-<li>The first step of using an actor usually consists in defining a class of messages that an actor is going to process.
+<li>The first step of using an actor usually consists in defining a <bc>class of messages</bc> that an actor is going to process.
 Kotlin's <a href="https://kotlinlang.org/docs/reference/sealed-classes.html"  target="web"><m><k>sealed classes</k></m></a> are well suited for that purpose. However,
 In the next example, we will use a conventional class (<m><ks>CounterMsg</ks></m>).<br/><br/>
 </li>
@@ -2320,9 +2320,8 @@ This example is reported in  <a href="../src/kotlindemo/demoActorCounter.kt" tar
 
 <center><table style="width:95%">
 <tbody>	
-
 <tr>
-<td>
+<td style="width:55%">
 <pre>
 class <kc>CounterMsg</kc>(
 	val cmd:String,
@@ -2339,6 +2338,7 @@ fun <ks>createCounter</ks>(scope : CoroutineScope):SendChannel&ltCounterMsg>{
 			<ks>"INC"</ks> -> k++
 			<ks>"DEC"</ks> -> k--
 			<ks>"GET"</ks> -> <k>msg.response?.complete</k>(k)
+			<ks>"END"</ks> -> {println("counter closing ...");<k>channel.close()</k>}		
 			else -> throw Exception( "unknown" )
 		}
 	  }
@@ -2346,32 +2346,30 @@ fun <ks>createCounter</ks>(scope : CoroutineScope):SendChannel&ltCounterMsg>{
  return counterActor
 }
 
-<k>suspend</k> fun <ks>getIntialValue</ks>(
-		<ks>counterActor</ks>: SendChannel&lt;CounterMsg>){
+<k>suspend</k> fun <ks>showValue</ks>(<ks>counterActor</ks>: SendChannel&lt;CounterMsg>){
     val initVal = CompletableDeferred&lt;Int>()
     <ks>counterActor</ks>.<k>send</k>(<kc>CounterMsg</kc><ks>("GET", initVal))</ks>
-    println("Counter INITIAL VALUE=${<k>initVal.await()</k>}")	
+    println("Counter VALUE=${<k>initVal.await()</k>}")	
 }
 
 <k>suspend</k> fun <ks>sendManyMessages</ks>( <ks>scope</ks> : CoroutineScope, 
 		<ks>counterActor</ks>: SendChannel&lt;CounterMsg>){
-	<ks>scope</ks>.<k>manyRun</k> {
-		<ks>counterActor</ks>.<k>send</k>( <kc>CounterMsg</kc><ks>("INC")</ks> )
-    }
-    val finalVal = CompletableDeferred&lt;Int>()
-    <ks>counterActor</ks>.<k>send</k>( <kc>CounterMsg</kc><ks>("GET", finalVal) )</ks>
-    println("Counter FINAL VALUE= = ${<ks>finalVal</ks>.<k>await()</k>}")	
+    <ks>scope</ks>.<k>manyRun</k> {<ks>counterActor</ks>.<k>send</k>( <kc>CounterMsg</kc><ks>("INC")</ks>)}
 }
 
 fun main() = <k>runBlocking</k>{
     println("BEGINS CPU=$cpus ${curThread()}")
-	
-	val <ks>counter</ks> = createCounter( this )	
-	getIntialValue( <ks>counter</ks> )
-	
+
+	val <ks>counter</ks> = createCounter( this )
+	showValue( <ks>counter</ks> ) <kc>//initial value</kc>
+
 	sendManyMessages(this, <ks>counter</ks>)
-	
-	<ks>counter</ks>.close() <kc>//shutdown the actor</kc>
+	showValue( <ks>counter</ks> )
+	<kc>//TERMINATE THE COUNTER</kc>
+	<ks>counter</ks>.<k>send</k>( CounterMsg(<ks>"END"</ks>) )
+	println("JOIN ${curThread()}")
+	<k>(counter as Job).join()</k>	<kc>//WAIT for counter termination</kc>
+	<kc>//<ks>counter</ks>.close() //shutdown the actor</kc>
 
     println("ENDS ${curThread()}")
 }
@@ -2382,22 +2380,34 @@ fun main() = <k>runBlocking</k>{
 <center><img src="./img/demoActorCounter.png" alt="demoActorCounter.png" width="50%"/></center>
 <pre>
 <kc>//OUTPUT</kc>
-BEGINS CPU=4 thread=main | nthreads=1
-Counter INITIAL VALUE=0
-INC | 10000 in thread=main | nthreads=1 full=true
-INC | 20000 in thread=main | nthreads=1 full=true
-INC | 30000 in thread=main | nthreads=1 full=true
-INC | 40000 in thread=main | nthreads=1 full=true
-INC | 50000 in thread=main | nthreads=1 full=true
-INC | 60000 in thread=main | nthreads=1 full=true
-INC | 70000 in thread=main | nthreads=1 full=true
-INC | 80000 in thread=main | nthreads=1 full=true
-INC | 90000 in thread=main | nthreads=1 full=true
-Completed 100000 actions in 414 ms
-Counter FINAL VALUE= = 100000
-ENDS thread=main | nthreads=1
-</pre>
-<m></m> 
+BEGINS CPU=4 thread=main / nthreads=1  
+Counter VALUE=0
+counter INC | 10000 in thread=main / nthreads=1   full=true
+counter INC | 20000 in thread=main / nthreads=1   full=true
+counter INC | 30000 in thread=main / nthreads=1   full=true
+counter INC | 40000 in thread=main / nthreads=1   full=true
+counter INC | 50000 in thread=main / nthreads=1   full=true
+counter INC | 60000 in thread=main / nthreads=1   full=true
+counter INC | 70000 in thread=main / nthreads=1   full=true
+counter INC | 80000 in thread=main / nthreads=1   full=true
+counter INC | 90000 in thread=main / nthreads=1   full=true
+Completed 100000 actions in 403 ms
+Counter VALUE=100000
+JOIN thread=main / nthreads=1  
+counter END | 100000 in thread=main / nthreads=1   full=true
+counter closing ...
+ENDS thread=main / nthreads=1  </pre>
+
+<h3>Actor termination</h3>
+<m>
+Note that the actor <k>counter</k> can be terminated:
+<ul>
+<li>From the inside, e.g.  : <k>channel.close()</k></li>
+<li>From the outside, e.g. : <k>counter.close()</k></li>
+</ul>
+Moreover, we can await for actor termination by writing<br/>
+<k>(counter as Job).join()</k>
+</m> 
 </td>
 </tr>
 </tbody>	

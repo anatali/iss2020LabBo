@@ -26,28 +26,30 @@ class CounterMsg(
 	val response: CompletableDeferred<Int>?=null){
 }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 fun createCounter(scope : CoroutineScope):SendChannel<CounterMsg>{
  val counterActor = scope.actor<CounterMsg> {
 	var k = 0 	//actor state
 	for (msg in channel) { // iterate over incoming messages
 	   if( k>0 && k % 10000 == 0  && msg.cmd != "GET" )
-		println("${msg.cmd} | $k in ${curThread()} full=${channel.isFull}")
+		println("counter ${msg.cmd} | $k in ${curThread()} full=${channel.isFull}")
 		when ( msg.cmd ) {
 			"INC" -> k++
 			"DEC" -> k--
 			"GET" -> msg.response?.complete(k)
+			"END" -> { println("counter closing ..."); channel.close() }  
 			else -> throw Exception( "unknown" )
 		}
-	  }
+ 	  }//for
 	}
  return counterActor
 }
 
-suspend fun getIntialValue(
-		counterActor: SendChannel<CounterMsg>){
+suspend fun showValue(counterActor: SendChannel<CounterMsg>){
     val initVal = CompletableDeferred<Int>()
     counterActor.send(CounterMsg("GET", initVal))
-    println("Counter INITIAL VALUE=${initVal.await()}")	
+    println("Counter VALUE=${initVal.await()}")	
 }
 
 suspend fun sendManyMessages( scope : CoroutineScope, 
@@ -55,20 +57,24 @@ suspend fun sendManyMessages( scope : CoroutineScope,
 	scope.manyRun {
 		counterActor.send( CounterMsg("INC") )
     }
-    val finalVal = CompletableDeferred<Int>()
-    counterActor.send( CounterMsg("GET", finalVal) )
-    println("Counter FINAL VALUE= = ${finalVal.await()}")	
 }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
     println("BEGINS CPU=$cpus ${curThread()}")
 	
 	val counter = createCounter( this )	
-	getIntialValue( counter )
+	showValue( counter )
 	
 	sendManyMessages(this, counter)
+	showValue( counter )
 	
-	counter.close() //shutdown the actor
+	counter.send( CounterMsg("END") )
+
+	println("JOIN ${curThread()}")
+    (counter as Job).join()	//WAIT for termination	
+	//counter.close() //shutdown the actor	
 
     println("ENDS ${curThread()}")
 }

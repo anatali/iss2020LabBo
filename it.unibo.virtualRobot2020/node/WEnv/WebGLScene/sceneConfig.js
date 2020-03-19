@@ -29,13 +29,13 @@ const config = {
 
         {
             name: "bottle1",
-            centerPosition: { x: 0.55, y: 0.8 },
+            centerPosition: { x: 0.55, y: 0.64 },
             size: { x: 0.05, y: 0.05      }
 		},
 		
         {
             name: "bottle2",
-            centerPosition: { x: 0.18, y: 0.20},
+            centerPosition: { x: 0.29, y: 0.28},
             size: { x: 0.05, y: 0.05      }
 		},
 

@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 suspend fun sendCrilCommands(   ) {
-	virtualRobotSupport.setRobotTarget( robotActorTry ) //Configure - Inject
+	virtualRobotSupport.setRobotTarget( robotActorTry, appMsg = false ) //Configure - Inject
     robotActorTry.send("init")
     var jsonString  : String
 	val time = 1000	//time = 1000 => collision

@@ -161,9 +161,9 @@ is just an example of a robot built according to some specific technology.
 <br/> 
 But, an important goal (<a href="https://en.wikipedia.org/wiki/Non-functional_requirement" target="web">non-functional requirement</a>)
 of a software system designer should be that of making the code of a robot application 
-<i>as much independent as possible from the robot technology</i>, in order to make it easier the substitution of a robot type with another.
+<bc>as much independent as possible from the robot technology</bc>, in order to make it easier the substitution of a robot type with another.
 <br/><br/> 
-Kotlin actors help us to achieve such a goal, by providing in a quite natural way a more abstract layer of reasoning.
+Kotlin actors help us to achieve such a goal, by providing in a quite natural way a <bc>more abstract layer of reasoning</bc>.
  <br/>
 Let us report, as an example,  an actor written in Kotlin that 'provides services' for our 
 <a href="../../it.unibo.virtualRobot2020\userDocs\LabVirtualRobot.html" target="web">it.unibo.virtualRobot2020\userDocs\LabVirtualRobot.html</a>:<br/><br/>
@@ -432,7 +432,7 @@ as a <a href="https://en.wikipedia.org/wiki/Translator_(computing)" target="web"
  can be viewed as a sort of
 <a href="https://en.wikipedia.org/wiki/Adapter_pattern" target="web"><bc>adapter</bc></a>  in the message-passing world.
 
-<h2 id="todoBoundary">Work to do</h2>
+<h2 id="todoBoundary">Work to do (Boundary Walker)</h2>
  
 We want define an actor that manages a virtual robot working in a empty, rectangular room. 
 The virtual robot is initially located in the left-upper corner of the room (<tt>home</tt> location).<br/>
@@ -450,6 +450,17 @@ The detailed requirements are:
 <li>while stopped, the actor waits for a commands <em>resume</em> to continue its goal-work from the point reached before stopping.
 </ol>
 </div>
+
+For a video, see <tt>FirstActorVR.264</tt>.
+ 
+<!-- 
+<video controls>
+   <source src="foo.ogg" type="video/ogg"> audio  
+  <source src="firstactorvr.264" type="video">
+  Your browser does not support the <code>video</code> element.
+</video>
+--> 
+ 
 <!--
 <h2>Towards more complex behavior</h2>
 The <a href="../src/virtualRobotUsage/robotActorTry.kt" target="code">robotActorTry.kt</a> implements the business logic
