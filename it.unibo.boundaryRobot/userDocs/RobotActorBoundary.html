@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 90%;
+}
+h4 {
+	background-color: #ffffcc;
+    font-size: 100%;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+	font-weight: bold;
+    font-size: 90%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>RobotActorBoundary</title></head>
+    
+<body>
+<div id="top">
+<h1>RobotActorBoundary | A first actor-based robot-application<font size="5"></font> </h1>
+</div>  
+
+<div class="body"> 
+ 
+<h2>Introduction</h2>
+In order to experiment with Kotlin actors,
+we want define an <em>actor</em> that manages a <em>virtual robot</em> working in a empty, rectangular room. 
+The virtual robot is initially located in the left-upper corner of the room (<tt>home</tt> location).<br/>
+We want to give to the actor a <bc>goal</bc>: <i>walk along the boundary</i> of the room. 
+
+<!--
+ Remember our motto:<br/>   <k>there is no code without a project, no project
+without problem analysis and no problem without requirements</k>.
+--> 
+ 
+<h2>Requirements</h2>
+
+The detailed requirements are:
+<div class="req">
+<ol>
+<li>the actor initially waits for a command <em>start</em>;</li>
+<li>after receiving  <em>start</em>, the actor begins its goal-work, by moving along the room boundary, until it reaches the <tt>home</tt> again;
+<center><img src="./img/boundary.png" alt="boundary" width="20%" ></center><br/> 
+
+</li>
+<li>while doing its goal-work, the actor must be able to react to the commands <em>stop</em>, by 'immediately' stopping the work;
+<li>while stopped, the actor waits for a commands <em>resume</em> to continue its goal-work from the point reached before stopping.
+</ol>
+</div>
+
+ 
+
+<h2>Requirement analysis</h2>
+ 
+<ol>
+<li><h4>clarify the meaning of <i>names</i> and<i>verbs</i> in the requirement text</h4>
+<ul>
+<li><em>Kotlin actor</em>: the customer intends the entity described in
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.kotlinIntro/userDocs/LabIntroductionToKotlin.html#actors" 
+target="web"> 	
+LabIntroductionToKotlin | Actors</a>
+<li><em>virtual robot</em>: the customer intends the robot described in:
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.virtualRobot2020/userDocs/LabVirtualRobot.html" 
+target="web">LabVirtualRobot | Interacting with a virtual robot</a></li>
+</ul>
+</li>
+<li><h4>define a formal model of the requirements (and <bc>functional TestPlans</bc>)</h4>
+we will deal with  this point later ...
+</li>
+</ol>
+
+ 
+
+<h2>Problem analysis</h2>
+
+<ol>
+<li><h4>define the <bc>logical architecture</bc> of the system</h4>
+From the logical point of view, our distributed system is composed of two active entities, each conceivable as an actor :
+<center><img src="./img/logicArchBoundary.png" alt="logicArchBoundary" width="40%" ></center>
+<br/> 
+The details related to the 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.virtualRobot2020/userDocs/LabVirtualRobot.html" 
+target="web">Virtual robot</a> are hidden within the <em>robotboundary</em> actor and are considered as 'implementation details' at this level.
+</li>
+<li><h4>measure the <bc>abstraction gap</bc></h4>
+Since we can exploit the Kotlin actor support, there is no abstraction gap. 
+The effort/resources  necessary to build the system are quite limited: we should terminate in half a day, at most.
+</li>
+<li><h4><bc>refine</bc> the <i>functional TestPlans</i></h4>
+we will deal with  this point later ...</li>
+<li><h4>define a (first) <bc>product backlog</bc></h4>
+now it is easy: we must write the code of the actor <em>robotboundary</em> and a
+<a href="https://en.wikipedia.org/wiki/Mock_object" target="web">mock</a> actor for the user.
+</li>
+ 
+</ol>
+ 
+<h2>Test plans</h2> 
+we will deal with this point later ...
+
+<h2>Project</h2> 
+<div class="remark">
+there is no code without a project, ...
+</div>
+
+<h4>Define the concrete Architecture of the system and the behavior of each component</h4>
+<center><img src="./img/dimensions.png" alt="dimensions" width="40%"></center>
+ <ol>
+ <li><k>STRUCTURE</k>: the structure of our logical architecture can be maintained at project level. 
+ More details are required to consider the usage of the virtual robot.<br/><br/> </li>
+ <li><k>INTERACTION</k>: as already stated in the logical architecture, the interaction is asynchronous 
+and based on messages of type 'fire-and-forget', i.e. on message of type <bc>dispatch</bc> according to our internal standard terminology
+introduced in:
+ <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.kotlinIntro/userDocs/FirstActorRobot.html#msgstandard" target="web"> 	
+FirstActor | Towards standards in messaging</a>
+<pre>val msgStart    = "msg(start ,dispatch,main,robotboundary,none,1)"
+val msgStop     = "msg(stop,  dispatch,main,robotboundary,none,1)"
+val msgResume  = "msg(resume,dispatch,main,robotboundary,none,1)"
+
+"msg(sensor,dispatch,vr,robotactor,collision_wallXXX,1)"  <kc>//is sent by the virtualrobot</kc>
+</pre>
+ <center><img src="./img/projectArchBoundary.png" alt="projectArchBoundary.png" width="50%"></center>
+ </li>
+ <li><k>BEHAVIOR</k><br/>
+The code reported in 
+<a href="../src/firstSolution/robotboundary0.kt" target="code">src/firstSolution/robotboundary0.kt</a> (project <i>it.unibo.kotlin.actorRobot</i>)
+is a possible <bc>message-driven</bc> implementation:<br/>
+
+<center><i>if M is the first message in the actor channel, then elaborate M </i></center>
+
+<br/> 
+<center><table style="width:95%">
+<tbody>	
+<tr>
+<td style="width:50%"> 
+<center><img src="./img/robotboundaryMsgDriven.png" alt="robotboundaryMsgDriven.png" width="60%"></center>
+</td>
+<td> 
+<m><bc>end</bc> is a <em>self-message</em>, i.e. a message sent by the actor to  itself</m>
+</td>
+</tr>
+</tbody>	
+</table></center>
+
+ 
+
+
+The validity of this kind of solution will be discussed in our first SCRUM
+<a href="https://www.scrum.org/resources/what-is-a-sprint-review" target="web">SPRINT-REVIEW meeting</a>.
+
+ </li>
+ </ol>
+ 
+<h2>Testing</h2> 
+A functional testing of the application can be automated by making the variable <tt>nStep</tt> accessible to the testing unit. For example:
+<a href="../src/firstSolution/TestRobotboundary0.kt" target="code">src/firstSolution/TestRobotboundary0.kt</a>
+
+<h2>Deployment</h2> 
+
+we will deal with  this point later ...
+
+
+
+<h2>Maintenance</h2> 
+we will deal with  this point later ...
+
+<h1>A first <a href="https://www.scrum.org/resources/what-is-a-sprint-retrospective" target="web">SPRINT-REVIEW</a></h1>
+ 
+ <k>BEHAVIOR</k>: can be modeled as a Moore's Finite State Machine :<br/>
+<center><i>when the actor goes in state S, execute the set of (terminating) actions related to S; <br/>
+afterwards, look at the current message M; if it is one of the expected messages in S, change the actor state</i></center>
+<br/>
+The code reported in <a href="../src/firstSolution/robotboundary1.kt" target="code">src/firstSolution/robotboundary1.kt</a> 
+(project <i>it.unibo.kotlin.actorRobot</i>) is a possible <bc>message-based</bc> implementation of the actors that reflects in 
+the code the structure of the following state-diagrams:
+<br/><br/>
+<center><table style="width:95%">
+<tbody>	
+<tr>
+<td style="width:50%"> 
+<h4>robotboundary</h4>
+<center><img src="./img/robotboundaryFsm.png" alt="robotboundaryFsm" width="100%"></center>
+<m><bc>end</bc> and <bc>goon</bc> are <em>self-messages</em>, i.e. messages sent by the actor to  itself</m>
+</td>
+<td> 
+<h4>usermock</h4>
+<center><img src="./img/usermockFsm.png" alt="usermockFsm" width="80%"></center>
+</td>
+</tr>
+</tbody>	
+</table></center>
+<br/>
+
+The diagrams show that the <i>robotboundary</i> and the <i>usermock</i> actors constitute a <bc>system</bc>,
+because their behavior is correlated by a precise message-interaction.<br/><br/>
+
+
+<h1>A first <a href="https://www.scrum.org/resources/what-is-a-sprint-retrospective" target="web">SPRINT-RETROSPECTIVE</a></h1>
+Let us list a possible set of improvements related to the software-development process :
+
+<ol>
+<li>messages as representation of <a href="../src/virtualRobotUsage/AppMsg.kt" target="code">AppMsg.kt</a></li>
+<li>actor behavior as a state machine (message based and not message driven)</li>
+<li>definition of a functional test-plan just after requirement-analysis </li>
+<li>...</li>
+</ol> 
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+</td>
+<td></td>
+</tr>
+</table>
+	      	
+<br/><br/> 	
+</div>  
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+By studentName email: student@studio.unibo.it  
+<img src="./img/emiglio.png" alt="mbot" width="15%" height="15%">
+</div> 
+</body>
+</html>
