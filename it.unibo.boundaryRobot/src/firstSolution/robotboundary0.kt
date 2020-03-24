@@ -14,31 +14,30 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
-
 var nStep = 0		//Declared here for testing purpose
 var nStop = 0
 var nmsg  = 0		//msg counter
 
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
-val usermock0  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).actor {
-	println("usermock0 | STARTS")
-//	delay( 1300 )
-	robotboundary0.send( Messages.startMsg.toString() )
-	for( i in 1..5 ){
-		delay( 1300 )
-		println("usermock0 FORWARD STOP ${i}  nStep=$nStep");
-		robotboundary0.send( Messages.stopMsg.toString()  )
-		delay( 1500 )
-		println("usermock0 FORWARD RESUME ${i}  nStep=$nStep");
-		robotboundary0.send( Messages.resumeMsg.toString()  )
-		println("usermock0 | ENDS")
-	}
-}
+//@kotlinx.coroutines.ObsoleteCoroutinesApi
+//@kotlinx.coroutines.ExperimentalCoroutinesApi
+//val usermock0  : SendChannel<String>	= CoroutineScope( Dispatchers.Default ).actor {
+//	println("usermock0 | STARTS")
+////	delay( 1300 )
+//	robotboundary0.send( Messages.startMsg.toString() )
+//	for( i in 1..5 ){
+//		delay( 1300 )
+//		println("usermock0 FORWARD STOP ${i}  nStep=$nStep");
+//		robotboundary0.send( Messages.stopMsg.toString()  )
+//		delay( 1500 )
+//		println("usermock0 FORWARD RESUME ${i}  nStep=$nStep");
+//		robotboundary0.send( Messages.resumeMsg.toString()  )
+//	}
+//	println("usermock0 | ENDS")
+//}
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-val robotboundary0  : SendChannel<String>	= CoroutineScope( Dispatchers.Default).actor(capacity=50) {
+val robotboundary0  : SendChannel<String> = CoroutineScope( Dispatchers.Default).actor(capacity=50) {
  	
 		suspend fun doMove( move: String ){
 	  		virtualRobotSupport.doApplMove( move )		//move in the application-language

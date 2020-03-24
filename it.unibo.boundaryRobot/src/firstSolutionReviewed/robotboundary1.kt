@@ -51,6 +51,8 @@ val robotboundary1  : SendChannel<String>	= CoroutineScope( Dispatchers.Default)
 var state        = RobotState.initial
 val goonMsg 	 = AppMsg.create("goon", "robotboundary1", "robotboundary1")	//self-message
 val endMsg 	     = AppMsg.create("end",  "robotboundary1", "robotboundary1")	//self-message
+
+	lateinit var curMsg : AppMsg
 	
 		suspend fun doMove( move: String ){
 	  		virtualRobotSupport.doApplMove( move )		//move in the application-language
@@ -66,6 +68,10 @@ val endMsg 	     = AppMsg.create("end",  "robotboundary1", "robotboundary1")	//s
 			nStep++
 			doMove( "l" )
 		}
+	
+		fun localAction(){
+			println("robotboundary1 localAction")
+		}
   	
 /*
  -----------------------------------------
@@ -73,7 +79,6 @@ val endMsg 	     = AppMsg.create("end",  "robotboundary1", "robotboundary1")	//s
  -----------------------------------------
 */
 
-	lateinit var curMsg : AppMsg
 	
 	suspend fun getInput()  {
   		var msg    = channel.receive()
@@ -85,9 +90,11 @@ suspend fun fsm(   ){
 		when( state ){
  			RobotState.initial -> { doInit()
  									state = RobotState.working
- 								  }   				
+  								  }   				
 
-			RobotState.working   ->{
+			RobotState.working  -> {
+				//local acions
+				localAction()
 				getInput()
 				when( curMsg.MSGID ){
 					"start"     -> { state = RobotState.working
@@ -109,10 +116,11 @@ suspend fun fsm(   ){
 			RobotState.endOfStep  -> {
 				elabCollision(   )
  				if( nStep == 4 ){
-					 Messages.forward(endMsg.toString(),channel)  //self-msg robotboundary1 not usable here	
+					 Messages.forward(endMsg.toString(), channel)  //self-msg robotboundary1 not usable here	
 				}else {
 					 Messages.forward(goonMsg.toString(),channel) //self-msg robotboundary1 not usable here	
-				}  
+				}
+				
 				getInput()				
 				when( curMsg.MSGID ){
 					"end"  ->  {   state = RobotState.end        }
@@ -120,6 +128,7 @@ suspend fun fsm(   ){
 								   doMove("w")
  							   }
 					"stop"  -> {   state = RobotState.stopped    }
+					else -> println("fsm | in $state unexpects: $curMsg ")
 				} 
  			}//endOfStep
 			
@@ -139,7 +148,7 @@ suspend fun fsm(   ){
 	}//while
 }//fsm
 	
-	//Actor behavior		
+	//Actor behavior: A Moore State Machine		
 	fsm()	
 	
 }//robotboundary1	
