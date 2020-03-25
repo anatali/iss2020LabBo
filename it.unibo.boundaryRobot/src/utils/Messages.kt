@@ -1,6 +1,7 @@
 package utils
 
 import kotlinx.coroutines.channels.SendChannel
+import fsm.Fsm
 
 object Messages{
 
@@ -21,6 +22,14 @@ object Messages{
 	 	//println("forward msg: ${msg} ")
 	 	dest.send( msg  ) 
 	}
+	
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun forward(  msg : AppMsg, dest : Fsm ){
+	 	//println("forward AppMsg msg: ${msg} ")
+	 	dest.fsmactor.send( msg  ) 
+	}
+	
 //	suspend fun forward(  dest : SendChannel<String>, msgId : String, msgContent : String   ){
 //		val m = AppMsg( msgId, AppMsgType.dispatch.toString(), "sender", dest)
 //	}

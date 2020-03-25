@@ -23,7 +23,35 @@ open class AppMsg private constructor(  val MSGID: String, val MSGTYPE: String,
 		  val msgNum      = msgBody[5].replace(")","")
 		  return AppMsg(msgId,msgType,sender,receiver,content,msgNum)
 	  }
+  
+    fun buildEvent( actor: String, msgId : String, content : String  ) : AppMsg {
+        return AppMsg(msgId, AppMsgType.event.toString(), actor, "none", "$content", "${n++}")
+    }
+		
+    fun buildDispatch( actor: String, msgId : String , content : String, dest: String ) : AppMsg {
+        return AppMsg(msgId, AppMsgType.dispatch.toString(), actor, dest, "$content", "${n++}")
+    }
+    fun buildRequest( actor: String, msgId : String ,
+                       content : String, dest: String ) : AppMsg {
+        return AppMsg(msgId, AppMsgType.request.toString(),
+            actor, dest, "$content", "${n++}")
+    }
+    fun buildReply( actor: String, msgId : String ,
+                      content : String, dest: String ) : AppMsg {
+        return AppMsg(msgId, AppMsgType.reply.toString(),
+            actor, dest, "$content", "${n++}")
+    }
+    fun buildReplyReq( actor: String, msgId : String ,
+                    content : String, dest: String ) : AppMsg {
+        return AppMsg(msgId, AppMsgType.request.toString(),
+            actor, dest, "$content", "${n++}")
+    }
+  
   }
+	
+	
+
+	
 
   override fun toString(): String {
 	  //msg( MSGID, MSGTYPE, SENDER, RECEIVER, CONTENT, SEQNUM )	
