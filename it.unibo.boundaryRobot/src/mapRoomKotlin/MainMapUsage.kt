@@ -1,7 +1,5 @@
 package mapRoomKotlin
 
- 
- 
 
 fun doTestMove(){
 	mapUtil.showMap()

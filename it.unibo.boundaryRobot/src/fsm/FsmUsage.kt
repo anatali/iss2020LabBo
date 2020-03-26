@@ -28,7 +28,7 @@ suspend fun test( scope: CoroutineScope ){
 
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @kotlinx.coroutines.ObsoleteCoroutinesApi
-suspend fun  runBoundaryRobot( scope: CoroutineScope ){
+suspend fun runBoundaryRobot( scope: CoroutineScope ){
 	val startMsg  = AppMsg.buildDispatch("main","start","start","robotboundaryfsm")
 
 	

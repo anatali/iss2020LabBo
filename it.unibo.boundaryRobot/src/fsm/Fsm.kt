@@ -133,21 +133,7 @@ abstract class  Fsm(  val name:  String,
             currentMsg   = msg
             if( currentMsg.isRequest() ){ requestMap.put(currentMsg.MSGID, currentMsg) }  //Request
             var msgBody = currentMsg.CONTENT
-//            println("Fsm $name | handleCurrentMessage msgBody=${msgBody}")
-//            val endTheTimer = currentMsg.MSGID != "local_noMsg" &&
-//                            ( ! msgBody.startsWith("local_tout_")
-//                                    ||
-//                                     ( msgBody.contains(currentState.stateName) &&
-//                                      msgBody.contains(this.name) )
-//                            )
             currentState = nextState
-
-            //println("               %%% Fsm $name | handleCurrentMessage currentState= ${currentState.stateName}  ")
-//              if( endTheTimer && (stateTimer !== null) ){
-//                stateTimer!!.endTimer() //terminate TimerActor
-//                //stateTimer = null
-//            }
-
             return true
         } else { //no nextState EXCLUDE EVENTS FROM msgQueueStore.  
             if (!memo) return false
@@ -176,7 +162,7 @@ abstract class  Fsm(  val name:  String,
             val state = checkTransition(it)
             if (state is State) {
                 currentMsg = msgQueueStore.get( msgQueueStore.indexOf(it) )
-                //println(" Fsm $name | lookAtMsgQueueStore FOUND $currentMsg")
+                println("Fsm $name | lookAtMsgQueueStore state=${currentState.stateName} FOUND $currentMsg")
                 msgQueueStore.remove(it)
                 return state
             }
@@ -245,14 +231,18 @@ abstract class  Fsm(  val name:  String,
     }
 		
 	suspend fun fsmwork(msg : AppMsg) {
-        trace("Fsm $name | fsmwork in STATE ${currentState.stateName}")
+        println("Fsm $name | fsmwork in STATE ${currentState.stateName} msg=$msg")
         var nextState = checkTransition(msg)
         var b = handleCurrentMessage( msg, nextState )
         while(  b  ){ //handle previous messages
             currentState.enterState()
             checkDoEmptyMove()
             val nextState1 = lookAtMsgQueueStore()
-            b = handleCurrentMessage( msg, nextState1, memo=false )
+			if( nextState1 == null ){
+				b = handleCurrentMessage( msg, nextState1, memo=false )
+			}else{
+				b = handleCurrentMessage( currentMsg, nextState1, memo=false )
+			}
          }
 	}
 
@@ -266,12 +256,14 @@ abstract class  Fsm(  val name:  String,
             //println("Fsm $name | BACK TO MAIN ACTOR")
         }
     }
-				
+/*
+ 				
+*/				
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
     @kotlinx.coroutines.ObsoleteCoroutinesApi
     val fsmactor = scope.actor<AppMsg>( dispatcher, capacity=channelSize ) {
         trace("Fsm $name | fsmactor RUNNING IN $dispatcher"  )
-        for( msg in channel ) {
+        for( msg in channel ) {  //msg-driven
             //println("Fsm $name | fsmactor msg-driven msg= $msg   "  )
             if( msg.CONTENT == "stopTheActor") { channel.close() }
             else{ actorBody( msg ) }

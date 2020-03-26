@@ -358,7 +358,8 @@ assertTrue( <ks>mapUtil</ks>.map.toString() ==  <bc>refTestMap</bc> )
 
 <h2>Project</h2> 
 Taking into account the results of our problem analysts, we propose now:
-<h3>A new layered logical architecture</h3>
+
+<h3 id="fig1">A new layered logical architecture (Fig. 1)</h3>
 
 <center><img src="./img/layered1.png" alt="layered1" width="80%" ></center>
  
@@ -370,44 +371,94 @@ In order to express the behavior of each actor as a
  <a href="https://en.wikipedia.org/wiki/Moore_machine" target="web">Moore's Finite State Machine</a>
  we can introduce a proper language-support by exploiting the Kotlin capabilities to define custom 'internal' DSL.
  <br/><br/>
- According to the support defined in
- <a href="FSM.html" target="code">FSM.html</a>, the application designer must define two operations:
+ According to the support defined in <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> 
+(see also <a href="FSM.html" target="code">FSM.html</a>) the application designer must define two operations:
 
+
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:30%"><m>
  <pre>
-<m> 
- 	override fun <ks>getInitialState() </ks>: String{
-		return "s0"
-	}
+override fun <ks>getInitialState() </ks>: String{
+ return "s0"
+ }
 
- 	override fun <ks>getBody() : (Fsm.() -> Unit)</ks>{
-		return {
-			<k>state</k>("s0") {
-				<k>action</k> {  
-					println(" ... ")
- 				}
-				<k>transition</k>( edgeName="t0",targetState="s1", cond=doswitch() )			<kc>//empty move</kc>
-				
-			}			
-			<k>state</k>("s1") {
-				<k>action</k> {
-					...
-				}
-				<k>transition</k>( edgeName="t1",targetState="s2",   cond=whenDispatch("msg1") )
-				<k>transition</k>( edgeName="t2",targetState="s3", cond=whenDispatch("msg2") )
-			}
+override fun <ks>getBody() : (Fsm.() -> Unit)</ks>{
+ return {
+	<k>state</k>("s0") {
+		<k>action</k> {  
+			println(" ... ")
+		}
+		<k>transition</k>( edgeName="t0",
+			targetState="s1", cond=<ks>doswitch()</ks>)	 <kc>//empty move</kc>		
+	}			
+	<k>state</k>("s1") {
+		<k>action</k> {
 			...
- 		} 
+		}
+		<k>transition</k>( edgeName="t1",
+			targetState="s2",   cond=<ks>whenDispatch("msg1")</ks> )
+		<k>transition</k>( edgeName="t2",
+			targetState="s3", cond=<ks>whenDispatch("msg2")</ks> )
+	}
+	<k>state</k>("s2") {
+		<k>action</k> {	...	}
+ 		<k>transition</k>( edgeName="t0",
+			targetState="s3", cond=<ks>whenDispatch("msg2")</ks> )
+	}
+	<k>state</k>("s3") {
+		<k>action</k> {	... 	}
+		<k>transition</k>( edgeName="t0",
+			targetState="s1", cond=<ks>doswitch()</ks>)	 <kc>//empty move</kc>
+	}
 	} 
+ </pre></m>
+ </td>
+<td><center><img src="./img/demoDSL.png" alt="demoDSL" width="100%" ></center>
+<m>
+According to the semantics described in <a href="FSM.html" target="code">FSM.html</a>,
+with the message sequence:
+<ul>
+<li><tt>msg1, msg2</tt>: the final state is <tt>s1</tt></li>
+<li><tt>msg2, msg1</tt>: the final state is <tt>s2</tt></li>
+<li><tt>msg1, msg1, msg2</tt>: the final state is <tt>s2</tt></li>
+</ul>
+
+See <a href="../src/demoDSL/demoDSL.kt" target="code">demoDSL/demoDSL.kt</a>
 </m>
- </pre>
- 
+</td>
+</tr>
+</table>
+
  <br/>
-Examples are reported in 
+Other examples are reported in 
  <a href="../src/fsm/FsmUsage.kt" target="code">fsm/FsmUsage.kt</a> 
  and
  <a href="../src/stepper/robotstepperfsm.kt" target="code">fsm/robotstepperfsm.kt</a> 
-<br/><br/>
-TO BE CONTINUED ...
+
+<h1>WORK TO DO</h1>
+ 
+<ol>
+<li>Design, build and test the <bc>basicrobot</bc> of <a href="#fig1">Fig1</a> by specifying its behavior with 
+the custom DSL language  provided by <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> </li>
+<li>Design, build and test the <bc>stepper</bc>  of <a href="#fig1">Fig1</a>,
+by specifying its behavior with 
+the custom DSL language provided by <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a>
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+<h3>stepper</h3>
+<center><img src="./img/stepper.png" alt="stepper" width="100%" ></center>
+</td>
+<td><h3>timer</h3>
+<center><img src="./img/timer.png" alt="timer" width="100%" ></center></td>
+</tr>
+</table>
+
+ </li>
+</ol>
+ 
 
 
 <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">

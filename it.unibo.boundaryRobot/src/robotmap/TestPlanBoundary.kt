@@ -37,6 +37,7 @@ var refTestMap : String =""
 	fun moveTest() {
 		println("%%%  testBoundary activates the user simulator")
  		//TODO: activate an user simulator
+	    //or send to the robotboundary the command start
  		println("%%%  testBoundary performs the final test after user end")		
 		assertTrue( mapUtil.map.toString() ==  refTestMap )
 	}

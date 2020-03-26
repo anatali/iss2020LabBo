@@ -34,6 +34,7 @@ class robotboundaryfsm ( name: String, scope: CoroutineScope ) : Fsm( name, scop
 			}			
 			state("working") {
 				action {
+					println("robotboundaryfsm working")
 					doMove("w")
 				}
 				transition( edgeName="t1",targetState="stopped", cond=whenDispatch("stop") )
@@ -52,6 +53,10 @@ class robotboundaryfsm ( name: String, scope: CoroutineScope ) : Fsm( name, scop
 				action {
 					println("robot terminates its job")
 					fsmactor.close()
+ 				}
+			}										
+			state("stopped") {
+				action {
  				}
 			}										
 		}//return
