@@ -27,7 +27,8 @@ object Messages{
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun forward(  msg : AppMsg, dest : Fsm ){
 	 	//println("forward AppMsg msg: ${msg} ")
-	 	dest.fsmactor.send( msg  ) 
+	 	if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
+		else println("WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
 	}
 	
 //	suspend fun forward(  dest : SendChannel<String>, msgId : String, msgContent : String   ){

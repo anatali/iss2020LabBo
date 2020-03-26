@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.delay
 import utils.AppMsg
 import kotlinx.coroutines.Job
+import utils.Messages
  //A support for using the virtual robot
  
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -22,10 +23,10 @@ object virtualRobotSupportApp {
         private var port     = 8999
         private val sep      = ";"
         private var outToServer : PrintWriter?     = null
-        private lateinit var targetRobot : SendChannel<AppMsg> 
+        private lateinit var targetRobot : Fsm
         private val applCmdset = setOf("w","s","a","d","z","x","r","l","h"  )
 	
-	fun setRobotTarget( robot : SendChannel<AppMsg>  ){
+	fun setRobotTarget( robot : Fsm ){
 		println("virtualRobotSupportApp  setRobotTarget $robot")
 		targetRobot = robot
  	}
@@ -78,16 +79,6 @@ object virtualRobotSupportApp {
 			if( cmd=="l" || cmd =="r") delay( 300 )
         }
 	
-suspend fun sendMsgToRobot(msg : String){
-	 forward( msg )   
- }
-
-suspend private fun forward( msgContent : String ){
-//	println("virtualRobotSupportApp | forward $msgContent to $targetRobot")
-	val dataMsg   = AppMsg.create("sensor","vr","robotactor","$msgContent")
-	targetRobot.send( dataMsg )  
-}
-	
 fun terminate(){
 	sensorObserver.cancel()
 	println("virtualRobotSupportApp TERMINATES sensorObserver")
@@ -101,7 +92,7 @@ fun terminate(){
 		val inFromServer = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
 		val scope : CoroutineScope = CoroutineScope( Dispatchers.Default )
 	    sensorObserver = scope.launch {
-//			println("virtualRobotSupportApp | startSensorObserver STARTS ")
+ 				println("virtualRobotSupportApp | startSensorObserver STARTS ")
                 while (true) {
                     try {
                         val inpuStr = inFromServer.readLine()
@@ -109,20 +100,24 @@ fun terminate(){
                             inpuStr!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
                         //println("virtualRobotSupportApp | inpuStr= $jsonMsgStr")
                         val jsonObject = JSONObject(jsonMsgStr)
-                        //println( "type: " + jsonObject.getString("type"));
+                        //println( "type: " + jsonObject.getString("type"))
                         when (jsonObject.getString("type")) {
                             "webpage-ready" -> println("webpage-ready ")
                             "sonar-activated" -> {
                                 val jsonArg   = jsonObject.getJSONObject("arg")
                                 val sonarName = jsonArg.getString("sonarName")
-                                val distance  = jsonArg.getInt("distance")
-								sendMsgToRobot( "$sonarName-$distance" )
+                                val distance  = jsonArg.getInt("distance")							 
+								val dataMsg   = AppMsg.create("sensor","vr","robotactor","$sonarName-$distance")
+								//println("virtualRobotSupportApp | forward $dataMsg to ${targetRobot.name}")
+								Messages.forward( dataMsg, targetRobot )
  
                             }
                             "collision" -> {
                                 val jsonArg    = jsonObject.getJSONObject("arg")
                                 val objectName = jsonArg.getString("objectName")
-								sendMsgToRobot( "collision_$objectName" )
+ 								val dataMsg   = AppMsg.create("sensor","vr","robotactor","collision_$objectName")
+								//println("virtualRobotSupportApp | forward $dataMsg to ${targetRobot.name}")
+								Messages.forward( dataMsg, targetRobot )
                              }
                         }
                     } catch (e: Exception) {

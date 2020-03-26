@@ -33,7 +33,7 @@ suspend fun  runBoundaryRobot( scope: CoroutineScope ){
 
 	
 	val robot= robotboundaryfsm( "robot", scope )
-  	virtualRobotSupportApp.setRobotTarget( robot.fsmactor  ) //Configure - Inject
+  	virtualRobotSupportApp.setRobotTarget( robot   ) //Configure - Inject
 	
 	delay( 50 )  //give the time to start (elaborate the autoStartSysMsg)
  	Messages.forward( startMsg, robot  )

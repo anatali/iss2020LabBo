@@ -1,4 +1,4 @@
-package stepper
+package robotmap
 //robotstepperfsm
 import kotlinx.coroutines.CoroutineScope
 import utils.AppMsg
@@ -8,6 +8,7 @@ import fsm.Fsm
 import fsm.virtualRobotSupportApp
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.Job
+import mapRoomKotlin.mapUtil
 
 lateinit var robot : Fsm
 
@@ -73,9 +74,10 @@ class timeractor ( name: String, scope: CoroutineScope ) : Fsm( name, scope){
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-class robostepper ( name: String, scope: CoroutineScope  ) : Fsm( name, scope){
+class robotmapper ( name: String, scope: CoroutineScope  ) : Fsm( name, scope){
 lateinit var timer : Fsm
-var stepCounter = 0	
+var stepCounter = 0
+	
 	override fun getInitialState() : String{
 		return "init"
 	}
@@ -91,6 +93,11 @@ var stepCounter = 0
 					println("robostepper init ")
 					virtualRobotSupportApp.initClientConn()
 					timer = timeractor( "timer", scope)
+					mapRoomKotlin.buildRefTestMap()
+					val refTestMap = mapUtil.getMapAndClean()
+			 		println( refTestMap )
+					println("-----------------")
+					mapUtil.showMap()
 				}
 				transition( edgeName="t0",targetState="work", cond=doswitch() )			//empty move	
 			}
@@ -115,6 +122,8 @@ var stepCounter = 0
 					doMove("h")
  					stepCounter++
 					println("			robostepper stepCounter=$stepCounter")
+					mapUtil.doMove("w")
+					mapUtil.showMap()
 					//send stepDoneMsg to the caller
  				}
 				transition( edgeName="t0",targetState="work", cond=doswitch() )				
@@ -151,7 +160,7 @@ var stepCounter = 0
 fun main()=runBlocking{
 	println("main STARTS")
 	
-	robot = robostepper("robostepper", this )
+	robot = robotmapper("robostepper", this )
   	virtualRobotSupportApp.setRobotTarget( robot   ) //Configure - Inject
 	
 	delay( 100 )

@@ -1,6 +1,8 @@
 package fsm
 /*
  Fsm.kt
+ Custom DSL for Moore Finite State Machine behavior.
+ By Antonio Natali - DISI - University of Bologna
  */
  
 import kotlinx.coroutines.*
@@ -202,6 +204,12 @@ abstract class  Fsm(  val name:  String,
         setBody( getBody(), getInitialState() )
     }
 
+	@kotlinx.coroutines.ExperimentalCoroutinesApi
+    @kotlinx.coroutines.ObsoleteCoroutinesApi
+	fun terminate(){
+		fsmactor.close()
+	}
+	
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
     @kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun autoMsg(  msg : AppMsg ) {

@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 90%;
+}
+h4 {
+	background-color: #ffffcc;
+    font-size: 100%;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+	font-weight: bold;
+    font-size: 90%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>RobotActorBoundary2</title></head>
+    
+<body>
+<div id="top">
+<h1>RobotActorBoundary | Reviewed<font size="5"></font> </h1>
+</div>  
+
+<div class="body"> 
+ 
+<h2>Introduction</h2>
+This report follows the first SPRINT review meeting related to the <a href="RobotActorBoudary" target="code">RobotActorBoudary</a> project.
+We report here also more 
+<!--
+ Remember our motto:<br/>   <k>there is no code without a project, no project
+without problem analysis and no problem without requirements</k>.
+--> 
+ 
+<h2>Requirements</h2>
+See <a href="RobotActorBoudary#req">RobotActorBoudary | requirements</a>
+ 
+ 
+
+<h2>Requirement analysis</h2>
+With reference to our first-sprint
+<a href="RobotActorBoudary#reqAnalysis" target="code">RobotActorBoudary | requirement analysis</a>, let us now:
+
+<h3>Define a formal model of the requirements (and <bc>functional TestPlans</bc>)</h3>
+
+Since our software must move the robot along the room-boundary, we must <bc>find a way to
+automatically test</bc> that this requirement is achieved.
+<br/><br/>
+At this stage, we can say that, 
+
+<!-- , our functional-testPlan consists in a further, 
+(<a href="https://en.wikipedia.org/wiki/Non-functional_requirement" target="web">non-functional</a>) requirement:<br/>
+-->
+if the customer does exclude the possibility to equip the robot of the room with other sensors,
+there is the need to introduce a <bc>proper representation</bc> of the room-space and check that the robot
+has effectively explored the space along the boundary.
+</m>
+<br/><br/>
+Let us imagine to subdivide the room into a grid of <tt>nr * nc</tt> squares of side <tt>R</tt>.
+<br/><br/>
+ 
+ 
+ <table style="width:100%" border="1">
+<tr>
+<td style="width:33%">
+<center><img src="./img/gridRoom.png" alt="gridRoom" width="100%"></center>
+</td>
+<td style="width:33%">
+<m>
+The room could be represented by a proper data structure, e.g. a matrix <tt>nr * nc</tt>
+whose representation could be:
+<pre>
+|r, 0, 0, 0, 0, 0, 
+|0, 0, 0, 0, 0, 0, 
+|0, 0, 0, 0, 0, 0, 
+|0, 0, 0, 0, 0, 0, 
+|0, 0, 0, 0, 0, 0,
+</pre>
+</m>
+</td>
+<td>
+<m>
+After the execution of our robot-control software, we could check that (the representation of) the map of the explored space is:
+
+<pre>
+|1, 1, 1, 1, 1, 1, 
+|1, 0, 0, 0, 0, 1, 
+|1, 0, 0, 0, 0, 1, 
+|1, 0, 0, 0, 0, 1, 
+|1, 1, 1, 1, 1, 1, 
+</pre>
+Let us call this representation as <bc>refTestMap</bc>
+</m>
+</td>
+</tr>
+</table>
+
+
+
+In our representation we suppose that:
+
+<ol>
+<li><bc>r</bc> means: cell occupied by the robot</li>
+<li><bc>0</bc> means: cell not explored</li>
+<li><bc>1</bc> means: cell explored</li>
+<li><bc>X</bc> means: cell occupied by an obstacle</li>
+</ol>
+
+<div class="remark">
+<m>
+Our formal model of the requirements requires a proper data structure to represent the room-grid. 
+</m>
+</div>
+
+<h3>A <ks>mapUtil</ks></h3>
+A proper support for the room-map can be given by the following utility:
+<table style="width:100%" border="1">
+<tr>
+<td style="width:40%">
+<a href="../src/mapRoomKotlin/mapUtil.kt" target="code">src/mapRoomKotlin/mapUtil.kt</a>  <br/>(project <i>it.unibo.kotlin.actorRobot</i>)
+<br/><br/>
+<m>
+For a demo, see 
+<a href="../src/mapRoomKotlin/MainMapUsage.kt" target="code">src/mapRoomKotlin/MainMapUsage.kt</a> 
+</m>
+</td>
+<td>
+<ol>
+<li>creates a room map as a singleton;</li>
+<li>provides the operation <bc>doMove(move: String )</bc> that updates the map according to the given robot move
+(<tt>w | s | r | l | h </tt>)
+</li>
+<li>provides the operation <bc>getMapAndClean( ): String</bc> that returns a String-representation of the current map and
+resets the map to the empty map;
+</li>
+<li>provides the operation <bc>showMap( )</bc> that prints on the standard output the String-representation of the current map.
+</li>
+</ol>
+ 
+</td>
+</tr>
+</table>   
+
+<!--
+<br/><br/>
+To this end, we could track the movements of the robot by building a map of the room under the following assumptions
+(to make initially the problem as simplest as possible):
+
+--> 
+ 
+
+
+ 
+<h2>Problem analysis</h2>
+
+With reference to our first-sprint
+<a href="RobotActorBoudary#problemAnalysis">RobotActorBoudary | problem analysis</a>, let us now:
+we can say that the problem is quite clear and the logical architecture includes just two actors:
+ 
+<center><img src="./img/logicArchBoundary.png" alt="logicArchBoundary" width="40%" ></center>
+
+Our analysis effort now should be focused in the problems involved by the proposed testPlan. Thus, let us 
+
+
+<h3>Refine the <i>functional TestPlans</i></h3>
+
+The proposed testPlan consists in introducing a representation of the room-space and check that the robot
+has effectively explored the space along the boundary.
+<br/><br/>
+Suppose that the robot device can be inscribed in a circle of diameter <tt>R</tt>.
+In this case, we could imagine to subdivide the room into a grid of <tt>nr * nc</tt> squares of side <tt>R</tt>.
+
+<center><img src="./img/gridRoomWithR.png" alt="gridRoomWithR" width="30%" ></center>
+ 
+<br/><br/>
+Under this hypothesis, the problem requires the introduction of another robot-move: the <bc>step</bc>:
+each robot-step along some direction (<tt>down | left | right| up</tt>) should cover the next cell of size <tt>R</tt>
+if such a cell is empty. 
+<br/><br/>
+In this way it will be possible not only to properly update the map, but it becomes also possible to evaluate the
+length of the room  boundary in <bc>units of size <tt>R</tt></bc> with an error minor of <tt>4*R</tt>. In fact
+the worst case is that the length of each side of the room is <tt>k*R + 0.99*R</tt> with k natural number.
+<br/><br/>
+Moreover, the availability of a map-representation can be very useful to give to the user information about
+the run-time evolution of the system. 
+
+<div class="remark">
+<m>
+As a conclusion of our (new) problem analysis we can say that the idea of introducing a room-grid data structure can
+be useful not only for testing, but also for <bc>augmenting the business value</bc> of our software. 
+<br/><br/>
+Lesson learned: the effort to express in a formal way <bc>WHAT WE EXPECT</bc> from our software can pay. 
+</m>
+</div>
+
+
+  
+
+<h3>Step-wise robot moves</h3>
+In order to move the robot in a <bc>step-wise way</bc>, it could be appropriate to recur to the 'divide-et-impera' 
+methodology by introducing an actor (<bc>stepper</bc>)
+able to execute the command <tt>step</tt> and to answer with the message <tt>stepOk</tt> if the command can be completed with success or with <tt>stepKo</tt>
+if the command cannot be completed because the next cell is occupied by an obstacle (e.g. the wall).
+
+<div class="remark">
+<m>
+An analysts we can motivate the introduction of the <bc>stepper</bc> actor as the opportunity to define a 'reusable service'.
+Moreover, in order to make these services as much 'technology-independent' as possible, we advocate the opportunity of introducing a <bc>basicrobot</bc>
+as simple executor of basic-move commands (<tt>w | s | h | r | l</tt>).
+</m>
+</div>
+
+
+
+ 
+
+<h2>Test plans</h2> 
+Our test-plan can be now <bc>formalized</bc> as reported in 
+ <a href="../src/robotmap/TestPlanBoundary.kt" target="code">src/robotmap/TestPlanBoundary.kt</a> (project <i>it.unibo.kotlin.actorRobot</i>).
+
+The key-point is in the sentence:
+<pre>
+assertTrue( <ks>mapUtil</ks>.map.toString() ==  <bc>refTestMap</bc> )
+</pre> 
+
+ 
+
+<h2>Project</h2> 
+Taking into account the results of our problem analysts, we propose now:
+<h3>A new layered logical architecture</h3>
+
+<center><img src="./img/layered1.png" alt="layered1" width="80%" ></center>
+ 
+ 
+
+
+ <h3>BEHAVIOR</h3>
+In order to express the behavior of each actor as a
+ <a href="https://en.wikipedia.org/wiki/Moore_machine" target="web">Moore's Finite State Machine</a>
+ we can introduce a proper language-support by exploiting the Kotlin capabilities to define custom 'internal' DSL.
+ <br/><br/>
+ According to the support defined in
+ <a href="FSM.html" target="code">FSM.html</a>, the application designer must define two operations:
+
+ <pre>
+<m> 
+ 	override fun <ks>getInitialState() </ks>: String{
+		return "s0"
+	}
+
+ 	override fun <ks>getBody() : (Fsm.() -> Unit)</ks>{
+		return {
+			<k>state</k>("s0") {
+				<k>action</k> {  
+					println(" ... ")
+ 				}
+				<k>transition</k>( edgeName="t0",targetState="s1", cond=doswitch() )			<kc>//empty move</kc>
+				
+			}			
+			<k>state</k>("s1") {
+				<k>action</k> {
+					...
+				}
+				<k>transition</k>( edgeName="t1",targetState="s2",   cond=whenDispatch("msg1") )
+				<k>transition</k>( edgeName="t2",targetState="s3", cond=whenDispatch("msg2") )
+			}
+			...
+ 		} 
+	} 
+</m>
+ </pre>
+ 
+ <br/>
+Examples are reported in 
+ <a href="../src/fsm/FsmUsage.kt" target="code">fsm/FsmUsage.kt</a> 
+ and
+ <a href="../src/stepper/robotstepperfsm.kt" target="code">fsm/robotstepperfsm.kt</a> 
+<br/><br/>
+TO BE CONTINUED ...
+
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+By studentName email: student@studio.unibo.it  
+<img src="./img/emiglio.png" alt="mbot" width="15%" height="15%">
+</div> 
+</body>
+</html>
