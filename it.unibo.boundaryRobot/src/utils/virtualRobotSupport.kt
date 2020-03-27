@@ -85,14 +85,14 @@ suspend fun sendMsgToRobot(msg : String){
     else sendJSON_message("sensor($msg)")
 }
 suspend private fun sendJSON_message(msg : String){
-//	println("virtualRobotSupport | sendJSON_message $msg to $targetRobot")
+//	println("virtualRobotSupport | sendJSON_message $msg to $targetRobot")	
 	targetRobot.send( msg  ) 
 }
 suspend private fun forward( msgContent : String ){
 //	println("virtualRobotSupport | forward $msgContent to $targetRobot")
 	val dataMsg   = AppMsg.create("sensor","vr","robotactor","$msgContent")
-	targetRobot.send( dataMsg.toString() )  
-}
+	Messages.forward( dataMsg, targetRobot)
+ }
 	
 fun terminate(){
 	sensorObserver.cancel()

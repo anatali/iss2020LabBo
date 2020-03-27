@@ -26,25 +26,41 @@ enum class  RobotState{
 	initial, working, endOfStep, stopped, end
 }
 
+val startUserMsg = AppMsg.create(MSGID="startuser", SENDER="robotboundary1", RECEIVER="usermock1")	//self-message
+val startMsg     = AppMsg.create("start", "usermock1", "robotboundary1")
+val stopMsg      = AppMsg.create("stop", "usermock1", "robotboundary1")
+val resumeMsg    = AppMsg.create("resume", "usermock1", "robotboundary1")
+ 
+
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 val usermock1  : SendChannel<String>	=
 		CoroutineScope( Dispatchers.Default ).actor(capacity=50) { //default capacity == 1
 	
-	println("usermock1 | STARTS")
- 	val startMsg  = AppMsg.create("start", "usermock1", "robotboundary1")
-	val stopMsg   = AppMsg.create("stop", "usermock1", "robotboundary1")
-	val resumeMsg = AppMsg.create("resume", "usermock1", "robotboundary1")
-	Messages.forward( startMsg.toString(), robotboundary1 )
-	for( i in 1..5){
- 	 	delay( 1300 )
-		println("usermock1 FORWARD STOP ${i}  nStep=$nStep");
-	 	Messages.forward( stopMsg.toString(), robotboundary1 )
-	 	delay( 1500 )		
-		println("usermock1 FORWARD RESUME ${i}  nStep=$nStep");
-	 	Messages.forward( resumeMsg.toString(), robotboundary1 )
+	suspend fun sendSomeMessage(){
+		Messages.forward( startMsg.toString(), robotboundary1 )
+		for( i in 1..5){
+	 	 	delay( 1300 )
+			println("usermock1 FORWARD STOP ${i}  nStep=$nStep");
+		 	Messages.forward( stopMsg.toString(), robotboundary1 )
+		 	delay( 1500 )		
+			println("usermock1 FORWARD RESUME ${i}  nStep=$nStep");
+		 	Messages.forward( resumeMsg.toString(), robotboundary1 )
+		}		
 	}
-	println("usermock1 | ENDS")
+			
+	
+	println("usermock1 | STARTS")
+	for (m in channel) { // iterate over incoming messages
+		println("usermock1 receives $m")
+		val msg = AppMsg.create(m) 
+		when( msg.MSGID ){
+			 startUserMsg.MSGID -> {
+				 println("usermock1 START SENDING")
+				 sendSomeMessage()
+			 }
+		} 
+	}
 }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -84,6 +100,7 @@ val endMsg 	     = AppMsg.create("end",  "robotboundary1", "robotboundary1")	//s
 	
 	suspend fun getInput()  {
   		var msg    = channel.receive()
+		//println("robotboundary1 receives $msg")
  		curMsg     = AppMsg.create(msg)	
  	}
 	
@@ -95,8 +112,7 @@ suspend fun fsm(   ){
   								  }   				
 
 			RobotState.working  -> {
-				//local acions
-				localAction()
+ 				localAction()
 				getInput()
 				when( curMsg.MSGID ){
 					"start"     -> { state = RobotState.working
@@ -159,11 +175,14 @@ suspend fun fsm(   ){
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-fun main() = runBlocking{
+fun main( args : Array<String> = emptyArray() ) = runBlocking{
     println("==============================================")
     println("robotboundary1 | PLEASE, ACTIVATE WENV ")
     println("==============================================")
   	virtualRobotSupport.setRobotTarget( robotboundary1  ) //Configure - Inject
-	(robotboundary1 as Job).join()	//waits for termination of robotboundary0
+	
+    if( args.size == 0 ) Messages.forward( startUserMsg.toString(), usermock1 )
+	
+	(robotboundary1 as Job).join()	//waits for termination of robotboundary1
 	println("main | ENDS")
 } 

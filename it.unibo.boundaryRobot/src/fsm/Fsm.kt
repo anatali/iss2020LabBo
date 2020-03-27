@@ -92,6 +92,7 @@ class Transition(val edgeName: String, val targetState: String) {
  */
 abstract class  Fsm(  val name:  String,
                       val scope: CoroutineScope = GlobalScope,
+					  val discardMessages : Boolean = false,
                       val confined :    Boolean = false,
                       val ioBound :     Boolean = false,
                       val channelSize : Int = 50 ){
@@ -137,11 +138,11 @@ abstract class  Fsm(  val name:  String,
             return true
         } else { //no nextState EXCLUDE EVENTS FROM msgQueueStore.  
             if (!memo) return false
-            if (!(msg.isEvent())) {
+            if (!(msg.isEvent())  && ! discardMessages) {
                 msgQueueStore.add(msg)
                 println("Fsm $name |  state=${currentState.stateName} added $msg in msgQueueStore")
             }
-            //else println("Fsm $name | DISCARDING THE EVENT: ${msg.msgId()}")
+            else println("Fsm $name | DISCARDING : ${msg.MSGID} in state=${currentState.stateName}")
             return false
         }
 	}
@@ -231,7 +232,7 @@ abstract class  Fsm(  val name:  String,
     }
 		
 	suspend fun fsmwork(msg : AppMsg) {
-        println("Fsm $name | fsmwork in STATE ${currentState.stateName} msg=$msg")
+//        println("Fsm $name | fsmwork in STATE ${currentState.stateName} msg=$msg")
         var nextState = checkTransition(msg)
         var b = handleCurrentMessage( msg, nextState )
         while(  b  ){ //handle previous messages

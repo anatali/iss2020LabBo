@@ -16,11 +16,11 @@ object Messages{
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun forward(  msg : AppMsg, dest : SendChannel<String> ){
 	 	//println("forward msg: ${msg.MSGID} content=${msg.CONTENT} ")
-	 	dest.send( msg.toString()  ) 
+	 	if( ! dest.isClosedForSend)  dest.send( msg.toString()  ) 
 	}
 	suspend fun forward(  msg : String, dest : SendChannel<String> ){
 	 	//println("forward msg: ${msg} ")
-	 	dest.send( msg  ) 
+	 	if( ! dest.isClosedForSend)  dest.send( msg  ) 
 	}
 	
 	@kotlinx.coroutines.ObsoleteCoroutinesApi

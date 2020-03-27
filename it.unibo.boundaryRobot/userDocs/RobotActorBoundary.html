@@ -328,20 +328,67 @@ the code the structure of the following state-diagrams:
 The diagrams show that the <i>robotboundary</i> and the <i>usermock</i> actors constitute a <bc>system</bc>,
 because their behavior is correlated by a precise message-interaction.<br/><br/>
 
+<h2 id="unexpected">Another review: unexpected messages </h2>
+The code reported in <a href="../src/firstSolutionReviewed/robotboundary1.kt" target="code">src/firstSolutionReviewed/robotboundary1.kt</a>
+is based on a quite strong assumption:
+<div class="remark">
+Assumption: all the commands are sent to the actor in the right sequence.
+</div>
+In other words, we assume that it can never happen - as an example - that a <bc>resume</bc> command 
+is sent (and received) before a <bc>stop</bc> command.<br/>
+The reader can check (see <a href="../src/firstSolutionReviewed/TestMsgOutSequence.kt" target="code">src/firstSolutionReviewed/TestMsgOutSequence.kt</a>)
+that the <em>robotboundary1</em> behaves in a wrong way
+when a  <bc>resume</bc> message is sent while the robot is in state <em> working</em>; in fact
+it executes two times the operation <tt>localAction()</tt>.
+
+<h3>Firing a transition</h3>
+To manage in a proper way messages that are sent out-of-sequence, we must assure that a state transition is done 
+('<bc>fired</bc>' in FSM terminology) only when the actor receives one of the messages that are expected in the current state.<br/>
+For example, we could re-factor our code as reported in:
+<a href="../src/firstSolutionReviewed2/robotboundary2.kt" target="code">src/firstSolutionReviewed2/robotboundary2.kt</a>
+and perform the testing reported in
+<a href="../src/firstSolutionReviewed2/TestMsgOutSequence2.kt" target="code">src/firstSolutionReviewed2/TestMsgOutSequence2.kt</a>.
+<br/><br/>
+At this point, we observe that:
+<ol>
+<li>the code is going to become quite complicated. To gain a more concise and readable solution, we will
+introduce (see <a href="FSM.html" target="code">FSM.html</a>) a custom DSL language to express FSM machines.
+An example of the usage of such a DSL for our case is reported in 
+in <a href="../src/fsm/robotboundaryfsm.kt" target="code">src/fsm/robotboundaryfsm.kt</a>.
+</li>
+<li>a new problem arises: do we have to simply <bc>discard unexpected messages</bc> or do we store them somewhere, 
+in order to elaborate them later?<br/>
+In the current case, the appropriate choice is that of discarding all the messages that are out of the
+expected sequence. But there could be other cases in which an actor should simply postpone the elaboration
+of a message while being in some state. For example, let us consider the case to send to our actor a mail
+while ii is engaged in its boundary-walk; since the actor takes not care of the mails while walking,
+it could be interested in them once returned to home.
+</li>
+</ol>
+
 
 <h1>A first <a href="https://www.scrum.org/resources/what-is-a-sprint-retrospective" target="web">SPRINT-RETROSPECTIVE</a></h1>
 Let us list a possible set of improvements related to the software-development process :
 
 <ol>
-<li>messages as representation of <a href="../src/utils/AppMsg.kt" target="code">AppMsg.kt</a></li>
-<li>actor behavior as a state machine (message based and not message driven)</li>
-<li>definition of a functional test-plan just after requirement-analysis 
+<li>messages should always be represented as <a href="../src/utils/AppMsg.kt" target="code">AppMsg.kt</a>.
+This constraint should be applied also to our supports/adapter, e.g.
+<a href="../src/utils/virtualRobotSupportApp.kt" target="code">src/utils/virtualRobotSupportApp.kt</a>
+</li>
+<li>the  behavior of an actor should be always expressed in our custom FSM-DSL language 
+(see <a href="FSM.html" target="code">FSM.html</a>), i.e. message based rather than message driven;</li>
+<li>before starting problem analysis and project design, we should try to give a more precise (formal)
+definition of  <em>functional test-plans</em>, in order to better understand the requirements and to
+state (in a machine-understandable way) <bc>WHAT WE EXPECT</bc> from the software we are going to develop.
 <!--
 <center><img src="./img/gridIntro.png" alt="gridIntro" width="30%"></center>
 -->
 </li>
-<li>...</li>
+ 
 </ol> 
+
+Thus, let us move to the next step: 
+<a href="RobotActorBoundary2.html" target="code">RobotActorBoundary | Reviewed</a>.
 
 <table style="width:100%" border="1">
 <tr>

@@ -25,39 +25,53 @@ enum class  RobotState{
 	initial, working, endOfStep, stopped, end
 }
 
+val startUserMsg = AppMsg.create(MSGID="startuser", SENDER="robotboundary2", RECEIVER="usermock2")	//self-message
+val startMsg     = AppMsg.create("start", "usermock2", "robotboundary2")
+val stopMsg      = AppMsg.create("stop", "usermock2", "robotboundary2")
+val resumeMsg    = AppMsg.create("resume", "usermock2", "robotboundary2")
+
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 val usermock2  : SendChannel<String>	=
 		CoroutineScope( Dispatchers.Default ).actor(capacity=50) { //default capacity == 1
-	
-	println("usermock1 | STARTS")
- 	val startMsg  = AppMsg.create("start", "usermock1", "robotboundary2")
-	val stopMsg   = AppMsg.create("stop", "usermock1", "robotboundary2")
-	val resumeMsg = AppMsg.create("resume", "usermock1", "robotboundary2")
-//Simulate a 'wrong' message: stop before start		
- 	Messages.forward( stopMsg.toString(), robotboundary2 )
-	delay( 500 ) 
-	Messages.forward( startMsg.toString(), robotboundary2 )
-//Simulate a 'wrong' message: resume after start		
-		delay( 200 ) 
-	 	Messages.forward( resumeMsg.toString(), robotboundary2 )
-	for( i in 1..5){
- 	 	delay( 1300 )
-		println("usermock1 FORWARD STOP ${i}  nStep=$nStep");
+	suspend fun sendSomeMessage(){
+ 	//Simulate a 'wrong' message: stop before start		
 	 	Messages.forward( stopMsg.toString(), robotboundary2 )
-//Simulate a 'wrong' message: stop after a stop		
-		delay( 200 ) 
-		Messages.forward( stopMsg.toString(), robotboundary2 )
-	 	delay( 1400 )		
-		Messages.forward( stopMsg.toString(), robotboundary2 )
-		println("usermock1 FORWARD RESUME ${i}  nStep=$nStep");
-	 	Messages.forward( resumeMsg.toString(), robotboundary2 )
-//Simulate a 'wrong' message: resume after a resume			
-		delay( 200 )
-		Messages.forward( resumeMsg.toString(), robotboundary2 )
-	} 
-	println("usermock1 | ENDS")
+		delay( 500 ) 
+		Messages.forward( startMsg.toString(), robotboundary2 )
+	//Simulate a 'wrong' message: resume after start		
+			delay( 200 ) 
+		 	Messages.forward( resumeMsg.toString(), robotboundary2 )
+		for( i in 1..5){
+	 	 	delay( 1300 )
+			println("usermock2 FORWARD STOP ${i}  nStep=$nStep");
+		 	Messages.forward( stopMsg.toString(), robotboundary2 )
+	//Simulate a 'wrong' message: stop after a stop		
+			delay( 200 ) 
+			Messages.forward( stopMsg.toString(), robotboundary2 )
+		 	delay( 1400 )		
+			Messages.forward( stopMsg.toString(), robotboundary2 )
+			println("usermock2 FORWARD RESUME ${i}  nStep=$nStep");
+		 	Messages.forward( resumeMsg.toString(), robotboundary2 )
+	//Simulate a 'wrong' message: resume after a resume			
+			delay( 200 )
+			Messages.forward( resumeMsg.toString(), robotboundary2 )
+		} 
+ 	}
+			
+	println("usermock2 | STARTS")
+	for (m in channel) { // iterate over incoming messages
+		println("usermock2 receives $m")
+		val msg = AppMsg.create(m) 
+		when( msg.MSGID ){
+			 startUserMsg.MSGID -> {
+				 println("usermock2 START SENDING")
+				 sendSomeMessage()
+			 }
+		} 
+	}
+			
 }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -91,13 +105,13 @@ val endMsg 	     = AppMsg.create("end",  "robotboundary2", "robotboundary2")	//s
 	lateinit var curMsg : AppMsg
 	
 	suspend fun getInput()  {
-  		var msg    = channel.receive()
+   		var msg    = channel.receive()
  		curMsg     = AppMsg.create(msg)	
  	}
 	
 	
 	fun discardMsg(){
-		println("		WARNING: fsm | in $state unexpects: $curMsg ")
+		println("	WARNING robotboundary2 | in $state unexpects: $curMsg ")
 	}
 	
 suspend fun fsm(   ){
@@ -145,9 +159,9 @@ suspend fun fsm(   ){
 				while( !transition ){
 	 				getInput()				
 					when( curMsg.MSGID ){
-						"end"   -> {   state = RobotState.end; transition = true  }
-						"goon"  -> {   state = RobotState.working; transition = true    }
-						"stop"  -> {   state = RobotState.stopped; transition = true    }
+						"end"   -> {   state = RobotState.end;     transition = true  }
+						"goon"  -> {   state = RobotState.working; transition = true  }
+						"stop"  -> {   state = RobotState.stopped; transition = true  }
 						 else -> discardMsg() 	 //must not redo the action 
 					}
 				} 
@@ -167,6 +181,7 @@ suspend fun fsm(   ){
 			RobotState.end  ->  println("		ERROR: fsm |  should be never in $state ")
 			}
 	}//while
+	println("		Actor fsm |  TERMINATED in $state ")
 }//fsm
 	
 	//Actor behavior		
@@ -178,11 +193,14 @@ suspend fun fsm(   ){
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-fun main() = runBlocking{
+fun main( args : Array<String> = emptyArray() ) = runBlocking{
     println("==============================================")
     println("robotboundary2 | PLEASE, ACTIVATE WENV ")
     println("==============================================")
   	virtualRobotSupport.setRobotTarget( robotboundary2  ) //Configure - Inject
-	(robotboundary2 as Job).join()	//waits for termination of robotboundary0
+
+    if( args.size == 0 ) Messages.forward( startUserMsg.toString(), usermock2 )
+	
+	(robotboundary2 as Job).join()	//waits for termination of robotboundary2
 	println("main | ENDS")
 } 
