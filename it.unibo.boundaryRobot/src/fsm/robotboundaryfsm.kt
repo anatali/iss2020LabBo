@@ -2,6 +2,7 @@ package fsm
 //robotboundaryFsm
 import kotlinx.coroutines.CoroutineScope
 import utils.AppMsg
+import utils.virtualRobotSupportApp
 
 var nStep = 0		//Declared here for testing purpose
 var nStop = 0

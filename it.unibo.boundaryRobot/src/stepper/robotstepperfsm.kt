@@ -5,9 +5,9 @@ import utils.AppMsg
 import utils.Messages
 import kotlinx.coroutines.delay
 import fsm.Fsm
-import fsm.virtualRobotSupportApp
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.Job
+import utils.virtualRobotSupportApp
 
 lateinit var robot : Fsm
 

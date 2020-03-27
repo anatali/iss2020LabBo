@@ -5,10 +5,10 @@ import utils.AppMsg
 import utils.Messages
 import kotlinx.coroutines.delay
 import fsm.Fsm
-import fsm.virtualRobotSupportApp
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.Job
 import mapRoomKotlin.mapUtil
+import utils.virtualRobotSupportApp
 
 lateinit var robot : Fsm
 
@@ -74,7 +74,7 @@ class timeractor ( name: String, scope: CoroutineScope ) : Fsm( name, scope){
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-class robotmapper ( name: String, scope: CoroutineScope  ) : Fsm( name, scope){
+class robotmapper ( name: String, scope: CoroutineScope, discardMessages:Boolean=true  ) : Fsm( name, scope, discardMessages ){
 lateinit var timer : Fsm
 var stepCounter = 0
 	
@@ -90,7 +90,7 @@ var stepCounter = 0
 		return {
 			state("init") {
 				action {  
-					println("robostepper init ")
+					println("robotmapper init ")
 					virtualRobotSupportApp.initClientConn()
 					timer = timeractor( "timer", scope)
 					mapRoomKotlin.buildRefTestMap()
@@ -103,7 +103,7 @@ var stepCounter = 0
 			}
 			state("work")	{
 				action {
-					//println("robostepper waits ... ")
+					//println("robotmapper waits ... ")
 				}				
 				transition( edgeName="t0",targetState="doStep",  cond=whenDispatch("step") )	
 				transition( edgeName="t1",targetState="endwork", cond=whenDispatch("end")  )	
@@ -121,7 +121,7 @@ var stepCounter = 0
 				action {
 					doMove("h")
  					stepCounter++
-					println("			robostepper stepCounter=$stepCounter")
+					println("			robotmapper stepCounter=$stepCounter")
 					mapUtil.doMove("w")
 					mapUtil.showMap()
 					//send stepDoneMsg to the caller
@@ -130,7 +130,7 @@ var stepCounter = 0
  			}			
 			state("stepKo") {
 				action {
-					println("robostepper stepKo")
+					println("robotmapper stepKo")
 					//send stepFailMsg to the caller
    				}
 				transition( edgeName="t0",targetState="consumeEndTime", cond=whenDispatch("endtime") )
@@ -138,21 +138,21 @@ var stepCounter = 0
 			
 			state("consumeEndTime"){
 				action {
-					println("robostepper consume endtime")
+					println("robotmapper consume endtime")
    				}
 				transition( edgeName="t0",targetState="endwork", cond=doswitch() )				
 			}
 									
 			state("endwork") {
 				action {
-					println("			robostepper ENDS")
+					println("			robotmapper ENDS")
 					Messages.forward( endMsg, timer  )
  					terminate()
   				}
  			}	 							
 		}//return
 	}//getBody	
-}//robostepper
+}//robotmapper
 
 
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -160,7 +160,7 @@ var stepCounter = 0
 fun main()=runBlocking{
 	println("main STARTS")
 	
-	robot = robotmapper("robostepper", this )
+	robot = robotmapper("robotmapper", this )
   	virtualRobotSupportApp.setRobotTarget( robot   ) //Configure - Inject
 	
 	delay( 100 )

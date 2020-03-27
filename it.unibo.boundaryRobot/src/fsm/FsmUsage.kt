@@ -9,22 +9,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
 import utils.virtualRobotSupport
+import utils.virtualRobotSupportApp
 
 val terminate = AppMsg.buildDispatch("main","any","stopTheActor","br")
 val msg       = AppMsg.buildDispatch("main","cmd","cmd(w)","br")
 
-
-@kotlinx.coroutines.ExperimentalCoroutinesApi
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-suspend fun test( scope: CoroutineScope ){
-	val br = Basicrobot( "br", scope )
-
-		delay( 50 )  //give the time to start (elaborate the autoStartSysMsg)
-	br.fsmactor.send( msg )
-	delay( 1000 )
-	br.fsmactor.send( terminate )
-	(br.fsmactor as Job).join()	
-}
 
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @kotlinx.coroutines.ObsoleteCoroutinesApi

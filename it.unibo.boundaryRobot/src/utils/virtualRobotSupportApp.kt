@@ -1,4 +1,4 @@
-package fsm
+package utils
 //virtualRobotSupportApp.kt
 
 import java.io.PrintWriter
@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import utils.AppMsg
 import kotlinx.coroutines.Job
 import utils.Messages
+import fsm.Fsm
  //A support for using the virtual robot
  
 @kotlinx.coroutines.ObsoleteCoroutinesApi
