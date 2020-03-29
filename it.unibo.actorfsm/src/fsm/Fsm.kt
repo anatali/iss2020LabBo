@@ -10,6 +10,10 @@ import java.util.NoSuchElementException
 import utils.AppMsg
 import utils.Messages
 import kotlinx.coroutines.channels.actor
+import org.eclipse.paho.client.mqttv3.MqttCallback
+import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
+
 
 var traceOn = false
 fun trace( msg: String ){ if(traceOn) println( "		TRACE $msg" ) }
@@ -93,9 +97,10 @@ class Transition(val edgeName: String, val targetState: String) {
 abstract class  Fsm(  val name:  String,
                       val scope: CoroutineScope = GlobalScope,
 					  val discardMessages : Boolean = false,
+					  val usemqtt  :    Boolean = false,
                       val confined :    Boolean = false,
                       val ioBound :     Boolean = false,
-                      val channelSize : Int = 50 ){
+                      val channelSize : Int = 50 ) : MqttCallback{
 	
 	protected lateinit var currentState: State
 	val NoMsg        = AppMsg.buildEvent( name, "local_noMsg", "noMsg")
@@ -106,7 +111,18 @@ abstract class  Fsm(  val name:  String,
 	protected var myself : Fsm
 	private var isStarted          = false
 	private val msgQueueStore      = mutableListOf<AppMsg>()
+	val mqtt                       = MqttUtils()
+	val mqttbrokerAddr             = "tcp://mqtt.eclipse.org:1883"
 	internal val requestMap : MutableMap<String, AppMsg> = mutableMapOf<String,AppMsg>()
+	
+/* 
+*/
+    init {
+        trace("Fsm INIT setBody in state=${getInitialState()}")
+        myself  = this
+        checkMqtt()
+        setBody( getBody(), getInitialState() )
+    }
 	
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
     @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -188,18 +204,12 @@ abstract class  Fsm(  val name:  String,
         }
     }
 	
-/*
-*/
-    init {
-        trace("Fsm INIT setBody in state=${getInitialState()}")
-        myself  = this
-        setBody( getBody(), getInitialState() )
-    }
 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
     @kotlinx.coroutines.ObsoleteCoroutinesApi
 	fun terminate(){
 		println("			*** Fsm $name | terminates")
+		if( usemqtt ) mqtt.disconnect()
 		fsmactor.close()
 	}
 	
@@ -287,5 +297,39 @@ abstract class  Fsm(  val name:  String,
              }
     }
 			
+/*
+ --------------------------------------------
+ MQTT
+ --------------------------------------------
+ */
 
+    fun checkMqtt(){
+        if( usemqtt  ){
+			try{
+				println("MQTT checkMqtt   ${mqttbrokerAddr}") 
+	            mqtt.connect(name, mqttbrokerAddr)
+	            mqtt.subscribe(this, "unibo/qak/$name")
+	            mqtt.subscribe(this, "unibo/qak/events")
+			}catch( e : Exception){
+				println("MQTT error  ${e}") 
+			}
+        }
+    }
+ 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+    override fun messageArrived(topic: String, msg: MqttMessage) {
+        println("Fsm $name |  MQTT messageArrived on "+ topic + ": "+msg.toString());
+        val m = AppMsg.create( msg.toString() )
+        println("Fsm $name |  MQTT ARRIVED on $topic $m in:${name}" )
+        //this.scope.launch{ actor.send( m ) }
+        scope.launch{ fsmactor.send( m ) }
+    }
+    override fun connectionLost(cause: Throwable?) {
+        println("Fsm $name |  MQTT connectionLost $cause " )
+    }
+    override fun deliveryComplete(token: IMqttDeliveryToken?) {
+//		println("       ActorBasic $name |  deliveryComplete token= "+ token );
+    }
+	
 }//Fsm
