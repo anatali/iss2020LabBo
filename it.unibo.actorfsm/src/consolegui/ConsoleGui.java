@@ -2,12 +2,10 @@ package consolegui;
 
 import java.util.Observable;
 import java.util.Observer;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
-
 import fsm.MqttUtils;
 import utils.AppMsg;
- 
+
  
 
 public class ConsoleGui implements  Observer{
@@ -26,7 +24,7 @@ private String destName   = "";
 	protected void forward(  String move ){
 		try {
 			AppMsg msg = AppMsg.buildDispatch("gui","cmd", move, destName);
-			mqtt.publish("unibo/qak/"+destName, msg.toString(), 0, false)	;
+			mqtt.publish("unibo/qak/"+destName, msg.toString(), 2, false)	;
 		} catch (MqttException e) {
  			e.printStackTrace();
 		}	
@@ -36,6 +34,7 @@ private String destName   = "";
 		String move = arg.toString();
 		System.out.println("GUI input move=" + move);
 		forward( move );
+		//Messages.forward("gui","cmd", move, destName, mqtt)  //Java/Kotlin => missing the last argument
 	}
 	
 	public static void main( String[] args) {

@@ -156,56 +156,70 @@ table, th, td {
  
 <h1>basicrobot | A reusable actor (towards 'microservices')<font size="5"></font> </h1>
 
- 
-<ol>
-<li>Design, build and test the <bc>basicrobot</bc> of <a href="#fig1">Fig1</a> by specifying its behavior with 
-the custom DSL language  provided by <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> </li>
-<li>Design, build and test the <bc>stepper</bc>  of <a href="#fig1">Fig1</a>,
-by specifying its behavior with 
-the custom DSL language provided by <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a>
-<table style="width:100%" border="1">
-<tr>
-<td style="width:50%">
-<h3>stepper</h3>
-<center><img src="./img/stepper.png" alt="stepper" width="100%" ></center>
-</td>
-<td><h3>timer</h3>
-<center><img src="./img/timer.png" alt="timer" width="100%" ></center></td>
-</tr>
-</table>
-
- </li>
-</ol>
-
 <h2>Introduction</h2>
-This report follows the first SPRINT review meeting related to the <a href="RobotActorBoudary" target="code">RobotActorBoudary</a> project.
-We report here also more 
-<!--
- Remember our motto:<br/>   <k>there is no code without a project, no project
-without problem analysis and no problem without requirements</k>.
---> 
+This report is related to the first work to do 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary2.html#todo" target="web"> 	
+work to do</a>  related to our
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary2.html#fig1" target="web"> 	
+layered architecture</a>.
+ 
+ 
+
  
 <h2>Requirements</h2>
-See <a href="RobotActorBoudary#req">RobotActorBoudary | requirements</a>
- 
- 
+<div class="req">
+Design, build and test the <bc>basicrobot</bc> introduced in our last  
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary2.html#fig1" target="web"> 	
+layered architecture</a> 
 
+ by specifying its behavior with  the custom DSL language  provided by <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> 
+ and described in <a href="FSM.html" target="code">FSM.html</a>.
+ <center><img src="./img/basicrobotrequirem.png" alt="basicrobotrequirem.png" width="50%" ></center>
+
+</div>
 <h2>Requirement analysis</h2>
+With reference to our
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html#req" target="web"> 	
+first actor-based robot-application</a>,
+the requirement consists in exploiting a precise technology (the custom DSL language described in <a href="FSM.html" target="code">FSM.html</a>) to 
+express the behavior of the actor as a (message-based) Finite State Machine.
  
 
  
 <h2>Problem analysis</h2>
+The code re-factoring  is related to a component that will be part of a 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary2.html#fig1" target="web"> 	
+layered architecture</a>.
+As a consequence,  there is a first main change to be introduced in our first  
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html#problemAnalysis" target="web">
+RobotActorBoundary |  logical architecture</a>.
+<br/>More specifically, since:
+<div class="remark">
+ the <bc>basicrobot</bc> is not a simple actuators of commands, but it is also a <em>source of sensor-data</em>
+</div>
+the problem is that the sensor-data must be propagated to <bc>basicrobot</bc> user component, in order to 
+inform such an user <em>as soon as possible</em> (i.e. without asking the robot via polling) about the state of the world in which the robot is running.
+<br/><br/>
+Moreover, from now-on, we must be prepared to abandon the <em>homogeneity hypothesis</em>, i.e. that all the components of our systems
+will be coded with the same programming language.
+We must foresee the possibility that the user-component could be a <bc>remote entity </bc>
+written in some unknown code (called - from non on - an '<em>alien</em>'). 
+<br/><br/>
+Thus, our reference logic-architecture might (the <i>homogeneity hypothesis</i> is not excluded) become:
 
-  
+<center><img src="./img/basicrobotfsmusage.png" alt="basicrobotfsmusage" width="40%" ></center>
+
+In this case, our <bc>basicrobot</bc> has no reference to the calling 'alien' and we must find a way to send sensor information to it.
+ 
 
 <h2>Test plans</h2> 
  
  
 
 <h2>Project</h2> 
-
-
-<center><img src="./img/basicrobot.png" alt="basicrobot" width="80%" ></center>
+<center><img src="./img/basicrobotfsmdiag.png" alt="basicrobotfsmdiag" width="40%" ></center>
+ 
+<center><img src="./img/basicrobot.png" alt="basicrobot" width="40%" ></center>
 
 <center><img src="./img/mqttBasicRobot.png" alt="mqttBasicRobot" width="80%" ></center>
  

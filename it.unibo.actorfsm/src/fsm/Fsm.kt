@@ -154,7 +154,7 @@ abstract class  Fsm(  val name:  String,
             trace("Fsm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.MSGID} nextState=${nextState.stateName}")
             currentMsg   = msg
             if( currentMsg.isRequest() ){ requestMap.put(currentMsg.MSGID, currentMsg) }  //Request
-            var msgBody = currentMsg.CONTENT
+            //var msgBody = currentMsg.CONTENT
             currentState = nextState
             return true
         } else { //no nextState EXCLUDE EVENTS FROM msgQueueStore.  
@@ -296,6 +296,34 @@ abstract class  Fsm(  val name:  String,
                     it.isDispatch() && it.MSGID == msgName }
              }
     }
+	
+	
+/*
+ 	
+ */	
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun forward(  msgId : String, payload: String, dest : Fsm ){
+	 	//println("forward  msg: ${msg} ")
+		val msg = AppMsg.buildDispatch(actor=name, msgId=msgId , content=payload, dest=dest.name)
+	    if( usemqtt ) {
+			mqtt.publish( "unib/qak/${dest.name}", msg.toString() )
+		}else{
+		 	if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
+			else println("WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
+		}
+	}
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun forward(  msg : AppMsg, dest : Fsm ){
+	 	//println("forward  msg: ${msg} ")
+ 	    if( usemqtt ) {
+			mqtt.publish( "unibo/qak/${dest.name}", msg.toString() )
+		}else{
+		 	if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
+			else println("WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
+		}
+	}
 			
 /*
  --------------------------------------------
@@ -306,12 +334,13 @@ abstract class  Fsm(  val name:  String,
     fun checkMqtt(){
         if( usemqtt  ){
 			try{
-				println("MQTT checkMqtt   ${mqttbrokerAddr}") 
-	            mqtt.connect(name, mqttbrokerAddr)
-	            mqtt.subscribe(this, "unibo/qak/$name")
-	            mqtt.subscribe(this, "unibo/qak/events")
+	            if( mqtt.connect(name, mqttbrokerAddr) ){
+		            mqtt.subscribe(this, "unibo/qak/$name")
+		            mqtt.subscribe(this, "unibo/qak/events")
+		            println("Fsm $name | checkMqtt OK  ${mqttbrokerAddr}") 					
+				}
 			}catch( e : Exception){
-				println("MQTT error  ${e}") 
+				println("Fsm $name | error  ${e}") 
 			}
         }
     }
@@ -319,11 +348,10 @@ abstract class  Fsm(  val name:  String,
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override fun messageArrived(topic: String, msg: MqttMessage) {
-        println("Fsm $name |  MQTT messageArrived on "+ topic + ": "+msg.toString());
+        //println("Fsm $name |  MQTT messageArrived on "+ topic + ": "+msg.toString());
         val m = AppMsg.create( msg.toString() )
         println("Fsm $name |  MQTT ARRIVED on $topic $m in:${name}" )
-        //this.scope.launch{ actor.send( m ) }
-        scope.launch{ fsmactor.send( m ) }
+        scope.launch{ fsmactor.send( m  ) }
     }
     override fun connectionLost(cause: Throwable?) {
         println("Fsm $name |  MQTT connectionLost $cause " )

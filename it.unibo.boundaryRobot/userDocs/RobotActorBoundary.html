@@ -352,9 +352,16 @@ and perform the testing reported in
 At this point, we observe that:
 <ol>
 <li>the code is going to become quite complicated. To gain a more concise and readable solution, we will
-introduce (see <a href="FSM.html" target="code">FSM.html</a>) a custom DSL language to express FSM machines.
-An example of the usage of such a DSL for our case is reported in 
+introduce a custom DSL language to express FSM machines
+ (see <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/Fsm.html#fig1" target="web"> 	
+FSM | A kotlin-based DSL</a> ).
+<!--
+An simple example of the usage of such a DSL for our case is reported in 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/FsmUsage.html#fig1" target="web"> 	
+FSM | A kotlin-based DSL</a> )
+
 in <a href="../src/fsm/robotboundaryfsm.kt" target="code">src/fsm/robotboundaryfsm.kt</a>.
+-->
 </li>
 <li>a new problem arises: do we have to simply <bc>discard unexpected messages</bc> or do we store them somewhere, 
 in order to elaborate them later?<br/>
@@ -367,7 +374,7 @@ it could be interested in them once returned to home.
 </ol>
 
 
-<h1>A first <a href="https://www.scrum.org/resources/what-is-a-sprint-retrospective" target="web">SPRINT-RETROSPECTIVE</a></h1>
+<h1 id="retrospect">A first <a href="https://www.scrum.org/resources/what-is-a-sprint-retrospective" target="web">SPRINT-RETROSPECTIVE</a></h1>
 Let us list a possible set of improvements related to the software-development process :
 
 <ol>

@@ -13,12 +13,11 @@ val backTime    = 80L
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-class basicrobot ( name: String, scope: CoroutineScope, val owner: Fsm, discardMessages:Boolean=true,
-				  	 usemqtt:Boolean=true ) : Fsm( name, scope, discardMessages,usemqtt){
+class basicrobot ( name: String, scope: CoroutineScope,
+				   usemqtt:Boolean=true,
+				   val owner: Fsm=dummyactor(scope), discardMessages:Boolean=true
+				 ) : Fsm( name, scope, discardMessages,usemqtt){
 
-	suspend fun doMove( move: String ){
-	  	virtualRobotSupportApp.doApplMove( move )
-	}
 
 	override fun getInitialState() : String{
 		return "init"
@@ -46,7 +45,7 @@ class basicrobot ( name: String, scope: CoroutineScope, val owner: Fsm, discardM
 			}
 			state("execcmd"){
 				action { //it:State
-//					println("basicrobot | exec ${currentMsg} in state=${currentState.stateName}") 
+					println("basicrobot | exec ${currentMsg} in state=${currentState.stateName}") 
 					doMove( currentMsg.CONTENT )
 				}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
@@ -56,7 +55,7 @@ class basicrobot ( name: String, scope: CoroutineScope, val owner: Fsm, discardM
 					if( currentMsg.CONTENT.startsWith("collision") ){
 						println("$ndnt basicrobot | collision $currentMsg - moving back a little ...  ")
 						doMove("s"); delay(backTime); doMove("h")	//robot reflex for safaety ...
-						Messages.forward( currentMsg, owner )
+						forward( currentMsg, owner )
  					}
 				}
 				transition( edgeName="t0",targetState="waitcmd",  cond=doswitch()    )		
@@ -70,13 +69,18 @@ class basicrobot ( name: String, scope: CoroutineScope, val owner: Fsm, discardM
 
 		}
 	}
+	
+	suspend fun doMove( move: String ){
+	  	virtualRobotSupportApp.doApplMove( move )
+	}
+
 }//basicrobot
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
 	val a = dummyactor(this)
-	val robot = basicrobot("basicrobot", this, a, discardMessages=false, usemqtt=true)
+	val robot = basicrobot("basicrobot", this, usemqtt=true, owner=a, discardMessages=false)
 	//	robot.terminate()
 	robot.waitTermination()
 	println("main ends")

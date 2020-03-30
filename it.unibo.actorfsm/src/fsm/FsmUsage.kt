@@ -20,13 +20,13 @@ val msg       = AppMsg.buildDispatch("main","cmd","cmd(w)","br")
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 suspend fun runAnActor( scope: CoroutineScope ){
-	val startMsg  = AppMsg.buildDispatch("main","start","start","dummyactor")
+//	val startMsg  = AppMsg.buildDispatch("main","start","start","dummyactor")
 	
 	fsm.traceOn = true
 	val actor= dummyactor( scope )
 	
 	delay( 50 )  //give the time to start (elaborate the autoStartSysMsg)
- 	Messages.forward( startMsg, actor  )
+ 	Messages.forward( "main","start","start", actor  )
 	
 	(actor.fsmactor as Job).join()	//waits for termination  	
 }

@@ -13,7 +13,7 @@ public class ButtonAsGui extends Observable implements  ActionListener{
 
 //Factory method
 public static ButtonAsGui createButtons(  String logo, String[] cmd  ){
-	Frame fr = Utils.initFrame(300,300);
+	Frame fr = GuiUtils.initFrame(300,300);
 	fr.add( new Label( logo ), BorderLayout.NORTH );
  	Panel p = new Panel();
  	p.setLayout(new GridLayout(2,3));

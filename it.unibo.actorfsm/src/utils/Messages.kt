@@ -2,6 +2,7 @@ package utils
 
 import kotlinx.coroutines.channels.SendChannel
 import fsm.Fsm
+import fsm.MqttUtils
 
 object Messages{
 
@@ -11,32 +12,24 @@ object Messages{
 	val resumeMsg      = AppMsg.create("resume",  "main",	"robotboundary")
 	val workDoneMsg    = AppMsg.create("workdone","main",	"usermock"	   )
 		
+	val mqtt            = MqttUtils()
 	
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
-	suspend fun forward(  msg : AppMsg, dest : SendChannel<String> ){
-	 	//println("forward msg: ${msg.MSGID} content=${msg.CONTENT} ")
-	 	if( ! dest.isClosedForSend)  dest.send( msg.toString()  ) 
-	}
-	suspend fun forward(  msg : String, dest : SendChannel<String> ){
-	 	//println("forward msg: ${msg} ")
-	 	if( ! dest.isClosedForSend)  dest.send( msg  ) 
-	}
-	
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
-	@kotlinx.coroutines.ExperimentalCoroutinesApi
-	suspend fun forward(  msg : AppMsg, dest : Fsm ){
-	 	//println("forward AppMsg msg: ${msg} ")
-	 	if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
+	suspend fun forward(  sender: String, msgId : String, payload: String, dest : Fsm ){
+	 	//println("forward  msgId: ${msgId} payload=$payload")
+		val msg = AppMsg.buildDispatch(actor=sender, msgId=msgId , content=payload, dest=dest.name)
+ 		if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
 		else println("WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
 	}
-	
-//	suspend fun forward(  dest : SendChannel<String>, msgId : String, msgContent : String   ){
-//		val m = AppMsg( msgId, AppMsgType.dispatch.toString(), "sender", dest)
-//	}
-//	suspend fun forwardMqtt(  msg : AppMsg, mqttutils: MqttUtils, topic : String  ){
-//		//println("forwardMqtt msg: ${msg.MSGID} content=${msg.CONTENT} ")
-// 		mqttutils.publish( topic, msg.toString() )
-//	}
+
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun forward(  sender: String, msgId : String, payload: String, destName : String, mqtt: MqttUtils ){
+		val msg = AppMsg.buildDispatch(actor=sender, msgId=msgId , content=payload, dest=destName )
+		if( mqtt.connectDone() ){
+			mqtt.publish( "unibo/qak/${destName}", msg.toString() )
+		}
+	}
 		
 }

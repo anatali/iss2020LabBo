@@ -8,7 +8,7 @@ import java.awt.event.WindowListener;
 
 import javax.swing.ImageIcon;
 
-public class Utils {
+public class GuiUtils {
 
 	public static void showSystemInfo(){
 
