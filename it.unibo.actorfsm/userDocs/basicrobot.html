@@ -213,11 +213,97 @@ In this case, our <bc>basicrobot</bc> has no reference to the calling 'alien' an
  
 
 <h2>Test plans</h2> 
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+To make a test possible we could: 
+<m>
+<ol>
+<li>introduce an <em>explicit representation</em> of the current <bc>logical state</bc> of the robot:
+<pre>enum class basicrobotstate {
+	<ks>stop, forward, backward, rleft, rright, obstacle</ks>
+}</pre>
+Note that the logical state is related with the state of the FSM but <bc>it is not the  state of the FSM</bc>.<br/><br/>
+ </li>
+<li>check the logical state of the robot after the execution of each command.<br/><br/></li>
+<li>plan to hit an obstacle an check that the logical state of the robot is equal to 
+<em>basicrobotstate.obstacle</em></li>
+</ol>
+</m>
  
+</td>
+<td>This, a possible test is:
+<pre><m>
+fun testObstacle(){
+  runBlocking{
+	delay(1000)  //time for robot to start
+	Messages.forward( "test","cmd", "w", robot   )
+	delay(1500)
+	//AFTER obstacle
+	<ks>assertTrue( basicrobot.rstate == basicrobotstate.obstacle)</ks>			
+	Messages.forward( "test", "end", "end", robot   )
+	println("testObstacleLocal END with robot in  ${basicrobot.rstate}")
+	robot.waitTermination()
+  }
+}</m>
+</pre>
+For a more complete testin code see
+<a href="../src/robotAppl/testBasicrobot.kt"  target="code">testBasicrobot.kt</a>
+</td>
+</tr>
+</table> 
  
-
 <h2>Project</h2> 
-<center><img src="./img/basicrobotfsmdiag.png" alt="basicrobotfsmdiag" width="40%" ></center>
+<table style="width:100%" border="1">
+<tr>
+<td style="width:60%"><center><img src="./img/basicrobotfsmdiag.png" alt="basicrobotfsmdiag" width="100%" ></center>
+<m>
+The state transitions are 'fired' by messages with the following <tt>msgId</tt>;
+<ul>
+<li><k>sensor</k>: sent by the (virtual)tobot</li>
+<li><k>end</k>: sent ny the user</li>
+<li><k>cmd</k>: sent ny the user with payload=<tt>h | w | s | r | l</tt</li>
+</ul>
+<br/><br/>
+The code is in <a href="../src/robotAppl/basicrobot.kt" target="code">basicrobot.kt</a>.
+</m>
+</td>
+<td>The project diagram on the left is expressed in the structure of the code thanks to the 
+ DSL language described in <a href="FSM.html" target="code">FSM.html</a>
+<pre><m>
+override fun getBody() : (Fsm.() -> Unit){	
+ return {  
+	state("<ks>init</ks>") {	
+	  action { ... }
+	  transition( edgeName="t0",targetState="waitcmd", cond=<ks>doswitch()</ks> )
+	}
+			
+	state("<ks>waitcmd</ks>"){
+	  action { ... }
+	  transition( <m>edgeName="t0",targetState=</m>"<ks>handlesensor</ks>", cond=whenDispatch("<k>sensor</k>") )
+	  transition( <m>edgeName="t1",targetState=</m>"<ks>endwork</ks>", cond=whenDispatch("<k>end</k>") )
+	  transition( <m>edgeName="t2",targetState=</m>"<ks>execcmd</ks>", cond=whenDispatch("<k>cmd</k>") )
+	}
+	state("<ks>execcmd</ks>"){
+	  action { ... }
+	  transition( edgeName="t0",targetState="<ks>waitcmd</ks>", cond=<ks>doswitch()</ks> )
+	}
+	state("<ks>handlesensor</ks>")
+	  action { ... }
+	  transition( edgeName="t0",targetState="<ks>waitcmd</ks>", cond=<ks>doswitch()</ks> )
+	}
+	state("<ks>endwork</ks>") {
+	  action { ... } 			
+	}	 							
+
+ }//return
+}
+</m></pre>
+</td>
+</tr>
+</table>
+
+
  
 <center><img src="./img/basicrobot.png" alt="basicrobot" width="40%" ></center>
 

@@ -36,10 +36,10 @@ class MqttUtils  {
 
 	fun disconnect() {
 		try {
-			println("       %%% MqttUtils disconnect " + client)
+			//println("       %%% MqttUtils disconnect "  )
 			client.disconnect()
 		} catch (e: Exception) {
-			println("       %%% MqttUtils disconnect ERROR ${e}")
+			//println("       %%% MqttUtils disconnect ERROR ${e}")
 		}
 	}
 
@@ -87,7 +87,7 @@ class MqttUtils  {
 		message.setPayload(msg!!.toByteArray())
 		try {
 			client.publish(topic, message)
- 			println("			%%% MqttUtils published $message topic=$topic"  )
+ 			println("       %%% MqttUtils publish $message topic=$topic"  )
 		} catch (e:Exception) {
 			println("       %%% MqttUtils publish ERROR $e topic=$topic msg=$msg"  )
  		}

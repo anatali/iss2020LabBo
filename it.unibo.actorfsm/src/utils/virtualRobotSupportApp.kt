@@ -119,19 +119,13 @@ fun terminate(){
                                 val jsonArg   = jsonObject.getJSONObject("arg")
                                 val sonarName = jsonArg.getString("sonarName")
                                 val distance  = jsonArg.getInt("distance")							 
-								//val dataMsg   = AppMsg.create("sensor","vr","robotactor","$sonarName-$distance")
-								//trace("vforward $dataMsg to ${targetRobot.name}")								
-								//Messages.forward( dataMsg, targetRobot )
-								Messages.forward( "vr", "sensor",  "$sonarName-$distance", targetRobot )
+ 								Messages.forward( "vr", "sensor",  "$sonarName-$distance", targetRobot )
  
                             }
                             "collision" -> {
                                 val jsonArg    = jsonObject.getJSONObject("arg")
                                 val objectName = jsonArg.getString("objectName")
- 								//val dataMsg   = AppMsg.create("sensor","vr","robotactor","collision_$objectName")
-								//trace("forward $dataMsg to ${targetRobot.name}")
-								//Messages.forward( dataMsg, targetRobot )
-								Messages.forward( "vr", "sensor",  "collision_$objectName", targetRobot )
+ 								Messages.forward( "vr", "sensor",  "collision_$objectName", targetRobot )
                              }
                         }
                     } catch (e: Exception) {

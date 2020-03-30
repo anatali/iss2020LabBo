@@ -8,8 +8,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import fsm.dummyactor
 
-val ndnt   		= "    "
+val ndnt   		= "  "
 val backTime    = 80L
+
+enum class basicrobotstate {
+	stop, forward, backward, rleft, rright, obstacle
+}
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,8 +21,11 @@ class basicrobot ( name: String, scope: CoroutineScope,
 				   usemqtt:Boolean=true,
 				   val owner: Fsm=dummyactor(scope), discardMessages:Boolean=true
 				 ) : Fsm( name, scope, discardMessages,usemqtt){
-
-
+ 
+	companion object{ 
+		var rstate = basicrobotstate.stop	//here for testing purpose		
+	}
+	
 	override fun getInitialState() : String{
 		return "init"
 	}
@@ -28,10 +35,11 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			state("init") {	
 				action { //it:State
 					//virtualRobotSupportApp.traceOn = true
-					virtualRobotSupportApp.setRobotTarget( myself    ) //Configure - Inject
+					virtualRobotSupportApp.setRobotTarget( myself  ) //Configure - Inject
 					virtualRobotSupportApp.initClientConn()
 					fsm.traceOn = false
-					println("$ndnt basicrobot | STARTED")
+					rstate = basicrobotstate.stop
+					println("$ndnt basicrobot | STARTED in LOGICAL state=$rstate")
 				}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
 			}
@@ -39,15 +47,18 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			state("waitcmd"){
 				action { //it:State
 					//println("$ndnt basicrobot | waits ...")  
+					//rstate = basicrobotstate.waiting
  				}
-				transition( edgeName="t0",targetState="endwork", cond=whenDispatch("end") )				
-				transition( edgeName="t0",targetState="execcmd", cond=whenDispatch("cmd") )				
+				transition( edgeName="t0",targetState="handlesensor", cond=whenDispatch("sensor") )				
+				transition( edgeName="t1",targetState="endwork", cond=whenDispatch("end") )				
+				transition( edgeName="t2",targetState="execcmd", cond=whenDispatch("cmd") )				
 			}
 			state("execcmd"){
 				action { //it:State
-					println("basicrobot | exec ${currentMsg} in state=${currentState.stateName}") 
-					doMove( currentMsg.CONTENT )
-				}
+					println("basicrobot | exec ${currentMsg} in state=${currentState.stateName}")
+					val move = currentMsg.CONTENT
+					doMove( move )
+ 				}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
  			}
 			state("handlesensor"){
@@ -56,13 +67,15 @@ class basicrobot ( name: String, scope: CoroutineScope,
 						println("$ndnt basicrobot | collision $currentMsg - moving back a little ...  ")
 						doMove("s"); delay(backTime); doMove("h")	//robot reflex for safaety ...
 						forward( currentMsg, owner )
- 					}
+ 						rstate = basicrobotstate.obstacle
+					}
 				}
 				transition( edgeName="t0",targetState="waitcmd",  cond=doswitch()    )		
 			}
 			state("endwork") {
 				action {
 					virtualRobotSupportApp.terminate()
+					println("basicrobot | endwork")
    					terminate()
   				}
  			}	 							
@@ -72,6 +85,13 @@ class basicrobot ( name: String, scope: CoroutineScope,
 	
 	suspend fun doMove( move: String ){
 	  	virtualRobotSupportApp.doApplMove( move )
+	  	when( move ){
+	  		"w" -> rstate = basicrobotstate.forward
+	  		"s" -> rstate = basicrobotstate.backward
+	  		"r" -> rstate = basicrobotstate.rright
+	  		"l" -> rstate = basicrobotstate.rleft
+	  		"h" -> rstate = basicrobotstate.stop
+	  	}
 	}
 
 }//basicrobot
@@ -80,8 +100,15 @@ class basicrobot ( name: String, scope: CoroutineScope,
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
 	val a = dummyactor(this)
-	val robot = basicrobot("basicrobot", this, usemqtt=true, owner=a, discardMessages=false)
-	//	robot.terminate()
+	val robot = basicrobot("basicrobot", this, usemqtt=false, owner=a, discardMessages=false)
+
+			delay(500) //wait for starting ...
+			Messages.forward( "test","cmd", "r", robot   )
+			delay(500)
+			Messages.forward( "test","cmd", "l", robot    )
+			delay(500)
+	
+	robot.terminate()
 	robot.waitTermination()
 	println("main ends")
 }
