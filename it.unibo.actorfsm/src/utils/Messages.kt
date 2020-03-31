@@ -2,8 +2,7 @@ package utils
 
 import kotlinx.coroutines.channels.SendChannel
 import fsm.Fsm
-import fsm.MqttUtils
-
+ 
 object Messages{
 
 	val initMsg        = AppMsg.create("init",    "main",	"robotboundary")
@@ -11,8 +10,7 @@ object Messages{
 	val startMsg       = AppMsg.create("start",   "main",	"robotboundary") 
 	val resumeMsg      = AppMsg.create("resume",  "main",	"robotboundary")
 	val workDoneMsg    = AppMsg.create("workdone","main",	"usermock"	   )
-		
-	val mqtt            = MqttUtils()
+ 
 	
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,8 +23,7 @@ object Messages{
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
-	suspend fun forward(  sender: String, msgId : String, payload: String, destName : String, mqtt: MqttUtils ){
-		
+	suspend fun forward(  sender: String, msgId : String, payload: String, destName : String, mqtt: MqttUtils ){		
 		val msg = AppMsg.buildDispatch(actor=sender, msgId=msgId , content=payload, dest=destName )
 		if( mqtt.connectDone() ){
 			mqtt.publish( "unibo/qak/${destName}", msg.toString() )

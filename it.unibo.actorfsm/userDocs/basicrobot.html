@@ -154,7 +154,7 @@ table, th, td {
 
 <div class="body"> 
  
-<h1>basicrobot | A reusable actor (towards 'microservices')<font size="5"></font> </h1>
+<h1>basicrobot | A reusable FSM actor (towards 'microservices')<font size="5"></font> </h1>
 
 <h2>Introduction</h2>
 This report is related to the first work to do 
@@ -210,7 +210,14 @@ Thus, our reference logic-architecture might (the <i>homogeneity hypothesis</i> 
 <center><img src="./img/basicrobotfsmusage.png" alt="basicrobotfsmusage" width="40%" ></center>
 
 In this case, our <bc>basicrobot</bc> has no reference to the calling 'alien' and we must find a way to send sensor information to it.
- 
+
+<h3>Events</h3>
+From now on:
+<div class="remark">
+with the term<bc> event</bc> we will denote information emitted by an actor without any explicit destination.
+</div> 
+
+https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels/
 
 <h2>Test plans</h2> 
 <table style="width:100%" border="1">
@@ -256,21 +263,28 @@ For a more complete testin code see
 <h2>Project</h2> 
 <table style="width:100%" border="1">
 <tr>
-<td style="width:60%"><center><img src="./img/basicrobotfsmdiag.png" alt="basicrobotfsmdiag" width="100%" ></center>
-<m>
+<td style="width:60%">
+<m>The basicrobot is a specialized verion of the class  <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> <br/>
+<center><img src="./img/basicrobot.png" alt="basicrobota" width="40%" ></center>
+
+<br/>
+Its behavior can be modeled as a Finite State Machine:
+<img src="./img/basicrobotfsmdiag.png" alt="basicrobotfsmdiag" width="100%" ></center>
+ 
 The state transitions are 'fired' by messages with the following <tt>msgId</tt>;
 <ul>
 <li><k>sensor</k>: sent by the (virtual)tobot</li>
 <li><k>end</k>: sent ny the user</li>
 <li><k>cmd</k>: sent ny the user with payload=<tt>h | w | s | r | l</tt</li>
 </ul>
-<br/><br/>
+
 The code is in <a href="../src/robotAppl/basicrobot.kt" target="code">basicrobot.kt</a>.
 </m>
 </td>
-<td>The project diagram on the left is expressed in the structure of the code thanks to the 
+<td>
+<m>The state diagram on the left is mirrored in the structure of the code, thanks to the 
  DSL language described in <a href="FSM.html" target="code">FSM.html</a>
-<pre><m>
+<pre> 
 override fun getBody() : (Fsm.() -> Unit){	
  return {  
 	state("<ks>init</ks>") {	
@@ -296,21 +310,63 @@ override fun getBody() : (Fsm.() -> Unit){
 	  action { ... } 			
 	}	 							
 
- }//return
+ }<kc>//return</kc>
 }
-</m></pre>
+</pre></m>
+</td>
+</tr>
+</table>
+
+<h3>Using the actor from another actor</h3>
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+<center><img src="./img/basicrobotLocalUsage.png" alt="basicrobotLocalUsage" width="70%" ></center>
+</td>
+<td>
+<m>
+<pre>
+lateinit var <k>robot</k>     : Fsm
+ 
+<ks>Messages.forward</ks>( "user","cmd", "r", <k>robot</k>   )
+</pre>
+
+See the utility  <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a>
+</m>
 </td>
 </tr>
 </table>
 
 
- 
-<center><img src="./img/basicrobot.png" alt="basicrobot" width="40%" ></center>
+<h3>Using the actor via MQTT</h3>
 
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+<center><img src="./img/basicrobotasFsm.png" alt="basicrobotasFsm" width="100%" ></center>
+</td>
+<td>
+<m>
+<pre>
+val mqttAlien  	= MqttUtils("alien")
+
+<ks>Messages.forward</ks>( "alien","cmd", "w", "basicrobot", mqttAlien   )
+</pre>
+
+See the utility  <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a>
+and <a href="../src/utils/MqttUtils.kt" target="code">MqttUtils(name)</a>
+</m>
+</td>
+</tr>
+</table>
+ 
+
+<!--
 <center><img src="./img/mqttBasicRobot.png" alt="mqttBasicRobot" width="80%" ></center>
- 
+ -->
 
-
+<br/><br/>
 <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
 By studentName email: student@studio.unibo.it  
 <img src="./img/emiglio.png" alt="mbot" width="15%" height="15%">

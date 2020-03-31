@@ -11,40 +11,46 @@ import utils.Messages
 import utils.AppMsg
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.delay
-import fsm.MqttUtils
+import utils.MqttUtils
 
 class testBasicrobot {
 	
-lateinit var robot : Fsm
-val mqtt   	= MqttUtils()
+lateinit var robot    : Fsm
+val mqttTest   	      = MqttUtils("test")
+val initDelayTime     = 2000L 
+val useMqttInTest 	  = true
  
 		
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	@Before
 	fun systemSetUp() {
-		kotlin.concurrent.thread(start = true) {	 
-			 //fsm.traceOn = true
- 			 robot = basicrobot("basicrobot", GlobalScope, usemqtt=false )
- 			 if( robot.usemqtt )
-				 if( ! mqtt.connect("test", robot.mqttbrokerAddr ) )					  
-					 	fail( "MQTT failure" )
-			     else println("test MQTT connected")
- 		}		
+		 //fsm.traceOn = true
+ 		kotlin.concurrent.thread(start = true) {	 
+			robot = basicrobot("basicrobot", GlobalScope, usemqtt=useMqttInTest )
+   			if( useMqttInTest ){
+				 while( ! mqttTest.connectDone() ){
+					  println( "	attempting a MQTT connection for the test unit ... " )
+					  Thread.sleep(1000)
+					  mqttTest.connect("test", robot.mqttbrokerAddr )					 
+				 }
+				 sensorObserver("sensorobserver", GlobalScope, usemqtt=true )
+ 			}	
 	} 
-	
+}	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	@After
 	fun terminate() {
-		println("TestRobotboundaryFsm terminated ")
+		println("testBasicrobot terminated ")
 	}
 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	fun testObstacleLocal(){
+		println(" --- testObstacleLocal ---")
  		runBlocking{
-			delay(1000)  //time for robot to connect to mqtt broker
+			delay(initDelayTime)  //time for robot to connect to mqttTest broker
  			Messages.forward( "test","cmd", "w", robot   )
  			delay(1500)
 			//AFTER obstacle
@@ -58,13 +64,14 @@ val mqtt   	= MqttUtils()
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	fun testObstacleRemote(){
+		println(" --- testObstacleRemote ---")
  		runBlocking{
-			delay(1000)  //time for robot to connect to mqtt broker
- 			Messages.forward( "test","cmd", "w", robot.name, mqtt   )
+			delay(initDelayTime)  //time for robot to connect to mqttTest broker
+			Messages.forward( "test","cmd", "w", robot.name, mqttTest   )
  			delay(1500)
 			//AFTER obstacle
   			assertTrue( basicrobot.rstate == basicrobotstate.obstacle)			
-			Messages.forward( "test", "end", "end", robot.name, mqtt   )
+			Messages.forward( "test", "end", "end", robot.name, mqttTest   )
 			println("testObstacleRemote END with robot in  ${basicrobot.rstate}")
 			robot.waitTermination()
 		}
@@ -72,67 +79,78 @@ val mqtt   	= MqttUtils()
 				
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	fun testLocal(){
+	fun testMovesLocal(){
+		println(" --- testMovesLocal ---")
  		runBlocking{
-			delay(1000)  //time for robot to connect to mqtt broker
-//			Messages.forward( "test","cmd", "r", robot   )
-//			delay(500)
-// 			assertTrue( basicrobot.rstate == basicrobotstate.rright)
-//			Messages.forward( "test","cmd", "l", robot   )
-//			delay(500)
-// 			assertTrue( basicrobot.rstate == basicrobotstate.rleft)
-//			Messages.forward( "test","cmd", "w", robot   )
-// 			delay(100)
-// 			assertTrue( basicrobot.rstate == basicrobotstate.forward)
-//			delay(600)
-// 			Messages.forward( "test","cmd", "h", robot   )
-//			delay(100)
-//			println("testLocal after h state=${basicrobot.rstate}")
-//  			assertTrue( basicrobot.rstate == basicrobotstate.stop)
-//			delay(1000)
- 			Messages.forward( "test","cmd", "w", robot   )
- 			delay(1500)
-			//AFTER obstacle
-			println("testLocal final state=${basicrobot.rstate}")
-  			assertTrue( basicrobot.rstate == basicrobotstate.obstacle)			
+			delay(initDelayTime)  //time for robot to connect to mqttTest broker
+			Messages.forward( "test","cmd", "r", robot  )
+			delay(500)
+			assertTrue( basicrobot.rstate == basicrobotstate.rright)
+			Messages.forward( "test","cmd", "l", robot  )
+			delay(500)
+			assertTrue( basicrobot.rstate == basicrobotstate.rleft)
+			Messages.forward( "test","cmd", "w", robot  )
+			delay(600)
+ 			assertTrue( basicrobot.rstate == basicrobotstate.forward)
+			Messages.forward( "test","cmd", "h", robot  )
+ 			delay(1000)
+ 			assertTrue( basicrobot.rstate == basicrobotstate.stop)
+			Messages.forward( "test","cmd", "s", robot  )
+			delay(600)
+			assertTrue( basicrobot.rstate == basicrobotstate.backward)
+ 			Messages.forward( "test","cmd", "h", robot  )
+			delay(100)
+ 			assertTrue( basicrobot.rstate == basicrobotstate.stop)
  			Messages.forward( "test","end", "end", robot   )
 			println("testLocal END with robot in  ${basicrobot.rstate}")
-			robot.waitTermination()
+			robot.waitTermination()			
+
  		}
 	}
 		
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-		fun testRemote(){
+	fun testMovesRemote(){
+		println(" --- testMovesRemote ---")
  		runBlocking{
-			delay(2000)  //time for robot to connect to mqtt broker
-//			Messages.forward( "test","cmd", "r", robot.name, mqtt  )
-//			delay(500)
-//			Messages.forward( "test","cmd", "l", robot.name, mqtt  )
-//			delay(500)
-			Messages.forward( "test","cmd", "w", robot.name, mqtt  )
+			delay(initDelayTime)  //time for robot to connect to mqttTest broker
+			Messages.forward( "test","cmd", "r", robot.name, mqttTest  )
+			delay(500)
+			assertTrue( basicrobot.rstate == basicrobotstate.rright)
+			Messages.forward( "test","cmd", "l", robot.name, mqttTest  )
+			delay(500)
+			assertTrue( basicrobot.rstate == basicrobotstate.rleft)
+			Messages.forward( "test","cmd", "w", robot.name, mqttTest  )
 			delay(600)
- 			Messages.forward( "test","cmd", "h", robot.name, mqtt  )
-			delay(1500)
-// 			assertTrue( basicrobot.rstate == basicrobotstate.stop)
-			delay(1000)
- 			Messages.forward( "test","cmd", "w", robot.name, mqtt  )
-//			delay(1000)
-//			//Messages.forward( "test","cmd", "l", robot, mqtt  )
-//			Messages.forward( "test","cmd", "l", robot.name, mqtt  )
-//			delay(1000)
- 			//assertTrue( basicrobot.rstate == basicrobotstate.waiting)
+ 			assertTrue( basicrobot.rstate == basicrobotstate.forward)
+			Messages.forward( "test","cmd", "h", robot.name, mqttTest  )
+ 			delay(1000)
+ 			assertTrue( basicrobot.rstate == basicrobotstate.stop)
+			Messages.forward( "test","cmd", "s", robot.name, mqttTest  )
+			delay(600)
+			assertTrue( basicrobot.rstate == basicrobotstate.backward)
+ 			Messages.forward( "test","cmd", "h", robot.name, mqttTest  )
+			delay(100)
+ 			assertTrue( basicrobot.rstate == basicrobotstate.stop)
+ 			Messages.forward( "test","end", "end", robot   )
+			println("testLocal END with robot in  ${basicrobot.rstate}")
 			robot.waitTermination()			
 		}
 	}
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	@Test
-	fun testCmd(){
-			//testLocal()
-			testObstacleLocal()
-			//testObstacleRemote()
- 			//println("testCmd BYE with robot in  ${basicrobot.rstate}")
+	fun testBasicRobot(){
+ 			if( useMqttInTest ){
+				testObstacleRemote()
+ 				//testMovesRemote()
+				//testObstacleLocal() //still works  
+			} 
+			else{
+				testMovesLocal()
+				//testObstacleLocal()
+			}		
+			println("testBasicRobot BYE with robot in  ${basicrobot.rstate}")
 	}
 
 }

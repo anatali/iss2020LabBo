@@ -373,73 +373,11 @@ Taking into account the results of our problem analysts, we propose now:
  <h3>BEHAVIOR</h3>
 In order to express the behavior of each actor as a
  <a href="https://en.wikipedia.org/wiki/Moore_machine" target="web">Moore's Finite State Machine</a>
- we can introduce a proper language-support by exploiting the Kotlin capabilities to define custom 'internal' DSL.
- <br/><br/>
- According to the support defined in <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> 
-(see also <a href="FSM.html" target="code">FSM.html</a>) the application designer must define two operations:
-
-
-
-<table style="width:100%" border="1">
-<tr>
-<td style="width:30%"><m>
- <pre>
-override fun <ks>getInitialState() </ks>: String{
- return "s0"
- }
-
-override fun <ks>getBody() : (Fsm.() -> Unit)</ks>{
- return {
-	<k>state</k>("s0") {
-		<k>action</k> {  
-			println(" ... ")
-		}
-		<k>transition</k>( edgeName="t0",
-			targetState="s1", cond=<ks>doswitch()</ks>)	 <kc>//empty move</kc>		
-	}			
-	<k>state</k>("s1") {
-		<k>action</k> {
-			...
-		}
-		<k>transition</k>( edgeName="t1",
-			targetState="s2",   cond=<ks>whenDispatch("msg1")</ks> )
-		<k>transition</k>( edgeName="t2",
-			targetState="s3", cond=<ks>whenDispatch("msg2")</ks> )
-	}
-	<k>state</k>("s2") {
-		<k>action</k> {	...	}
- 		<k>transition</k>( edgeName="t0",
-			targetState="s3", cond=<ks>whenDispatch("msg2")</ks> )
-	}
-	<k>state</k>("s3") {
-		<k>action</k> {	... 	}
-		<k>transition</k>( edgeName="t0",
-			targetState="s1", cond=<ks>doswitch()</ks>)	 <kc>//empty move</kc>
-	}
-	} 
- </pre></m>
- </td>
-<td><center><img src="./img/demoDSL.png" alt="demoDSL" width="100%" ></center>
-<m>
-According to the semantics described in <a href="FSM.html" target="code">FSM.html</a>,
-with the message sequence:
-<ul>
-<li><tt>msg1, msg2</tt>: the final state is <tt>s1</tt></li>
-<li><tt>msg2, msg1</tt>: the final state is <tt>s2</tt></li>
-<li><tt>msg1, msg1, msg2</tt>: the final state is <tt>s2</tt></li>
-</ul>
-
-See <a href="../src/demoDSL/demoDSL.kt" target="code">demoDSL/demoDSL.kt</a>
-</m>
-</td>
-</tr>
-</table>
-
- <br/>
-Other examples are reported in:
- <a href="../src/fsm/FsmUsage.kt" target="code">fsm/FsmUsage.kt</a> 
- and
- <a href="../src/stepper/robotstepperfsm.kt" target="code">fsm/robotstepperfsm.kt</a> 
+ we will introduce a proper language-support by exploiting the Kotlin capabilities to define custom 'internal' DSL:
+ see <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/Fsm.html" target="web"> 	
+Work to do</a>
+<br/>
+ 
 
 <h1 id="todo">WORK TO DO</h1>
  

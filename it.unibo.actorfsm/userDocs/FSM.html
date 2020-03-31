@@ -221,12 +221,158 @@ This behavior is implemented as a
 </center>
 
  
+<h2>Fsm</h2>
 
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+<m>
+<pre>
+abstract class  Fsm(  
+	val <ks>name</ks>:  String,
+	val <ks>scope</ks>: CoroutineScope = GlobalScope,
+	val <ks>discardMessages</ks> : Boolean = false,
+	val <ks>usemqtt</ks>  :    Boolean = false,
+	val <ks>confined</ks> :    Boolean = false,
+	val <ks>ioBound</ks> :     Boolean = false,
+	val <ks>channelSize</ks> : Int = 50 ) : MqttCallback{
+
+val mqtt  = <a href="../src/utils/MqttUtils.kt" target="code">MqttUtils(name)</a>	
+val <k>fsmactor</k> = scope.actor<AppMsg>( dispatcher, capacity=channelSize ) {...}	
+	...
+}
+
+</pre>
+<center><img src="./img/fsmMqtt.png" alt="fsmMqtt" width="100%" ></center>
+</m>
+</td>
+<td>
+<m>
+<ul>
+<li><ks>discardMessages</ks>: when <tt>true</tt>, the unexpected messages are discarded;<br/><br/></li>
+<li><ks>usemqtt</ks>: when <tt>true</tt>, the Fsm will send/receive messages by using a MQTT broker;<br/><br/></li>
+<li><ks>confined</ks>: when <tt>true</tt>, the embedded <k>fsmactor</k> will use a single-Thread dispatcher;<br/><br/></li>
+<li><ks>ioBound</ks>: when <tt>true</tt>, the embedded <k>fsmactor</k> will use a 64-Thread dispatcher;<br/><br/></li>
+<li><ks>channelSize</ks>: when <tt>true</tt>, the embedded <k>fsmactor</k> will set that size for its channel;<br/><br/></li>
+<li></li>
+<li></li>
+
+</ul>
+</m>
+</td>
+</tr>
+
+<tr>
+<td style="width:50%">
+<m>
+<pre>
+suspend fun <k>forward</k><ks>(msgId : String,payload: String,dest : Fsm )</ks>{
+..
+}
+suspend fun <k>forward</k><ks>(msg : AppMsg,dest:Fsm )</ks>{
+if( dest.usemqtt ) { 
+	<k>mqtt.publish</k>( "<kc>unibo/qak/${dest.name}</kc>", msg.toString() )
+}else{
+	if( ! dest.fsmactor.isClosedForSend) <ks>dest.fsmactor.send</ks>( msg  )
+	...
+}
+</pre>
+</m>
+</td>
+<td>
+
+
+</td>
+</tr>
+
+
+<tr>
+<td style="width:50%">
+<m>
+<pre>
+suspend fun <k>emit</k><ks>(  msgId : String, payload: String )</ks>{
+..
+}
+suspend fun <k>emit</k><ks>(  msg : AppMsg )</ks>{
+if( usemqtt ) {
+	<k>mqtt.publish</k>( "<kc>unibo/qak/events</kc>", msg.toString() )
+}else{ ... }
+}
+</pre>
+</m>
+</td>
+<td>
+
+</td>
+</tr>
+
+
+</table>
  
-</div>	 
+ 
+ 
+ <h2>Example</h2>
 
 
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:30%"><m>
+ <pre>
+override fun <ks>getInitialState() </ks>: String{
+ return "s0"
+ }
+
+override fun <ks>getBody() : (Fsm.() -> Unit)</ks>{
+ return {
+	<k>state</k>("s0") {
+		<k>action</k> {  
+			println(" ... ")
+		}
+		<k>transition</k>( edgeName="t0",
+			targetState="s1", cond=<ks>doswitch()</ks>)	 <kc>//empty move</kc>		
+	}			
+	<k>state</k>("s1") {
+		<k>action</k> {
+			...
+		}
+		<k>transition</k>( edgeName="t1",
+			targetState="s2",   cond=<ks>whenDispatch("msg1")</ks> )
+		<k>transition</k>( edgeName="t2",
+			targetState="s3", cond=<ks>whenDispatch("msg2")</ks> )
+	}
+	<k>state</k>("s2") {
+		<k>action</k> {	...	}
+ 		<k>transition</k>( edgeName="t0",
+			targetState="s3", cond=<ks>whenDispatch("msg2")</ks> )
+	}
+	<k>state</k>("s3") {
+		<k>action</k> {	... 	}
+		<k>transition</k>( edgeName="t0",
+			targetState="s1", cond=<ks>doswitch()</ks>)	 <kc>//empty move</kc>
+	}
+	} 
+ </pre></m>
+ </td>
+<td><center><img src="./img/demoDSL.png" alt="demoDSL" width="100%" ></center>
+<m>
+According to the semantics described in <a href="FSM.html" target="code">FSM.html</a>,
+with the message sequence:
+<ul>
+<li><tt>msg1, msg2</tt>: the final state is <tt>s1</tt></li>
+<li><tt>msg2, msg1</tt>: the final state is <tt>s2</tt></li>
+<li><tt>msg1, msg1, msg2</tt>: the final state is <tt>s2</tt></li>
+</ul>
+
+See <a href="../src/demoDSL/demoDSL.kt" target="code">demoDSL/demoDSL.kt</a>
+</m>
+</td>
+</tr>
+</table> 
+
+<br/><br/>
 </div>  
+
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
 By AN Unibo-DISI    
 </div> 

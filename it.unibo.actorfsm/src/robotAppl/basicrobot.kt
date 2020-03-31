@@ -6,9 +6,9 @@ import utils.virtualRobotSupportApp
 import utils.Messages
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import fsm.dummyactor
+ 
 
-val ndnt   		= "  "
+val ndnt   		= "&&& "
 val backTime    = 80L
 
 enum class basicrobotstate {
@@ -19,7 +19,8 @@ enum class basicrobotstate {
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class basicrobot ( name: String, scope: CoroutineScope,
 				   usemqtt:Boolean=true,
-				   val owner: Fsm=dummyactor(scope), discardMessages:Boolean=true
+				   val owner: Fsm?=null,
+				   discardMessages:Boolean=true
 				 ) : Fsm( name, scope, discardMessages,usemqtt){
  
 	companion object{ 
@@ -47,7 +48,6 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			state("waitcmd"){
 				action { //it:State
 					//println("$ndnt basicrobot | waits ...")  
-					//rstate = basicrobotstate.waiting
  				}
 				transition( edgeName="t0",targetState="handlesensor", cond=whenDispatch("sensor") )				
 				transition( edgeName="t1",targetState="endwork", cond=whenDispatch("end") )				
@@ -55,7 +55,7 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			}
 			state("execcmd"){
 				action { //it:State
-					println("basicrobot | exec ${currentMsg} in state=${currentState.stateName}")
+					println("$ndnt basicrobot | exec ${currentMsg} in state=${currentState.stateName}")
 					val move = currentMsg.CONTENT
 					doMove( move )
  				}
@@ -63,10 +63,11 @@ class basicrobot ( name: String, scope: CoroutineScope,
  			}
 			state("handlesensor"){
 				action{
+					emit( currentMsg.MSGID, currentMsg.CONTENT  )
 					if( currentMsg.CONTENT.startsWith("collision") ){
 						println("$ndnt basicrobot | collision $currentMsg - moving back a little ...  ")
 						doMove("s"); delay(backTime); doMove("h")	//robot reflex for safaety ...
-						forward( currentMsg, owner )
+						if( owner is Fsm ) forward( currentMsg, owner )
  						rstate = basicrobotstate.obstacle
 					}
 				}
@@ -99,15 +100,16 @@ class basicrobot ( name: String, scope: CoroutineScope,
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
-	val a = dummyactor(this)
-	val robot = basicrobot("basicrobot", this, usemqtt=false, owner=a, discardMessages=false)
+	val robot = basicrobot("basicrobot", this, usemqtt=true, owner=null, discardMessages=false)
 
 			delay(500) //wait for starting ...
 			Messages.forward( "test","cmd", "r", robot   )
 			delay(500)
 			Messages.forward( "test","cmd", "l", robot    )
 			delay(500)
-	
+			Messages.forward( "test","cmd", "w", robot    )
+			delay(1000)
+	delay(3000)
 	robot.terminate()
 	robot.waitTermination()
 	println("main ends")

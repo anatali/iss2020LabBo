@@ -3,7 +3,7 @@ package consolegui;
 import java.util.Observable;
 import java.util.Observer;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import fsm.MqttUtils;
+import utils.MqttUtils;
 import utils.AppMsg;
 
  
@@ -11,7 +11,7 @@ import utils.AppMsg;
 public class ConsoleGui implements  Observer{
 private String[] buttonLabels  = new String[] {"e","w", "s", "l", "r", "z", "x", "b", "p", "h"};
 private String brokerAddr = "tcp://mqtt.eclipse.org:1883";
-private MqttUtils   mqtt  = new MqttUtils();
+private MqttUtils   mqtt  = new MqttUtils("gui");
 private String destName   = "";
  
 	public ConsoleGui( String hostIP, String port, String destName) {

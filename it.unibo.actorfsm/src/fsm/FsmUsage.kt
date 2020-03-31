@@ -23,11 +23,12 @@ suspend fun runAnActor( scope: CoroutineScope ){
 //	val startMsg  = AppMsg.buildDispatch("main","start","start","dummyactor")
 	
 	fsm.traceOn = true
-	val actor= dummyactor( scope )
+	val actor= demoactor( scope )
 	
 	delay( 50 )  //give the time to start (elaborate the autoStartSysMsg)
- 	Messages.forward( "main","start","start", actor  )
-	
+ 	Messages.forward( "main","info","0", actor  )
+ 	delay(1000)
+ 	Messages.forward( "main","end","1", actor  )
 	(actor.fsmactor as Job).join()	//waits for termination  	
 }
 
