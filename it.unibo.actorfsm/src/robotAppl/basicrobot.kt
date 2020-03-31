@@ -7,10 +7,9 @@ import utils.Messages
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
  
-
 val ndnt   		= "&&& "
 val backTime    = 80L
-
+ 
 enum class basicrobotstate {
 	stop, forward, backward, rleft, rright, obstacle
 }
@@ -18,7 +17,7 @@ enum class basicrobotstate {
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class basicrobot ( name: String, scope: CoroutineScope,
-				   usemqtt:Boolean=true,
+				   usemqtt:Boolean=false,
 				   val owner: Fsm?=null,
 				   discardMessages:Boolean=true
 				 ) : Fsm( name, scope, discardMessages,usemqtt){
@@ -38,9 +37,10 @@ class basicrobot ( name: String, scope: CoroutineScope,
 					//virtualRobotSupportApp.traceOn = true
 					virtualRobotSupportApp.setRobotTarget( myself  ) //Configure - Inject
 					virtualRobotSupportApp.initClientConn()
-					fsm.traceOn = false
+					//fsm.traceOn = true
 					rstate = basicrobotstate.stop
 					println("$ndnt basicrobot | STARTED in LOGICAL state=$rstate")
+					//mqtt.subscribe( myself,  "unibo/qak/natali/basicrobot"  )
 				}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
 			}
@@ -64,9 +64,9 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			state("handlesensor"){
 				action{
 					emit( currentMsg.MSGID, currentMsg.CONTENT  )
-					if( currentMsg.CONTENT.startsWith("collision") ){
+					if( currentMsg.CONTENT.startsWith("collision") ){ //defensive
 						println("$ndnt basicrobot | collision $currentMsg - moving back a little ...  ")
-						doMove("s"); delay(backTime); doMove("h")	//robot reflex for safaety ...
+						doMove("s"); delay(backTime); doMove("h")	//robot reflex for safety ...
 						if( owner is Fsm ) forward( currentMsg, owner )
  						rstate = basicrobotstate.obstacle
 					}
@@ -100,8 +100,8 @@ class basicrobot ( name: String, scope: CoroutineScope,
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
-	val robot = basicrobot("basicrobot", this, usemqtt=true, owner=null, discardMessages=false)
-
+	utils.mqtttraceOn = true
+	val robot = basicrobot("basicrobot", this, usemqtt=true, owner=null, discardMessages=true)
 			delay(500) //wait for starting ...
 			Messages.forward( "test","cmd", "r", robot   )
 			delay(500)
@@ -109,8 +109,7 @@ fun main() = runBlocking{
 			delay(500)
 			Messages.forward( "test","cmd", "w", robot    )
 			delay(1000)
-	delay(3000)
-	robot.terminate()
+//	robot.terminate()
 	robot.waitTermination()
 	println("main ends")
 }

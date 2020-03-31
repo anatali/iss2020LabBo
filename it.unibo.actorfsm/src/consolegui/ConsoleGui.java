@@ -3,28 +3,29 @@ package consolegui;
 import java.util.Observable;
 import java.util.Observer;
 import org.eclipse.paho.client.mqttv3.MqttException;
+
+import fsm.FsmKt;
 import utils.MqttUtils;
 import utils.AppMsg;
 
- 
 
 public class ConsoleGui implements  Observer{
 private String[] buttonLabels  = new String[] {"e","w", "s", "l", "r", "z", "x", "b", "p", "h"};
-private String brokerAddr = "tcp://mqtt.eclipse.org:1883";
-private MqttUtils   mqtt  = new MqttUtils("gui");
-private String destName   = "";
+private String brokerAddr      = FsmKt.getMqttbrokerAddr() ;   //Using kotlin from Java
+private MqttUtils   mqtt       =  new MqttUtils("gui");
+private String destName        = "";
  
-	public ConsoleGui( String hostIP, String port, String destName) {
+	public ConsoleGui( String destName) {
 		ButtonAsGui concreteButton = ButtonAsGui.createButtons( "", buttonLabels );
 		concreteButton.addObserver( this );
 		this.destName = destName;
-		mqtt.connect("gui", brokerAddr);
+		mqtt.connect("gui", brokerAddr );
  	}
 	
 	protected void forward(  String move ){
 		try {
 			AppMsg msg = AppMsg.buildDispatch("gui","cmd", move, destName);
-			mqtt.publish("unibo/qak/"+destName, msg.toString(), 2, false)	;
+			mqtt.publish("unibo/qak/"+destName, msg.toString(), 1, false)	;
 		} catch (MqttException e) {
  			e.printStackTrace();
 		}	
@@ -38,7 +39,7 @@ private String destName   = "";
 	}
 	
 	public static void main( String[] args) {
-		new ConsoleGui( "mqtt.eclipse.org","1883","basicrobot");
+		new ConsoleGui( "basicrobot" );
 	}
 }
 

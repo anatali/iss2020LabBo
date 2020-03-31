@@ -17,7 +17,7 @@ class MqttUtils(val owner: String )  {
 			
 	
 	fun trace( msg : String ){
-		if( mqtttraceOn ) trace("$msg")
+		if( mqtttraceOn ) println("$msg")
 	}
 	
 	fun connect(clientid: String, brokerAddr: String ): Boolean {
@@ -29,10 +29,10 @@ class MqttUtils(val owner: String )  {
 			options.setKeepAliveInterval(480)
 			options.setWill("unibo/clienterrors", "crashed".toByteArray(), 0, false)
 			client.connect(options)
-			trace("connect DONE $clientid to $brokerAddr " )//+ " " + client
+			println("connect DONE $clientid to $brokerAddr " )//+ " " + client
 			isConnected = true
 		} catch (e: Exception) {
-			trace("for $clientid connect $e " ) //for: $brokerAddr
+			println("for $clientid connect $e for: $brokerAddr" ) //
 			isConnected = false
 		}
  			return isConnected
@@ -64,21 +64,21 @@ class MqttUtils(val owner: String )  {
 		}
 	}
 
-	fun sendMsg( sender: String, msgID: String,  dest: String,  msgType: String ){
-	  	val msgNum = 0
-	  	//msg( MSGID, MSGTYPE SENDER, RECEIVER, CONTENT, SEQNUM )	  				
-	  	val msgout = "msg( $msgID, $msgType, $sender, $dest, $msgNum )"
-	  	//trace(" ************ SENDING VIA MQTT mout=$msgout" )
-	  	publish(   "unibo/qasys", msgout, 1, RETAIN);		
-	}
-	fun sendMsg(  msg: String, topic: String ){
-		//trace(" ************ SENDING VIA MQTT mout=$msg on $topic" )
- 	  	publish( topic, msg, 1, RETAIN);
-	}
-	fun sendMsg(  msg: AppMsg, topic: String ){
-		//trace(" ************ SENDING VIA MQTT mout=$msg on $topic" )
-		publish( topic, msg.toString(), 1, RETAIN);
-	}
+//	fun sendMsg( sender: String, msgID: String,  dest: String,  msgType: String ){
+//	  	val msgNum = 0
+//	  	//msg( MSGID, MSGTYPE SENDER, RECEIVER, CONTENT, SEQNUM )	  				
+//	  	val msgout = "msg( $msgID, $msgType, $sender, $dest, $msgNum )"
+//	  	//trace(" ************ SENDING VIA MQTT mout=$msgout" )
+//	  	publish(   "unibo/qasys", msgout, 1, RETAIN);		
+//	}
+//	fun sendMsg(  msg: String, topic: String ){
+//		//trace(" ************ SENDING VIA MQTT mout=$msg on $topic" )
+// 	  	publish( topic, msg, 1, RETAIN);
+//	}
+//	fun sendMsg(  msg: AppMsg, topic: String ){
+//		//trace(" ************ SENDING VIA MQTT mout=$msg on $topic" )
+//		publish( topic, msg.toString(), 1, RETAIN);
+//	}
  
 	/*
          * sends to a tpoic a content of the form

@@ -18,7 +18,7 @@ class testBasicrobot {
 lateinit var robot    : Fsm
 val mqttTest   	      = MqttUtils("test")
 val initDelayTime     = 2000L 
-val useMqttInTest 	  = true
+val useMqttInTest 	  = false
  
 		
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -32,7 +32,7 @@ val useMqttInTest 	  = true
 				 while( ! mqttTest.connectDone() ){
 					  println( "	attempting a MQTT connection for the test unit ... " )
 					  Thread.sleep(1000)
-					  mqttTest.connect("test", robot.mqttbrokerAddr )					 
+					  mqttTest.connect("test", fsm.mqttbrokerAddr )					 
 				 }
 				 sensorObserver("sensorobserver", GlobalScope, usemqtt=true )
  			}	
@@ -147,8 +147,8 @@ val useMqttInTest 	  = true
 				//testObstacleLocal() //still works  
 			} 
 			else{
-				testMovesLocal()
-				//testObstacleLocal()
+				//testMovesLocal()
+				testObstacleLocal()
 			}		
 			println("testBasicRobot BYE with robot in  ${basicrobot.rstate}")
 	}

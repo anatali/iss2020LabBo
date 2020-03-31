@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.actor
 import org.eclipse.paho.client.mqttv3.MqttCallback
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
+ 
 
 
 var traceOn         = false
@@ -95,6 +96,13 @@ class Transition(val edgeName: String, val targetState: String) {
  FSM
 ================================================================
  */
+	//"tcp://mqtt.eclipse.org:1883"
+	//mqtt.eclipse.org
+	//tcp://test.mosquitto.org
+	//mqtt.fluux.io
+	//"tcp://broker.hivemq.com" 
+val mqttbrokerAddr   =  "tcp://test.mosquitto.org"
+
 abstract class  Fsm(  val name:  String,
                       val scope: CoroutineScope = GlobalScope,
 					  val discardMessages : Boolean = false,
@@ -113,7 +121,6 @@ abstract class  Fsm(  val name:  String,
 	private var isStarted          = false
 	private val msgQueueStore      = mutableListOf<AppMsg>()
 	val mqtt                       = MqttUtils(name)
-	val mqttbrokerAddr             = "tcp://broker.hivemq.com" //"tcp://mqtt.eclipse.org:1883"
 	internal val requestMap : MutableMap<String, AppMsg> = mutableMapOf<String,AppMsg>()
 	
 /* 
@@ -121,7 +128,6 @@ abstract class  Fsm(  val name:  String,
     init {
 		val initialState = getInitialState()
         myself  = this
-        //checkMqtt()
         setBody( getBody(), initialState )
         //println("Fsm $name | INIT setBody in state=${initialState}")
     }
@@ -337,7 +343,7 @@ abstract class  Fsm(  val name:  String,
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun emit(  msg : AppMsg ){
-	 	trace("		*** Fsm $name | emit  msg: ${msg} ")
+	 	println("		*** Fsm $name | emit  msg: ${msg} usemqtt=$usemqtt")
 	    if( usemqtt ) {
 			mqtt.publish( "unibo/qak/events", msg.toString() )
 		}else{
@@ -354,22 +360,22 @@ abstract class  Fsm(  val name:  String,
     suspend fun checkMqtt(){
         if( usemqtt  ){
 				while( ! mqtt.connectDone() ){
-					delay(500)
-					trace("		*** Fsm $name | attempt to connect ${mqttbrokerAddr}")
+					delay(1000)
+					println("		*** Fsm $name | attempt to connect ${mqttbrokerAddr}")
 					mqtt.connect(name, mqttbrokerAddr)
 				}
 	 		    mqtt.subscribe(this, "unibo/qak/$name")
 			    mqtt.subscribe(this, "unibo/qak/events")
-			    trace("		*** Fsm $name | checkMqtt OK  ${mqttbrokerAddr}") 					
+			    println("		*** Fsm $name | checkMqtt OK  ${mqttbrokerAddr}") 					
         }
     }
  
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override fun messageArrived(topic: String, msg: MqttMessage) {
-        //trace("	*** Fsm $name |  MQTT messageArrived on "+ topic + ": "+msg.toString());
+        //println("	*** Fsm $name |  MQTT messageArrived on "+ topic + ": "+msg.toString());
         val m = AppMsg.create( msg.toString() )
-        trace("		*** Fsm $name |  MQTT ARRIVED on $topic $m in:${name}" )
+        println("		*** Fsm $name |  MQTT ARRIVED on $topic $m in:${name}" )
         scope.launch{ fsmactor.send( m  ) }
     }
     override fun connectionLost(cause: Throwable?) {
