@@ -17,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
  
 
 
-var traceOn         = false
+var traceOn   = false
 fun trace( msg: String ){ if(traceOn) println( "		TRACE $msg" ) }
 
 /*
@@ -314,7 +314,7 @@ abstract class  Fsm(  val name:  String,
 	
 	
 /*
- 	
+INTERACTION	
  */	
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -325,13 +325,15 @@ abstract class  Fsm(  val name:  String,
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun forward(  msg : AppMsg, dest : Fsm ){
-	 	println("		*** Fsm $name | forward  msg: ${msg} ")
- 	    if( dest.usemqtt ) {  //usemqtt is related to the destination   
-			mqtt.publish( "unibo/qak/${dest.name}", msg.toString() )
-		}else{
+	 	//println("		*** Fsm $name | forward  msg: ${msg} ")
+		//TODO better
+// 	    if( dest.usemqtt   ) {  //usemqtt is related to the destination   
+//			mqtt.publish( "unibo/qak/${dest.name}", msg.toString() )
+//		}
+//		}else{ //forward directly to the owner
 		 	if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
 			else println("		*** Fsm $name | WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
-		}
+//		}
 	}
 	
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -382,7 +384,31 @@ abstract class  Fsm(  val name:  String,
         println("		*** Fsm $name |  MQTT connectionLost $cause " )
     }
     override fun deliveryComplete(token: IMqttDeliveryToken?) {
-//		println(		*** Fsm $name |  deliveryComplete token= "+ token );
+//		println("		*** Fsm $name |  deliveryComplete token= "+ token );
     }
+
 	
+/*
+machineExec and TIMING
+*/
+private var timeAtStart: Long = 0	
+    fun machineExec(cmd: String) : Process {
+        try {
+            return Runtime.getRuntime().exec(cmd)
+        } catch (e: Exception) {
+            println("		*** Fsm $name | machineExec ERROR $e ")
+            throw e
+        }
+    }
+
+    fun memoTime() {
+        timeAtStart = System.currentTimeMillis()
+    }
+
+    fun getDuration() : Int{
+        val duration = (System.currentTimeMillis() - timeAtStart).toInt()
+        //println("		*** Fsm $name | DURATION = $duration")
+        return duration
+    }
+
 }//Fsm

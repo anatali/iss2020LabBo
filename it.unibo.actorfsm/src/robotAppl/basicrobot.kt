@@ -55,7 +55,7 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			}
 			state("execcmd"){
 				action { //it:State
-					println("$ndnt basicrobot | exec ${currentMsg} in state=${currentState.stateName}")
+					//println("$ndnt basicrobot | exec ${currentMsg} in state=${currentState.stateName}")
 					val move = currentMsg.CONTENT
 					doMove( move )
  				}
@@ -97,11 +97,11 @@ class basicrobot ( name: String, scope: CoroutineScope,
 
 }//basicrobot
 
+
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-fun main() = runBlocking{
-	utils.mqtttraceOn = true
-	val robot = basicrobot("basicrobot", this, usemqtt=true, owner=null, discardMessages=true)
+suspend fun demoUsingMqtt( scope: CoroutineScope){
+	val robot = basicrobot("basicrobot", scope, usemqtt=true, owner=null, discardMessages=true)
 			delay(500) //wait for starting ...
 			Messages.forward( "test","cmd", "r", robot   )
 			delay(500)
@@ -110,6 +110,32 @@ fun main() = runBlocking{
 			Messages.forward( "test","cmd", "w", robot    )
 			delay(1000)
 //	robot.terminate()
-	robot.waitTermination()
+	robot.waitTermination()	
+}
+
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+suspend fun demoLocal( scope: CoroutineScope){
+	val robot = basicrobot("basicrobot", scope, usemqtt=false, owner=null, discardMessages=true)
+			delay(500) //wait for starting ...
+			Messages.forward( "test","cmd", "r", robot   )
+			delay(500)
+			Messages.forward( "test","cmd", "l", robot    )
+			delay(500)
+			Messages.forward( "test","cmd", "w", robot    )
+			delay(1000)
+ 
+	robot.waitTermination()	
+}
+
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+fun main() = runBlocking{
+	utils.mqtttraceOn = true
+  
+	//demoLocal( this )
+	
+	demoUsingMqtt( this )
+	
 	println("main ends")
 }

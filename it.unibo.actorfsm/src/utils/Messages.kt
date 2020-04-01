@@ -2,6 +2,9 @@ package utils
 
 import kotlinx.coroutines.channels.SendChannel
 import fsm.Fsm
+import kotlinx.coroutines.GlobalScope
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Future
  
 object Messages{
 
@@ -11,7 +14,9 @@ object Messages{
 	val resumeMsg      = AppMsg.create("resume",  "main",	"robotboundary")
 	val workDoneMsg    = AppMsg.create("workdone","main",	"usermock"	   )
  
-	
+/*
+ Forward a dispatch to a destination actor given by reference
+*/	
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun forward(  sender: String, msgId : String, payload: String, dest : Fsm ){
@@ -21,6 +26,9 @@ object Messages{
 		else println("WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
 	}
 
+/*
+ Forward a dispatch to a destination actor by using a given MQTT support
+*/		
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun forward(  sender: String, msgId : String, payload: String, destName : String, mqtt: MqttUtils ){		
@@ -29,5 +37,19 @@ object Messages{
 			mqtt.publish( "unibo/qak/${destName}", msg.toString() )
 		}
 	}
-		
+
+/*
+ Emit an event by using a given MQTT support
+*/	
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun emit(  sender: String, msgId : String, payload: String, mqtt: MqttUtils ){		
+		val event = AppMsg.buildEvent(actor=sender, msgId=msgId , content=payload )
+		if( mqtt.connectDone() ){
+			mqtt.publish( "unibo/qak/events", event.toString() )
+		}
+	}
+	
+	
+			
 }

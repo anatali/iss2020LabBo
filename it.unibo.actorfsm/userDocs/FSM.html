@@ -201,7 +201,8 @@ for the possibility to 'fire' a transition among the set of the active transitio
 
  When a message <tt>msg</tt> is  received, the actor checks for a possible transition for that <tt>msg</tt> in the <tt>current state</tt>.
  <br/> <br/>
-If no transition is possible, the message <tt>msg</tt> is <b>discarded if it is an event</b>; otherwise it us stored in a local msgQueue.
+If no transition is possible, the message <tt>msg</tt> is <b>discarded</b> if it is an <bc>event</bc>; otherwise it might be stored 
+(the choice is up to the application designer) in a local <bc>msgQueue</bc>.
  <br/> <br/>
 If the transition is possible, the actor goes into the next state related to that transition and then looks at empty moves or to transitions
 related to stored messages. 
@@ -221,7 +222,7 @@ This behavior is implemented as a
 </center>
 
  
-<h2>Fsm</h2>
+<h2>The <a href="../src/fsm/Fsm.kt" target="code">Fsm</a> class</h2>
 
 <table style="width:100%" border="1">
 <tr>
@@ -264,11 +265,13 @@ val <k>fsmactor</k> = scope.actor<AppMsg>( dispatcher, capacity=channelSize ) {.
 
 <tr>
 <td style="width:50%">
+<h3>Forward (built-in operation)</h3>
 <m>
 <pre>
 suspend fun <k>forward</k><ks>(msgId : String,payload: String,dest : Fsm )</ks>{
 ..
 }
+
 suspend fun <k>forward</k><ks>(msg : AppMsg,dest:Fsm )</ks>{
 if( dest.usemqtt ) { 
 	<k>mqtt.publish</k>( "<kc>unibo/qak/${dest.name}</kc>", msg.toString() )
@@ -280,7 +283,20 @@ if( dest.usemqtt ) {
 </m>
 </td>
 <td>
+<h3>Emit (built-in operation)</h3>
+<m>
+<pre>
+suspend fun <k>emit</k><ks>(  msgId : String, payload: String )</ks>{
+..
+}
 
+suspend fun <k>emit</k><ks>(  msg : AppMsg )</ks>{
+if( usemqtt ) {
+	<k>mqtt.publish</k>( "<kc>unibo/qak/events</kc>", msg.toString() )
+}else{ ... }
+}
+</pre>
+</m>
 
 </td>
 </tr>
@@ -288,7 +304,9 @@ if( dest.usemqtt ) {
 
 <tr>
 <td style="width:50%">
+<h3>Messages</h3>
 <m>
+ <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a>
 <pre>
 suspend fun <k>emit</k><ks>(  msgId : String, payload: String )</ks>{
 ..

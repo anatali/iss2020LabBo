@@ -22,14 +22,14 @@ class MqttUtils(val owner: String )  {
 	
 	fun connect(clientid: String, brokerAddr: String ): Boolean {
 		try {
-  			trace("doing connect for $clientid to $brokerAddr "  );
+  			trace("MqttUtils $owner | doing connect for $clientid to $brokerAddr "  );
 			client = MqttClient(brokerAddr, clientid)
             //trace("connect $brokerAddr client = $client" )
 			val options = MqttConnectOptions()
 			options.setKeepAliveInterval(480)
 			options.setWill("unibo/clienterrors", "crashed".toByteArray(), 0, false)
 			client.connect(options)
-			println("connect DONE $clientid to $brokerAddr " )//+ " " + client
+			println("MqttUtils $owner | connect DONE $clientid to $brokerAddr " )//+ " " + client
 			isConnected = true
 		} catch (e: Exception) {
 			println("for $clientid connect $e for: $brokerAddr" ) //
@@ -60,26 +60,11 @@ class MqttUtils(val owner: String )  {
 			client.setCallback(actor)
 			client.subscribe(topic)
 		}catch( e: Exception ){
-			trace("${actor.name} subscribe topic=$topic ERROR=$e "  )
+			trace("MqttUtils $owner |  ${actor.name} subscribe topic=$topic ERROR=$e "  )
 		}
 	}
 
-//	fun sendMsg( sender: String, msgID: String,  dest: String,  msgType: String ){
-//	  	val msgNum = 0
-//	  	//msg( MSGID, MSGTYPE SENDER, RECEIVER, CONTENT, SEQNUM )	  				
-//	  	val msgout = "msg( $msgID, $msgType, $sender, $dest, $msgNum )"
-//	  	//trace(" ************ SENDING VIA MQTT mout=$msgout" )
-//	  	publish(   "unibo/qasys", msgout, 1, RETAIN);		
-//	}
-//	fun sendMsg(  msg: String, topic: String ){
-//		//trace(" ************ SENDING VIA MQTT mout=$msg on $topic" )
-// 	  	publish( topic, msg, 1, RETAIN);
-//	}
-//	fun sendMsg(  msg: AppMsg, topic: String ){
-//		//trace(" ************ SENDING VIA MQTT mout=$msg on $topic" )
-//		publish( topic, msg.toString(), 1, RETAIN);
-//	}
- 
+  
 	/*
          * sends to a tpoic a content of the form
          * 	 msg( MSGID, MSGTYPE, SENDER, RECEIVER, CONTENT, SEQNUM )
@@ -97,7 +82,7 @@ class MqttUtils(val owner: String )  {
 			client.publish(topic, message)
  			trace("publish $message topic=$topic"  )
 		} catch (e:Exception) {
-			trace("publish ERROR $e topic=$topic msg=$msg"  )
+			println("MqttUtils $owner | publish ERROR $e topic=$topic msg=$msg"  )
  		}
 	}
 

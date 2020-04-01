@@ -261,11 +261,12 @@ For a more complete testin code see
 </table> 
  
 <h2>Project</h2> 
+The  full code is reported in  <a href="../src/robotAppl/basicrobot.kt" target="code">robotAppl/basicrobot.kt</a> (project <i>it.unibo.actorfsm</i>).
 <table style="width:100%" border="1">
 <tr>
 <td style="width:60%">
-<m>The basicrobot is a specialized verion of the class  <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> <br/>
-<center><img src="./img/basicrobot.png" alt="basicrobota" width="40%" ></center>
+<m>The basicrobot is a specialized version of the class  <a href="../src/fsm/Fsm.kt" target="code">fsm/Fsm.kt</a> <br/>
+<center><img src="./img/basicrobot.png" alt="basicrobota" width="60%" ></center>
 
 <br/>
 Its behavior can be modeled as a Finite State Machine:
@@ -282,8 +283,20 @@ The code is in <a href="../src/robotAppl/basicrobot.kt" target="code">basicrobot
 </m>
 </td>
 <td>
-<m>The state diagram on the left is mirrored in the structure of the code, thanks to the 
- DSL language described in <a href="FSM.html" target="code">FSM.html</a>
+<m> The <a href="../src/robotAppl/basicrobot.kt" target="code">basicrobot</a> class is defined as follows:
+<pre>
+class basicrobot ( name: String, scope: CoroutineScope,
+				   usemqtt:Boolean=false,
+				   val <k>owner</k>: Fsm?=null,
+				   discardMessages:Boolean=true
+				 ) : <a href="../src/fsm/Fsm.kt" target="code"><ks>Fsm</ks></a>( name, scope, discardMessages,usemqtt){
+</pre>
+
+The optional property <k>owner</k> is a reference to the actor that uses the <tt>basicrobot</tt>.
+<br/><br/>
+The state diagram on the left is mirrored in the structure of the code, thanks to the 
+<a href="../src/fsm/Fsm.kt" target="code"><ks>DSL language</ks></a>
+introduced in <a href="FSM.html" target="code">FSM.html</a>
 <pre> 
 override fun getBody() : (Fsm.() -> Unit){	
  return {  
@@ -327,9 +340,14 @@ override fun getBody() : (Fsm.() -> Unit){
 <td>
 <m>
 <pre>
-lateinit var <k>robot</k>     : Fsm
- 
-<ks>Messages.forward</ks>( "user","cmd", "r", <k>robot</k>   )
+<kc>//The owner  can write</kc>
+lateinit var <k>robot</k> : <a href="../src/fsm/Fsm.kt" target="code"><ks>Fsm</ks></a>
+val msg = ApplMsg.buildDispatch( ... )
+<k>forward( msg, robot )</k>
+
+
+<kc>//A main program can write</kc>
+<k>Messages.forward</k>( "user","cmd", "r", <k>robot</k>   )
 </pre>
 
 See the utility  <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a>
@@ -344,18 +362,30 @@ See the utility  <a href="../src/utils/Messages.kt" target="code">utils/Messages
 <table style="width:100%" border="1">
 <tr>
 <td style="width:50%">
-<center><img src="./img/basicrobotasFsm.png" alt="basicrobotasFsm" width="100%" ></center>
+<center><img src="./img/basicrobotMqttUsage.png" alt="basicrobotMqttUsage" width="100%" ></center>
 </td>
 <td>
 <m>
 <pre>
-val mqttAlien  	= MqttUtils("alien")
+<kc>//The owner  can write</kc>
+lateinit var <k>robot</k> : <a href="../src/fsm/Fsm.kt" target="code"><ks>Fsm</ks></a>
+val msg = ApplMsg.buildDispatch( ... )
+<k>forward( msg, mqtt )</k> 
+<kc>//mqtt is the MQTT-support of type <a href="../src/utils/MqttUtils.kt" target="code"><ks>MqttUtils</ks></a> defined in 
+<a href="../src/fsm/Fsm.kt" target="code"><ks>Fsm</ks></kc>
 
-<ks>Messages.forward</ks>( "alien","cmd", "w", "basicrobot", mqttAlien   )
+See the example of <a href="../src/stepper/stepper.kt" target="code">utils/stepper.kt</a>
+
+<kc>//A main program can write</kc>
+val <ks>mqttMain</ks> = MqttUtils("main")
+
+<k>Messages.emit</k>( "main","alarm", "fire", <ks>mqttMain</ks> )
+
+See the utility <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a>
+
 </pre>
-
-See the utility  <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a>
-and <a href="../src/utils/MqttUtils.kt" target="code">MqttUtils(name)</a>
+ 
+See also <a href="FSM.html" target="code">FSM.html</a>.
 </m>
 </td>
 </tr>
