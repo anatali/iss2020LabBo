@@ -46,8 +46,7 @@ class sensorObserver ( name: String, scope: CoroutineScope,
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
-	val sobs = sensorObserver("sensorobserver", this )
- 	
+	val sobs = sensorObserver("sensorobserver", this, usemqtt=true ) 	
  	sobs.waitTermination()
 	println("main ends")
 }

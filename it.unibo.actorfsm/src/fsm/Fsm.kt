@@ -326,14 +326,8 @@ INTERACTION
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun forward(  msg : AppMsg, dest : Fsm ){
 	 	//println("		*** Fsm $name | forward  msg: ${msg} ")
-		//TODO better
-// 	    if( dest.usemqtt   ) {  //usemqtt is related to the destination   
-//			mqtt.publish( "unibo/qak/${dest.name}", msg.toString() )
-//		}
-//		}else{ //forward directly to the owner
-		 	if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
-			else println("		*** Fsm $name | WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
-//		}
+		 if( ! dest.fsmactor.isClosedForSend) dest.fsmactor.send( msg  )
+		else println("		*** Fsm $name | WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
 	}
 	
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -377,7 +371,7 @@ INTERACTION
     override fun messageArrived(topic: String, msg: MqttMessage) {
         //println("	*** Fsm $name |  MQTT messageArrived on "+ topic + ": "+msg.toString());
         val m = AppMsg.create( msg.toString() )
-        println("		*** Fsm $name |  MQTT ARRIVED on $topic $m in:${name}" )
+        //println("		*** Fsm $name |  MQTT ARRIVED on $topic $m in:${name}" )
         scope.launch{ fsmactor.send( m  ) }
     }
     override fun connectionLost(cause: Throwable?) {

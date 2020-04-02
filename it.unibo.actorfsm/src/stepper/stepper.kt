@@ -30,8 +30,8 @@ lateinit var robot : Fsm
 		return{
 			state("init") {	
 				action {
-					timer = timer("timer",    scope, usemqtt=true, owner=myself )
-					robot = basicrobot("basicrobot", scope, usemqtt=false, owner=myself  )
+					timer = timer("timer",    scope, usemqtt=false, owner=myself )
+					robot = basicrobot("basicrobot", scope, usemqtt=true, owner=myself  )
 					println("$ndnt stepper STARTED")
 				}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
@@ -105,7 +105,7 @@ lateinit var robot : Fsm
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main() = runBlocking{
-	utils.mqtttraceOn = true
+//	utils.mqtttraceOn = true
 //	val worker = worker( "worker", this )
 // 	worker.waitTermination()
 	

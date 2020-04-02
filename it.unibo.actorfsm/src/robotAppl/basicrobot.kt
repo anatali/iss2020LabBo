@@ -63,13 +63,13 @@ class basicrobot ( name: String, scope: CoroutineScope,
  			}
 			state("handlesensor"){
 				action{
-					emit( currentMsg.MSGID, currentMsg.CONTENT  )
 					if( currentMsg.CONTENT.startsWith("collision") ){ //defensive
 						println("$ndnt basicrobot | collision $currentMsg - moving back a little ...  ")
 						doMove("s"); delay(backTime); doMove("h")	//robot reflex for safety ...
 						if( owner is Fsm ) forward( currentMsg, owner )
  						rstate = basicrobotstate.obstacle
 					}
+					emit( currentMsg.MSGID, currentMsg.CONTENT  )  //propagate events to the world
 				}
 				transition( edgeName="t0",targetState="waitcmd",  cond=doswitch()    )		
 			}

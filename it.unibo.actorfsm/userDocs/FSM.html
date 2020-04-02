@@ -157,8 +157,6 @@ table, th, td {
 <h1>FSM | A kotlin-based DSL</h1> 
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/LectureBologna1819.html" target="isslm">LabISS-lectures site</a></font> 
 
-<br/><br/>
-TO BE COMPLETED ...
 
 
 <h2 id="mqtt">Finite State Machines</h2>
@@ -255,8 +253,7 @@ val <k>fsmactor</k> = scope.actor<AppMsg>( dispatcher, capacity=channelSize ) {.
 <li><ks>confined</ks>: when <tt>true</tt>, the embedded <k>fsmactor</k> will use a single-Thread dispatcher;<br/><br/></li>
 <li><ks>ioBound</ks>: when <tt>true</tt>, the embedded <k>fsmactor</k> will use a 64-Thread dispatcher;<br/><br/></li>
 <li><ks>channelSize</ks>: when <tt>true</tt>, the embedded <k>fsmactor</k> will set that size for its channel;<br/><br/></li>
-<li></li>
-<li></li>
+ 
 
 </ul>
 </m>
@@ -269,15 +266,14 @@ val <k>fsmactor</k> = scope.actor<AppMsg>( dispatcher, capacity=channelSize ) {.
 <m>
 <pre>
 suspend fun <k>forward</k><ks>(msgId : String,payload: String,dest : Fsm )</ks>{
-..
+  val msg = AppMsg.buildDispatch(
+     actor=name, msgId=msgId , content=payload, dest=dest.name)
+  forward( msg, dest )
 }
 
 suspend fun <k>forward</k><ks>(msg : AppMsg,dest:Fsm )</ks>{
-if( dest.usemqtt ) { 
-	<k>mqtt.publish</k>( "<kc>unibo/qak/${dest.name}</kc>", msg.toString() )
-}else{
 	if( ! dest.fsmactor.isClosedForSend) <ks>dest.fsmactor.send</ks>( msg  )
-	...
+	else ...
 }
 </pre>
 </m>
@@ -287,7 +283,9 @@ if( dest.usemqtt ) {
 <m>
 <pre>
 suspend fun <k>emit</k><ks>(  msgId : String, payload: String )</ks>{
-..
+  val msg = AppMsg.buildEvent(
+	actor=name, msgId=msgId , content=payload )
+  emit( msg )
 }
 
 suspend fun <k>emit</k><ks>(  msg : AppMsg )</ks>{
@@ -306,21 +304,31 @@ if( usemqtt ) {
 <td style="width:50%">
 <h3>Messages</h3>
 <m>
- <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a>
+The Kotlin object <a href="../src/utils/Messages.kt" target="code">utils/Messages.kt</a> provides:
 <pre>
-suspend fun <k>emit</k><ks>(  msgId : String, payload: String )</ks>{
-..
-}
-suspend fun <k>emit</k><ks>(  msg : AppMsg )</ks>{
-if( usemqtt ) {
-	<k>mqtt.publish</k>( "<kc>unibo/qak/events</kc>", msg.toString() )
-}else{ ... }
-}
+suspend fun forward(  sender: String, msgId : String, 
+	payload:String, <k>dest:Fsm</k> )  <kc>//forward1</kc>
+
+suspend fun forward(  sender: String, msgId : String, 
+	payload:String,<k>destName:String</k>, mqtt:MqttUtils ) <kc>//forward2</kc>
+
+						
+suspend fun emit(  sender: String, msgId : String, 
+	payload:String, mqtt:MqttUtils ) <kc>//emit</kc>
 </pre>
 </m>
 </td>
 <td>
+<m>
+<ul>
+<li><tt>forward1</tt>: builds an <tt>AppMsg</tt> with the given args and puts it into the queue of the given <tt>dest</tt> actor.<br/><br/></li>
+<li><tt>forward2</tt>: builds an <tt>AppMsg</tt> with the given args and publish it on the <bc>unib/qak/$destName</bc> 
+topic using the given <tt>mqtt</tt> utility.<br/><br/></li>
+<li><tt>emit</tt>: builds an <tt>AppMsg</tt> with the given args and publish it on the <bc>unib/qak/events</bc> 
+topic using the given <tt>mqtt</tt> utility.<br/><br/></li>
 
+</ul>
+</m>
 </td>
 </tr>
 
@@ -329,9 +337,14 @@ if( usemqtt ) {
  
  
  
- <h2>Example</h2>
+ <h2>The FSM language</h2>
+The custom DSL language is implemented by the class 
+ <a href="../src/fsm/Fsm.kt" target="code"><bc>Fsm.kt</bc></a>, as an example of a Kotlin internal DSL, as introduced in
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.kotlinIntro/userDocs/LabDsl.html#towardsdsl" target="web"> 	
+LabKotlin | Towards DSL</a>
 
-
+<br/><br/>
+Let us report here the quite simple example defined in <a href="../src/demoDSL/demoDSL.kt" target="code">demoDSL/demoDSL.kt</a>:
 
 <table style="width:100%" border="1">
 <tr>
@@ -373,16 +386,18 @@ override fun <ks>getBody() : (Fsm.() -> Unit)</ks>{
  </pre></m>
  </td>
 <td><center><img src="./img/demoDSL.png" alt="demoDSL" width="100%" ></center>
-<m>
-According to the semantics described in <a href="FSM.html" target="code">FSM.html</a>,
-with the message sequence:
+<m>Since the default of <a href="../src/fsm/Fsm.kt" target="code">Fsm.kt</a> is <bc>discardMessages=false</bc>,
+the unexpected messages are inserted in a local <bc>msgQueue</bc>. Thus, with the message sequence:
 <ul>
 <li><tt>msg1, msg2</tt>: the final state is <tt>s1</tt></li>
 <li><tt>msg2, msg1</tt>: the final state is <tt>s2</tt></li>
 <li><tt>msg1, msg1, msg2</tt>: the final state is <tt>s2</tt></li>
 </ul>
 
-See <a href="../src/demoDSL/demoDSL.kt" target="code">demoDSL/demoDSL.kt</a>
+If we launch the demo with <bc>discardMessages=true</bc> with
+<ul>
+<li><tt>msg1, msg1, msg2</tt>: the final state is <tt>s1</tt></li>
+</ul>
 </m>
 </td>
 </tr>
