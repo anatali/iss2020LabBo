@@ -72,7 +72,6 @@ class Transition(val edgeName: String, val targetState: String) {
 
     lateinit var edgeEventHandler: ( AppMsg ) -> Boolean  //MsgId previous: String
     private val actionList = mutableListOf<(Transition) -> Unit>()
-
     fun action(action: (Transition) -> Unit) { //MEALY?
         //println("Transition  | add ACTION:  $action")
         actionList.add(action)
@@ -123,6 +122,9 @@ abstract class  Fsm(  val name:  String,
 	val mqtt                       = MqttUtils(name)
 	internal val requestMap : MutableMap<String, AppMsg> = mutableMapOf<String,AppMsg>()
 	
+	companion object{
+		var connectNameCounter = 0
+	}
 /* 
 */
     init {
@@ -312,6 +314,15 @@ abstract class  Fsm(  val name:  String,
              }
     }
 	
+    fun whenDispatchGuarded(msgName: String, guard:()->Boolean ): Transition.() -> Unit {
+        return {
+            edgeEventHandler = {
+                //println("whenDispatchGuarded $it - $evName");
+                it.isDispatch() && it.MSGID == msgName && guard()  }
+          }
+    }
+	
+	
 	
 /*
 INTERACTION	
@@ -341,7 +352,8 @@ INTERACTION
 	suspend fun emit(  msg : AppMsg ){
 	 	println("		*** Fsm $name | emit  msg: ${msg} usemqtt=$usemqtt")
 	    if( usemqtt ) {
-			mqtt.publish( "unibo/qak/events", msg.toString() )
+			val m = AppMsg.buildEvent(actor=name, msgId=msg.MSGID, content=msg.CONTENT+"_natali")
+			mqtt.publish( "unibo/qak/events", m.toString() )
 		}else{
 		 	println("		*** Fsm $name | WARNING: Messages.emit NOT SUPPORTED without MQTT")
 		}
@@ -358,7 +370,7 @@ INTERACTION
 				while( ! mqtt.connectDone() ){
 					delay(1000)
 					println("		*** Fsm $name | attempt to connect ${mqttbrokerAddr}")
-					mqtt.connect(name, mqttbrokerAddr)
+					mqtt.connect(name+"nat_${connectNameCounter++}", mqttbrokerAddr)
 				}
 	 		    mqtt.subscribe(this, "unibo/qak/$name")
 			    mqtt.subscribe(this, "unibo/qak/events")

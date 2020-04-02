@@ -17,7 +17,7 @@ import utils.AppMsg;
 public class ConsoleGui implements  Observer{
 private String[] buttonLabels  = new String[] {"w", "s", "l", "r", "p", "h"};  //p means step
 private String brokerAddr      = FsmKt.getMqttbrokerAddr() ;    //Using kotlin from Java
-private MqttUtils   mqtt       =  new MqttUtils("gui");  		//Using kotlin from Java
+private MqttUtils   mqtt       = new MqttUtils("gui");  		//Using kotlin from Java
 private String destName        = "";
  
 	public ConsoleGui( String destName) {
@@ -44,14 +44,14 @@ private String destName        = "";
 	
 	public void update( Observable o , Object arg ) {
 		String move = arg.toString();
-		System.out.println("GUI input move=" + move);
+		//System.out.println("GUI input move=" + move);
 		forward( "gui", "cmd", move, destName, mqtt );
 		//Messages.forward("gui","cmd", move, destName, mqtt, ???);  //Java/Kotlin => missing the last argument Continuation	
 	}
 	
 	public static void main( String[] args) {
-		new ConsoleGui( "basicrobot" );
-		//new ConsoleGui( "stepper" );
+		//new ConsoleGui( "basicrobot" );
+		new ConsoleGui( "stepper" );
 	}
 }
 

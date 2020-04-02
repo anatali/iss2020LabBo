@@ -41,7 +41,7 @@ lateinit var robot : Fsm
 					//println("$ndnt stepper waits ... ")
 				}
 				transition( edgeName="t0",targetState="dostep",  cond=whenDispatch("step") )
-				transition( edgeName="t0",targetState="docmd",  cond=whenDispatch("cmd") )
+				transition( edgeName="t0",targetState="docmd",   cond=whenDispatch("cmd") )
 				transition( edgeName="t0",targetState="endwork", cond=whenDispatch("end") ) 
 			}
 			
@@ -84,9 +84,14 @@ lateinit var robot : Fsm
 						forward("stepfail", "$duration", owner)
 					}		
     			}
- 				//WARNING: if discardMessages = false the msg timer IS NOT LOST: it should be consumed
+ 				//WARNING: endgauge  should be consumed
+				transition( edgeName="t0",targetState="discardGauge", cond=whenDispatch("endgauge") )
+			}
+			//endgauge could arrive while back in waitcmd 
+			state("discardGauge"){
+				action{ println("$ndnt stepper discard $currentMsg")}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
-			}	
+			}
 			
  									
 			state("endwork") {
