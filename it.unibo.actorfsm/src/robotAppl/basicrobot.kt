@@ -50,8 +50,8 @@ class basicrobot ( name: String, scope: CoroutineScope,
 					//println("$ndnt basicrobot | waits ...")  
  				}
 				transition( edgeName="t0",targetState="handlesensor", cond=whenDispatch("sensor") )				
-				transition( edgeName="t1",targetState="endwork", cond=whenDispatch("end") )				
-				transition( edgeName="t2",targetState="execcmd", cond=whenDispatch("cmd") )				
+				transition( edgeName="t1",targetState="endwork",      cond=whenDispatch("end")    )				
+				transition( edgeName="t2",targetState="execcmd",      cond=whenDispatch("cmd")    )				
 			}
 			state("execcmd"){
 				action { //it:State

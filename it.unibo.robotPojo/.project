@@ -2,24 +2,21 @@
 <projectDescription>
 	<name>it.unibo.robotPojo</name>
 	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.jetbrains.kotlin.ui.kotlinBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
+	<projects/>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.jetbrains.kotlin.core.kotlinNature</nature>
 	</natures>
+	<buildSpec>
+		<buildCommand>
+			<name>org.jetbrains.kotlin.ui.kotlinBuilder</name>
+			<arguments/>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments/>
+		</buildCommand>
+	</buildSpec>
 	<linkedResources>
 		<link>
 			<name>kotlin_bin</name>
@@ -27,4 +24,5 @@
 			<locationURI>org.jetbrains.kotlin.core.filesystem:/it.unibo.robotPojo/kotlin_bin</locationURI>
 		</link>
 	</linkedResources>
+	<filteredResources/>
 </projectDescription>
