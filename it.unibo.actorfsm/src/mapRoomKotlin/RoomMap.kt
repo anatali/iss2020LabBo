@@ -8,6 +8,7 @@ class RoomMap private constructor()  { //: Serializable
 	companion object {
 //      private const val serialVersionUID = 1L
         private var singletonRoomMap: RoomMap? = null
+		
         fun getRoomMap(): RoomMap {
             if (singletonRoomMap == null) singletonRoomMap = RoomMap()
             return singletonRoomMap!!

@@ -23,6 +23,11 @@ enum class  RobotState{
 	initial, working, endOfStep, stopped, end
 }
 
+val stepTime       = "350"	//a step whose space s is the robot length (s=v*stepTime)
+val backTime       = 80L	
+val pauseStepTime  = 700L	//delay between steps
+
+
 /*
  ASSUMPTION: the room is empty
 */ 
@@ -48,113 +53,59 @@ var nstep = 0
 				action { //it:State
 					println("boundaryrobot | starts")
 					robot = stepper("stepper", scope, usemqtt=false, owner=myself  )
-				}
+ 			 		println( mapRoomKotlin.mapUtil.refMapForTesting )
+					println("-----------------")
+					mapRoomKotlin.mapUtil.showMap()
+					delay(2000) //just to look at the reference map and the current map
+				} 
 				transition( edgeName="t0",targetState="work", cond=whenDispatch("start") )
 			}
 			state("work") {	
 				action { //it:State
-					delay(500)
-					forward( "step", "350", robot)
+					delay(pauseStepTime)
+					forward( "step", stepTime, robot)
 				}
-				transition( edgeName="t0",targetState="work", cond=whenDispatch("stepdone") )
-				transition( edgeName="t0",targetState="wall", cond=whenDispatch("stepfail") )
+				transition( edgeName="t0",targetState="stepDone", cond=whenDispatch("stepdone") )
+				transition( edgeName="t1",targetState="wall", cond=whenDispatch("stepfail") )
 			}
+			
+			state("stepDone"){
+				action{
+					mapRoomKotlin.mapUtil.doMove("w")
+					mapRoomKotlin.mapUtil.showMap()
+				}
+				transition( edgeName="t0",targetState="work", cond=doswitch() )		
+			}
+			
 			state("wall") {	
 				action { //it:State
 					nstep++
-					println("boundaryrobot | obstacle at step $nstep")
+					//Go to the previous cell
+					var dt = currentMsg.CONTENT.toLong()-backTime  //consider the bascirobot bacsktep
+					if( dt < 0 ) dt = 0
+ 					println("boundaryrobot | obstacle at step $nstep ${currentMsg.CONTENT} dt=$dt")
+					forward( "cmd", "s", robot); delay(dt); forward( "cmd", "h", robot)  
+					delay(pauseStepTime)	//important
 					forward( "cmd", "l", robot)
-					delay(500)
+					delay(pauseStepTime)
+					mapRoomKotlin.mapUtil.doMove("l")
 				}
 				transition( edgeName="t0",targetState="work", cond=doswitchGuarded( {nstep<4}  ) )
-				transition( edgeName="t0",targetState="end",  cond=doswitchGuarded( {nstep==4} ) )
+				transition( edgeName="t1",targetState="end",  cond=doswitchGuarded( {nstep==4} ) )
  			}
 			
 			state("end") {	
 				action { //it:State
 					println("boundaryrobot | ends")
+					mapRoomKotlin.mapUtil.showMap()
+					forward("end","0",robot)
+					terminate()
  				}
  			}
 			
 		}
 	}
 
-   	
- 
-/*	
-suspend fun fsm(   ){
-	while( state != RobotState.end ){			
-		when( state ){
- 			RobotState.initial -> { doInit()
-   									var transition=false
-   									while( !transition ){
-     									getInput()
-	 									when( curMsg.MSGID ){
-	 										"start"  -> { state = RobotState.working; transition=true }
-											 else -> discardMsg() //must not redo the action
-										}
-									}
-								  }   				
-			RobotState.working -> {
-				doMove("w")
-				var transition=false
-				while( !transition ){
-					getInput()
-					when( curMsg.MSGID ){
-						"stop"      -> { doMove("h")
-							             state = RobotState.stopped; transition=true;
-							             println("ROBOT STOPPED ${++nStop}")
-										}
-						"sensor"    -> {
-										 if( curMsg.CONTENT.startsWith("collision") ){ //defensive ...
-											 println("collision ${curMsg.CONTENT}  nStep=$nStep")
-											 state = RobotState.endOfStep; transition=true;
-										 }
-									   }   
-						 else -> discardMsg() //must not redo the action 
-					}
-				}
-			}
-			
-			RobotState.endOfStep  -> {
-				elabCollision(   )
- 				if( nStep == 4 ){
-					 Messages.forward(endMsg.toString(),channel)  //self-msg boundary not usable here	
-				}else {
-					 Messages.forward(goonMsg.toString(),channel) //self-msg boundary not usable here	
-				}
-				var transition = false
-				while( !transition ){
-	 				getInput()				
-					when( curMsg.MSGID ){
-						"end"   -> {   state = RobotState.end;     transition = true  }
-						"goon"  -> {   state = RobotState.working; transition = true  }
-						"stop"  -> {   state = RobotState.stopped; transition = true  }
-						 else -> discardMsg() 	 //must not redo the action 
-					}
-				} 
- 			}//endOfStep
-			
-			RobotState.stopped   ->{
-				  getInput()
-				  when( curMsg.MSGID ){
-					"resume" -> { println("ROBOT RESUMED ${nStop}")
-								  state = RobotState.working
-								  doMove("w")
-							    }
-					else -> discardMsg()
-				  }
-			}
-						  
-			RobotState.end  ->  println("		ERROR: fsm |  should be never in $state ")
-			}
-	}//while
-	println("		Actor fsm |  TERMINATED in $state ")
-}//fsm
-	
-	//Actor behavior		
-	fsm()	
-*/
 }//boundary	
 	
  

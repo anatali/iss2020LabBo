@@ -1,4 +1,4 @@
-package robotAppl
+package test
 
 import org.junit.Before
 import org.junit.After
@@ -12,12 +12,15 @@ import utils.AppMsg
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.delay
 import utils.MqttUtils
+import robotAppl.basicrobot
+import robotAppl.sensorObserver
+import robotAppl.basicrobotstate
 
 class testBasicrobot {
 	
 lateinit var robot    : Fsm
 val mqttTest   	      = MqttUtils("test")
-val initDelayTime     = 2000L 
+val initDelayTime     = 3000L 
 val useMqttInTest 	  = false
  
 		

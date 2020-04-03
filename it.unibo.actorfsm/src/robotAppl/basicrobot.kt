@@ -6,6 +6,7 @@ import utils.virtualRobotSupportApp
 import utils.Messages
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import utils.MqttUtils
  
 val ndnt   		= "&&& "
 val backTime    = 80L
@@ -47,11 +48,11 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			
 			state("waitcmd"){
 				action { //it:State
-					//println("$ndnt basicrobot | waits ...")  
+					//println("$ndnt basicrobot | waits in LOGICAL state = $rstate")  
  				}
 				transition( edgeName="t0",targetState="handlesensor", cond=whenDispatch("sensor") )				
-				transition( edgeName="t1",targetState="endwork", cond=whenDispatch("end") )				
-				transition( edgeName="t2",targetState="execcmd", cond=whenDispatch("cmd") )				
+				transition( edgeName="t1",targetState="endwork",      cond=whenDispatch("end") )				
+				transition( edgeName="t2",targetState="execcmd",      cond=whenDispatch("cmd") )				
 			}
 			state("execcmd"){
 				action { //it:State
@@ -66,7 +67,7 @@ class basicrobot ( name: String, scope: CoroutineScope,
 					if( currentMsg.CONTENT.startsWith("collision") ){ //defensive
 						doMove("s"); delay(backTime); doMove("h")	    //robot reflex for safety ...
 						if( owner is Fsm ) forward( currentMsg, owner )	//soon to gain time ...
-						println("$ndnt basicrobot | collision $currentMsg - moving back a little ...  ")
+						//println("$ndnt basicrobot | collision $currentMsg - moving back a little ...  ")
   						rstate = basicrobotstate.obstacle
 					}
 					emit( currentMsg.MSGID, currentMsg.CONTENT  )  //propagate events to the world
@@ -76,7 +77,7 @@ class basicrobot ( name: String, scope: CoroutineScope,
 			state("endwork") {
 				action {
 					virtualRobotSupportApp.terminate()
-					println("basicrobot | endwork")
+					println("basicrobot | endwork in LOGICAL state = $rstate")
    					terminate()
   				}
  			}	 							
@@ -101,30 +102,39 @@ class basicrobot ( name: String, scope: CoroutineScope,
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 suspend fun demoUsingMqtt( scope: CoroutineScope){
-	val robot = basicrobot("basicrobot", scope, usemqtt=true, owner=null, discardMessages=true)
-			delay(500) //wait for starting ...
-			Messages.forward( "test","cmd", "r", robot   )
-			delay(500)
-			Messages.forward( "test","cmd", "l", robot    )
-			delay(500)
-			Messages.forward( "test","cmd", "w", robot    )
+	val mqttMain = MqttUtils("main")
+	while( ! mqttMain.connectDone() ){
+		println( "	attempting a MQTT connection for the test unit ... " )
+		delay(600)
+		mqttMain.connect("main_nat", fsm.mqttbrokerAddr )					 
+	}
+	val robot    = basicrobot("basicrobot", scope, usemqtt=true, owner=null, discardMessages=true)
+	println(" --- demoUsingMqtt ---")
+			delay(2000) //wait for starting ...
+			Messages.forward( "main","cmd", "r", "basicrobot", mqttMain  )
 			delay(1000)
-//	robot.terminate()
-	robot.waitTermination()	
+			Messages.forward( "main","cmd", "l", "basicrobot", mqttMain  )
+			delay(1000)
+			Messages.forward( "main","cmd", "w", "basicrobot", mqttMain  )
+			delay(2000)
+	Messages.forward( "main","end", "withmqtt", "basicrobot", mqttMain   )
+	robot.waitTermination()
+	mqttMain.disconnect()
 }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 suspend fun demoLocal( scope: CoroutineScope){
 	val robot = basicrobot("basicrobot", scope, usemqtt=false, owner=null, discardMessages=true)
+	println(" --- demoLocal ---")
 			delay(500) //wait for starting ...
-			Messages.forward( "test","cmd", "r", robot   )
+			Messages.forward( "main","cmd", "r", robot   )
 			delay(500)
-			Messages.forward( "test","cmd", "l", robot    )
+			Messages.forward( "main","cmd", "l", robot    )
 			delay(500)
-			Messages.forward( "test","cmd", "w", robot    )
-			delay(1000)
- 
+			Messages.forward( "main","cmd", "w", robot    )
+			delay(2000)
+ 	Messages.forward( "main","end", "local", robot    )
 	robot.waitTermination()	
 }
 

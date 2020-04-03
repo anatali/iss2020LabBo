@@ -100,7 +100,7 @@ class Transition(val edgeName: String, val targetState: String) {
 	//tcp://test.mosquitto.org
 	//mqtt.fluux.io
 	//"tcp://broker.hivemq.com" 
-val mqttbrokerAddr   =  "tcp://test.mosquitto.org"
+val mqttbrokerAddr   =  "tcp://broker.hivemq.com"
 
 abstract class  Fsm(  val name:  String,
                       val scope: CoroutineScope = GlobalScope,
@@ -174,7 +174,7 @@ abstract class  Fsm(  val name:  String,
                 msgQueueStore.add(msg)
                 println("		*** Fsm $name |  state=${currentState.stateName} added $msg in msgQueueStore")
             }
-            else println("		*** Fsm $name | DISCARDING : ${msg.MSGID} in state=${currentState.stateName}")
+            else trace("		*** Fsm $name | DISCARDING : ${msg.MSGID} in state=${currentState.stateName}")
             return false
         }
 	}
@@ -350,12 +350,12 @@ INTERACTION
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun emit(  msg : AppMsg ){
-	 	println("		*** Fsm $name | emit  msg: ${msg} usemqtt=$usemqtt")
+	 	trace("		*** Fsm $name | emit  msg: ${msg} usemqtt=$usemqtt")
 	    if( usemqtt ) {
 			val m = AppMsg.buildEvent(actor=name, msgId=msg.MSGID, content=msg.CONTENT+"_natali")
 			mqtt.publish( "unibo/qak/events", m.toString() )
 		}else{
-		 	println("		*** Fsm $name | WARNING: Messages.emit NOT SUPPORTED without MQTT")
+		 	trace("		*** Fsm $name | WARNING: Messages.emit NOT SUPPORTED without MQTT")
 		}
 	}
 			

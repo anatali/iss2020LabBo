@@ -1,14 +1,29 @@
 package mapRoomKotlin
 
 object mapUtil{
- 	private var state = RobotState(0,0,Direction.DOWN)	 
-	var map   = RoomMap.getRoomMap()
+ 	private var state    = RobotState(0,0,Direction.DOWN)	 
+	var map              = RoomMap.getRoomMap()
+	var refMapForTesting = buildRefTestMap()
 	
-	fun getMapAndClean() : String{ //(fName : String="storedMap.txt")
-		val outS = map.toString()
-		RoomMap.resetRoomMap()
-		return outS
-	}
+	
+	
+ 	fun buildRefTestMap() : String{
+		val nr = 4
+		val nc = 5
+ 			for( i in 1..nr ) mapUtil.doMove("w")
+			mapUtil.doMove("l")
+		    for( i in 1..nc ) mapUtil.doMove("w")
+			mapUtil.doMove("l")
+			for( i in 1..nr ) mapUtil.doMove("w")
+			mapUtil.doMove("l")
+		    for( i in 1..nc ) mapUtil.doMove("w")
+			mapUtil.doMove("l")
+			val res = mapUtil.map.toString()
+			RoomMap.resetRoomMap()
+ 			//println( "buildRefTestMap DONE $res" )
+			return res
+  	}
+	
 	
 	fun setObstacle(){
 		map.put( state.x,  state.y, Box(true, false, false))
@@ -48,7 +63,7 @@ object mapUtil{
 		   
 //		   println( "$map"  )
         } catch (e: Exception) {
-            println("doMove: ERROR:" + e.message)
+            println("mapUtil | doMove: ERROR:" + e.message)
         }
 	}
 	

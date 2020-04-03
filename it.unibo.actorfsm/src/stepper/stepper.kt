@@ -30,8 +30,8 @@ lateinit var robot : Fsm
 		return{
 			state("init") {	
 				action {
-					timer = timer("timer",    scope, usemqtt=false, owner=myself )
-					robot = basicrobot("basicrobot", scope, usemqtt=true, owner=myself  )
+					timer = timer("timer",    scope, usemqtt=false,        owner=myself  )
+					robot = basicrobot("basicrobot", scope, usemqtt=false, owner=myself  )
 					println("$ndnt stepper STARTED")
 				}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
@@ -56,9 +56,9 @@ lateinit var robot : Fsm
 				action {
 					//println("$ndnt stepper dostep msg=${currentMsg} owner=${owner.name}")
 					forward(  "cmd", "w", robot )
+ 					forward( "gauge", "${currentMsg.CONTENT}", timer  )					
 					memoTime()
-  					forward( "gauge", "${currentMsg.CONTENT}", timer  )					
-				}
+ 				}
 				transition( edgeName="t2",targetState="stepKo",  cond=whenDispatch("sensor")  )   	//(first)
 				transition( edgeName="t1",targetState="stepOk",  cond=whenDispatch("endgauge") )
  				transition( edgeName="t3",targetState="endwork", cond=whenDispatch("end")     )
@@ -70,7 +70,7 @@ lateinit var robot : Fsm
 					forward(  "cmd", "h", robot )
  					stepCounter++
 					if( owner is Fsm ){
-						println("$ndnt stepper stepOk stepCounter=$stepCounter  => stepDoneMsg to ${owner.name}")
+						//println("$ndnt stepper stepOk stepCounter=$stepCounter  => stepDoneMsg to ${owner.name}")
 						forward( "stepdone", "ok", owner )
 					} 			
  				}
@@ -78,9 +78,9 @@ lateinit var robot : Fsm
  			}			
 			state("stepKo") {
 				action {
-					val duration=getDuration() 	 
+					val duration=getDuration()-100 //to compensate elab (tricky) 	 
 					if( owner is Fsm ){
-						println("$ndnt stepper stepKo at stepCounter=$stepCounter after $duration => stepfail to ${owner.name}")
+						//println("$ndnt stepper stepKo at stepCounter=$stepCounter after $duration => stepfail to ${owner.name}")
 						forward("stepfail", "$duration", owner)
 					}		
     			}
@@ -89,7 +89,9 @@ lateinit var robot : Fsm
 			}
 			//endgauge could arrive while back in waitcmd 
 			state("discardGauge"){
-				action{ println("$ndnt stepper discard $currentMsg")}
+				action{
+					//println("$ndnt stepper discard $currentMsg")
+				}
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
 			}
 			
