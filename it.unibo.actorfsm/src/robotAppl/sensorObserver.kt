@@ -8,7 +8,7 @@ import utils.Messages
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
-
+val prfx   		= "&&& "
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class sensorObserver ( name: String, scope: CoroutineScope,
@@ -23,19 +23,19 @@ class sensorObserver ( name: String, scope: CoroutineScope,
 		return { //this:Fsm
 			state("init") {	
 				action { //it:State
-					println("$ndnt sensorObserver | STARTED ")
+					println("$prfx sensorObserver | STARTED ")
 				}
 				transition( edgeName="t0",targetState="waitevents", cond=doswitch() )
 			}
 			state("waitevents") {	
 				action { //it:State
-					//println("$ndnt sensorObserver | WAITS ")
+					//println("$prfx sensorObserver | WAITS ")
  				}
 				transition( edgeName="t0",targetState="handleevent", cond=whenEvent("sensor") )
 			}
 			state("handleevent") {	
 				action { //it:State
-					println("$ndnt sensorObserver | handles $currentMsg ")
+					println("$prfx sensorObserver | handles $currentMsg ")
  				}
 				transition( edgeName="t0",targetState="waitevents", cond=doswitch() )
 			}
