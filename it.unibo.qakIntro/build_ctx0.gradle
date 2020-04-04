@@ -3,14 +3,10 @@
 build_ctx0.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-	gradle build eclipse		//to set the dependency on the library
-	gradle   -b build_ctx0.gradle distZip //for executable jar and distribution
-	
-	gradle   -b build_ctx0.gradle qawrapper
-	gradlew  -b build_ctx0.gradle eclipse		//to set the dependency on the library
-	gradlew  -b build_ctx0.gradle build
-	gradlew  -b build_ctx0.gradle -q tasks --all
-	gradlew  -b build_ctx0.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctx0.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctx0.gradle build
+	gradle  -b build_ctx0.gradle -q tasks --all
+	gradle  -b build_ctx0.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
@@ -26,9 +22,8 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    flatDir { //grazie Mattia Piretti
-       dirs '/C:/Didattica2018Work/iss2019Lab/libs'	//full path
-   }
+    jcenter()
+    flatDir {   dirs '../unibolibs'	 }
 }
 
 dependencies {
@@ -91,6 +86,7 @@ compileTestKotlin {
 sourceSets {
     main.java.srcDirs += 'src'
     main.java.srcDirs += 'resources'
+    test.java.srcDirs += 'test'		//test is specific
 }
 /*
 mainClassName = 'it.unibo.TODOKt'

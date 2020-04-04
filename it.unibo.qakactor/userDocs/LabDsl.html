@@ -1,0 +1,403 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+	width: 750px;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 70%;
+	background-color: #fcf8c7; 
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}    
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+  -->
+</style>
+    
+<head>
+   
+<title>LABDslISS</title></head>
+    
+<body>
+
+<div class="body"> 
+
+<h1>72939 - LABDsl | Kotlin Internal DSL</h1> 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/LectureBologna1819.html" target="isslm">LabISS-lectures site</a></font> 
+
+  
+
+
+<h2 id="dsl">Lambda with receiver - extension function type</h2>
+
+<center><table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:40%">
+<pre>
+class Counter{
+var v = 0
+    fun inc(): Int{
+        return ++v
+    }
+}
+<h3>Extension functions</h3>
+fun Counter.show() : String{
+    return "counter($v)"
+}
+fun Counter.dec(): Int{
+    this.v--
+    return v
+}
+
+fun main() {
+    val c1 = Counter()
+    println( c1.show() ) // counter(0)
+    c1.inc();c1.inc();c1.dec()
+    println( c1.show() ) // counter(1)
+}
+
+</pre>
+</td>
+<td><m>
+<h2>Extension function</h2>
+A way of extending the abilities of a Kotlin  class without actually inheriting the class.<br/>
+An <em>extension function</em> <tt>ef</tt> for a class <tt>C</tt> in package <tt>P</tt> :
+<ul>
+<li>is declared as a <b>top-level</b> function and it is compiled to a <b>static</b> method that <i>accepts the receiver object as its first argument</i>; </li>
+<li>can directly access visible properties and methods of <tt>C</tt>;</li>
+<li>can use in its body the key-word <bc>this</bc>;</li>
+<li>needs to be imported, e.g. <bc>import P.ef</bc> or <bc>import P.ef as xx </bc> (to change the name ); </li>
+<li>cannot be overloaded;</li>
+</ul>
+</m>
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>
+<h3>Extension function</h3>
+fun String.lastChar() : Char = this.get(this.length-1)
+println( "hello!".lastChar() ) // !
+
+<h3>Extension property</h3>
+val String.lastCharProp : Char
+	get() = get( length-1 )
+
+println( "hello!".lastCharProp ) // !	
+
+----------------------------------------
+
+var Counter.value : Int
+    get() = v
+    set( x : Int ){ v = x }
+
+c1.value = 10
+println( c1.value ) // counter(10)		
+</pre>
+</td>
+<td><m>
+Given a class included in a library <b>compiled</b> in Java, we can  always add our extensions to the class 
+without the need of the source code. <br/><br/>
+Extensions can be related to methods and properties (without state).<br/><br/>
+When the extension is a property, the <bc>get</bc> (and <bc>set</bc> for modifiable) method must be always defined because there is non backing field.
+</m>
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>
+</pre>
+</td>
+<td><h2>Lambda with receiver</h2>
+</td>
+</tr>
+
+<tr>
+<td >
+<pre>
+fun buildString0(
+    builderAction: (StringBuilder) -> Unit ): String {
+        val sb = StringBuilder()
+        builderAction(sb)
+        return sb.toString()
+}
+
+fun main() {
+    val s = buildString0 {
+        it.append("Hello, ")
+        it.append("World!")
+    }
+    println(s)     //Hello, World!
+}
+</pre>
+</td>
+<td><em>Conventional function-type</em>: a function (<tt>buildString0</tt>) receives as input a function of function-type <bc>(StringBuilder) -> Unit )</bc>
+to be applied to a locally created <tt>StringBuilder</tt>, and returns a <tt>String</tt>.
+</td>
+</tr>
+
+<tr>
+<td >
+<pre>
+fun buildString1(    
+	builderAction: StringBuilder.() -> Unit ) : String {
+        val sb = StringBuilder()
+        sb.builderAction()
+        return sb.toString()
+}
+fun main() {
+    val s = buildString1 {
+        this.append("Hello, ")
+        append("World!")
+    }
+    println(s)  //Hello, World!
+}
+</pre>
+</td>
+<td><m>
+<h3>Extension function type</h3>
+A function (<tt>buildString1</tt>) receives as input a function of <tt>extension function type</tt>
+<bc>StringBuilder.() -> Unit</bc>. 
+ <br/>
+An <em>Extension function type</em>  describes a block of code that can be called as an <tt>extension function</tt>.
+<br/><br/>
+
+Now we substitute the lambda with a <em>Lambda with a receiver</em> that gives to one of the parameters the  special status
+of receiver, letting us the possibility to refer to its members directly. <br/>
+The <bc>this</bc> keyword (if used) refers to the receiver instance.
+
+<div class="remark"><font size="3">
+<bc>lambda</bc>: a way to define behavior similar to a regular function.<br/>
+<bc>lambda with receiver</bc>: a way to define behavior similar to an extension function.</font>
+</div>
+</m>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<pre>
+</pre>
+</td>
+<td><h2>With and Apply</h2>
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>
+fun alphabet0(): String {
+    val result = StringBuilder()
+    for (letter in 'A'..'Z') result.append(letter)
+    return result.toString()
+}
+
+println(alphabet0())
+</pre>
+</td>
+<td><m>The function <tt>alphabet0</tt> prints the alphabet by using a <bc>StringBuilder</bc> object.<br/>
+The <tt>OUTPUT</tt> is:</m>
+<pre>
+ABCDEFGHIJKLMNOPQRSTUVWXYZ    
+</pre>
+<m>In this version we calls several times the <bc>result</bc> instance.</m>
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>
+fun alphabet1(): String {
+  val stringBuilder = StringBuilder()
+  return 
+  with(stringBuilder) {
+        for (letter in 'A'..'Z') this.append(letter)
+        toString()
+  }
+}
+ 
+println(alphabet1())
+-------------------------------------------
+We could write also:
+ 
+with( stringBuilder, {...})
+</pre>
+</td>
+<td><h3>With</h3>
+The <em>with</em> is a <i>lambda with receiver</i> function that allows us to access the receiver methods and properties 
+without any qualifier (or via <bc>this</bc>).<br/>
+The result is the <i>last expression</i> of the lambda.<br/<br/>
+
+<div class="remark"><font size="3">
+When we put the lambda outside of the parentheses, the entire invokation looks like
+a built-in feature of the language.</font>
+</div>
+
+
+
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>
+fun alphabet2() = StringBuilder().apply {
+    for (letter in 'A'..'Z') { append(letter) }
+}.toString()
+
+fun alphabet3() = buildString {
+    for (letter in 'A'..'Z') { append(letter) }
+}
+
+</pre>
+</td>
+<td><h3>Apply</h3>
+<em>Apply</em> works as <tt>with</tt> but returns the object passed to it as agument, i.e. the receiver object.
+<br/><br/>
+The standard library function <bc>buildString</bc> takes care of creating a <tt>StringBuilder</tt> and calling <tt> toString</tt>.
+
+</td>
+</tr>
+
+</tbody>	
+</table></center>
+
+
+<pre>
+
+</pre>
+ 
+</p>
+<!--
+ <h2>BLSD7Segm (Work to do)</h2>
+ <div class="req">
+Design and build a <tt>Distributed</tt> software system in which
+<ul>
+<li>A </li>
+<li>shows the value on <bc>Seven-Segment Display</bc>
+</li>
+</ul>
+-->
+
+ 
+</div>	 
+
+
+</div>  
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI    
+</div> 
+</body>
+</html>

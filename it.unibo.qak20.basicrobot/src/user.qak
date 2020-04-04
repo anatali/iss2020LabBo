@@ -1,0 +1,15 @@
+System user
+
+Context ctxsuser ip [host="localhost" port=8055]
+
+	//"tcp://mqtt.eclipse.org:1883"
+	//mqtt.eclipse.org
+	//tcp://test.mosquitto.org
+	//mqtt.fluux.io
+	//"tcp://broker.hivemq.com" 
+
+QActor user context ctxsuser{
+	State s0 initial { 	
+		//run consolegui.consoleGui.create("basicrobot","tcp://broker.hivemq.com")		//first char of class must be low
+ 	}
+}
