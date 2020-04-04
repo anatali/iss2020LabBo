@@ -21,11 +21,8 @@ lateinit var robot : Fsm
 	@Before
 	fun systemSetUp() {
 		println("%%%  testBoundary prepare the result map expected ")
-//		mapRoomKotlin.buildRefTestMap()
-//		refTestMap = mapRoomKotlin.mapUtil.getMapAndClean()
- 		println( mapRoomKotlin.mapUtil.refMapForTesting )
- 		//println("%%%  testBoundary activates the robot application ")
-  		//TODO: activate the application
+  		println( mapRoomKotlin.mapUtil.refMapForTesting )
+   		//TODO: activate the application: SEE boundaryTest
  		
 	}
 
