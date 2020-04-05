@@ -32,35 +32,49 @@ QActor demo context ctxdemo{
 }
 
 QActor sentinel context ctxdemo{
-	State s0 initial { 	 		  
+["val counter=0"]
+	State s0 initial { 	
+		println("sentinel | STARTS")	 		  
  	}
+ 	Goto watch if "counter==0" else end
+ 	
+ 	State watch{
+ 		println("sentinel | WATCH")
+ 	}	
  	Transition t0 whenTime 1000   -> timeout
- 				  whenEvent alarm -> handleAlarm
+ 				  whenEvent alarm and "counter==0" -> handleAlarm
  	
  	State timeout{
    		printCurrentMessage
- 		println("sentinel handles timeout ")		//${payloadArg(0)}
+  		println("sentinel | TIMEOUT")	
+  		["counter++"]	
  	}
- 	 Goto s0 
+ 	Goto s0
  	 
  	State handleAlarm{
   		printCurrentMessage
- 		println("sentinel handles alarm ") // ${payloadArg(0)}
- 	}
+  		onMsg ( alarm : alarm(V) ) {
+  			println("sentinel | ALARM ${payloadArg(0)} ")  // 
+  		}
+   	}
  	Goto s0 
+ 	
+ 	State end{
+ 		println("sentinel | ENDS")	
+ 	}
  
  }
 
 QActor sender context ctxdemo{
 	State s0 initial { 	
-		 forward demo -m msg1 : msg1(1)
-		 delay 500
-		 forward demo -m msg1 : msg1(2)
-		 delay 500
-		 forward demo -m msg2 : msg2(1)
+//		 forward demo -m msg1 : msg1(1)
+//		 delay 300
+//		 forward demo -m msg1 : msg1(2)
+//		 delay 300
+//		 forward demo -m msg2 : msg2(1)
 		 
 		 emit alarm : alarm( fire )
-		 delay 500
+		 delay 1200
 		 emit alarm : alarm( tsunami )
 	}
 	

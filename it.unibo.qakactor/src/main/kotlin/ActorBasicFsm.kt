@@ -365,6 +365,7 @@ UTILITIES TO HANDLE MSG CONTENT
  */
     private var msgArgList = mutableListOf<String>()
 
+	//called by onMsg translated
     fun checkMsgContent(template : Term, curT : Term,  content : String ) : Boolean{
         msgArgList = mutableListOf<String>()
         if( pengine.unify(curT, template ) && pengine.unify(curT, Term.createTerm(content) ) ){
@@ -376,7 +377,7 @@ UTILITIES TO HANDLE MSG CONTENT
         return false
     }
     fun  payloadArg( n : Int  ) : String{
-        return msgArgList.elementAt(n)
+         return msgArgList.elementAt(n)
     }
 
 }

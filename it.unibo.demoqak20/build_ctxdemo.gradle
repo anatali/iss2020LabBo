@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctx0.gradle
+build_ctxdemo.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctx0.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctx0.gradle build
-	gradle  -b build_ctx0.gradle -q tasks --all
-	gradle  -b build_ctx0.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxdemo.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxdemo.gradle build
+	gradle  -b build_ctxdemo.gradle -q tasks --all
+	gradle  -b build_ctxdemo.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

@@ -145,13 +145,13 @@ table, th, td {
     
 <head>
    
-<title>LabQakIntro2020</title></head>
+<title>QAkactor20Intro</title></head>
     
 <body>
 
 <div class="body"> 
 
-<h1>LABQakIntro2020 | The QAkactor (meta)model</h1> 
+<h1>QAkactor20Intro | Introduction to QAkactors</h1> 
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.issLabStart/userDocs/LectureCesena1920.html" target="isslm">LabISS-lectures site</a></font> 
  
 <h2>Introduction</h2>
@@ -273,25 +273,28 @@ The language is defined using the <a href="#xtext">Xtext</a> framework  and is b
 the  <em>QActor-metamodel</em>. These concepts can be summarized as follows:
 
 
-<center><table style="width:95%">
+<center><table style="width:100%">
 <tbody>	
  
 <tr>
 <td style="width:50%">
-<m>
-A <bc>QA-System</bc> is a collection of active entities (<tt>QActors</tt>) each working in a computational node (<tt>Context</tt>). 
-</m>
+ 
+
+ 
 </td>
 <td>
-<center><img src="./img/qacontexts.png" alt="qacontexts" width="70%"></center>
+
 </td>
 </tr>
 
 <tr>
 <td style="width:50%">
 <ul>
+<li>A <bc>QA-System</bc> is a collection of active entities (<tt>QActors</tt>) each working in a 
+computational node (<tt>Context</tt>).<br/><br/>
+</li> 
 <li>QActors interact by using <a href="#messages">Messages</a> of different types (<tt>Dispatch,
-Request,...</tt>) and  <tt>Events</tt>.<br/><br/></li>
+Request,...</tt>) and  <a href="#events">Events</a>.<br/><br/></li>
 <li>A QActor can deliver information to another <tt>QActor</tt> (both local or remote) 
 by using a send-operation or by emitting events.<br/><br/>
 </li>
@@ -301,6 +304,7 @@ by using a send-operation or by emitting events.<br/><br/>
  
 </td>
 <td>
+<center><img src="./img/qacontexts.png" alt="qacontexts" width="70%"></center>
 <pre>
 forward DESTNAME -m MSGID : PAYLOAD  <kc>//for dispatch</kc>
 
@@ -353,21 +357,23 @@ The syntax of the language is defined in
 <pre>
 State :
 	"<k>State</k>" name=ID  ( normal ?= "<k>initial</k>" )?
-	"{" ( actions += ActionInState )*  "}"
-	( transition = Transition )?
+	"{" ( actions += <ks>ActionInState</ks> )*  "}"
+	( transition = <b>Transition</b> )?
 ;
-ActionInState = ...
-Transition         :  <ks>EmptyTransition</ks> | <ks>NonEmptyTransition</ks> ;
+<ks>ActionInState</ks> = ...	<kc>//QActor actions or kotlin code</kc>
+
+<b>Transition</b> :  <ks>EmptyTransition</ks> | <ks>NonEmptyTransition</ks> ;
 <ks>EmptyTransition</ks>    : "<k>Goto</k>" targetState=[State]  
 	("<k>if</k>" guard=STRING "<k>else</k>" othertargetState=[State] )?  ;
 
 <ks>NonEmptyTransition</ks> :  
-	"<k>Transition</k>" name=ID (duration=Timeout)? (trans +=InputTransition)* ;
-Timeout = ...
-InputTransition  : EventTransSwitch | 
-	MsgTransSwitch | RequestTransSwitch |  
-	ReplyTransSwitch ;
-	
+  "<k>Transition</k>" name=ID (duration=<ks>Timeout</ks>)? 
+  (trans +=InputTransition)* ;
+Timeout = TimeoutInt | ... ;
+TimeoutInt : "<k>whenTime</k>" msec=INT "->" targetState = [State];
+
+InputTransition  : EventTransSwitch | MsgTransSwitch | 
+		RequestTransSwitch | ReplyTransSwitch ;
 EventTransSwitch   : "<k>whenEvent</k>"   message=[Event]    
 	("<k>and</k>"  guard=STRING  )?  "->"  targetState=[State]  ;
 MsgTransSwitch     : "<k>whenMsg</k>"     message=[Dispatch] 
@@ -386,7 +392,7 @@ transition including a message <tt>m</tt> the message is stored in a queue local
 </m>
 </td> 
 <td>
-<b>Example</b>
+<m>The code of a <tt>QActor</tt> mirrors the structure of a FSM diagram:</m>
 <center><img src="./img/demoDSL.png" alt="demoDSL" width="70%" ></center>
 <pre>
 System demo
@@ -397,57 +403,155 @@ Dispatch msg2 : msg2(ARG)
 Context ctxdemo ip [host="localhost" port=8055]
 
 QActor demo context ctxdemo{
-	State s0 initial { 	}
- 	<k>Goto</k> s1
+	<ks>State</ks> s0 <b>initial</b> { 	}
+ 	<ks>Goto</ks> s1
  	
- 	State s1{ println("demo in s1")		}
- 	Transition t0 <k>whenMsg</k> msg1 -> s2
+ 	<ks>State</ks> s1{ println("demo in s1")		}
+ 	<ks>Transition</ks> t0 <k>whenMsg</k> msg1 -> s2
  				  <k>whenMsg</k> msg2 -> s3
 
- 	State s2{ println("demo in s2")		}
- 	Transition t0 <k>whenMsg</k> msg2 -> s3
+ 	<ks>State</ks> s2{ println("demo in s2")		}
+ 	<ks>Transition</ks> t0 <k>whenMsg</k> msg2 -> s3
 
- 	State s3{ println("demo in s3")		}
- 	<k>Goto</k> s1
+ 	<ks>State</ks> s3{ println("demo in s3")		}
+ 	<ks>Goto</ks> s1
 }
 </pre>
-<!--
-<h3 id="events">Events</h3>
-<m>
-A message does not force the execution of code: a message <tt>m</tt> sent from an actor sender to an actor receiver
-can trigger a state transition in the receiver. 
 
-If the receiver is not 'waiting' for a
-transition including <tt>m</tt> the message is enqueued in the receiver queue.
+<h3>Firing a transition</h3>
+<m>A <bc>Transition</bc> is 'fired' if the related condition (<bc>whenTime</bc>, <bc>whenEvent</bc>, <bc>whenMsg, ...</bc>)  is true.
 <br/><br/>
-At application-level, we say that a QActor works according to a <bc>message-based</bc> behaviour, while at the
-lower level (in the infrastructure) it works according to the <bc>massage-driven</bc> behaviour.
+The condition can be extended by a user-defined Kotlin code working as a <em>guard</em>.</m> 
 
-
-
-The occurrence of an event can put in execution some code devoted to the management of that event. We
-qualify this kind of behaviour as <bc>event-driven</bc> behaviour, since the event 'forces' the execution of code.
-<br/><br/>
-An event can also trigger state transitions in components, usually working as Finite state machines. We
-qualify this kind of behavior as <bc>event-based</bc> behaviour, since the event is 'lost' if no actor is in a state
-waiting for it.
--->
 </m>
 </td>
 </tr>
 
-<tr>
+
+
+
+ <tr>
 <td style="width:50%">
+ 
+<h3>An example</h3>
+<pre>
+<k>Event</k>   alarm : alarm(V)
+
+<ks>QActor</ks> sentinel context ctxdemo{
+["val counter=0"]	<kc>//Kotlin code</kc>
+  State s0 initial { 	
+	println("sentinel | STARTS") <kc>//QActor action</kc>	  		  
+  }
+  Goto watch if <k>"counter==0"</k> else end <kc>//guard</kc>
+ 	
+  State watch{
+	println("sentinel | WATCH")
+  }	
+  Transition t0 <k>whenTime</k> 1000 -> timeout
+	<k>whenEvent</k> alarm <k>and "counter==0"</k> -> handleAlarm <kc>//guard</kc>
+ 	
+  State timeout{
+	printCurrentMessage		<kc>//QActor action</kc>
+	println("sentinel | TIMEOUT")	
+	["counter++"]	 	<kc>//Kotlin code</kc>
+  }
+  Goto s0
+ 	 
+  State handleAlarm{
+	printCurrentMessage
+	<k>onMsg</k> ( alarm : alarm(V) ) { <kc>//QActor action</kc>
+		println("sentinel | ALARM ${<ks>payloadArg</ks>(0)}") 
+	}
+  }
+  Goto s0 
+ 	
+  State end{
+	println("sentinel | ENDS")	
+  }
+ }
+
+------------------------------------------------------------------
+//<kc>An emitter</kc> 
+QActor sender context ctxdemo{
+  State s0 initial { 	 		 
+	emit alarm : alarm( fire )
+	delay 1200
+	emit alarm : alarm( tsunami )
+}
+
+</pre>
+
 </td>
-<td><m> 
-</m></td>
-</tr>
+ <td>
+
+<m>
+  <h3 id="onMsg">About guards</h3>
+The actor goes
+<ul>
+<li>from the state <tt>s0</tt> to the state <tt>watch</tt> only
+ if the guard <tt>counter==0</tt> is true; otherwise it goes to <tt>end</tt></li>
+ <li>from the state <tt>watch</tt> to the state <tt>handleAlarm </tt> only
+ if the event <tt>alarm </tt> occurs and the guard <tt>counter==0</tt> is true </li>
+</ul>
+
+ 
+  <h3 id="onMsg">About <k>onMsg</k></h3>
+  The QActor action <bc>onMsg</bc> executes the related code only if the current message can be 
+ <em>Prolog-unified</em>
+ with the <tt>alarm </tt> template defined in <bc>Event</bc> declaration 
+ and with the template specified in <bc>onMsg</bc>.
 
 
-</tbody>	
-</table></center>
+ 
+ <h3 id="whenTime">About <k>whenTime</k></h3>
+The transition-condition <bc>whenTime</bc> is implemented by creating in dynamic way a 
+<a href="../src/main/kotlin/TimerActor.kt" target="code"><bc>TimerActor</bc></a>.
+<br/>
+When the given time expires, the timer that emits a <em>system-event</em>  with a name that starts with the prefix <bc>local_tout</bc>; 
+afterwards it terminates.<br/>
+The system event is <em>not emitted</em> if a message can be handled before that the timer-time expires.
 
-<h3>QActors and process development</h3>
+ 
+
+   <h3 id="payloadArg">About <k>payloadArg</k></h3>
+   
+ The payloadArg is described later, in <a href="#shortcut">shortcut</a>
+
+ <h3>The output</h3>
+ 
+ <pre>
+sentinel | STARTS
+sentinel | WATCH
+sentinel in handleAlarm | msg(alarm,event,sender,none,alarm(fire),10)
+sentinel | ALARM fire 
+sentinel | STARTS
+sentinel | WATCH
+sentinel in timeout | msg(local_tout_sentinel_watch,event,...)
+sentinel | TIMEOUT
+sentinel | STARTS
+sentinel | ENDS
+ </pre>
+ 
+</m> 
+</td>
+ 
+ </tr>
+</table>
+</center>
+ <br/> 
+ <m>
+  <div class="remark">
+<b>WARNING</b>: the possibility to augment the model with user-defined <tt>Kotlin</tt> code is still experimental and must be used with care. 
+It is preferable to <bc>run</bc> custom objects.
+</div> 
+</m>
+ 
+
+
+ 
+
+
+<h2>QActors and process development</h2>
 <tt>QActor</tt> models should be introduced in the early stages of the software development process, to express in a concise way
 the overall <em>architecture</em> of a distributed system composed of a set of actors that use 
 <bc>high-level</bc> message-oriented operations, by abstracting from the fact that they could work
