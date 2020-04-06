@@ -116,7 +116,7 @@ object virtualRobotSupportQak {
  								/*
  									Transforms the owner as a source of events
  								*/
-								val m1 = "sonar($sonarName, $distance)"
+								val m1 = "sonar($sonarName, $distance, avatar = true)"
 								owner.emit("sonar",m1)
  								//Messages.emit( "vr", "sensor",  "sensor($sonarName,$distance)", owner  )
  
@@ -128,7 +128,7 @@ object virtualRobotSupportQak {
 								/*
  									Transforms the owner as a source of events
  								*/
-								owner.emit("collision",  "collision( $objectName )")
+								owner.emit("collision",  "collision( $objectName, avatar = true )")
  								//Messages.emit( "vr", "collision",  "collision( $objectName )", owner  )
                              }
                         }
@@ -139,7 +139,7 @@ object virtualRobotSupportQak {
             }
          }//startSensorObserver 
 
-fun terminate(){
+fun terminatevr(){
 	sensorObserver.cancel()
 	println("			*** virtualRobotSupportQak | TERMINATES sensorObserver")
 }

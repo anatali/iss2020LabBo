@@ -27,14 +27,9 @@ class Basicrobot ( name: String, scope: CoroutineScope ) : ActorBasicFsm( name, 
 				state("waitinfo") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t10",targetState="execcmd",cond=whenDispatch("cmd"))
-					transition(edgeName="t11",targetState="endwork",cond=whenDispatch("end"))
-				}	 
-				state("handleObstacle") { //this:State
-					action { //it:State
-						println("consumer | handleObstacle")
-					}
-					 transition( edgeName="goto",targetState="waitinfo", cond=doswitch() )
+					 transition(edgeName="t10",targetState="handleObstacle",cond=whenEvent("collision"))
+					transition(edgeName="t11",targetState="execcmd",cond=whenDispatch("cmd"))
+					transition(edgeName="t12",targetState="endwork",cond=whenDispatch("end"))
 				}	 
 				state("execcmd") { //this:State
 					action { //it:State
@@ -46,10 +41,16 @@ class Basicrobot ( name: String, scope: CoroutineScope ) : ActorBasicFsm( name, 
 					}
 					 transition( edgeName="goto",targetState="waitinfo", cond=doswitch() )
 				}	 
+				state("handleObstacle") { //this:State
+					action { //it:State
+						println("basicrobot | handleObstacle")
+					}
+					 transition( edgeName="goto",targetState="waitinfo", cond=doswitch() )
+				}	 
 				state("endwork") { //this:State
 					action { //it:State
-						println("consumer | endwork")
-						utils.virtualRobotSupportQak.terminate(  )
+						println("basicrobot | endwork")
+						utils.virtualRobotSupportQak.terminatevr(  )
 						emit("endall", "endall(normal)" ) 
 						terminate()
 					}

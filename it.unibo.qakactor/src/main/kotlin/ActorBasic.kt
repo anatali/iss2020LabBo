@@ -242,7 +242,7 @@ Messaging
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-    suspend fun emit( event : ApplMessage ) {
+    suspend fun emit( event : ApplMessage, avatar : Boolean = false ) {
           if( context == null ){
              println("$tt ActorBasic $name | WARNING emit: actor has no QakContext. ")
              this.actor.send(event)  //AUTOMSG
@@ -255,7 +255,7 @@ Messaging
             context!!.actorMap.forEach {
                 val destActor = it.value
                 //do not propagate the event to the emitter!!!!
-                if( destActor.name != this.name ) {
+                if( destActor.name != this.name ||  avatar) {
                     //sysUtil.traceprintln(" $tt ActorBasic $name | PROPAGATE ${event.msgId()} locally to ${destActor.name} " )
                     destActor.actor.send(event)
                 }

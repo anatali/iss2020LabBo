@@ -25,17 +25,6 @@ object Messages{
 		else println("WARNING: Messages.forward attempts to send ${msg} to closed ${dest.name} ")
 	}
 
-/*
- Forward a dispatch to a destination actor by using a given MQTT support
-*/		
-//	@kotlinx.coroutines.ObsoleteCoroutinesApi
-//	@kotlinx.coroutines.ExperimentalCoroutinesApi
-//	suspend fun forward(  sender: String, msgId : String, payload: String, destName : String, mqtt: MqttUtils ){		
-//		val msg = AppMsg.buildDispatch(actor=sender, msgId=msgId , content=payload, dest=destName )
-//		if( mqtt.connectDone() ){
-//			mqtt.publish( "unibo/qak/${destName}", msg.toString() )
-//		}
-//	}
 
 /*
  Emit an event by using a given MQTT support
@@ -47,11 +36,6 @@ object Messages{
 		actor.scope.launch{
 			actor.emit( event )
 		}
-//		if( mqtt.connectDone() ){
-//			mqtt.publish( "unibo/qak/events", event.toString() )
-//		}
 	}
-	
-	
 			
 }
