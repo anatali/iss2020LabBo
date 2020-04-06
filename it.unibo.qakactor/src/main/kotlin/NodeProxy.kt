@@ -14,6 +14,8 @@ class NodeProxy( name: String, val ctx: QakContext, val protocol: Protocol,
         configure()
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     fun configure() {
         while (conn == null) {
             when (protocol) {
@@ -44,7 +46,9 @@ class NodeProxy( name: String, val ctx: QakContext, val protocol: Protocol,
 
 
     //Oct2019 : handle answers sent on this connections
-    protected fun handleConnection( conn: IConnInteraction ) {
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+   protected fun handleConnection( conn: IConnInteraction ) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 //sysUtil.traceprintln("               %%% NodeProxy $name  | handling new input from :$conn")

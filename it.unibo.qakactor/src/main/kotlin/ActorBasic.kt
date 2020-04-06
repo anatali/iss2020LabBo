@@ -48,6 +48,8 @@ abstract class  ActorBasic(  name:         String,
 
     internal val requestMap : MutableMap<String, ApplMessage > = mutableMapOf<String,ApplMessage>()  //Oct2019
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     protected val dispatcher =
         if( confined ) sysUtil.singleThreadContext
         else  if( ioBound ) sysUtil.ioBoundThreadContext
@@ -72,9 +74,20 @@ abstract class  ActorBasic(  name:         String,
     abstract suspend fun actorBody(msg : ApplMessage)
 
     //fun setContext( ctx: QakContext ) //built-in
-    fun terminate(){
+//    fun terminate(){
+//        context!!.actorMap.remove(  name )
+//        actor.close()
+//    }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+    fun terminate(arg: Int=0){
+		println("$tt ActorBasic $name | terminates $arg ")
         context!!.actorMap.remove(  name )
         actor.close()
+    }
+    fun terminateCtx(arg: Int=0){
+		println("$tt ActorBasic $name | terminateCtx $arg TODO ")
+        //context!!.terminateTheContext()         
     }
 
 /*
@@ -82,15 +95,21 @@ abstract class  ActorBasic(  name:         String,
 Messaging
 --------------------------------------------
  */
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend open fun autoMsg(  msg : ApplMessage) {
      //println("ActorBasic $name | autoMsg $msg actor=${actor}")
      actor.send( msg )
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun autoMsg( msgId : String, msg : String) {
         actor.send( MsgUtil.buildDispatch(name, msgId, msg, this.name) )
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
      suspend fun forward( msgId : String, msg: String, destActor: ActorBasic) {
         //println("       ActorBasic $name | forward $msgId:$msg to ${destActor.name} in ${sysUtil.curThread() }")
         destActor.actor.send(
@@ -98,6 +117,8 @@ Messaging
      }
 
     //Oct2019
+@kotlinx.coroutines.ObsoleteCoroutinesApi 
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun sendMessageToActor( msg : ApplMessage , destName: String, conn : IConnInteraction? = null ) {
         //println("$tt ActorBasic sendMessageToActor | destName=$destName  ")
         if( context == null ){  //Defensive programming
@@ -126,7 +147,7 @@ Messaging
                     return
                 }
             }
-        }
+        }//ctx of destination is unknwkn
  //DESTINATION remote, context of dest known and MQTT selected
         val uri = "coap://${ctx.hostAddr}:${ctx.portNum}/${ctx.name}/$destName"
         println("$tt ActorBasic sendMessageToActor qak | ${uri} msg=$msg" )
@@ -159,20 +180,27 @@ Messaging
         }
         return false
     }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun forward( msgId : String, msg: String, destName: String) {
         val m = MsgUtil.buildDispatch(name, msgId, msg, destName)
         sendMessageToActor( m, destName)
      }//forward
-
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun request( msgId : String, msg: String, destActor: ActorBasic) {
         //println("       ActorBasic $name | forward $msgId:$msg to ${destActor.name} in ${sysUtil.curThread() }")
         destActor.actor.send( MsgUtil.buildRequest(name, msgId, msg, destActor.name ) )
     }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun request( msgId : String, msg: String, destName: String) {
         val m = MsgUtil.buildRequest(name,msgId, msg, destName)
         sendMessageToActor( m, destName)
      }//request
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun answer( reqId: String, msgId : String, msg: String) {
         sysUtil.traceprintln("$tt ActorBasic $name | answer $msgId:$msg  }")
         val reqMsg = requestMap.remove(reqId) //one request, one reply
@@ -180,13 +208,15 @@ Messaging
             println("$tt ActorBasic $name | WARNING: answer $msgId INCONSISTENT: no request found ")
             return
         }
-        val destName = reqMsg!!.msgSender()
+        val destName = reqMsg.msgSender()
         //println("$tt ActorBasic $name | answer destName=$destName  }")
         val m = MsgUtil.buildReply(name, msgId, msg, destName)
         sendMessageToActor( m, destName, reqMsg.conn )
     }//answer
 
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun replyreq( reqId: String, reqestmsgId : String, msg: String) {
         //println(" $tt ActorBasic $name | replyreq $reqId related to request:$reqestmsgId content=$msg  ")
         val reqMsg = requestMap.get(reqestmsgId)
@@ -199,6 +229,8 @@ Messaging
         sendMessageToActor( m, destName, reqMsg.conn )
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun emit( ctx: QakContext, event : ApplMessage ) {  //used by NodeProxy
         //sysUtil.traceprintln(" $tt ActorBasic $name | emit from proxy ctx= $ctx ")
          ctx.actorMap.forEach {
@@ -208,6 +240,8 @@ Messaging
         }
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun emit( event : ApplMessage ) {
           if( context == null ){
              println("$tt ActorBasic $name | WARNING emit: actor has no QakContext. ")
@@ -237,7 +271,7 @@ Messaging
         //sysUtil.traceprintln(" $tt ActorBasic $name | ctxsMap SIZE = ${sysUtil.ctxsMap.size}")
          sysUtil.ctxsMap.forEach{
             val ctxName  = it.key
-            val ctx      = it.value
+            //val ctx      = it.value
             //sysUtil.traceprintln(" $tt ActorBasic $name | ${context!!.name } emit ${event.msgId()} to ${ctxName}  mqttAddr= ${ctx!!.mqttAddr} ")
             val proxy  = context!!.proxyMap.get(ctxName)
             if( proxy is ActorBasic ){
@@ -280,6 +314,8 @@ Messaging
         //sysUtil.traceprintln(" $tt ActorBasic $name | emit ${event.msgId()}  ENDS")
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun emit( msgId : String, msg : String) {
         val event = MsgUtil.buildEvent(name,msgId, msg)
         emit( event )
@@ -305,9 +341,13 @@ Messaging
     fun unsubscribe( a : ActorBasic) {
         subscribers.remove(a)
     }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun emitLocalStreamEvent(ev: String, evc: String ){
         emitLocalStreamEvent( MsgUtil.buildEvent( name, ev, evc) )
     }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun emitLocalStreamEvent(v: ApplMessage ){
         subscribers.forEach {
             sysUtil.traceprintln(" $tt ActorBasic $name | emitLocalStreamEvent $it $v " );
@@ -335,6 +375,8 @@ MQTT
         }
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     override fun messageArrived(topic: String, msg: MqttMessage) {
         //sysUtil.traceprintln("$tt ActorBasic $name |  MQTT messageArrived on "+ topic + ": "+msg.toString());
         val m = ApplMessage( msg.toString() )
@@ -451,6 +493,8 @@ KNOWLEDGE BASE
 /*
  * PUT method is idempotent. Use PUT when you want to modify
  */
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     override fun handlePUT(exchange: CoapExchange) {
         val arg = exchange.requestText  //arg =
         sysUtil.traceprintln("$logo | handlePUT arg=$arg")
@@ -470,6 +514,8 @@ KNOWLEDGE BASE
         exchange.respond(DELETED)
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     fun fromPutToMsg( msg : ApplMessage, exchange: CoapExchange ) {
         sysUtil.traceprintln("$logo | fromPutToMsg msg=$msg")
         if( msg.isDispatch() ) {

@@ -79,6 +79,8 @@ class CoapResourceCtx(name: String, val ctx : QakContext) : CoapResource(name) {
         changed()             //DO NOT FORGET!!!
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     fun propagateEvent(event : ApplMessage){
         ctx.actorMap.forEach{
             //sysUtil.traceprintln("               %%% CoapResourceCtx $name | in ${ctx.name} propag $event to ${it.key} in ${it.value.context.name}")

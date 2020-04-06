@@ -24,8 +24,14 @@ object sysUtil{
 	val runtimeEnvironment     = Runtime.getRuntime()
 
 	val cpus                   = Runtime.getRuntime().availableProcessors()
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 	val singleThreadContext    = newSingleThreadContext("qaksingle")
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 	val ioBoundThreadContext   = newFixedThreadPoolContext(64, "qakiopool")
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 	val cpusThreadContext      = newFixedThreadPoolContext(cpus, "qakcpuspool")
 
 	var mqttBrokerIP : String? = ""
@@ -90,10 +96,12 @@ object sysUtil{
          //println("sysUtil | dispatch $dt  ")
          dispatchMap.put( d, dt as Struct )
      }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 	fun createTheContext(  ctx : String, hostName : String  ) : QakContext?{
 		val ctxHost : String?  = solve("getCtxHost($ctx,H)","H")
 		//println("               %%% sysUtil | createTheContext $ctx ctxHost=$ctxHost  ")
-		val ctxProtocol : String? = solve("getCtxProtocol($ctx,P)","P")
+		//val ctxProtocol : String? = solve("getCtxProtocol($ctx,P)","P")
 		val ctxPort     : String? = solve("getCtxPort($ctx,P)","P")
 		//println("               %%% sysUtil | $ctx host=$ctxHost port = $ctxPort protocol=$ctxProtocol")
 		val portNum = Integer.parseInt(ctxPort)
@@ -108,7 +116,7 @@ object sysUtil{
 			//else{ throw Exception("no MQTT broker declared")  }	//CoAP 2020
 //		}
 		//CREATE AND MEMO THE CONTEXT
-		var newctx : QakContext? = null
+		var newctx : QakContext?  
 		if( ! ctxHost.equals(hostName) ){
               println("               %%% sysUtil | createTheContext $ctx for DIFFERENT host=$ctxHost} ")
 			  newctx = QakContext( ctx, "$ctxHost", portNum, "", true) //isa ActorBasic

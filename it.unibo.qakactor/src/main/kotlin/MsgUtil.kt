@@ -39,15 +39,21 @@ var count = 1;
         return ApplMessage(msgId, ApplMessageType.event.toString(),
             actor, "none", "$content", "${count++}")
     }
-
+	
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 @JvmStatic    suspend fun sendMsg( sender : String, msgId: String, msg: String, destActor: ActorBasic) {
         val dispatchMsg = buildDispatch(sender, msgId, msg, destActor.name)
         //println("sendMsg $dispatchMsg")
         destActor.actor.send( dispatchMsg )
     }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 @JvmStatic    suspend fun sendMsg(msg: ApplMessage, destActor: ActorBasic) {
         destActor.actor.send(msg)
     }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 @JvmStatic    suspend fun sendMsg(msgId: String, msg: String, destActor: ActorBasic) {
         val dispatchMsg = buildDispatch("any", msgId, msg, destActor.name)
         //println("sendMsg $dispatchMsg")
@@ -83,6 +89,8 @@ var count = 1;
         }
     }
 	
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 @JvmStatic    fun getConnectionSerial( portName: String, rate: Int) : IConnInteraction {
         val  factoryProtocol =  FactoryProtocol(null,"${Protocol.SERIAL}",portName)
         val conn = factoryProtocol.createSerialProtocolSupport(portName)

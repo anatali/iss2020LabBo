@@ -12,7 +12,9 @@ var terminated = false;
         this.context = ctx
         scope.launch{ autoMsg("start", "start") }
     }
-    override suspend fun actorBody(msg : ApplMessage){
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+   override suspend fun actorBody(msg : ApplMessage){
         //println("TimerActor RECEIVES  ${msg} tout=$tout")
         if( msg.msgId() == "start") {
             delay(tout)

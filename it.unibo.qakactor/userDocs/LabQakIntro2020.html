@@ -254,7 +254,7 @@ Do not communicate by sharing memory; instead, share memory by communicating.
 </div>
 
 
-<h2>QActors</h2>
+<h2>QActors: an overview</h2>
 
 <bc>QActor</bc> is the name given to the custom language inspired by the 
 <a href="https://doc.akka.io//docs/akka/current/typed/guide/actors-motivation.html" target="web">akka actor model</a> 
@@ -271,21 +271,12 @@ without using any <tt>Akka</tt> support (as done in the first version of the lan
 <br/><br/>
 The language is defined using the <a href="#xtext">Xtext</a> framework  and is based on a core set of concepts that compose
 the  <em>QActor-metamodel</em>. These concepts can be summarized as follows:
-
+<br/><br/>
 
 <center><table style="width:100%">
 <tbody>	
  
-<tr>
-<td style="width:50%">
- 
 
- 
-</td>
-<td>
-
-</td>
-</tr>
 
 <tr>
 <td style="width:50%">
@@ -304,7 +295,7 @@ by using a send-operation or by emitting events.<br/><br/>
  
 </td>
 <td>
-<center><img src="./img/qacontexts.png" alt="qacontexts" width="70%"></center>
+<center><img src="./img/qacontexts.png" alt="qacontexts" width="80%"></center>
 <pre>
 forward DESTNAME -m MSGID : PAYLOAD  <kc>//for dispatch</kc>
 
@@ -346,7 +337,7 @@ Events whose identifier start with the prefix <bc>local_</bc/> are not propagate
 
 <tr>
 <td style="width:50%">
-<h3 id="messages">QActor behavior</h3>
+<h3 id="messages">Behavior</h3>
 <m>
 The <tt>QActor</tt> metamodel does not envisage any explicit <i><b>receive</b></i> operation, since the behavior is 
 modeled as a <a href="https://en.wikipedia.org/wiki/Moore_machine" target="web">Moore state machine</a>
@@ -392,8 +383,9 @@ transition including a message <tt>m</tt> the message is stored in a queue local
 </m>
 </td> 
 <td>
-<m>The code of a <tt>QActor</tt> mirrors the structure of a FSM diagram:</m>
+<m>The code of a <tt>QActor</tt> mirrors the structure of a FSM diagram: 
 <center><img src="./img/demoDSL.png" alt="demoDSL" width="70%" ></center>
+The code is in <a href="../src/demo0.qak" traget="code">demo0.qak</a></m>
 <pre>
 System demo
 
@@ -427,8 +419,104 @@ The condition can be extended by a user-defined Kotlin code working as a <em>gua
 </td>
 </tr>
 
+<tr>
+<td style="width:50%">
+<h3>Messages over the network</h3> 
+<m>
+Each QActor works in a <bc>context</bc> that provides support for sending-receiving messages on the network,
+by means of several types of  protocols. At the moment the supported protocols are:
+	<ul>
+ 	<li><a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol" target="web">TCP</a> as an example
+	of point-to-point, two-way protocols;<br/><br/>
+	<!--like <a href="https://en.wikipedia.org/wiki/User_Datagram_Protocol" target="web">UDP</a>,	
+	,
+	<a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" target="web">HTTP</a> --></li>
+	<li><a href="https://en.wikipedia.org/wiki/MQTT" target="web">MQTT</a> as an example of publish-subscribe protocols;<br/><br/></li>
+	<li><a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol" target="web">CoAP</a>, as an example of a
+	lightweight <a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="web">REST</a>  protocol 
+	suited for <a href="https://en.wikipedia.org/wiki/Machine_to_machine" target="web">M2M interaction</a>  
+ 	</li>
+	</ul>
+	
+The  mapping between the high-level communication actions and a specific protocol technology is done by the QActor-infrastructure 
+with the help of the Eclipse <bc>QActor software factory</bc>  deployed by the
+<a href="../../it.unibo.issLabStart/resources/plugins" target="code">it.unibo.issLabStart/resources/plugins</a>
+</m>
+
+ 
+
+ 
+</td>
+<td>
+<h3>The QActor software factory</h3> 
+<center><img src="./img/qakSoftwareFactory.png" alt="qakSoftwareFactory" width="90%" ></center>
+
+</td>
+</tr>
+
+<tr>
+<td style="width:50%">
+<h3>The QActor-infrastructure</h3> 
+<m>
+The QActor-infrastructure  is deployed in a <tt>jar</tt> named <a href="../../unibolibs" target="code">it.unibo.qakactor-2.0.jar</a>.
+It includes:
+
+<ol>
+<li> <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> is
+an abstract class  that implements the concept of qakactor as a message-driven entity that
+handles messages by delegating the work to the abstract the method <tt>actorBody</tt>.<br/><br/>
+</li>
+<li> <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasicFsm.kt" target="code">ActorBasicFsm.kt</a> is
+an abstract class  that extends <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> 
+by defining the  method <k>actorBody</k> ao to implement the behavior of a <tt>FSM</tt>.  <br/><br/>
+</li>
+<li><a href="../../it.unibo.qakactor/src/main/kotlin/ApplMessage.kt" target="code">ApplMessage.kt</a> (that requires
+<a href="http://tuprolog.sourceforge.net/doc/2p-guide.pdf">tuProlog</a> )<br/><br/></li>
+<li><a href="../../it.unibo.qakactor/src/main/kotlin/MsgUtil.kt" target="code">MsgUtil.kt</a></li>
+</ol>
+
+When a sender-actor and a receiver-actor work  in different contexts on different nodes the <tt>Qak-Infrastructure</tt>
+attempts to find the ipaddress-port of the receiver context. 
+<br/>
+If this information is available,
+the message is sent via <tt>MQTT</tt> (if selected by the application designer) or - if no MQTT broker is specified - via <tt>CoAP</tt>
+(in order to avoid message duplication).
+</m>
+</td>
+<td>
+<m>
+
+If the system does not find information about the context of the receiver, the message to deliver should be a <bc>reply</bc>
+to a request made by some 'alien'.
+
+<br/><br/>
+
+The system first checks for the existence of an active <tt>TCP</tt> connection
+with the receiver (the 'alien' made a request via <tt>TCP</tt>).
+In such a connection is found, the message is sent over it. Otherwise, an 
+attempt is made to send the reply via <tt>MQTT</tt>, hoping that the 'alien' was MQTT-connected.
+<br/>
+A request made to an actor via <tt>CoAP</tt> will not receive any answer.
+<br/><br/>
+An <bc>event</bc> raised in some <tt>Context</tt>, is delivered to all the other known <tt>Contexts</tt> of the system
+and to all the 'alien' connected via <tt>TCP</tt> or via <tt>MQTT</tt>.
+
+<!--
+<center><img src="./img/qakproxy.png" alt="qakproxy" width="90%"></center>
+-->
+
+</m>
+</td>
+</tr>
+
+ </tbody>
+</table>
+</center>
 
 
+<h2>Examples</h2>
+<center><table style="width:100%">
+<tbody>	
 
  <tr>
 <td style="width:50%">
@@ -536,6 +624,7 @@ sentinel | ENDS
 </td>
  
  </tr>
+ </tbody>
 </table>
 </center>
  <br/> 

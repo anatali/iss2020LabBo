@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.InetAddress
 import org.eclipse.californium.core.CoapServer
+import kotlinx.coroutines.runBlocking
 
 open class QakContext(name: String, val hostAddr: String, val portNum: Int, var mqttAddr : String = "",
                       val external: Boolean=false, val gui : Boolean = false   ) : ActorBasic(name){
@@ -14,14 +15,17 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
     internal val proxyMap:  MutableMap<String, NodeProxy> = mutableMapOf<String, NodeProxy>()  //cannot be static
     //lateinit private var serverCoap  :  CoapServer      //CoAP: Jan2020
     private var resourceCtx : CoapResourceCtx
+	lateinit var ctxserver  : QakContextServer
+	lateinit var serverCoap : CoapServer
+	
     companion object {
-        val workTime = 600000L
+        val workTime = 600000L		 
         enum class CtxMsg { attach, remove }
 
         fun getActor( actorName : String ) : ActorBasic? {
             return sysUtil.getActor(actorName)
         }
-
+//Called by genrated code main of ctx
         suspend fun createContexts(hostName: String, scope: CoroutineScope ,
                            desrFilePath: String, rulesFilePath: String) {
             sysUtil.createContexts(hostName, desrFilePath, rulesFilePath)
@@ -31,12 +35,16 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
                 sysUtil.traceprintln("               %%% QakContext | CREATING NO ACTORS on $hostName ip=${ip.toString()}")
             }
             else println("               %%% QakContext | CREATING THE ACTORS on $hostName ")
+//			runBlocking {
             sysUtil.ctxOnHost.forEach { ctx -> sysUtil.createTheActors(ctx, scope)  }
             //Avoid premature termination
-            scope.launch{
-                println("               %%% QakContext |  $hostName CREATED. I will terminate after $workTime msec")
-                delay( workTime )
-            }
+//            scope.launch{
+//                println("               %%% QakContext |  $hostName CREATED. I will terminate after $workTime msec")
+//                delay( workTime )
+//            }
+//			(scope as Job).join()
+//			}
+ 			println("               %%% QakContext | createContexts on $hostName ENDS " )
         }
     }
 
@@ -45,20 +53,26 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
         resourceCtx = CoapResourceCtx( name, this )   //must be ininitialized here
         if( ! external ){
             println("               %%% QakContext |  $hostAddr:$portNum INIT ")
-            QakContextServer( this, GlobalScope, "server$name", Protocol.TCP )
-            //if( gui ){ }
+            ctxserver = QakContextServer( this, GlobalScope, "server$name", Protocol.TCP )
             //CoAP: Jan2020
               try{
                   val coapPort    =  portNum
-                  val serverCoap  =  CoapServer(coapPort)
+                  serverCoap      =  CoapServer(coapPort)
                   serverCoap.add(  resourceCtx )
                   serverCoap.start()
-                   println( "               %%% QakContext $name |  serverCoap started on port: $coapPort" )
+                  println( "               %%% QakContext $name |  serverCoap started on port: $coapPort" )
             }catch(e : Exception){
                 println( "               %%% QakContext $name |  serverCoap error: ${e.message}" )
             }
          }
      }
+	
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+	fun terminateTheContext(){
+		serverCoap.stop()
+		ctxserver.actor.close()
+	}
 
     override suspend fun actorBody(msg : ApplMessage){
         sysUtil.traceprintln( "               %%% QakContext $name |  receives $msg " )

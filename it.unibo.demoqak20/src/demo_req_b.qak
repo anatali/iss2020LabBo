@@ -1,0 +1,71 @@
+System /* -trace */ demo_req_b
+//mqttBroker "localhost" : 1883
+
+Request r1 : r1(X)
+Request r2 : r2(X)
+Reply   a1 : a1(X) 
+
+
+Context ctxdemoreqb ip [host="localhost" port=8014]  
+
+QActor callerb context ctxdemoreqb {
+	State init initial {
+		println("	qak1 starts")
+		request calledb -m r1 : r1(10)
+	}
+	Goto work 
+	
+	State work{
+		println("	qak1 work")
+	}
+	Transition t0 
+		whenReply   a1 -> handleReply
+		whenRequest r2 -> handleAskFromCalled
+	
+	State handleReply{
+		printCurrentMessage
+	}
+	 
+	State handleAskFromCalled{
+		printCurrentMessage
+		onMsg( r2 : r2(X) ) {
+			replyTo r2 with a1 : a1(90)
+		}
+	}
+	Goto work
+} 
+
+QActor calledb context ctxdemoreqb {
+["var RequestArg = \"0\" "]
+	State init initial {
+		println("qak2 init")
+	}
+	Transition t0 
+		whenRequest r1 -> handleRequest
+	 
+	
+	State handleRequest{
+		printCurrentMessage 	
+			
+		onMsg( r1 : r1(X) ){
+			["RequestArg = payloadArg(0)"]
+			askFor r2 request r1 : r2(theta)   //r2 is the new request
+			//replyTo r1 with a1 : a1( $RequestArg )
+		}		
+	} 
+	Transition t0
+		 whenTime 1000 -> init
+		 whenReply a1 -> answerAfterAsk
+
+	State answerAfterAsk{ 
+		printCurrentMessage		 
+ 		onMsg( a1 : a1(X) ){ 
+ 			["val R = RequestArg + payloadArg(0) "]
+			replyTo r1 with a1 : a1( $R   )  
+ 		}
+	} 
+	Goto init   
+}  
+ 
+/*
+ */

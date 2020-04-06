@@ -1,0 +1,50 @@
+System /* -trace */ demo_req_a
+//mqttBroker "localhost" : 1883
+
+Request r1 : r1(X)
+Request r2 : r2(X)
+Reply   a1 : a1(X) 
+
+
+Context ctxdemoreqa ip [host="localhost" port=8010]  
+
+QActor callera context ctxdemoreqa {
+	State init initial {
+		println("	caller1a starts")
+		request calleda -m r1 : r1(10)
+		delay 500
+		request calleda -m r1 : r1(20)
+	}
+	Goto work 
+	
+	State work{
+		println("	caller1a work")
+	}
+	Transition t0 
+		whenReply   a1 -> handleReply
+	
+	State handleReply{
+		printCurrentMessage
+ 	}
+	Goto work
+	
+} 
+
+QActor calleda context ctxdemoreqa {
+ 
+	State init initial {
+		println("called1a waits ...")
+	}
+	Transition t0 
+		whenRequest r1 -> handleRequest
+ 
+	State handleRequest{ 
+		printCurrentMessage		 
+ 		onMsg( r1 : r1(X) ){  
+ 			replyTo r1 with a1 : a1(  $payloadArg(0)     )  
+ 		}
+	} 
+	Goto init   
+}   
+ 
+ 

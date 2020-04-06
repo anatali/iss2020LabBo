@@ -17,7 +17,7 @@ package-lock.json
 .gradle
 gradlew
 gradlew.bat
-gradle
+
 
 /ReadMe.html
 .lck/ 

@@ -123,6 +123,8 @@ abstract class ActorBasicFsm(  qafsmname:  String,
     abstract fun getBody(): (ActorBasicFsm.() -> Unit)
     abstract fun getInitialState(): String
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     fun setBody( buildbody: ActorBasicFsm.() -> Unit, initialStateName: String ) {
         buildbody()            //Build the structural part
         currentState = getStateByName(initialStateName)
@@ -130,6 +132,8 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         scope.launch { autoMsg(autoStartMsg) }  //auto-start
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg: ApplMessage) {
         //println(" --- | ActorBasicFsm $name | msg=$msg")
         if (msg.msgId() == autoStartMsg.msgId() && !isStarted) {
@@ -149,6 +153,8 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         checkDoEmptyMove()
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun fsmwork(msg: ApplMessage) {
         //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork in ${currentState.stateName} $msg")
         var nextState = checkTransition(msg)
@@ -156,8 +162,8 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         while (b) { //handle previous messages
             currentState.enterState()
             checkDoEmptyMove()
-            val nextState = lookAtMsgQueueStore()
-            b = hanldeCurrentMessage(currentMsg, nextState, memo = false)
+            val nextState1 = lookAtMsgQueueStore()
+            b = hanldeCurrentMessage(currentMsg, nextState1, memo = false)
         }
     }
 
@@ -339,6 +345,8 @@ abstract class ActorBasicFsm(  qafsmname:  String,
     }
 
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun replyToCaller(msgId: String, msg: String) {
         //sysUtil.traceprintln("$tt ActorBasicFsm $name | replyToCaller msgToReply=" + msgToReply);
         val caller = msgToReply.msgSender()

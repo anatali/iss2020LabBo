@@ -12,7 +12,7 @@ class QakContextServer(val ctx: QakContext, scope: CoroutineScope,
                        name:String, val protocol: Protocol ) : ActorBasic( name, scope) {
     protected var hostName: String? = null
     protected var factoryProtocol: FactoryProtocol?
-
+ 
     //val connMap : MutableMap<Int, IConnInteraction> = mutableMapOf<Int, IConnInteraction>() //Oct2019
 
     init {
@@ -24,11 +24,15 @@ class QakContextServer(val ctx: QakContext, scope: CoroutineScope,
     }
 
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg : ApplMessage){
         println("               %%% QakContextServer $name | READY TO RECEIVE TCP CONNS on ${ctx.portNum} ")
         waitForConnection()
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend protected fun waitForConnection() {
         //We could handle several connections
         GlobalScope.launch(Dispatchers.IO) {
@@ -37,7 +41,7 @@ class QakContextServer(val ctx: QakContext, scope: CoroutineScope,
                     //println("       QakContextServer $name | WAIT FOR CONNECTION")
                     val conn = factoryProtocol!!.createServerProtocolSupport(ctx.portNum) //BLOCKS
                     sysUtil.connActive.add(conn)
-                    handleConnection(conn, ctx.portNum)
+                    handleConnection( conn )
                 }
             } catch (e: Exception) {
                  println("      QakContextServer $name | WARNING: ${e.message}")
@@ -47,7 +51,9 @@ class QakContextServer(val ctx: QakContext, scope: CoroutineScope,
 /*
 EACH CONNECTION WORKS IN ITS OWN COROUTINE
  */
-    suspend protected fun handleConnection(conn: IConnInteraction, ctxport : Int) {
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+    suspend protected fun handleConnection(conn: IConnInteraction ) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 sysUtil.traceprintln("               %%% QakContextServer $name | new conn:$conn")
@@ -87,6 +93,8 @@ EACH CONNECTION WORKS IN ITS OWN COROUTINE
         }
     }//handleConnection
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun propagateEvent(event : ApplMessage){
          ctx.actorMap.forEach{
              //sysUtil.traceprintln("       QakContextServer $name | in ${ctx.name} propag $event to ${it.key} in ${it.value.context.name}")
