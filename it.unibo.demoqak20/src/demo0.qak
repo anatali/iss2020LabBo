@@ -20,7 +20,7 @@ QActor demo context ctxdemo0{
  				  whenMsg msg2 -> s3
 
  	State s2{
- 		println("demo in s2")		
+ 		println("demo in s2")		 
  	}
  	Transition t0 whenMsg msg2 -> s3
 

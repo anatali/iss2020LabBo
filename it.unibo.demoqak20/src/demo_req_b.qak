@@ -57,7 +57,7 @@ QActor calledb context ctxdemoreqb {
 		 whenTime 1000 -> init
 		 whenReply a1 -> answerAfterAsk
 
-	State answerAfterAsk{ 
+	State answerAfterAsk{  
 		printCurrentMessage		 
  		onMsg( a1 : a1(X) ){ 
  			["val R = RequestArg + payloadArg(0) "]
