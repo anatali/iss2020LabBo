@@ -14,7 +14,6 @@ import boundary.boundaryrobot
 import fsm.Fsm
 
 class TestPlanBoundary {
-var refTestMap : String =""
 lateinit var robot : Fsm 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +44,7 @@ lateinit var robot : Fsm
 			robot.waitTermination()
 		}
 		println("%%%  testBoundary performs the final test after user end")		
-		assertTrue( mapUtil.map.toString() ==  refTestMap )
+		assertTrue( mapUtil.map.toString().equals( mapRoomKotlin.mapUtil.refMapForTesting ) )
 	}
 	
 }//TestBoundary

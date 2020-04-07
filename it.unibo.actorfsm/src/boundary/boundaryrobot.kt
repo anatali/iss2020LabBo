@@ -62,17 +62,19 @@ var nstep = 0
 			}
 			state("work") {	
 				action { //it:State
-					delay(pauseStepTime)
+					//delay(pauseStepTime)
 					forward( "step", stepTime, robot)
 				}
+				transition( edgeName="t1",targetState="wall",     cond=whenDispatch("stepfail") )
 				transition( edgeName="t0",targetState="stepDone", cond=whenDispatch("stepdone") )
-				transition( edgeName="t1",targetState="wall", cond=whenDispatch("stepfail") )
 			}
 			
 			state("stepDone"){
-				action{
+				action{ 
 					mapRoomKotlin.mapUtil.doMove("w")
+					println("boundaryrobot | stepDone")
 					mapRoomKotlin.mapUtil.showMap()
+					delay(pauseStepTime)	
 				}
 				transition( edgeName="t0",targetState="work", cond=doswitch() )		
 			}
@@ -81,14 +83,18 @@ var nstep = 0
 				action { //it:State
 					nstep++
 					//Go to the previous cell
+					delay(pauseStepTime)
 					var dt = currentMsg.CONTENT.toLong()-backTime  //consider the bascirobot bacsktep
-					if( dt < 0 ) dt = 0
- 					println("boundaryrobot | obstacle at step $nstep ${currentMsg.CONTENT} dt=$dt")
-					forward( "cmd", "s", robot); delay(dt); forward( "cmd", "h", robot)  
-					delay(pauseStepTime)	//important
+//					if( dt > 100 ) {
+  	 					println("boundaryrobot | obstacle at step $nstep ${currentMsg.CONTENT} dt=$dt")
+//						forward( "cmd", "s", robot); delay(dt); forward( "cmd", "h", robot)  
+//						delay(pauseStepTime)	//important
+//					}
+					delay(pauseStepTime)
 					forward( "cmd", "l", robot)
 					delay(pauseStepTime)
 					mapRoomKotlin.mapUtil.doMove("l")
+					//delay(pauseStepTime)
 				}
 				transition( edgeName="t0",targetState="work", cond=doswitchGuarded( {nstep<4}  ) )
 				transition( edgeName="t1",targetState="end",  cond=doswitchGuarded( {nstep==4} ) )

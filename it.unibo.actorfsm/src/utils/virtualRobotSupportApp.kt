@@ -126,7 +126,7 @@ fun terminate(){
                                 val jsonArg    = jsonObject.getJSONObject("arg")
                                 val objectName = jsonArg.getString("objectName")
  								Messages.forward( "vr", "sensor",  "collision_$objectName", targetRobot )
-								//println("virtualRobotSupportApp collision $objectName")
+								println("virtualRobotSupportApp collision $objectName")
                              }
                         }
                     } catch (e: Exception) {

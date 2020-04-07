@@ -1,0 +1,59 @@
+System sentinel
+mqttBroker "broker.hivemq.com" : 1883
+ 
+Event   alarm : alarm(V)
+
+Context ctxsentinel ip [host="localhost" port=8055]
+ 
+QActor sentinel context ctxsentinel{
+["var counter=0"]
+	State s0 initial { 	
+		//println("sentinel | STARTS")	 		  
+ 	}
+ 	Goto watch if "counter==0" else end
+ 	
+ 	State watch{
+ 		println("sentinel | WATCH")
+ 	}	
+ 	Transition t0 //whenTime 1000   -> timeout
+ 				  whenEvent alarm and "counter==0" -> handleAlarm
+ 	 
+ 	State timeout{
+   		printCurrentMessage
+  		println("sentinel | TIMEOUT")	
+  		//["counter++"]	
+ 	}
+ 	Goto s0
+ 	 
+ 	State handleAlarm{
+  		printCurrentMessage
+  		onMsg ( alarm : alarm(V) ) {
+  			println("sentinel | ALARM ${payloadArg(0)} ")  // 
+  		}
+   	}
+ 	Goto s0 
+ 	
+ 	State end{
+ 		println("sentinel | ENDS")	
+ 		terminate 0
+ 	}
+ 
+ }
+
+/*
+ * For local test
+ */
+ /* 
+QActor watcher context ctxsentinel{
+	State s0 initial { 	
+ 		 
+		 emit alarm : alarm( fire ) 
+		 delay 1200
+		 emit alarm : alarm( tsunami )	 
+		 
+		 delay 1000
+		 terminate 0 
+	}
+	
+}
+*/

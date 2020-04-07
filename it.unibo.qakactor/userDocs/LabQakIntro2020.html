@@ -162,8 +162,7 @@ table, th, td {
 <li><a href="#process">QActors and process development</a></li>
 <li><a href="#metam">Models and meta-models</a></li>
 <li><a href="#dsl">Domain Specific Languages</a></li>
-
-<li><a href="#mdsd">Model Driven Software Development</a></li>
+<li><a href="#vision">Vision </a></li> <!-- Model Driven Software Development -->
 
  
 </ol> 
@@ -315,7 +314,9 @@ forward DESTNAME -m MSGID : PAYLOAD  <kc>//for dispatch</kc>
 
 request DESTNAME -m REQID : PAYLOAD		<kc>//for request</kc>
 
-replyTo  REQID with  REPLYID : PAYLOAD <kc>//for reply</kc>
+replyTo REQID with  REPLYID : PAYLOAD    <kc>//for response</kc>
+
+askFor REQREF REQ : PAYLOAD   <kc>//for asking a caller</kc>
 
 --------------------------------------------
 
@@ -397,9 +398,12 @@ transition including a message <tt>m</tt> the message is stored in a queue local
 </m>
 </td> 
 <td>
+<h3 id="demo">Demo</h3>
 <m>The code of a <tt>QActor</tt> mirrors the structure of a FSM diagram: 
 <center><img src="./img/demoDSL.png" alt="demoDSL" width="70%" ></center>
-The code is in <a href="../src/demo0.qak" traget="code">demo0.qak</a></m>
+The code is in <a href="../../it.unibo.demoqak20/src/demo0.qak" target="code">demo0.qak</a>
+(project <i>it.unibo.demoqak20</i>)
+</m>
 <pre>
 System demo
 
@@ -425,9 +429,10 @@ QActor demo context ctxdemo{
 </pre>
 
 <h3>Firing a transition</h3>
-<m>A <bc>Transition</bc> is 'fired' if the related condition (<bc>whenTime</bc>, <bc>whenEvent</bc>, <bc>whenMsg, ...</bc>)  is true.
+<m>A <bc>Transition</bc> is 'fired' if the related condition (<bc>whenTime</bc>, <bc>whenEvent</bc>, <bc>whenMsg, ...</bc>)  
+together with the related <em>guard</em> (if any) is true.
 <br/><br/>
-The condition can be extended by a user-defined Kotlin code working as a <em>guard</em>.</m> 
+A <bc>guard</bc> is expressed as a condition written in user-defined Kotlin code.</m> 
 
 </m>
 </td>
@@ -436,39 +441,39 @@ The condition can be extended by a user-defined Kotlin code working as a <em>gua
  <tr>
 <td style="width:50%">
  
-<h3>An example</h3>
+<h3 id="sentinel">An example (sentinel)</h3>
 <pre>
 <k>Event</k>   alarm : alarm(V)
 
 <ks>QActor</ks> sentinel context ctxdemo{
 ["val counter=0"]	<kc>//Kotlin code</kc>
-  State s0 initial { 	
+  <ks>State s0</ks> initial { 	
 	println("sentinel | STARTS") <kc>//QActor action</kc>	  		  
   }
-  Goto watch if <k>"counter==0"</k> else end <kc>//guard</kc>
+  Goto <ks>watch</ks> if <k>"counter==0"</k> else <ks>end</ks> <kc>//guard</kc>
  	
-  State watch{
+  <ks>State watch</ks>{
 	println("sentinel | WATCH")
   }	
-  Transition t0 <k>whenTime</k> 1000 -> timeout
-	<k>whenEvent</k> alarm <k>and "counter==0"</k> -> handleAlarm <kc>//guard</kc>
+  Transition t0 <k>whenTime</k> 1000 -> <ks>timeout</ks>
+	<k>whenEvent</k> <ks>alarm</ks> <k>and "counter==0"</k> -> <ks>handleAlarm</ks> <kc>//guard</kc>
  	
-  State timeout{
+  <ks>State timeout</ks>{
 	printCurrentMessage		<kc>//QActor action</kc>
 	println("sentinel | TIMEOUT")	
 	["counter++"]	 	<kc>//Kotlin code</kc>
   }
-  Goto s0
+  Goto <ks>s0</ks> 
  	 
-  State handleAlarm{
+  <ks>State handleAlarm</ks>{
 	printCurrentMessage
 	<k>onMsg</k> ( alarm : alarm(V) ) { <kc>//QActor action</kc>
 		println("sentinel | ALARM ${<ks>payloadArg</ks>(0)}") 
 	}
   }
-  Goto s0 
+  Goto <ks>s0</ks> 
  	
-  State end{
+  <ks>State end</ks>{
 	println("sentinel | ENDS")	
   }
  }
@@ -770,16 +775,55 @@ The last layer is the M0-layer or data layer. It is used to describe runtime ins
 </td>
 </tr>
 
+	<tr>
+	<td >
+	<h3 id=""mdsd>Model Driven Software Development</h3>
+		<div class="remark">
+		See <li> <a href="UMLHarelRumpe.pdf" target="lecture">On semantics</a></li>    
+<li> <a href="Whatmodelsmean.pdf" target="lecture">What models mean</a></li>   
+		</div>
+	</td>
+	<td>
+	<center><img src="./img/mdsdpng.png" alt="mdsdpng.png" width="100%" /></center>  
+
+	</td>
+	</tr>
+	
+	
 <tr>
-<td><h3 id="xtext"><a href="https://www.eclipse.org/Xtext/" target="web">Xtext</a></h3>
+<td><h3 id="xtext"><a href="https://www.eclipse.org/Xtext/" target="web">EMF and Xtext</a></h3>
 <m>
-<a href="https://www.eclipse.org/Xtext/" target="web">Xtext</a> is a framework for development of programming languages and domain-specific languages. 
+The <a href="https://www.eclipse.org/modeling/emf/" target="web">Eclipse Modeling Framework (EMF)</a>
+is a modeling framework and code generation facility for building tools and other applications based on a structured data model
+based on the <a href="https://en.wikipedia.org/wiki/Eclipse_Modeling_Framework" target="web">EMF (core) </a>standard.
+<br/><br/>
+
+
+<a href="https://www.eclipse.org/Xtext/" target="web">Xtext</a> is a framework for development of programming languages 
+and domain-specific languages. 
+<br/><br/>
+Xtext uses 
+<a href=" https://www.eclipse.org/Xtext/documentation/308_emf_integration.html" target="web">EMF models</a>
+ as the in-memory representation of any parsed text files. 
+This in-memory object graph is called the abstract syntax tree (AST). Depending on the community this concepts 
+is also called document object model (<bc>DOM</bc>), semantic model, or simply model.
+<br/><br/>
 With Xtext you define your language using a powerful grammar language. 
-As a result you get a full infrastructure, including parser, linker, typechecker, compiler as well as editing support for Eclipse.
+As a result you get a full infrastructure, including <b>parser, linker, typechecker, compiler</b> 
+as well as <b>editing support</b> for Eclipse.
 <br/>
- 
+
 </m>
-<b>Definition of a custom metamodel: example</b>
+
+</td>
+<td>
+<h3>The <a href="https://www.eclipse.org/modeling/emf/" target="web">Eclipse Modeling Framework</a></h3>
+<img src="./img/emf.png" alt="emf" width="100%" /></td>
+</tr>
+
+<tr>
+<td>
+<b>Definition of a custom language: example</b>
 <pre>
 grammar it.unibo.xtext.intro19.Iot 
 	with org.eclipse.xtext.common.Terminals
@@ -793,98 +837,82 @@ IotSystemSpec: name=ID
 	 (mqttBroker = BrokerSpec)?     <kc>//<k>?</k> means Optional</kc>
 	 (message   += Message   )*     <kc>//<k>*</k> means N>=0</kc>
 ;
-BrokerSpec : "<ks>mqttBroker</ks>" brokerHost=STRING ":" brokerPort=INT ;
+BrokerSpec : "<ks>mqttBroker</ks>" host=STRING ":" port=INT ;
 
 Message :  Event | Dispatch  ;
 
 Event: 	  "<ks>Event</ks>"    name=ID  ":" msg = STRING  ;
 Dispatch: "<ks>Dispatch</ks>" name=ID  ":" msg = STRING  ;
 </pre> 	
+ 
 </td>
 <td>
-<h3>The <a href="https://www.eclipse.org/modeling/emf/" target="web">Eclipse Modeling Framework</a></h3>
-<img src="./img/emf.png" alt="emf" width="100%" /></td>
+<img src="./img/xtextGrammar.png" alt="xtextGrammar" width="100%" />
+</td>
 </tr>
-
-
 
 </table>
 </center> 	
 
 
-<h2 id="mdsd">Model Driven Software Development</h2>
-   	<center><table style="width:95%">
-	<tbody>	
-	<tr>
-	<td style="width:80%">
-	<center><img src="./img/mdsdpng.png" alt="mdsdpng.png" width="100%" height="52%"/></center>  
-	</td>
-	<td>
-		<m>
-		<div class="remark">
-		See <li> <a href="UMLHarelRumpe.pdf" target="lecture">On semantics</a></li>    
-<li> <a href="Whatmodelsmean.pdf" target="lecture">What models mean</a></li>   
-		</div>
-
-	<!--	
-		<h4>Analysis (what)</h4>
-		<ul>
-		<li>Feasibility</li>
-		<li>Test plans</li>
-		<li>Logic architecture</li>
-		<li>Evaluation of costs, time, resources</li>
-		<li>Technology aware (but independent)</li>
-		</ul>
-		<h4>Design (how)</h4>
-		<ul>
-		<li>Design patterns</li>
-		<li>Architecture refinement</li>
-		<li>Working prototype</li>
-		<li>Selection of appropriate technologies</li>
-		<li>Prototype refinement</li>
-		</ul>
-		<h4>Development</h4>
-		<h4>Testing</h4>
-		<h4>Deployment</h4
-	-->	
-		</m>
-	</td>
-	</tr> 
-	 </table>
-	</center> 
 
 
  
-<h3 id="dsl">Domain Specific Languages</h3>
+<h2 id="dsl">Domain Specific Languages</h2>
+
+A <a href="https://en.wikipedia.org/wiki/Domain-specific_language" target="web">Domain-specific languages (DSL)</a> 
+is a computer language specialized to a particular application domain. 
+Examples of DSL are <tt>Gradle</tt> and <tt>SQL</tt>.
+This is in contrast to a 
+<a href="https://en.wikipedia.org/wiki/General-purpose_programming_language" target="web">general-purpose programming language (GPL)</a>,
+ which is broadly applicable across domains.  
+<br/><br/>
+DSL are specialized in solving a specific problem domain and can be very efficient at it.
+Moreover, by  <bc>incorporating knowledge</bc> about that domain, DSLs can lead to more concise and more analyzable programs, 
+promote <em>effective communication with customers</em>, better code quality and increased development speed.  
+<br/><br/>
+DSLs come in two main forms: external and internal.
+<ul>
+<li><bc>External DSLs</bc> are DSLs with their own syntax that's parsed independently of the host GPL. 
+They requires work when integrating to an application written with a general programming language.</li>
+<li><bc>Internal DSLs</bc> are written in the syntax of a general programming language.
+They are a particular form of API in a host general purpose language, often referred to as a 
+<a href="https://en.wikipedia.org/wiki/Fluent_interface" target="web"><em>fluent interface</em></a> .</li>
+</ul>
+
+
+ 
+
   	<center><table style="width:95%">
 	<tbody>	
 	<tr>
 	<td style="width:100%">
- 	<center><img src="./img/dslSlide.png" alt="dslSlide" width="100%" height="52%"/></center><br/>
- 	<li><a href="https://www.slideshare.net/zirrus/domainspecific-langauges" target="web">Domain-specific
+  	<li><a href="https://www.slideshare.net/zirrus/domainspecific-langauges" target="web">Domain-specific
 Languages, by Javier Luis Cánovas Izquierdo</a>, Inria <br/></li>
 <li><a href="https://www.slideshare.net/mariofusco/real-world-dsl" target="web">Real World DSL, by Mario Fusco</a>, Red Hat <br/></li>
  
 <!-- https://www.slideshare.net/peterfriese/the-unbearable-stupidity-of-modeling -->
 <div class="remark">
-For an example of internal DSL in Kotlin see
+For an example using Kotlin to define internal DSL see 
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.kotlinIntro/userDocs/LabDsl.html"
-target="lecture">LabDsl.html</a>
-</div>
- 
+target="lecture">LabDsl.html</a>.
+</div>	<center><img src="./img/dslSlide.png" alt="dslSlide" width="100%" height="52%"/></center><br/>
+
 	</td>
 	</tr>
-
 	 </table>
 	</center> 
+ <h2 id="vision">Vision</h2>
+ 
+ <center><img src="./img/vision.png" alt="vision.png" width="80%"/></center>
+ 
+
 
 
  
  
 
- 
-
-
+  
  
  <!--
 

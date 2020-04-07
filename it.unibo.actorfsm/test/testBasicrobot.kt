@@ -21,7 +21,7 @@ class testBasicrobot {
 lateinit var robot    : Fsm
 val mqttTest   	      = MqttUtils("test")
 val initDelayTime     = 4000L   // 
-val useMqttInTest 	  = true
+val useMqttInTest 	  = false
  
 		
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -150,8 +150,8 @@ val useMqttInTest 	  = true
 				//testObstacleLocal() //still works  
 			} 
 			else{
-				//testMovesLocal()
-				testObstacleLocal()
+				testMovesLocal()
+				//testObstacleLocal()
 			}		
 			println("testBasicRobot BYE with robot in  ${basicrobot.rstate}")
 	}
