@@ -199,13 +199,14 @@ object sysUtil{
   	 */
 		traceprintln("               %%% sysUtil | CREATE actor=$actorName in context:${ctx.name}  class=$className"   )
 		val clazz = Class.forName(className)	//Class<?>
-        var actor  : ActorBasic
+        var actor  : ActorBasic 
         try {
-            val ctor = clazz.getConstructor(String::class.java, CoroutineScope::class.java)  //Constructor<?>
-            actor = ctor.newInstance(actorName, scope ) as ActorBasic
+            val ctor = clazz.getConstructor(String::class.java, CoroutineScope::class.java )  //Constructor<?>
+            actor = ctor.newInstance(actorName, scope  ) as ActorBasic 
         } catch( e : Exception ){
+			println("sysUtil  | ERROR ${e}" )
             val ctor = clazz.getConstructor( String::class.java )  //Constructor<?>
-            actor = ctor.newInstance( actorName  ) as ActorBasic
+            actor = ctor.newInstance( actorName  ) as ActorBasic 
         }
 		ctx.addActor(actor)
 		actor.context = ctx

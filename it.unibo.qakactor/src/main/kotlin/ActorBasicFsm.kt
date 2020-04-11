@@ -82,11 +82,12 @@ class Transition(val edgeName: String, val targetState: String) {
 ================================================================
  */
 abstract class ActorBasicFsm(  qafsmname:  String,
-                      val fsmscope: CoroutineScope = GlobalScope,
+                      fsmscope: CoroutineScope = GlobalScope,
+					  discardMessages : Boolean = false,
                       confined :    Boolean = false,
                       ioBound :     Boolean = false,
                       channelSize : Int = 50
-                    ): ActorBasic(  qafsmname, fsmscope, confined, ioBound, channelSize ) {
+                    ): ActorBasic(  qafsmname, fsmscope, discardMessages, confined, ioBound, channelSize ) {
 
     val autoStartMsg = MsgUtil.buildDispatch(name, "autoStartSysMsg", "start", name)
 	
@@ -103,7 +104,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 
     //================================== STRUCTURAL =======================================
     fun state(stateName: String, build: State.() -> Unit) {
-        val state = State(stateName, fsmscope)
+        val state = State(stateName, scope)
         state.build()
         stateList.add(state)
     }
@@ -198,7 +199,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
             return true
         } else { //EXCLUDE EVENTS FROM msgQueueStore
             if (!memo) return false
-            if (!(msg.isEvent())) {
+            if (!(msg.isEvent()) && ! discardMessages) {
                 msgQueueStore.add(msg)
                 println("ActorBasicFsm $name |  added $msg in msgQueueStore")
             }
@@ -255,6 +256,16 @@ abstract class ActorBasicFsm(  qafsmname:  String,
             edgeEventHandler = cond }
     }
     */
+//	fun discard( msgName: String ): Transition.() -> Unit { //APR2020
+//		println("discard $msgName")
+//        return {
+//            edgeEventHandler = {
+//	                println("edgeEventHandler discard $it - $msgName")
+//	                false
+//            }
+//		}
+//	}
+	
     fun whenEvent(evName: String): Transition.() -> Unit {
         return {
             edgeEventHandler = {
@@ -272,13 +283,14 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         }
     }
 
-    fun whenDispatch(msgName: String): Transition.() -> Unit {
+    fun whenDispatch(msgName: String ): Transition.() -> Unit {
+			//println("$tt ActorBasicFsm $name | whenDispatch  planning $msgName  " )
             return {
                 edgeEventHandler = {
-                    //println("ActorBasicFsm $name | ${currentState.stateName} whenDispatch $it  $msgName")
-                    it.isDispatch() && it.msgId() == msgName }
+                    //println("ActorBasicFsm $name | ${currentState.stateName} whenDispatch $it  $msgName  ")
+                    it.isDispatch() && it.msgId() == msgName  }
                     //it == msgName }  //it.isDispatch() && it.msgId() == msgName }
-            }
+            } 
     }
     fun whenDispatchGuarded(msgName: String, guard:()->Boolean ): Transition.() -> Unit {
         return {

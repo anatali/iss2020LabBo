@@ -24,13 +24,14 @@ import org.eclipse.californium.core.coap.MediaTypeRegistry
 
 abstract class  ActorBasic(  name:         String,
                            val scope:        CoroutineScope = GlobalScope,
+                           var discardMessages : Boolean = false, 
                            val confined :    Boolean = false,
                            val ioBound :     Boolean = false,
                            val channelSize : Int = 50
                         ) : CoapResource(name), MqttCallback {
     //val cpus = Runtime.getRuntime().availableProcessors();
 
-    val tt      = "              %%% "
+    val tt      = "               %%% "
     var context : QakContext? = null  //to be injected
     var resVar  : String ="fail"      // see solve
     val pengine     = Prolog()      //USED FOR LOCAL KB
@@ -73,6 +74,11 @@ abstract class  ActorBasic(  name:         String,
     //To be defined by the application designer
     abstract suspend fun actorBody(msg : ApplMessage)
 
+	
+	
+	fun setDiscard( v: Boolean){
+		discardMessages = v
+	}
     //fun setContext( ctx: QakContext ) //built-in
 //    fun terminate(){
 //        context!!.actorMap.remove(  name )
