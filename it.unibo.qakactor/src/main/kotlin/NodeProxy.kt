@@ -54,7 +54,7 @@ class NodeProxy( name: String, val ctx: QakContext, val protocol: Protocol,
                 //sysUtil.traceprintln("               %%% NodeProxy $name  | handling new input from :$conn")
                 while (true) {
                     val msg = conn.receiveALine()       //BLOCKING ???
-                    println("               %%% NodeProxy $name  | receives: $msg   !!!!!!!!!!!")
+                    sysUtil.traceprintln("               %%% NodeProxy $name  | receives: $msg  ")
                     if( msg == null ){
                         break
                     }

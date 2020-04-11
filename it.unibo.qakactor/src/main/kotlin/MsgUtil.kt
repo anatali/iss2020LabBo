@@ -60,6 +60,16 @@ var count = 1;
         destActor.actor.send(dispatchMsg)
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+@JvmStatic	suspend fun sendMsg(  sender: String, msgId : String, payload: String, destName : String, mqtt: MqttUtils ){		
+		val msg = buildDispatch(actor=sender, msgId=msgId , content=payload, dest=destName )
+		if( mqtt.connectDone() ){
+			mqtt.publish( "unibo/qak/${destName}", msg.toString() )
+		}
+	}
+	
+	
 @JvmStatic    fun getFactoryProtocol(protocol: Protocol) : FactoryProtocol?{
         var factoryProtocol : FactoryProtocol? = null
         when( protocol ){

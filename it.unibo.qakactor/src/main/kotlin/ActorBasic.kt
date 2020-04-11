@@ -36,7 +36,7 @@ abstract class  ActorBasic(  name:         String,
     val pengine     = Prolog()      //USED FOR LOCAL KB
     val NoMsg       = MsgUtil.buildEvent(name, "local_noMsg", "noMsg")
 
-    val mqtt        = MqttUtils()
+    val mqtt        = MqttUtils(name)
     protected val subscribers = mutableListOf<ActorBasic>()
     var mqttConnected = false
     protected var count = 1;
@@ -78,6 +78,10 @@ abstract class  ActorBasic(  name:         String,
 //        context!!.actorMap.remove(  name )
 //        actor.close()
 //    }
+	
+/*
+TERMINATION 
+*/		
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     fun terminate(arg: Int=0){
@@ -89,7 +93,11 @@ abstract class  ActorBasic(  name:         String,
 		println("$tt ActorBasic $name | terminateCtx $arg TODO ")
         //context!!.terminateTheContext()         
     }
-
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+	suspend fun waitTermination(){
+		(actor as Job).join()
+	}	
 /*
 --------------------------------------------
 Messaging
@@ -149,22 +157,24 @@ Messaging
             }
         }//ctx of destination is unknwkn
  //DESTINATION remote, context of dest known and MQTT selected
+		if( ! msg.isRequest() ){
         val uri = "coap://${ctx.hostAddr}:${ctx.portNum}/${ctx.name}/$destName"
         println("$tt ActorBasic sendMessageToActor qak | ${uri} msg=$msg" )
 
         if( attemptToSendViaMqtt(ctx, msg,destName) ) return
 
         sendCoapMsg( uri, msg.toString() )
-
+		}
  //DESTINATION remote, context of destName known and NO MQTT  => using proxy
-        // REMOVED: Coap 2020
-        /*
-        val proxy = context!!.proxyMap.get(ctx.name)
-        sysUtil.traceprintln("$tt ActorBasic sendMessageToActor |  ${msg.msgId()} $destName REMOTE with PROXY  " )
-        //WARNING: destName must be the original and not the proxy
-        if( proxy is ActorBasic ) { proxy.actor.send( msg ) }
-        else sysUtil.traceprintln("$tt ActorBasic  sendMessageToActor |  ${msg.msgId()} proxy of $ctx is null ")
-        */
+        // REMOVED: Coap 2020 but not for request
+        else{	//request
+	        val proxy = context!!.proxyMap.get(ctx.name)
+	        sysUtil.traceprintln("$tt ActorBasic sendMessageToActor |  ${msg.msgId()} $destName REMOTE with PROXY  " )
+	        //WARNING: destName must be the original and not the proxy
+	        if( proxy is ActorBasic ) { proxy.actor.send( msg ) }
+	        else println("$tt WARNING. ActorBasic  sendMessageToActor |  ${msg.msgId()} proxy of $ctx is null ")
+		}
+         
     }
 
     fun attemptToSendViaMqtt( ctx : QakContext, msg : ApplMessage, destName : String) : Boolean{
@@ -175,7 +185,8 @@ Messaging
                 mqttConnected = true
             }
             sysUtil.traceprintln("$tt ActorBasic sendViaMqtt | destName=$destName : $msg")
-            mqtt.sendMsg(msg, "unibo/qak/$destName")
+            //mqtt.sendMsg(msg, "unibo/qak/$destName")
+			mqtt.publish( "unibo/qak/$destName", msg.toString() )
             return true
         }
         return false
@@ -243,6 +254,7 @@ Messaging
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun emit( event : ApplMessage, avatar : Boolean = false ) {
+	//avatar=true means that the emitter is able to sense the event that emits
           if( context == null ){
              println("$tt ActorBasic $name | WARNING emit: actor has no QakContext. ")
              this.actor.send(event)  //AUTOMSG
@@ -266,7 +278,8 @@ Messaging
         //EMIT VIA MQTT IF there is
         if( context!!.mqttAddr.length != 0 ) {
             println(" $tt ActorBasic $name | emit MQTT ${event.msgId()}  ")
-            mqtt.sendMsg(event, "unibo/qak/events")
+            //mqtt.sendMsg(event, "unibo/qak/events")
+			mqtt.publish("unibo/qak/events", event.toString() )
         }
         //sysUtil.traceprintln(" $tt ActorBasic $name | ctxsMap SIZE = ${sysUtil.ctxsMap.size}")
          sysUtil.ctxsMap.forEach{
@@ -320,6 +333,7 @@ Messaging
         val event = MsgUtil.buildEvent(name,msgId, msg)
         emit( event )
     }
+
 
 /*
  --------------------------------------------
@@ -471,17 +485,17 @@ KNOWLEDGE BASE
      About CoAP: Jan 2020
 =======================================================================
 */
-    private var logo  : String 	            //Coap Jan2020
-    private var applRep : String 			//Coap Jan2020
+    private   var logo             : String 	        //Coap Jan2020
+    protected var ActorResourceRep : String 			//Coap Jan2020
 
     init{                                   //Coap Jan2020
         isObservable = true
         logo    = "       ActorBasic(Resource) $name "
-        applRep = "$logo | created  "
+        ActorResourceRep = "$logo | created  "
     }
     override fun handleGET(exchange: CoapExchange) {
         println("$logo | handleGET from: ${exchange.sourceAddress} arg: ${exchange.requestText}")
-        exchange.respond( "$applRep")
+        exchange.respond( "$ActorResourceRep")
     }
     /*
      * POST is NOT idempotent.	Use POST when you want to add a child resource
@@ -530,7 +544,7 @@ KNOWLEDGE BASE
      }
 
     fun updateCoapResource( v : String){
-        applRep = v
+        ActorResourceRep = v
         changed()             //DO NOT FORGET!!!
     }
 
