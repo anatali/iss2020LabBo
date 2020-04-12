@@ -261,7 +261,7 @@ Messaging
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     suspend fun emit( event : ApplMessage, avatar : Boolean = false ) {
 	//avatar=true means that the emitter is able to sense the event that emits
-          if( context == null ){
+        if( context == null ){
              println("$tt ActorBasic $name | WARNING emit: actor has no QakContext. ")
              this.actor.send(event)  //AUTOMSG
              return
@@ -499,8 +499,17 @@ KNOWLEDGE BASE
         logo    = "       ActorBasic(Resource) $name "
         ActorResourceRep = "$logo | created  "
     }
+
+    fun updateResourceRep( v : String){
+        ActorResourceRep = v
+        changed()             //DO NOT FORGET!!!
+    }
+    fun geResourceRep() : String{
+		return ActorResourceRep
+	}
+
     override fun handleGET(exchange: CoapExchange) {
-        println("$logo | handleGET from: ${exchange.sourceAddress} arg: ${exchange.requestText}")
+//        println("$logo | handleGET from: ${exchange.sourceAddress} arg: ${exchange.requestText}")
         exchange.respond( "$ActorResourceRep")
     }
     /*
@@ -520,10 +529,10 @@ KNOWLEDGE BASE
         sysUtil.traceprintln("$logo | handlePUT arg=$arg")
         try{
             val msg    = ApplMessage( arg )
-            updateCoapResource("$msg redirected")
+            updateResourceRep("$msg redirected")
             fromPutToMsg( msg, exchange )  //could change answer (if msg is a request)
         }catch( e : Exception){
-            updateCoapResource("error on msg $arg")
+            updateResourceRep("error on msg $arg")
             println("$logo | handlePUT ERROR on msg ")
         }
         //exchange.respond( CHANGED )
@@ -549,10 +558,6 @@ KNOWLEDGE BASE
         }
      }
 
-    fun updateCoapResource( v : String){
-        ActorResourceRep = v
-        changed()             //DO NOT FORGET!!!
-    }
 
     fun sendCoapMsg(  url : String, msg : String   ){
         sysUtil.traceprintln("$logo |   sendCoapMsg url=${url}")
