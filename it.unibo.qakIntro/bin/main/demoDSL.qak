@@ -1,0 +1,67 @@
+System demo
+
+Dispatch msg1 : msg1(ARG)
+Dispatch msg2 : msg2(ARG)
+
+Event   alarm : alarm(V)
+
+Context ctxdemo ip [host="localhost" port=8055]
+
+QActor demo context ctxdemo{
+	State s0 initial { 	 
+		  
+ 	}
+ 	Goto s1
+ 	
+ 	State s1{
+ 		println("demo in s1")
+ 	}
+ 	Transition t0 whenMsg msg1 -> s2
+ 				  whenMsg msg2 -> s3
+
+ 	State s2{
+ 		println("demo in s2")		
+ 	}
+ 	Transition t0 whenMsg msg2 -> s3
+
+ 	State s3{
+  		println("demo in s3")		
+ 	}
+ 	Goto s1
+
+}
+
+QActor sentinel context ctxdemo{
+	State s0 initial { 	 		  
+ 	}
+ 	Transition t0 whenTime 1000   -> timeout
+ 				  whenEvent alarm -> handleAlarm
+ 	
+ 	State timeout{
+   		printCurrentMessage
+ 		println("sentinel handles timeout ")		//${payloadArg(0)}
+ 	}
+ 	 Goto s0 
+ 	 
+ 	State handleAlarm{
+  		printCurrentMessage
+ 		println("sentinel handles alarm ") // ${payloadArg(0)}
+ 	}
+ 	Goto s0 
+ 
+ }
+
+QActor sender context ctxdemo{
+	State s0 initial { 	
+		 forward demo -m msg1 : msg1(1)
+		 delay 500
+		 forward demo -m msg1 : msg1(2)
+		 delay 500
+		 forward demo -m msg2 : msg2(1)
+		 
+		 emit alarm : alarm( fire )
+		 delay 500
+		 emit alarm : alarm( tsunami )
+	}
+	
+}

@@ -8,50 +8,35 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 	
-class Sentinel ( name: String, scope: CoroutineScope ) : ActorBasicFsm( name, scope){
- 	
+class Sentinel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
+
 	override fun getInitialState() : String{
 		return "s0"
 	}
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		var counter=0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						stateTimer = TimerActor("timer_s0", 
+							scope, context!!, "local_tout_sentinel_s0", 1000.toLong() )
 					}
-					 transition( edgeName="goto",targetState="watch", cond=doswitchGuarded({counter==0}) )
-					transition( edgeName="goto",targetState="end", cond=doswitchGuarded({! (counter==0) }) )
-				}	 
-				state("watch") { //this:State
-					action { //it:State
-						println("sentinel | WATCH")
-					}
-					 transition(edgeName="t00",targetState="handleAlarm",cond=whenEventGuarded("alarm",{counter==0}))
+					 transition(edgeName="t03",targetState="timeout",cond=whenTimeout("local_tout_sentinel_s0"))   
+					transition(edgeName="t04",targetState="handleAlarm",cond=whenEvent("alarm"))
 				}	 
 				state("timeout") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						println("sentinel | TIMEOUT")
+						println("sentinel handles timeout ${payloadArg(0)}")
 					}
-					 transition( edgeName="goto",targetState="s0", cond=doswitch() )
 				}	 
 				state("handleAlarm") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("alarm(V)"), Term.createTerm("alarm(V)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("sentinel | ALARM ${payloadArg(0)} ")
-						}
+						println("sentinel handles alarm  ${payloadArg(0)}")
 					}
 					 transition( edgeName="goto",targetState="s0", cond=doswitch() )
-				}	 
-				state("end") { //this:State
-					action { //it:State
-						println("sentinel | ENDS")
-						terminate(0)
-					}
 				}	 
 			}
 		}
