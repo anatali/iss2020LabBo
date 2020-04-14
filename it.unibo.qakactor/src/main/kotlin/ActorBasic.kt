@@ -165,7 +165,7 @@ Messaging
  //DESTINATION remote, context of dest known and MQTT selected
 		if( ! msg.isRequest() ){
         val uri = "coap://${ctx.hostAddr}:${ctx.portNum}/${ctx.name}/$destName"
-        println("$tt ActorBasic sendMessageToActor qak | ${uri} msg=$msg" )
+        //println("$tt ActorBasic sendMessageToActor qak | ${uri} msg=$msg" )
 
         if( attemptToSendViaMqtt(ctx, msg,destName) ) return
 

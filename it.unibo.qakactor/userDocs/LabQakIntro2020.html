@@ -157,7 +157,11 @@ table, th, td {
 <ol>
 <li><a href="#intro">Introduction</a></li>
 <li><a href="#qakoverview">QActors: an overview</a></li>
-<li><a href="#actorasstream">Observable Actors</a></li> 
+<li><a href="#actorbasic">The class <bc>ActorBasic</bc></li>
+	<ul>
+	<li><a href="#actorascoap">Actors as CoAP resources</li>
+	<li><a href="#actorasstream">Actors as streams</a></li> 
+	</ul>
 <li><a href="../../it.unibo.demoqak20/userdocs/LabQakExamples2020.html" target="web">Examples</a> (in project <i>it.unibo.demoqak20</i> )</li> 
 <li><a href="#process">QActors and process development</a></li>
 <li><a href="#metam">Models and meta-models</a></li>
@@ -662,10 +666,12 @@ and to all the 'alien' connected via <tt>TCP</tt> or via <tt>MQTT</tt>.
 </table>
 </center>
 
- 
- 
+ <h2 id="actorbasic">The class <bc>ActorBasic</bc></h2>
 
-<h2 id="actorasstream">Observable Actors</h2>
+ works as a CoAP resource and as a stream
+ <h3 id="actorascoap">Actors as CoAP resources</h3>
+
+<h3 id="actorasstream">Actors as streams</h3>
 
 <a href="https://en.wikipedia.org/wiki/Reactive_programming" target="web"><bc>Reactive programming</bc> </a>  
 is a combination of the best ideas from the ,  

@@ -8,8 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 	
-class Callera ( name: String, scope: CoroutineScope ) : ActorBasicFsm( name, scope){
- 	
+class Callera ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
+
 	override fun getInitialState() : String{
 		return "init"
 	}

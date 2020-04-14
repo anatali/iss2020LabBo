@@ -4,10 +4,10 @@ mqttBroker "broker.hivemq.com" : 1883
 
 Dispatch cmd       : cmd(MOVE)
 Dispatch end       : end(ARG)
-
+  
 Event  collision : collision(TARGET)
 Event  endall	 : endall( ARG )
-
+ 
 Context ctxrobot ip [host="localhost" port=8020]
  
 QActor basicrobot context ctxrobot{
