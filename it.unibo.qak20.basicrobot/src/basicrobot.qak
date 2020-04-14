@@ -93,7 +93,7 @@ QActor basicrobot context ctxBasicrobot{
 		updateResource "stepDone"
    		replyTo step with stepdone : stepdone(ok)
   	}
-	Goto work 
+	Goto work  
 	
 	State stepFailDetected{
 		println("basicrobot | stepFailDetected near end of step ")

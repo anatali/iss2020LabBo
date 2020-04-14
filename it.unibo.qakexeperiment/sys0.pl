@@ -2,4 +2,3 @@
 % sys0 description   
 %====================================================================================
 context(ctxsys0, "localhost",  "TCP", "8055").
- qactor( qa0, ctxsys0, "it.unibo.qa0.Qa0").
