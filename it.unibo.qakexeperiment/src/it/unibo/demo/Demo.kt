@@ -8,8 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 	
-class Demo ( name: String, scope: CoroutineScope ) : ActorBasicFsm( name, scope){
- 	
+class Demo ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
+
 	override fun getInitialState() : String{
 		return "s0"
 	}
@@ -19,7 +19,7 @@ class Demo ( name: String, scope: CoroutineScope ) : ActorBasicFsm( name, scope)
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("2")
+						 println("2")  
 					}
 					 transition( edgeName="goto",targetState="s1", cond=doswitch() )
 				}	 

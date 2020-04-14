@@ -1,0 +1,4 @@
+{"type":"virtual", "port":"8999"}
+{"_comment": "type":"mockrobot", "port":""}
+{"_comment": "type":"realmbot", "port":"COM6"}
+{"_comment": "type":"realnano", "port":""}

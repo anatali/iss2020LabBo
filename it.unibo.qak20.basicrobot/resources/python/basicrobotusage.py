@@ -43,4 +43,5 @@ def terminate() :
 ###########################################    
 connect(basicRobotPort)
 work()
+read()
 terminate()  

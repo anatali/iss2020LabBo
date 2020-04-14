@@ -1,0 +1,104 @@
+/*
+ * robotboundary.qak
+ * ANALYSIS MODEL
+ */
+System robotboundary 
+
+Dispatch start   : start(ARG)
+Dispatch stop    : stop(ARG)
+Dispatch resume  : resume(ARG)
+Dispatch cmd     : cmd(MOVE)
+Dispatch end     : end(ARG)
+ 
+Request step       : step( TIME )	
+Reply   stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)
+ 
+//Event collision    : collision(TARGET,AVATAR)  
+ 
+Context ctxrobotboundary ip [host="localhost" port=8018]  
+Context ctxBasicrobot    ip [host="127.0.0.1" port=8020] 
+  
+ExternalQActor basicrobot context ctxBasicrobot 
+
+QActor robotboundary context ctxrobotboundary  {   
+[#
+var NumStep  = 0
+val StepTime = 350
+#]
+
+	State s0 initial { 	
+		println("robotboundary | START")	
+		discardMsg On
+		println("${mapRoomKotlin.mapUtil.refMapForTesting}")
+		println("-----------------")
+		run mapRoomKotlin.mapUtil.showMap()  //initial map empty
+		delay 2000  //just to look at the reference map and the current map
+//		forward robotboundary -m start : start(auto)
+	}	
+	Goto waitcmd 
+	
+	State waitcmd{
+		println("robotboundary | waitcmd")	 
+	}
+	Transition t0 whenMsg start -> work 
+ 	    
+	State work{
+		println("robotboundary | working ${NumStep}")
+		//Activate the motors to go ahead
+		updateResource "working" 
+ 		request basicrobot -m step : step( $StepTime  )
+ 	}
+	Transition t0 whenMsg  stop      -> stopped 
+				  whenReply stepdone -> stepDone
+				  whenReply stepfail -> stepFail
+	
+	State stepDone{ //change the map
+	    println("robotboundary | stepDone  ")
+		run mapRoomKotlin.mapUtil.doMove("w")
+		run mapRoomKotlin.mapUtil.showMap()
+		delay 500
+	}
+	Goto work
+	
+	State stepFail{
+	    println("robotboundary | stepFail  ")
+		printCurrentMessage
+		[#
+			NumStep++
+			var Dt = 0L 			
+		#]
+		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
+			[# Dt = payloadArg(0).toLong()  #]
+			println("robotboundary stepFail after: $Dt")
+			if "( Dt < 3*StepTime/4 )" {
+				forward basicrobot -m cmd : cmd( s )
+				delayVar Dt
+				forward basicrobot -m cmd : cmd( h )
+			}	
+			delay 1000		    
+		}
+		//change the map
+		forward basicrobot -m cmd : cmd(l)
+		delay 500
+		run mapRoomKotlin.mapUtil.doMove("l")
+	}
+	Goto work if "(NumStep<4)" else endWork 
+ 	
+  	
+	State stopped{
+		println("robotboundary | stopped")	
+		updateResource "stopped"
+	}
+	Transition t0 whenMsg resume  -> work
+ 
+	 
+ 	State endWork{
+		println("robotboundary | ends")
+		updateResource "terminated"
+		terminate 0
+ 	}
+ 
+}
+
+ 

@@ -16,7 +16,7 @@ class Calledb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		var RequestArg = "0" 
+		 var RequestArg = "0"  
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
@@ -29,7 +29,7 @@ class Calledb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("r1(X)"), Term.createTerm("r1(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								RequestArg = payloadArg(0)
+								 RequestArg = payloadArg(0)  
 								replyreq("r2", "r1", "r2(theta)"   )  
 						}
 						stateTimer = TimerActor("timer_handleRequest", 
@@ -43,7 +43,7 @@ class Calledb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("a1(X)"), Term.createTerm("a1(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								val R = RequestArg + payloadArg(0) 
+								 val R = RequestArg + payloadArg(0)  
 								answer("r1", "a1", "a1($R)"   )  
 						}
 					}

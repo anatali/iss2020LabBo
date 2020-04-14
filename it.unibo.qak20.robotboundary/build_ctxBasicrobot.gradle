@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxrobot.gradle
+build_ctxBasicrobot.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxrobot.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxrobot.gradle build
-	gradle  -b build_ctxrobot.gradle -q tasks --all
-	gradle  -b build_ctxrobot.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxBasicrobot.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxBasicrobot.gradle build
+	gradle  -b build_ctxBasicrobot.gradle -q tasks --all
+	gradle  -b build_ctxBasicrobot.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

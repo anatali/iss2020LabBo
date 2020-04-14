@@ -1,0 +1,791 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 90%;
+}
+h4 {
+	background-color: #ffffcc;
+    font-size: 100%;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+	font-weight: bold;
+    font-size: 90%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>RobotQakBoundary</title></head>
+    
+<body>
+<div id="top">
+<h1>RobotQakBoundary | The boundary-robot using QAkactors<font size="5"></font> </h1>
+</div>  
+
+<div class="body"> 
+ 
+<h2>Introduction</h2>
+Let us recall the path we have covered so far:
+<ol>
+<li id="problem">we started by introducing a problem (the <bc>'boundary-robot' problem</bc>) to be solved with Kotlin actors. The problem was defined by the 
+set of requirements reported in:<br/>
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html" 
+target="web">RobotActorBoundary | A first actor-based robot-application</a>.<br/>
+In this phase we introduced a quite simple first <ks>logic architecture</ks>:
+<center><img src="./img/logicArchBoundary.png" alt="logicArchBoundary" width="30%" ></center><br/> 
+The interaction  between the actors was based on a 'fire-and-forget' operation (named <bc>forward</bc>) and on the concept of a
+message as a <bc>dispatch</bc>.<br/><br/>
+</li>
+
+<li id="step">in order to define a proper <bc>TestPlan</bc>, we introduced the idea that a robot should be able to move in <i>'step-wise' way</i> 
+in order to be able to represent its position on a <i>grid-based</i> representation of the room:   
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary2.html" 
+target="web">RobotActorBoundary | From test plans to a layered architecture</a>.<br/>
+In this phase, our <ks>design</ks> was a layered architecture, whose layers are  implemented by one or more actors, each working as a Finite State Machine:
+<center><img src="./img/layered1.png" alt="layered1p" width="60%" ></center><br/><br/>
+The technological details of the robot were hiddin behind proper 'technology aware' low-levl support (the <tt>virtualRobotSupportApp</tt>) by allowing 
+the higher levels to focus on the application logic only.<br/><br/>
+</li>
+<li>the next step was the implementation of the first logical layer (the <bc>'basicrobot'</bc>) by using a <ks>custom DSL</ks>:<br/> 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/FSM.html" target="web"> 	
+FSM | A kotlin-based DSL</a>)<br/>
+to better express the behavior of the actors as a Finite State Machine:<br/>
+
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/basicrobot.html" target="web"> 	
+basicrobot | A reusable actor (towards 'microservices');<br/><br/></a>
+</li>
+
+<li>the vision of working <i>'towards microservices'</i> was supported by the capability of our abstract <ks>FSM</ks> class to provide also aversion of
+the high-level <bc>forward</bc> operation with reference to <bc>MQTT</bc> broker. 
+We made also some experiment to move a 'basicrobot' by sending commands from a remote site;<br/><br/>
+</li>
+
+<li>the implementation of the <bc>'stepper'</bc> was fast, but quite simplistic, since we did not take into account a typical problem in distributed
+systems: the fact that information sent as a message takes time to be delivered and thus to be perceived by a receiver. 
+Our 'stepper' was designed as follows:
+
+<center><img src="./img/stepper.png" alt="stepper" width="50%" ></center> 
+
+The idea was the following one:
+<ul>
+<li>the state <tt>doStep</tt> creates a <i>timeractor</i> that sends the message <m><ks>endtime</ks></m> when a prefixed interval of time 
+(the 'steptime') expires; moreover, it sends to <m><tt>virtualrobotsupportApp</tt></m> the command to move ahead (<tt>'w'</tt>); </li>
+<li>if the robots hits an obstacle, the  'basicrobot' sends (via <m><tt>virtualrobotsupportApp</tt></m>)  the message <m><ks>sensor</ks></m> to the <tt>stepper</tt>;
+<li>if <m><ks>sensor</ks></m> is delivered  at time <bc>ts</bc> and <m><ks>endtime</ks></m> is delivered at time <bc>te</bc>
+and <bc>ts &lt; te</bc>, then the <tt>stepper</tt> should go in the state <m><ks>stepKo</ks></m>.
+</li>
+</ul>
+<br/>
+ But the problem is that - <b>sometimes, not always</b> - the 'stepper' could perceive the message <m><ks>endtime</ks></m>
+ <bc>BEFORE</bc> <m><ks>sensor</ks></m> even if <bc>ts &lt; te</bc>. 
+ <br/>
+ Fortunately, this (paradigmatic) problem was discovered during testing:
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/test/TestPlanBoundary.kt" target="web"> 
+TestPlanBoundary.kt</a>. 
+ <br/>
+ However, this problem 
+ <div class="remark">
+<center>persuaded us of the need of a more accurate <bc>analysis phase</bc></center>
+</div>
+since testing <b>does not assure the discovery</b> of situations of this kind;<br/><br/>
+</li>
+<li>at this point (during a SCRUM <ks>sprint-retrospective</ks>) we decided to introduce a custom software factory based on a
+<bc>custom metamodel</bc>, by exploiting the XText technology:<br/>
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html" 
+target="web">LabQakIntro2020.html | Introduction to QAkactors</a>.
+<br/><br/>
+</li>
+ 
+</ol>
+
+<h3>QActors at work</h3>
+As said in <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html#process" 
+target="web">LabQakIntro2020.html | QActors and process development</a>, the goal was to enable application designers to define 
+a <bc>set of evolving models</bc> of the system, by starting from the early phases of our software development process,
+i.e. requirement analysis and problem analysis. 
+<br/><br/>
+
+The possibility to execute a model of a system as the result of the problem analysis phase  can be very useful: 
+<ul>
+<li>to establish a more productive interaction with the customer in order to better understand the requirements</li>
+<li>to help in defining the product backlog</li>
+<li>to introduce proper functional test-plans in form of program-sketches</li>
+</ul>
+
+ 
+<div class="remark">
+The effort of building  formal (i.e. executable) models of a system in the early phases of software development
+<!-- definition of the logical architecture of a system  by means of an executable model, as the main, concrete result of problem analysis -->
+should be remunerated by a better management of
+the development process, that can be accomplished by <bc>'zooming'</bc> into the set of components identified by the logical architecture
+and by adding (if needed ) other appropriate components, <bc>without breaking the constraints</bc> settled in the analysis phase. 
+</div>
+
+
+In this work, we intend to give an example of a process of thik kind, by introducing a set of executable QAkactor  models for the 'robotboundary' problem.
+<br/><br/>
+ 
+
+
+
+
+ 
+<h2 id="req">Requirements</h2>
+
+The detailed requirements of our <a href="#problem">problem</a> are those introduced in  
+ <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html#req" target="web"> 	
+RobotActorBoundary | requirements</a>
+ 
+
+<h2 id="reqAnalysis">Requirement analysis</h2>
+In this phase we are able to define a model of the 'robotboundary' actor and a first TestPlan:
+ 
+<center><table style="width:100%">
+<tbody>	
+ 
+<tr>
+<td style="width:45%">
+<h3>The model <a href="../src/boundaryrobot.qak" target="code">boundaryrobot.qak</a></h3>
+<m>
+<center><img src="./img/robotboundary.png" alt="robotboundary" width="50%" ></center>
+The QAk model is the textual representation (expressed in the QAk language) of the state diagram depicted on the right.
+<br/><br/>
+The event <bc>collision</bc> is supposed to be generated by a sensor of the concrete robot.
+</m>
+</td>
+<td>
+ <center><img src="./img/robotboundaryfsm.png" alt="robotboundaryfsm" width="80%" ></center>
+
+<m>Each state updates the variable <k>ActorResourceRep</k> with a proper representation of the state. More specifically, in state
+ <ul>
+ <li><ks>work</ks>: the actor activates the motors and sets <k>"working"</k> </li>
+ <li><ks>wall</ks>: the actor rotates left of <tt>90</tt> and sets <k>"rotate"</k> </li>
+ <li><ks>stopped</ks>: the actor stops the motors, increments <tt>NumSteps</tt> and sets <k>"stopped"</k></li>
+ <li><ks>endWork</ks>: the actor terminates and sets <k>"terminated"</k></li>
+ </ul>
+
+<ul
+</m></td>
+</tr>
+
+<tr>
+<td>
+<h3>The test plan <a href="../test/testRobotboundary.kt" target="code">testRobotboundary.kt</a></h3>
+<m>The TestPlan is based on the following actions:
+<ol>
+<li>the test unit sends to the 'robotboundary' a command (dispatch)</li>
+<li>afterwards, the test unit checks the value of the variable <k>ActorResourceRep</k> </li>
+</ol>
+<pre>
+lateinit var robot : <k>ActorBasic</k>
+@Test
+fun testLocal(){
+  runBlocking{
+  <kc>//give time to the actor to start</kc>
+	delay(initDelayTime)  
+  <kc>//get a reference to the actor</kc>
+	robot = <ks>it.unibo.kactor.sysUtil.getActor</ks>("robotboundary")!!
+  <kc>//send a command</kc>
+	MsgUtil.sendMsg( "test","start", "start(0)", robot  )
+	delay(500)
+  <kc>//check</kc>
+	assertTrue(  <k>robot.geResourceRep()</k> == "moving")
+ ...
+ }			
+}
+</pre>
+
+</m>
+</td> 
+<td>
+<m>Our TestPlan unit works in the same environment (<tt>JVM</tt>) of the actor. Thus, it can take advantage
+from the possibility to <b>reference the actor as a conventional object</b> and this  is acceptable for testing.
+<br/><br/>
+However, there is also the possibility to 'test' the behavior of the actor by means of programs
+working on others (remote) machines.
+</m>
+<h3>Aliens</h3>
+<m> 
+Our first, essential model of the system can be used by two different types of 'alien' entities:
+<ul>
+<li>entities able to <kc>send commands</kc> to the 'robotboundary'. See for example the Python program:
+ <a href="../resources/python/robotboundaryusage.py" target="code">robotboundaryusage.py</a>
+ <br/> <br/>
+</li>
+<li>entities able to <kc>observe</kc> the current state of the 'robotboundary' as exposed by <k>ActorResourceRep</k>. See for example the Qak actor:
+ <a href="../resources/coap/coapObserver.kt" target="code">coapObserver.kt</a>
+</li>
+</ul>
+</m></td>
+</tr>
+
+<tr>
+<td ><h3>Collision events</h3>
+<m>
+The main problem is to generate collision events in a <bc>predictable way</bc>, so to allow us to check the appropriate state transition.
+<br/>
+In our case, the solution is simplified by the fact that a collision event cannot arise when the robot is stopped.
+<br/><br/>
+Thus, we can generate collision events during a testing phase:
+
+<ul>
+<li>by means of the test unit itself:
+<pre>
+val obstacle = MsgUtil.buildEvent("test", "collision","collision(wall)")
+MsgUtil.sendMsg( obstacle, robot ) 
+</pre>
+</li>
+<li>by sending commands by means of an 'alien',
+ as <a href="../resources/python/robotboundaryusage.py" target="code">robotboundaryusage.py</a><br/><br/></li>
+</ul>
+Another way to generate 'collision' events for testing is to introduce another actor,
+working 'in synch' with the 'robotboundary'.
+<br/>
+The important point is that
+<div class="remark">
+We do not need any concrete robot in order to reason about requirements and on the logical behavior of the system.
+</div>
+</m>
+</td>
+<td ><m> A model for a Qak actor devoted to the emission of 'collision' events is:
+
+<pre>
+Event <ks>simulateobstacle</ks>  : simulateobstacle(ARG)
+Event <ks>collision</ks> : collision(TARGET,AVATAR)
+
+<kc></kc>
+QActor obstaclesimulator  context ctxrobotboundary{
+	State s0 initial { 	 discardMsg On  }	
+	Goto work 
+	
+	State work{		 }
+	Transition t0 whenEvent <ks>simulateobstacle</ks> -> simulate
+
+	State simulate{
+		delay 800
+		<k>emit <ks>collision</ks> : collision(obstacle,false)</k>
+	}
+	Goto work
+}
+</pre>
+The actor 'obstaclesimulator' emits a 'collision' event only when the 'robotboundary'
+tells it to do so, by generating a 'simulateobstacle' event.
+<br/><br/>
+We might also introduce an actor external to the Qak model; for example:
+ <a href="../resources/actors/simulator.kt" target="code">simulator.kt</a>
+<br/>
+This actor can be made part of the system by using the <k>CodedQActor</k> declaration sentence:
+
+<pre>
+
+<k>CodedQActor</k> obstaclesimulator context ctxrobotboundary  <ks>className "actors.simulator"</ks>
+
+</pre>
+</m> 
+ 
+ 
+</td>
+</tr>
+
+
+</tbody>	
+</table></center>
+
+
+
+
+
+<h2 id="problemAnalysis">Problem analysis</h2>
+Our first model is based on the requirement that our actor must <i>"move the robot along the empty-room boundary"</i>.
+But our <a href="#step">subsequent work</a>, we envisage the opportunity 
+<ol>
+<li>to move the robot is a 'step-wise' way  in order to have a more precise representation (grid-based) of its position in the room</li>
+<li>to embed the basic behavior of the robot in a  (<bc>un-opinionated</bc>) 'basicrobot' actor</li>
+</ol>
+ 
+<h3>The (new) logical architecture of the system</h3>
+<center><img src="./img/logicArchBoundary.png" alt="logicArchBoundary" width="60%" ></center>
+Now:
+<m>
+<ol>
+<li><h4>define the <bc>logical architecture</bc> of the system</h4>
+From the logical point of view, the system is composed of two actors.
+The details related to the concrete robot (e.g. a
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.virtualRobot2020/userDocs/LabVirtualRobot.html" 
+target="web">Virtual robot</a>) are hidden within the 'basicrobot' actor and are considered as 'implementation details' at this level.
+</li>
+<li><h4>measure the <bc>abstraction gap</bc></h4>
+Since we must use the QAk actor support, there is no abstraction gap. 
+The effort/resources  necessary to build the system are quite limited: we should terminate in half a day, at most.
+</li>
+<li><h4><bc>refine</bc> the <i>functional TestPlans</i></h4>
+The test plan <a href="../test/testRobotboundary.kt" target="code">testRobotboundary.kt</a> introduced in requirement analysis, can be refined
+by inserting proper interactions with the 'basicrobot'</li>
+<li><h4>define the <bc>product backlog</bc></h4>
+Let us introduce a runnable model for the 'basicrobot' actor
+</li>
+ 
+</ol>
+</m>
+ 
+<h2>Test plans</h2> 
+we will deal with this point later ...
+
+<!--
+https://developers.meethue.com/develop/get-started-2/  BEN FATTO
+
+
+{"devicetype":"my_hue_app#nat"}  POST
+
+[
+	{
+		"success": {
+			"username": "gxlwZsEJvsEEzcqzuqFEbZRyUddjh06Ml8uDHX6R"
+		}
+	}
+]
+
+ 
+
+/api/gxlwZsEJvsEEzcqzuqFEbZRyUddjh06Ml8uDHX6R/lights
+
+{
+	"1": {
+		"state": {
+			"on": false,
+			"bri": 1,
+			"alert": "select",
+			"mode": "homeautomation",
+			"reachable": true
+		},
+		"swupdate": {
+			"state": "readytoinstall",
+			"lastinstall": "2018-03-23T16:50:33"
+		},
+		"type": "Dimmable light",
+		"name": "Hue white lamp 1",
+		"modelid": "LWB010",
+		"manufacturername": "Signify Netherlands B.V.",
+		"productname": "Hue white lamp",
+		"capabilities": {
+			"certified": true,
+			"control": {
+				"mindimlevel": 5000,
+				"maxlumen": 806
+			},
+			"streaming": {
+				"renderer": false,
+				"proxy": false
+			}
+		},
+		"config": {
+			"archetype": "classicbulb",
+			"function": "functional",
+			"direction": "omnidirectional"
+		},
+		"uniqueid": "00:17:88:01:02:a3:32:03-0b",
+		"swversion": "1.29.0_r21169",
+		"swconfigid": "FF6681C4",
+		"productid": "Philips-LWB010-1-A19DLv4"
+	},
+	"2": {
+		"state": {
+			"on": false,
+			"bri": 77,
+			"alert": "select",
+			"mode": "homeautomation",
+			"reachable": false
+		},
+		"swupdate": {
+			"state": "readytoinstall",
+			"lastinstall": "2018-03-22T21:03:40"
+		},
+		"type": "Dimmable light",
+		"name": "Hue white lamp 2",
+		"modelid": "LWB010",
+		"manufacturername": "Signify Netherlands B.V.",
+		"productname": "Hue white lamp",
+		"capabilities": {
+			"certified": true,
+			"control": {
+				"mindimlevel": 5000,
+				"maxlumen": 806
+			},
+			"streaming": {
+				"renderer": false,
+				"proxy": false
+			}
+		},
+		"config": {
+			"archetype": "classicbulb",
+			"function": "functional",
+			"direction": "omnidirectional"
+		},
+		"uniqueid": "00:17:88:01:02:c4:9a:8a-0b",
+		"swversion": "1.29.0_r21169",
+		"swconfigid": "FF6681C4",
+		"productid": "Philips-LWB010-1-A19DLv4"
+	},
+	"3": {
+		"state": {
+			"on": true,
+			"bri": 0,
+			"alert": "select",
+			"mode": "homeautomation",
+			"reachable": false
+		},
+		"swupdate": {
+			"state": "transferring",
+			"lastinstall": "2018-03-23T15:58:39"
+		},
+		"type": "Dimmable light",
+		"name": "Hue white lamp 3",
+		"modelid": "LWB010",
+		"manufacturername": "Signify Netherlands B.V.",
+		"productname": "Hue white lamp",
+		"capabilities": {
+			"certified": true,
+			"control": {
+				"mindimlevel": 5000,
+				"maxlumen": 806
+			},
+			"streaming": {
+				"renderer": false,
+				"proxy": false
+			}
+		},
+		"config": {
+			"archetype": "classicbulb",
+			"function": "functional",
+			"direction": "omnidirectional"
+		},
+		"uniqueid": "00:17:88:01:02:c6:4f:e8-0b",
+		"swversion": "1.29.0_r21169",
+		"swconfigid": "FF6681C4",
+		"productid": "Philips-LWB010-1-A19DLv4"
+	}
+}
+
+/api/gxlwZsEJvsEEzcqzuqFEbZRyUddjh06Ml8uDHX6R/lights/1
+...
+/api/gxlwZsEJvsEEzcqzuqFEbZRyUddjh06Ml8uDHX6R/lights/1/state
+{"on":false}  PUT
+{"on":true, "sat":254, "bri":254,"hue":10000}
+
+https://developers.meethue.com/develop/get-started-2/core-concepts/
+
+-->
+
+<h2>Project</h2> 
+<div class="remark">
+there is no code without a project, ...
+</div>
+
+<h4>Define the concrete Architecture of the system and the behavior of each component</h4>
+<center><img src="./img/dimensions.png" alt="dimensions" width="40%"></center>
+ <ol>
+ <li><k>STRUCTURE</k>: the structure of our logical architecture can be maintained at project level. 
+ More details are required to consider the usage of the virtual robot.<br/><br/> </li>
+ <li><k>INTERACTION</k>: as already stated in the logical architecture, the interaction is asynchronous 
+and based on messages of type 'fire-and-forget', i.e. on message of type <bc>dispatch</bc> according to our internal standard terminology
+introduced in:
+ <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.kotlinIntro/userDocs/FirstActorRobot.html#msgstandard" target="web"> 	
+FirstActor | Towards standards in messaging</a>
+<pre>val msgStart    = "msg(start ,dispatch,main,robotboundary,none,1)"
+val msgStop     = "msg(stop,  dispatch,main,robotboundary,none,1)"
+val msgResume  = "msg(resume,dispatch,main,robotboundary,none,1)"
+
+"msg(sensor,dispatch,vr,robotactor,collision_wallXXX,1)"  <kc>//is sent by the virtualrobot</kc>
+</pre>
+ <center><img src="./img/projectArchBoundary.png" alt="projectArchBoundary.png" width="50%"></center>
+ </li>
+ <li><k>BEHAVIOR</k><br/>
+The code reported in 
+<a href="../src/firstSolution/robotboundary0.kt" target="code">src/firstSolution/robotboundary0.kt</a> (project <i>it.unibo.kotlin.actorRobot</i>)
+is a possible <bc>message-driven</bc> implementation:<br/>
+
+<center><i>if M is the first message in the actor channel, then elaborate M </i></center>
+
+<br/> 
+<center><table style="width:95%">
+<tbody>	
+<tr>
+<td style="width:50%"> 
+<center><img src="./img/robotboundaryMsgDriven.png" alt="robotboundaryMsgDriven.png" width="60%"></center>
+</td>
+<td> 
+<m><bc>end</bc> is a <em>self-message</em>, i.e. a message sent by the actor to  itself</m>
+</td>
+</tr>
+</tbody>	
+</table></center>
+
+ 
+
+
+The validity of this kind of solution will be discussed in our first SCRUM
+<a href="https://www.scrum.org/resources/what-is-a-sprint-review" target="web">SPRINT-REVIEW meeting</a>.
+
+ </li>
+ </ol>
+ 
+<h2>Testing</h2> 
+A functional testing of the application can be automated by making the variable <tt>nStep</tt> accessible to the testing unit. For example:
+<a href="../src/firstSolution/TestRobotboundary0.kt" target="code">src/firstSolution/TestRobotboundary0.kt</a>
+
+<h2>Deployment</h2> 
+
+we will deal with  this point later ...
+
+
+
+<h2>Maintenance</h2> 
+we will deal with  this point later ...
+
+<h1>A first <a href="https://www.scrum.org/resources/what-is-a-sprint-review" target="web">SPRINT-REVIEW</a> </h1>
+ 
+ <k>BEHAVIOR</k>: can be modeled as a <a href="https://en.wikipedia.org/wiki/Moore_machine" target="web">Moore's Finite State Machine</a>:<br/>
+<center><i>when the actor goes in state S, execute the set of (terminating) actions related to S; <br/>
+afterwards, look at the current message M; if it is one of the expected messages in S, change the actor state</i></center>
+<br/>
+The code reported in <a href="../src/firstSolutionReviewed/robotboundary1.kt" target="code">src/firstSolutionReviewed/robotboundary1.kt</a> 
+(project <i>it.unibo.kotlin.actorRobot</i>) is a possible <bc>message-based</bc> implementation of the actors that reflects in 
+the code the structure of the following state-diagrams:
+<br/><br/>
+<center><table style="width:95%">
+<tbody>	
+<tr>
+<td style="width:50%"> 
+<h4>robotboundary</h4>
+<center><img src="./img/robotboundaryFsm.png" alt="robotboundaryFsm" width="100%"></center>
+<m><bc>end</bc> and <bc>goon</bc> are <em>self-messages</em>, i.e. messages sent by the actor to  itself</m>
+</td>
+<td> 
+<h4>usermock</h4>
+<center><img src="./img/userMockFsm.png" alt="userMockFsm" width="80%"></center>
+<br/><br/>
+</td>
+</tr>
+</tbody>	 
+</table></center>
+<br/>
+
+The diagrams show that the <i>robotboundary</i> and the <i>usermock</i> actors constitute a <bc>system</bc>,
+because their behavior is correlated by a precise message-interaction.<br/><br/>
+
+<h2 id="unexpected">Another review: unexpected messages </h2>
+The code reported in <a href="../src/firstSolutionReviewed/robotboundary1.kt" target="code">src/firstSolutionReviewed/robotboundary1.kt</a>
+is based on a quite strong assumption:
+<div class="remark">
+Assumption: all the commands are sent to the actor in the right sequence.
+</div>
+In other words, we assume that it can never happen - as an example - that a <bc>resume</bc> command 
+is sent (and received) before a <bc>stop</bc> command.<br/>
+The reader can check (see <a href="../src/firstSolutionReviewed/TestMsgOutSequence.kt" target="code">src/firstSolutionReviewed/TestMsgOutSequence.kt</a>)
+that the <em>robotboundary1</em> behaves in a wrong way
+when a  <bc>resume</bc> message is sent while the robot is in state <em> working</em>; in fact
+it executes two times the operation <tt>localAction()</tt>.
+
+<h3>Firing a transition</h3>
+To manage in a proper way messages that are sent out-of-sequence, we must assure that a state transition is done 
+('<bc>fired</bc>' in FSM terminology) only when the actor receives one of the messages that are expected in the current state.<br/>
+For example, we could re-factor our code as reported in:
+<a href="../src/firstSolutionReviewed2/robotboundary2.kt" target="code">src/firstSolutionReviewed2/robotboundary2.kt</a>
+and perform the testing reported in
+<a href="../src/firstSolutionReviewed2/TestMsgOutSequence2.kt" target="code">src/firstSolutionReviewed2/TestMsgOutSequence2.kt</a>.
+<br/><br/>
+At this point, we observe that:
+<ol>
+<li>the code is going to become quite complicated. To gain a more concise and readable solution, we will
+introduce a custom DSL language to express FSM machines
+ (see <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/Fsm.html#fig1" target="web"> 	
+FSM | A kotlin-based DSL</a> ).
+<!--
+An simple example of the usage of such a DSL for our case is reported in 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/FsmUsage.html#fig1" target="web"> 	
+FSM | A kotlin-based DSL</a> )
+
+in <a href="../src/fsm/robotboundaryfsm.kt" target="code">src/fsm/robotboundaryfsm.kt</a>.
+-->
+</li>
+<li>a new problem arises: do we have to simply <bc>discard unexpected messages</bc> or do we store them somewhere, 
+in order to elaborate them later?<br/>
+In the current case, the appropriate choice is that of discarding all the messages that are out of the
+expected sequence. But there could be other cases in which an actor should simply postpone the elaboration
+of a message while being in some state. For example, let us consider the case to send to our actor a mail
+while ii is engaged in its boundary-walk; since the actor takes not care of the mails while walking,
+it could be interested in them once returned to home.
+</li>
+</ol>
+
+
+<h1 id="retrospect">A first <a href="https://www.scrum.org/resources/what-is-a-sprint-retrospective" target="web">SPRINT-RETROSPECTIVE</a></h1>
+Let us list a possible set of improvements related to the software-development process :
+
+<ol>
+<li>messages should always be represented as <a href="../src/utils/AppMsg.kt" target="code">AppMsg.kt</a>.
+This constraint should be applied also to our supports/adapter, e.g.
+<a href="../src/utils/virtualRobotSupportApp.kt" target="code">src/utils/virtualRobotSupportApp.kt</a>
+</li>
+<li>the  behavior of an actor should be always expressed in our custom FSM-DSL language 
+(see <a href="FSM.html" target="code">FSM.html</a>), i.e. message based rather than message driven;</li>
+<li>before starting problem analysis and project design, we should try to give a more precise (formal)
+definition of  <em>functional test-plans</em>, in order to better understand the requirements and to
+state (in a machine-understandable way) <bc>WHAT WE EXPECT</bc> from the software we are going to develop.
+<!--
+<center><img src="./img/gridIntro.png" alt="gridIntro" width="30%"></center>
+-->
+</li>
+ 
+</ol> 
+
+Thus, let us move to the next step: 
+<a href="RobotActorBoundary2.html" target="code">RobotActorBoundary | Reviewed</a>.
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+</td>
+<td></td>
+</tr>
+</table>
+	      	
+<br/><br/> 	
+</div>  
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI    
+</div> 
+</body>
+</html>

@@ -19,14 +19,8 @@ class Sender ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						forward("msg1", "msg1(1)" ,"demo" ) 
-						delay(500) 
-						forward("msg1", "msg1(2)" ,"demo" ) 
-						delay(500) 
-						forward("msg2", "msg2(1)" ,"demo" ) 
-						emit("alarm", "alarm(fire)" ) 
-						delay(500) 
-						emit("alarm", "alarm(tsunami)" ) 
+						delay(1000) 
+						terminate(0)
 					}
 				}	 
 			}

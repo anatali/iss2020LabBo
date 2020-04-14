@@ -8,8 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 	
-class Qa0 ( name: String, scope: CoroutineScope ) : ActorBasicFsm( name, scope){
- 	
+class Qa0 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
+
 	override fun getInitialState() : String{
 		return "s0"
 	}

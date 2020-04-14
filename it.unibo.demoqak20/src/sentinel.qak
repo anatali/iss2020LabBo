@@ -6,7 +6,7 @@ Event   alarm : alarm(V)
 Context ctxsentinel ip [host="localhost" port=8055]
  
 QActor sentinel context ctxsentinel{
-["var counter=0"]
+[# var counter=0 #]
 	State s0 initial { 	
 		//println("sentinel | STARTS")	 		  
  	}

@@ -11,7 +11,7 @@ Context ctxdemo0 ip [host="localhost" port=8055]
 
 QActor demo context ctxdemo0{
 	State s0 initial { 	 
-		  ["println(\"2\")"] 
+		  [# println("2") #] 
  	}
  	Goto s1
  	

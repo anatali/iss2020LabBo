@@ -36,7 +36,7 @@ QActor callerb context ctxdemoreqb {
 } 
 
 QActor calledb context ctxdemoreqb {
-["var RequestArg = \"0\" "]
+[# var RequestArg = "0" #]
 	State init initial {
 		println("qak2 init")
 	}
@@ -48,7 +48,7 @@ QActor calledb context ctxdemoreqb {
 		printCurrentMessage 	
 			
 		onMsg( r1 : r1(X) ){
-			["RequestArg = payloadArg(0)"]
+			[# RequestArg = payloadArg(0) #]
 			askFor r2 request r1 : r2(theta)   //r2 is the new request
  		}		
 	} 
@@ -59,7 +59,7 @@ QActor calledb context ctxdemoreqb {
 	State answerAfterAsk{  
 		printCurrentMessage		 
  		onMsg( a1 : a1(X) ){ 
- 			["val R = RequestArg + payloadArg(0) "]
+ 			[# val R = RequestArg + payloadArg(0) #]
 			replyTo r1 with a1 : a1( $R   )  
  		}
 	} 

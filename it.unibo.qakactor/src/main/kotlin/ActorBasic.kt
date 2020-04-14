@@ -439,8 +439,11 @@ machineExec
             throw e
         }
     }
-
+    //TO BE DISCARDED
     fun startTimer() {
+        timeAtStart = System.currentTimeMillis()
+    }
+    fun memoTime() {
         timeAtStart = System.currentTimeMillis()
     }
 
