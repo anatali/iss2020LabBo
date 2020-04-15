@@ -18,7 +18,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
 		  var StepTime      = 0L
-		  var Duration      = 0 
+		  var Duration      = 0    
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -33,14 +33,19 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("work") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t10",targetState="handleObstacle",cond=whenDispatch("collision"))
+					 transition(edgeName="t10",targetState="handleCollision",cond=whenDispatch("collision"))
 					transition(edgeName="t11",targetState="execcmd",cond=whenDispatch("cmd"))
 					transition(edgeName="t12",targetState="doStep",cond=whenRequest("step"))
 					transition(edgeName="t13",targetState="endwork",cond=whenDispatch("end"))
 				}	 
-				state("handleObstacle") { //this:State
+				state("handleCollision") { //this:State
 					action { //it:State
-						println("basicrobot | handleObstacle")
+						println("basicrobot | handleCollision")
+						if( checkMsgContent( Term.createTerm("collision(TARGET)"), Term.createTerm("collision(TARGET)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								updateResourceRep("collision")
+								emit("collision", "collision(obstacle)" ) 
+						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
@@ -48,7 +53,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("cmd(MOVE)"), Term.createTerm("cmd(MOVE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								updateResourceRep("move(${payloadArg(0)}")
+								updateResourceRep("move(${payloadArg(0)})")
 								unibo.robot.robotSupport.move( payloadArg(0)  )
 						}
 					}
@@ -59,7 +64,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						if( checkMsgContent( Term.createTerm("step(TIME)"), Term.createTerm("step(T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 									StepTime = payloadArg(0).toLong() 	 
-								updateResourceRep("step(${StepTime}")
+								updateResourceRep("step(${StepTime})")
 								println("basicrobot | doStep StepTime =$StepTime ")
 								unibo.robot.robotSupport.move( "w"  )
 								memoTime()
@@ -106,9 +111,14 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("endwork") { //this:State
 					action { //it:State
-						println("basicrobot | endwork")
-						unibo.robot.robotSupport.move( "end"  )
+						if( checkMsgContent( Term.createTerm("end(ARG)"), Term.createTerm("end(V)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("basicrobot | endwork")
+								updateResourceRep("move(end)")
+								utils.virtualRobotSupportQak.terminatevr(  )
+						}
 						emit("endall", "endall(normal)" ) 
+						terminate(1)
 					}
 				}	 
 			}

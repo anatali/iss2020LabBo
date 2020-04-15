@@ -26,6 +26,7 @@ object virtualRobotSupportQak {
         private var outToServer : PrintWriter?     = null
         private lateinit var owner : ActorBasic
         private val applCmdset = setOf("w","s","a","d","z","x","r","l","h"  )
+	    private var sensorObserver : Job? = null
 	
 	
         var traceOn = false
@@ -90,7 +91,6 @@ object virtualRobotSupportQak {
 	
 
 	
-	lateinit var sensorObserver : Job
 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -140,8 +140,8 @@ object virtualRobotSupportQak {
          }//startSensorObserver 
 
 fun terminatevr(){
-	sensorObserver.cancel()
-	println("			*** virtualRobotSupportQak | TERMINATES sensorObserver")
+	if(sensorObserver != null ) sensorObserver!!.cancel()
+	trace("TERMINATES sensorObserver")
 }
 
 }

@@ -161,6 +161,7 @@ table, th, td {
 <li><a href="#reqAnalysis">Requirement analysis</a></li>
 <li><a href="#problemAnalysis">Problem analysis</a></li>
 <li><a href="#logicalarch">The logical architecture</a></li>
+<li><a href="#deploy">Deployment</a></li> 
  
 </ol>
  
@@ -174,46 +175,213 @@ This work is related to the project <bc>it.unibo.qak20.basicrobot</bc> introduce
  
 <h2 id="req">Requirements</h2>
 
-The detailed requirements of our <a href="#problem">problem</a> are those introduced in  
- <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html#req" target="web"> 	
-RobotActorBoundary | requirements</a>
+With reference to our previous work
+ <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/userDocs/basicrobot.html" target="web"> 	
+basicrobot | A reusable FSM actor</a>, let us introduce a more precise set of requirements:
+  
+<!-- The detailed requirements of our <a href="#problem">problem</a> are those introduced in   -->
+ <ol>
+ <li><ks>reqCmd</ks>: the 'basicrobot' must execute commands of the form <m><tt>cmd(MOVE), MOVE=w|s|r|l|h</tt></m> sent to it by means of a 
+ <bc>dispatch</bc> with <m><tt>msgId=cmd</tt></m>;</li>
+  <li><ks>reqStep</ks>: the 'basicrobot' must execute commands of the form <m><tt>step(TIME)</tt></m> sent to it by means of a 
+ <bc>request</bc> with <m><tt>msgId=step</tt></m>. It must send the answer <m><tt>stepDone</tt></m> or <m><tt>stepFail</tt></m> in case
+ of success or failure, respectively;</li>
+ <li><ks>reqSensor</ks>: the 'basicrobot' must emits events related to information gather from its sensors. In particular,
+ it must emit the event <m><tt>collision</tt></m> when a collision with some obstacle is detecetd;</li>
+ <li><ks>reqEnd</ks>: the 'basicrobot' must terminate its work when it receives a dispatch with <m><tt>msgId=end</tt></m> </li> 
+ </ol>
  
+ Let us immediately introduce a formalized version of these requirements, by specifying the structure of the messages and events:
+ 
+<pre>
+Dispatch cmd	: cmd(MOVE)			<kc>//MOVE=w|s|r|l|h</kc>
+Dispatch end	: end(ARG)
+
+Event  collision    : collision( ARG )
+ 
+Request  step		: step( TIME )				<kc>//TIME: an INT > 0 </kc>
+Reply   stepdone	: stepdone(ARG)  
+Reply   stepfail	: stepfail(DURATION, CAUSE)	<kc>//CAUSE: reason of failure </kc>
+</pre>
 
 <h2 id="reqAnalysis">Requirement analysis</h2>
-In this phase we are able to define a model of the 'robotboundary' actor and a first TestPlan:
+Let us introduce a model for the 'basicrobot'  expressed as a QAkactor:
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+<pre>
+Context <ks>ctxbasicrobot</ks> ip [host="localhost" port=<bc>8020</bc>]  
+ 
+QActor <k>basicrobot</k> context <ks>ctxbasicrobot</ks>{
+	State s0 initial { 	
+	...
+	}
+}
+</pre>
+</td>
+<td><center><img src="./img/basicrobotwithctx.png" alt="basicrobotwithctx" width="60%" ></center><br/> 
+ 
+</td>
+</tr>
+</table>
+
+<h3>Test plans</h3>
+A functional TestPlan can be introduced as a JUnit structured as follows:
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+<pre><m>class testBasicrobot {
+var robot  : ActorBasic? = null
+
+<k>@Before</k>
+	fun systemSetUp() {<kc>//Activate the basicrobot</kc>
+	}
+<k>@After</k>
+	fun terminate() { println("test terminated ") }
+ 
+suspend fun <ks>testReqCmd</ks>(){ ... }
+ 
+suspend fun <ks>testReqStep</ks>(){ ... }
+ 
+suspend fun <ks>testReqSensor</ks>(){ ... }
+<k>@Test</k>
+ fun testBasicRobot(){
+	runBlocking{
+	  delay(initDelayTime)  <kc>//time for robot to start</kc>
+	  <kc>//get a reference to the basicrobot object</kc>
+	  robot = <ks>it.unibo.kactor.sysUtil.getActor</ks>("basicrobot")
+			
+	  <ks>testReqCmd()</ks>
+	  delay( 1000 )
+	  <ks>testReqStep()</ks>
+	  delay( 1000 )
+	  <ks>testReqSensor()</ks>
+			
+	  forwardToRobot( "end", "end(0)" )
+	  delay( 500 )
+	  checkResource("move(end)")
+	  if( robot != null ) robot!!.waitTermination()
+	}
+	println("testBasicRobot BYE  ")  
+ }
+}
+</m></pre>
+The full code is in <a href="../../it.unibo.qak20.basicrobot/test/testBasicrobot.kt" target="code">testBasicrobot.kt</a>, project <i>it.unibo.qak20.basicrobot</i>
+</td>
+<td><m>
+For each requirement we plan a proper functional test, based on utility functions:
+<pre>
+suspend fun <k>forwardToRobot</k>(msgId: String, payload:String){
+  if( robot != null )  <ks>MsgUtil.sendMsg</ks>( "test",msgId, payload, robot!!  )
+}
+	
+suspend fun <k>requestToRobot</k>(msgId: String, payload:String){
+  if( robot != null ){
+	val msg = <kc>MsgUtil.buildRequest</kc>("test",msgId, payload,robot!!.name)
+	<ks>MsgUtil.sendMsg</ks>( msg, robot!!  )		
+  }  
+}
+	
+fun <k>checkResource</k>(value: String){		
+  if( robot != null ){ <ks>assertTrue</ks>(robot!!.geResourceRep() == value)}  
+}</pre>
+
+<h3>Observables</h3>
+
+Any QAkactor works as a (<bc>CoAP</bc>) observable resource (with path <tt>ctxName/actorName</tt>).<br/> 
+Moreover, the current state
+of the resource can be stored as a String (in the variable <ks>ActorResourceRep</ks>), by using the operation <bc>updateResource</bc> of the
+QAkactor language.
+<br/><br/>
+Thus, our TestPlan can be based on the assumption that the actor 'basicrobot' updates  <ks>ActorResourceRep</ks>  with:
+
+<ul>
+<li><bc>"move(MOVE)"</bc> when it executes the command <tt>cmd	: cmd(<bc>MOVE</bc>)</tt>;</li>
+<li><bc>"step(TIME)"</bc> when it executes the command <tt>step	: step(<bc>TIME</bc>)</tt>;</li>
+<li><bc>"collision"</bc> when it hits an obstacle</li>
+</ul>  
+For example, the testReqStep can be planned as follows:
+<pre>
+suspend fun <ks>testReqStep</ks>(){ <kc>//ASSUMPTION: no obstacle</kc>
+	requestToRobot("step","step(350)")
+	delay(200)
+	checkResource("step(350)") 
+	delay(700)   
+	checkResource("stepDone")
+}
+</pre>
+Note that the TestUnit will not receive any (<tt>stepDone</tt>) answer, since it is an 'alien' that
+works by directly inserting (via <bc>requestToRobot</bc>) a message in the queue of the 'basicrobot'; thus, the QAk-infrastructure 
+has no information about the caller.  
+</m>
+</td>
+</tr>
+</table>
+
+
+
+
+ 
 
 <h2 id="problemAnalysis">Problem analysis</h2>
  <div class="remark">
-the 'basicrobot' cannot known in advance the components that will interact with it
+the 'basicrobot' does not known in advance the components that will interact with it
 </div>
+
+However, a 'basicrobot' working as a QAkactor can receive messages in different ways:
+
+<ul>
+<li>on a two-way <tt>TCP</tt>-connection on the port (<bc>8020</bc>) defined in its context</li>
+<li>on the <tt>MQTT</tt> topic named <tt>unibo/qak/basicrobot</tt> (if a <bc>mqttBroker</bc> is specified in the model)</li>
+<li>via <tt>CoAP</tt> with path <tt>ctxbasicrobot/basicrobot</tt></li>
+</ul>
+
+The QAK-infrastructure takes care of managing in the proper way the interactions with external components (other QAkactors or 'aliens').
+
+<h3>Aliens</h3>
+<ul>
+<li>An example of an 'alien' written in Python that uses <tt>TCP</tt> is in 
+<a href="../../it.unibo.qak20.basicrobot/resources/python/basicrobotusageTCP.py" target="code">resources/python/basicrobotusageTCP.py</a> </li>
+<li>An example of an 'alien' written in Koltin that uses <tt>CoAP</tt> is in 
+<a href="../../it.unibo.qak20.basicrobot/resources/coap/actorQakCoapClient.kt" target="code">resources/coap/actortQakCoapClient.kt</a> </li>
+<li>An example of a CoAP observer in Koltin is in 
+<a href="../../it.unibo.qak20.basicrobot/resources/coap/actorQakCoapObserver.kt" target="code">resources/coap/actorQakCoapObserver.kt</a> </li>
+ 
+<li></li>
+</ul>
+
+
 
 <h2>Project</h2> 
  
-
-
-
 
 <table style="width:100%" border="1">
 <tr>
 <td style="width:30%">
 
-<h3>The basicrobot</h3>
+<h3>The basicrobot project model</h3>
 <a href="../../it.unibo.qak20.basicrobot/src/basicrobot.qak" target="code">basicrobot.qak</a> in project <i>it.unibo.qak20.basicrobot</i>
+
+<center><img src="./img/basicrobotproject.png" alt="basicrobotproject" width="100%" ></center>
+ 
  
 </td>
-<td> <m>The 'basicrobot'
+<td> The 'basicrobot'
 <ul>
 <li>is able to execute basic move commands, by handling a <bc>dispatch</bc> (for the elementary commands <tt>w | s | ... </tt>)
 and a <bc>request</bc> (for the command <tt>step</tt>);<br/><br/></li>
 </li>
-<li>maintains information on its current functional state;<br/><br/>   </li>
+<li>maintains information on its current functional state in the variable <ks>ActorResourceRep</ks>;<br/><br/>   </li>
 <li>interacts with a concrete robot  by means of a (<a href="https://en.wikipedia.org/wiki/Plain_old_Java_object" target="web">POJO</a>) object 
-(<a href="../../it.unibo.qak20.basicrobot/resources/unibo/robot/robotSupport.kt" target="code">resources/unibo/robot/robotSupport.kt</a> 
-in project <i>it.unibo.qak20.basicrobot</i>)
+(<a href="../../it.unibo.qak20.basicrobot/resources/unibo/robot/robotSupport.kt" target="code">resources/unibo/robot/robotSupport.kt</a>)
 working as an adapter for devices described in the configuration file
 <a href="../basicrobotConfig.json" target="code">basicrobotConfig.json</a>
 ;<br/><br/>   </li>
-<li>is a source of <bc>collision</bc> events, that are generated by the low-level robot support</li>
+<li>is a source of <bc>collision events</bc>, that are generated after receiving a <bc>collision message</bc> by the low-level robot support
+<a href="../../it.unibo.qak20.basicrobot/resources/robotvirtual/robotSupport.kt" target="code">resourcesrobotvirtual/virtualRobotSupportQak.kt</a> 
+</li>
 </ul> 
  
  </m>
@@ -232,7 +400,7 @@ working as an adapter for devices described in the configuration file
 </m>
 
 
- 
+<!-- 
 <h2>Test plans</h2> 
 <table style="width:100%" border="1">
 <tr>
@@ -249,9 +417,103 @@ working as an adapter for devices described in the configuration file
 
 
 </table>
+-->
 
+<h2 id="deploy">Deployment</h2> 
 
+With reference to the project <i>it.unibo.qak20.basicrobot</i>:
+<ol>
+<li>update the generated file <tt>build_ctxbasicrobot.gradle</tt> by specifying the class of the main program
+<center><table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:45%">
+<pre><m>plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    <k>id 'application'</k>
+}
+...
+<k>mainClassName</k> = 'it.unibo.ctxBls.MainCtxBls<k>Kt</k>'
 
+jar {
+    println("executing jar")
+    from sourceSets.main.allSource
+    manifest {
+        attributes 'Main-Class': "$mainClassName"
+    }
+}
+</m></pre>
+</td>
+<td><m>The generated file 
+<a href="../build_ctxbasicrobot.gradle" target="code">build_ctxbasicrobot.gradle</a>
+must be properly edit by the Application designer. 
+<br/><br/>
+<!-- The main we use for this example is in 
+<a href="../src/main/kotlin/it/unibo/qak/prodCons/mainProdConsLocal.kt" target="code">mainProdConsLocal.kt</a>
+<br/><br/>-->
+<b><bc>Note that</bc></b> the main class name must be terminated with a <bc>Kt</bc>, since kotlin code is translated in Java.
+</m> 
+</td>
+</tr>
+</tbody>	
+</table></center>
+
+</li>
+<li>execute the command
+
+<center><table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:45%">
+<pre><m>gradle <ks>-b build_ctxbasicrobot.gradle</ks> <k>distZip</k>
+</m></pre>
+</td>
+<td><m>Generates the <em>distribution file</em> is the directory <bc>build/distributions</bc> 
+<center><img src="./img/buildDir.png" alt="buildDir" width="100%" ></center>
+</m>
+</td>
+</tr>
+
+ 
+</tbody>	
+</table></center>
+</li>
+
+<li>Now:
+
+<center><table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:45%"><m>
+<ol>
+<li>unzip the distribution file in some dir</li>
+<li>work in the <bc>bin</bc> directory</li>
+<li><bc>copy</bc> in this directory the files 
+
+<ul>
+<li><a href="../basicrobot.pl" target="code">basicrobot.pl</a> </li>
+<li><a href="../sysRules.pl" target="code">sysRules.pl</a> </li>
+<li><a href="../basicrobotConfig.json" target="code">basicrobotConfig.json</a> </li>
+<li><a href="../Californium.properties" target="code">Californium.properties</a> </li>
+</ul>
+ 
+</ol>
+</m>
+</td>
+<td><m>
+...<br/>
+On Windows: activate the system by running: <bc>it.unibo.qakintro2020.bat</bc><br/><br/>
+On Linux (Apple ?) : <bc>bash it.unibo.qakintro2020</bc>
+</m>
+</td>
+</tr>
+</tbody>	
+</table></center>
+</li>
+</ol>
+ 
 
 <table style="width:100%" border="1">
 <tr>

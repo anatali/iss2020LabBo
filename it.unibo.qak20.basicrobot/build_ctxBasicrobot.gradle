@@ -1,18 +1,18 @@
 /*
 ================================================================================
-build_ctxBasicrobot.gradle
+build_ctxbasicrobot.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxBasicrobot.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxBasicrobot.gradle distZip
-	gradle  -b build_ctxBasicrobot.gradle -q tasks --all
-	gradle  -b build_ctxBasicrobot.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxbasicrobot.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxbasicrobot.gradle distZip
+	gradle  -b build_ctxbasicrobot.gradle -q tasks --all
+	gradle  -b build_ctxbasicrobot.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
     id 'java'
     id 'eclipse'
-    //id 'application'
+    id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.3.71'
 }
 
@@ -88,8 +88,8 @@ sourceSets {
     main.java.srcDirs += 'resources'
     test.java.srcDirs += 'test'		//test is specific
 }
-/*
-mainClassName = 'it.unibo.TODOKt'
+ 
+mainClassName = 'it.unibo.ctxbasicrobot.MainCtxbasicrobotKt'
 
 jar {
     println("executing jar")
@@ -98,4 +98,4 @@ jar {
         attributes 'Main-Class': "$mainClassName"
     }
 }
-*/
+ 

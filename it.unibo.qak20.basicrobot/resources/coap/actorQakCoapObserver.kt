@@ -10,25 +10,25 @@ import it.unibo.kactor.ApplMessage
 import java.util.Scanner
 import org.eclipse.californium.core.CoapHandler 
  
-object actortQakCoapObserver {
+object actorQakCoapObserver {
 
     private val client = CoapClient()
 	
-	private val ipaddr      = "localhost:8018"		//5683 default
+	private val ipaddr      = "localhost:8020"		//5683 default
 	private val context     = "ctxbasicrobot"
  	private val destactor   = "basicrobot"
 	private val msgId       = "cmd"
 
 	fun init(){
        val uriStr = "coap://$ipaddr/$context/$destactor"
-	  println("actortQakCoapObserver START uriStr: $uriStr")
+	  println("actortQakCoapObserver | START uriStr: $uriStr")
        client.uri = uriStr
        client.observe(object : CoapHandler {
             override fun onLoad(response: CoapResponse) {
-                println("ASYNCH GET RESP-CODE= " + response.code + " content:" + response.responseText)
+                println("actortQakCoapObserver | GET RESP-CODE= " + response.code + " content:" + response.responseText)
             }
             override fun onError() {
-                println("FAILED")
+                println("actortQakCoapObserver | FAILED")
             }
         })		
 	}
@@ -37,7 +37,7 @@ object actortQakCoapObserver {
 
  
  fun main( ) {
-		actortQakCoapObserver.init()
+		actorQakCoapObserver.init()
 		System.`in`.read()   //to avoid exit
  }
 

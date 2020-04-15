@@ -1,5 +1,5 @@
 ##############################################################
-# basicrobotusage.py
+# basicrobotusageTCP.py
 # sendDispatch       : sends a command in output
 # read               : acquires data from input
 ##############################################################
@@ -14,6 +14,7 @@ goBackwardMsg = "msg(cmd,dispatch,python,basicrobot,cmd(s),1)"
 turnLeftMsg   = "msg(cmd,dispatch,python,basicrobot,cmd(a),1)"  
 turnRightMsg  = "msg(cmd,dispatch,python,basicrobot,cmd(d),1)"  
 haltMsg       = "msg(cmd,dispatch,python,basicrobot,cmd(h),1)"
+stepMsg       = "msg(step,request,python,basicrobot,step(350),1)"
 
 def connect(port) :
     server_address = ('localhost', port)
@@ -26,10 +27,20 @@ def sendDispatch( message ) :
     byt=msg.encode()    #required in Python3
     sock.send(byt)
 
+def sendRequest( message ) :
+    print("request ", message)
+    msg = message + "\n"
+    byt=msg.encode()    #required in Python3
+    sock.send(byt)
+    time.sleep(2)
+    read()
+
 def work() :
     sendDispatch( goForwardMsg ) 
     time.sleep(1)
     sendDispatch( haltMsg )
+    time.sleep(1)
+    sendRequest( stepMsg )
 
 def read() :
     BUFFER_SIZE = 1024
