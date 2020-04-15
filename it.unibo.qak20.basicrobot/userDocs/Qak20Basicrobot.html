@@ -187,11 +187,11 @@ basicrobot | A reusable FSM actor</a>, let us introduce a more precise set of re
  <bc>request</bc> with <m><tt>msgId=step</tt></m>. It must send the answer <m><tt>stepDone</tt></m> or <m><tt>stepFail</tt></m> in case
  of success or failure, respectively;</li>
  <li><ks>reqSensor</ks>: the 'basicrobot' must emits events related to information gather from its sensors. In particular,
- it must emit the event <m><tt>collision</tt></m> when a collision with some obstacle is detecetd;</li>
- <li><ks>reqEnd</ks>: the 'basicrobot' must terminate its work when it receives a dispatch with <m><tt>msgId=end</tt></m> </li> 
+ it must emit the event <m><tt>collision</tt></m> when a collision with some obstacle is detected;</li>
+ <li><ks>reqEnd</ks>: the 'basicrobot' must terminate its work when it receives a  <bc>dispatch</bc> with <m><tt>msgId=end</tt></m> </li> 
  </ol>
  
- Let us immediately introduce a formalized version of these requirements, by specifying the structure of the messages and events:
+Let us immediately introduce a formalized specification of theses messages and events:
  
 <pre>
 Dispatch cmd	: cmd(MOVE)			<kc>//MOVE=w|s|r|l|h</kc>
@@ -219,6 +219,7 @@ QActor <k>basicrobot</k> context <ks>ctxbasicrobot</ks>{
 	}
 }
 </pre>
+
 </td>
 <td><center><img src="./img/basicrobotwithctx.png" alt="basicrobotwithctx" width="60%" ></center><br/> 
  

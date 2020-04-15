@@ -15,7 +15,7 @@ import it.unibo.kactor.MqttUtils
  
 
 class TestRobotboundary {
-lateinit var robot    : ActorBasic
+var robot             : ActorBasic? = null
 val mqttTest   	      = MqttUtils("test") 
 val initDelayTime     = 3000L   // 
 
@@ -23,8 +23,8 @@ val initDelayTime     = 3000L   //
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	@Before
 	fun systemSetUp() {
-		println("%%%  boudaryTest prepare the result map expected ")
-  		println( mapRoomKotlin.mapUtil.refMapForTesting )
+//		println("%%%  boudaryTest prepare the result map expected ")
+//  		println( mapRoomKotlin.mapUtil.refMapForTesting )
    		//activate the application: SEE boundaryTest
    		kotlin.concurrent.thread(start = true) {
 			it.unibo.ctxrobotboundary.main()  //WARNING: elininate the autostart
@@ -35,22 +35,53 @@ val initDelayTime     = 3000L   //
 	fun terminate() {
 		println("%%%  boudaryTest terminate ")
 	}
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun forwardToRobot(msgId: String, payload:String){
+		println(" --- forwardToRobot --- $msgId:$payload")
+		if( robot != null )  MsgUtil.sendMsg( "test",msgId, payload, robot!!  )
+	}
+	
+	fun checkResource(value: String){		
+		if( robot != null ){
+			println(" --- checkResource --- ${robot!!.geResourceRep()}")
+			assertTrue( robot!!.geResourceRep() == value)
+		}  
+	}
+
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun testReqStart() {
+		println("%%%  testReqStart  ")
+		//TODO: activate an user simulator
+	    //or send to the robotboundary the command start
+ 			robot = it.unibo.kactor.sysUtil.getActor("robotboundary")!!
+  			//MsgUtil.sendMsg("main", "start","ok",robot)
+			forwardToRobot("start", "start(0)" )
+//			if( robot != null) robot!!.waitTermination()
+	delay(7000)
+// 		println("%%%  boudaryTest performs the final test after user end")		
+		assertTrue( mapUtil.map.toString().equals( mapRoomKotlin.mapUtil.refMapForTesting ) )
+	}
+	
+
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @Test
-	fun boudaryTest() {
-		println("%%%  boudaryTest activates the application")
-		//TODO: activate an user simulator
-	    //or send to the robotboundary the command start
-		runBlocking{
-			delay(initDelayTime)  //give time to the actor to start
-			robot = it.unibo.kactor.sysUtil.getActor("robotboundary")!!
-  			MsgUtil.sendMsg("main", "start","ok",robot)
-			robot.waitTermination()
+	fun testRobotboundary(){
+	 	runBlocking{
+			delay(initDelayTime)  //time for robot to start
+			robot = it.unibo.kactor.sysUtil.getActor("basicrobot")
+			
+ 			testReqStart()
+			
+//			forwardToRobot( "end", "end(0)" )
+//			delay( 500 )
+//			checkResource("move(end)")
+			if( robot != null ) robot!!.waitTermination()
 		}
-		println("%%%  boudaryTest performs the final test after user end")		
-		assertTrue( mapUtil.map.toString().equals( mapRoomKotlin.mapUtil.refMapForTesting ) )
+	 	println("testBasicRobot BYE  ")  
 	}
 	
-}//boudaryTest
+}//testRobotboundary

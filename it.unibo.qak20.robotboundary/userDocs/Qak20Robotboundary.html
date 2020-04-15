@@ -177,21 +177,106 @@ This work is related to the project <bc>it.unibo.qak20.robotboundary</bc> introd
 
 <h2 id="req">Requirements</h2>
 
-The detailed requirements of our <a href="#problem">problem</a> are those introduced in  
+The user-defined requirements of our <a href="#problem">problem</a> are those introduced in  
  <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html#req" target="web"> 	
-RobotActorBoundary | requirements</a>
+RobotActorBoundary | requirements</a>.
+Let us introduce a more precise set of requirements:
+  
+<!-- The detailed requirements of our <a href="#problem">problem</a> are those introduced in   -->
+ <ol>
+ <li><ks>reqStart</ks>: the 'robotboundary' must execute commands of the form <m><tt>start(ARG), ARG=...</tt></m> sent to it by means of a 
+ <bc>dispatch</bc> with <m><tt>msgId=start</tt></m>;</li>
+  <li><ks>reqStop</ks>: the 'robotboundary' must execute commands of the form <m><tt>stop(ARG), ARG=...</tt></m> sent to it by means of a 
+ <bc>dispatch</bc> with <m><tt>msgId=stop</tt></m>;</li>
+ <li><ks>reqResume</ks>: the 'robotboundary' must execute commands of the form <m><tt>resume(ARG), ARG=...</tt></m> sent to it by means of a 
+ <bc>dispatch</bc> with <m><tt>msgId=resume</tt></m>;;</li>
+ <li><ks>reqEnd</ks>: the 'robotboundary' must terminate its work when it receives a  <bc>dispatch</bc> with <m><tt>msgId=end</tt></m> </li> 
+ </ol>
  
+Let us immediately introduce a formalized specification of theses messages:
+ 
+<pre>
+Dispatch start   : start(ARG)
+Dispatch stop    : stop(ARG)
+Dispatch resume  : resume(ARG)
+Dispatch end     : end(ARG)
+</pre>
+ 
+Since a (non-functional) requirement is now the usage of the 'basicrobot' introduced in
+<a href="../../it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html" target="lab">Qak20Basicrobot.html</a>,
+our actor must be able to 'speech the language' of the 'basicrobot':
+<pre>
+Request step       : step( TIME )	
+Reply   stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)
+</pre>
 
 <h2 id="reqAnalysis">Requirement analysis</h2>
-In this phase we are able to define a model of the 'robotboundary' actor and a first TestPlan:
+Let us introduce a model for the 'basicrobot'  expressed as a QAkactor:
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:40%">
+<center><img src="./img/boundary.png" alt="boundary.png" width="30%" ></center>
+<pre><m>Context <k>ctxrobotboundary</k> ip [host="localhost" port=<bc>8018</bc>]  
+Context <ks>ctxBasicrobot</ks>  ip [host="127.0.0.1" port=8020] 
+  
+<k>ExternalQActor</k> basicrobot context <ks>ctxBasicrobot</ks> 
  
+QActor <k>robotboundary</k> context <k>ctxrobotboundary</k>{
+	State s0 initial { 	
+	...
+	}
+}</m></pre>
+<center><img src="./img/robotboundary1.png" alt="robotboundary1.png" width="100%" ></center>
+</td>
+<td><m>The required behavior of the 'robotboundary' actor can be expressed by a QAk model 
+(<a href="../src/robotboundary.qak" target="code">robotboundary.qak</a>) that corrspodes to the following state-diagram:
+ 
+<center><img src="./img/stateDiagram.png" alt="stateDiagram.png" width="70%" ></center>
+
+The 'robotboundary' actor must interact with a 'basicrobot'.
+<br/><br/> 
+Since we consider here the 'basicrobot' as a (micro)service  that already works in its own node (context),
+the  'robotboundary' model declares the 'basicrobot' actor as an <bc>external</bc> actor.
+<br/><br/>
+Since we want - at the moment - to launch both the actors within the same computer, we use two different names
+( <tt>localhost</tt> and <tt>127.0.0.1</tt>) to denote our computer as the host of the two contexts.
+</td>
+</tr>
+</table>
 
 
 
 
 
 <h2 id="problemAnalysis">Problem analysis</h2>
+The logical architecture
+<table style="width:100%" border="1">
+<tr>
+<td style="width:55%">
+<center><img src="./img/logicArchBoundary.png" alt="logicArchBoundary.png" width="90%" ></pre>
 
+</td>
+<td> <m>In order to interact with the 'basicrobot', the 'robotboundary' actor sends a request to it,
+by using the high-level operation:
+<pre>
+request basicrobot -m step : step( STEPTIME  )
+</pre>
+The QAK-infrastructure takes care of implementing the request in the proper way according to 
+the message-delivery rules introduced in <a href="LabQakIntro2020.html#msgrules" target="lab">QAkactor20Intro </a>:
+<ol>
+<li>the Qak-Infrastructure find sthe ipaddress-port of the receiver ('basicactor') context</li>
+<li>the request is sent via MQTT if a MQTT broker is specified in the 'robotbouandary' model 
+otherwise via CoAP  </li>
+<li>the event <bc>collision</bc> raised by the 'basicrobot' is delivered to all the other known Contexts 
+of the system and to all the 'alien' connected via TCP or via MQTT</li>
+<li></li>
+</ol>
+ 
+</td>
+</tr>
+</table>
 <h2>Project</h2> 
   
 
@@ -202,12 +287,31 @@ In this phase we are able to define a model of the 'robotboundary' actor and a f
 
 
 <tr>
-<td>
+<td style="width:45%">
 
 <h3>The robotboundary</h3>
 <a href="../../it.unibo.qak20.robotboundary/src/robotboundary.qak" target="code">robotboundary.qak</a> in project <i>it.unibo.qak20.robotboundary</i>
 </td>
-<td>  <m></m>
+<td>  <m>
+
+The 'robotboundary'
+<ul>
+<li>is able to execute user commands sent to it as a <bc>dispatch</bc> (<tt>start | stop | resume </tt>) ;<br/><br/></li>
+</li>
+<li>after receiving the coomand <tt>start</tt>, it begins its goal-work, by moving along the room boundary, until it reaches the 
+<tt>home-position</tt> again; in the meantime, it must be able to react to the commands <tt>stop | resume </tt><br/><br/>
+</li>
+<li>maintains information on its current functional state in the variable <ks>ActorResourceRep</ks>
+<ul>
+<li><bc>"initial"</bc> when it is just activated (state 'init')</tt>;</li>
+<li><bc>"working"</bc> when it executes the command <tt>start: start(..)</tt> or <tt>resume: resume(..)</tt>;</li>
+<li><bc>"stepDone"</bc> when it has done a step with success</li>
+<li><bc>"stepFail"</bc> when it has attempted a step that failed</li>
+<li><bc>"stopped"</bc> when it executes the command <tt>stop: stop(..)</tt></li>
+<li><bc>"stopped"</bc> when it executes the command <tt>stop: stop(..)</tt></li>
+</ul>  
+;<br/><br/>   </li>
+</ul> </m>
 <pre></pre>
 </td>
 </tr>
@@ -227,21 +331,29 @@ In this phase we are able to define a model of the 'robotboundary' actor and a f
 
 
 <tr>
-<td>
+<td style="width:45%">
 
 <h3>Test plan-robotboundary</h3>
-<a href="../../it.unibo.qak20.robotboundary/test/TestRobotboundary.kt" target="code">TestRobotboundary.kt</a> 
+<a href="../test/TestRobotboundary.kt" target="code">TestRobotboundary.kt</a> 
 in project <i>it.unibo.robotboundary</i>
 </td>
-<td>  <m></m>
+<td>  <m>
+TestPlan is based on the values stored in <ks>ActorResourceRep</ks>
+ 
+</m>
 <pre></pre>
 </td>
 </tr>
 </table>
 
+<h2>Run</h2> 
+<ol>
+<li>Activate the 'basicrobot'</li>
+<li>Launch the <a href="../test/TestRobotboundary.kt" target="code">TestRobotboundary.kt</a>
+or the <a href="../src/it/unibo/ctxrobotboundary/MainCtxrobotboundary.kt" target="code">MainCtxrobotboundary.kt</a></li>
+</ol>
 
-
-
+<br/><br/>
 <table style="width:100%" border="1">
 <tr>
 <td style="width:50%">

@@ -156,7 +156,17 @@ table, th, td {
  
 <ol>
 <li><a href="#intro">Introduction</a></li>
-<li><a href="#qakoverview">QActors: an overview</a></li>
+<li><a href="#qakoverview">QActors: an overview</a>
+	<ul>
+	<li><a href="#messages">Messages</li>
+	<li><a href="#events">Events</li>
+	<li><a href="#behavior">Behavior</li>
+	<li><a href="#qakinfrastr">The Qak-Infrastructure</li>
+	<li><a href="#msgrules">Message delivery rules</li>
+ 	</ul>
+
+
+</li>
 <li><a href="#actorbasic">The class <bc>ActorBasic</bc></li>
 	<ul>
 	<li><a href="#actorascoap">Actors as CoAP resources</li>
@@ -356,7 +366,7 @@ Events whose identifier start with the prefix <bc>local_</bc/> are not propagate
 
 <tr>
 <td style="width:50%">
-<h3 id="messages">Behavior</h3>
+<h3 id="behavior">Behavior</h3>
 <m>
 The <tt>QActor</tt> metamodel does not envisage any explicit <i><b>receive</b></i> operation, since the behavior is 
 modeled as a <a href="https://en.wikipedia.org/wiki/Moore_machine" target="web">Moore state machine</a>
@@ -587,7 +597,7 @@ with the help of the Eclipse <bc>QActor software factory</bc>  deployed by the
 
 <tr>
 <td style="width:50%">
-<h3>The <tt>Qak-Infrastructure</tt></h3> 
+<h3 id="qakinfrastr">The <tt>Qak-Infrastructure</tt></h3> 
 <m>
 The <tt>Qak-Infrastructure</tt>  is deployed in a <tt>jar</tt> named <a href="../../unibolibs" target="code">it.unibo.qakactor-2.0.jar</a>.
 It includes:
@@ -630,14 +640,14 @@ with 64 Threads </li>
 </m>
 </td>
 <td>
-<h3>Message delivery rules</h3>
+<h3 id="msgrules">Message delivery rules</h3>
 <m>
 When a sender-actor and a receiver-actor work  in different contexts on different nodes the <tt>Qak-Infrastructure</tt>
 attempts to find the <tt>ipaddress-port</tt> of the receiver context. 
 <br/><br/>
 If this information is available,
-the message is sent via <tt>MQTT</tt> (if selected by the application designer) or - if no <tt>MQTT</tt> broker is specified - via <tt>CoAP</tt>
-(in order to avoid message duplication).
+the message is sent via <tt>MQTT</tt> if a <tt>MQTT</tt> broker is specifiedor in the model;
+otherwise it is sent via <tt>CoAP</tt>. 
 <br/><br/>
 If the system does not find information about the context of the receiver, the message to deliver should be a <bc>reply</bc>
 to a request made by some 'alien'.

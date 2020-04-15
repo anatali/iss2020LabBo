@@ -3,7 +3,7 @@
  * ANALYSIS MODEL
  */
 System boundaryrobot 
-
+  
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)
 Dispatch resume  : resume(ARG)

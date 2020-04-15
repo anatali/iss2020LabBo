@@ -28,6 +28,7 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						println("-----------------")
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(2000) 
+						updateResourceRep("initial")
 					}
 					 transition( edgeName="goto",targetState="waitcmd", cond=doswitch() )
 				}	 
@@ -50,6 +51,7 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("stepDone") { //this:State
 					action { //it:State
 						println("robotboundary | stepDone  ")
+						updateResourceRep("stepDone")
 						mapRoomKotlin.mapUtil.doMove( "w"  )
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(500) 
@@ -71,6 +73,7 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								delay(Dt)
 								forward("cmd", "cmd(h)" ,"basicrobot" ) 
 								 }
+								updateResourceRep("stepFail")
 								delay(1000) 
 						}
 						forward("cmd", "cmd(l)" ,"basicrobot" ) 

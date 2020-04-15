@@ -35,6 +35,7 @@ val StepTime = 350
 		run mapRoomKotlin.mapUtil.showMap()  //initial map empty
 		delay 2000  //just to look at the reference map and the current map
 //		forward robotboundary -m start : start(auto)
+		updateResource "initial"
 	}	
 	Goto waitcmd 
 	
@@ -55,6 +56,7 @@ val StepTime = 350
 	
 	State stepDone{ //change the map
 	    println("robotboundary | stepDone  ")
+	    updateResource "stepDone"
 		run mapRoomKotlin.mapUtil.doMove("w")
 		run mapRoomKotlin.mapUtil.showMap()
 		delay 500
@@ -76,6 +78,7 @@ val StepTime = 350
 				delayVar Dt
 				forward basicrobot -m cmd : cmd( h )
 			}	
+			updateResource "stepFail"
 			delay 1000		    
 		}
 		//change the map
