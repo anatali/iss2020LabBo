@@ -1,0 +1,18 @@
+2020-04-16 17:01:04 INFO  NetworkConfig:422 - writing properties to file C:\Didattica2018Work\iss2020LabBo\it.unibo.qakdemo\Californium.properties
+2020-04-16 17:01:06 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-16 17:01:06 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-16 17:01:06 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-16 17:01:06 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-16 17:01:06 INFO  CoapServer:207 - Starting server
+2020-04-16 17:01:06 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-16 17:01:06 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8055, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-16 17:01:06 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8055
+2020-04-16 17:29:35 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qakdemo\Californium.properties
+2020-04-16 17:29:38 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-16 17:29:38 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-16 17:29:38 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-16 17:29:38 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-16 17:29:38 INFO  CoapServer:207 - Starting server
+2020-04-16 17:29:38 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-16 17:29:38 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8055, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-16 17:29:38 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8055
