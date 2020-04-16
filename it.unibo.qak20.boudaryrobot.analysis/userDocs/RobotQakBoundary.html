@@ -156,7 +156,11 @@ table, th, td {
 <div class="body"> 
 
 <ol>
-<li><a href="#intro">Introduction</a></li>
+<li><a href="#intro">Introduction</a>
+	<ul>
+	<li><a href="#stepperproblem">The stepper problem</a> </li>
+	</ul>
+</li>
 <li><a href="#qakwork">QActors at work</a></li>
 <li><a href="#reqAnalysis">Requirement analysis</a></li>
 <li><a href="#problemAnalysis">Problem analysis</a></li>
@@ -202,7 +206,7 @@ the high-level <bc>forward</bc> operation with reference to <bc>MQTT</bc> broker
 We made also some experiment to move a 'basicrobot' by sending commands from a remote site;<br/><br/>
 </li>
 
-<li>the implementation of the <bc>'stepper'</bc> was fast, but quite simplistic, since we did not take into account a typical problem in distributed
+<li id="stepperproblem">the implementation of the <bc>'stepper'</bc> was fast, but quite simplistic, since we did not take into account a typical problem in distributed
 systems: the fact that information sent as a message takes time to be delivered and thus to be perceived by a receiver. 
 Our 'stepper' was designed as follows:
 
@@ -229,8 +233,10 @@ TestPlanBoundary.kt</a>.
  <div class="remark">
 <center>persuaded us of the need of a more accurate <bc>analysis phase</bc></center>
 </div>
-since testing <b>does not assure the discovery</b> of situations of this kind;<br/><br/>
+since testing <b>does not assure the discovery</b> of situations of this kind.
+A possible solution can be found in<br/><br/>
 </li>
+
 <li>at this point (during a SCRUM <ks>sprint-retrospective</ks>) we decided to introduce a custom software factory based on a
 <bc>custom metamodel</bc>, by exploiting the XText technology:<br/>
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html" 

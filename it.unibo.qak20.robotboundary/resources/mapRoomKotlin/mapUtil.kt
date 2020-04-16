@@ -64,7 +64,7 @@ object mapUtil{
 //		   println( "$map"  )
         } catch (e: Exception) {
             println("mapUtil | doMove: ERROR:" + e.message)
-		    println("doMove move=$move  dir=${state.direction} x=$x y=$y dimMapX=$map.dimX{} dimMapY=${map.dimY}")
+		    println("doMove move=$move  dir=${state.direction} x=$x y=$y dimMapX=${map.dimX} dimMapY=${map.dimY}")
         }
 	}
 	

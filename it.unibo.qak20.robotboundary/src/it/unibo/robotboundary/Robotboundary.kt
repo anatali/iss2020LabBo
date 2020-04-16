@@ -17,59 +17,59 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-		var NumStep  = 0
-		val StepTime = 350
+		var NumStep      = 0
+		val StepTime     = 350
+		var StartTime    = 0L
+		var Workduration = 0L 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("robotboundary | START")
-						discardMessages = true
+						discardMessages = false	
 						println("${mapRoomKotlin.mapUtil.refMapForTesting}")
 						println("-----------------")
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(2000) 
 						updateResourceRep("initial")
 					}
-					 transition( edgeName="goto",targetState="waitcmd", cond=doswitch() )
+					 transition(edgeName="t00",targetState="startWork",cond=whenDispatch("start"))
 				}	 
-				state("waitcmd") { //this:State
+				state("startWork") { //this:State
 					action { //it:State
-						println("robotboundary | waitcmd")
+						StartTime = getCurrentTime()
 					}
-					 transition(edgeName="t00",targetState="work",cond=whenDispatch("start"))
+					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
 						println("robotboundary | working ${NumStep}")
-						updateResourceRep("working")
 						request("step", "step($StepTime)" ,"basicrobot" )  
+						updateResourceRep("working")
 					}
-					 transition(edgeName="t01",targetState="stopped",cond=whenDispatch("stop"))
-					transition(edgeName="t02",targetState="stepDone",cond=whenReply("stepdone"))
-					transition(edgeName="t03",targetState="stepFail",cond=whenReply("stepfail"))
+					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
+					transition(edgeName="t02",targetState="stepFail",cond=whenReply("stepfail"))
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State
-						println("robotboundary | stepDone  ")
 						updateResourceRep("stepDone")
 						mapRoomKotlin.mapUtil.doMove( "w"  )
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(500) 
 					}
-					 transition( edgeName="goto",targetState="work", cond=doswitch() )
+					 transition(edgeName="t03",targetState="stopped",cond=whenDispatch("stop"))
+					transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("stepFail") { //this:State
 					action { //it:State
-						println("robotboundary | stepFail  ")
 						println("$name in ${currentState.stateName} | $currentMsg")
+						mapRoomKotlin.mapUtil.doMove( "h"  )
 						
 									NumStep++
 									var Dt = 0L 			
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(DURATION,CAUSE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Dt = payloadArg(0).toLong()   
-								println("robotboundary stepFail after: $Dt")
-								if(( Dt < 3*StepTime/4 )){ forward("cmd", "cmd(s)" ,"basicrobot" ) 
+								if(( Dt < 3*StepTime/4.0 )){ forward("cmd", "cmd(s)" ,"basicrobot" ) 
 								delay(Dt)
 								forward("cmd", "cmd(h)" ,"basicrobot" ) 
 								 }
@@ -80,7 +80,8 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						delay(500) 
 						mapRoomKotlin.mapUtil.doMove( "l"  )
 					}
-					 transition( edgeName="goto",targetState="work", cond=doswitchGuarded({(NumStep<4)}) )
+					 transition(edgeName="t04",targetState="stopped",cond=whenDispatch("stop"))
+					transition( edgeName="goto",targetState="work", cond=doswitchGuarded({(NumStep<4)}) )
 					transition( edgeName="goto",targetState="endWork", cond=doswitchGuarded({! ((NumStep<4)) }) )
 				}	 
 				state("stopped") { //this:State
@@ -88,11 +89,12 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						println("robotboundary | stopped")
 						updateResourceRep("stopped")
 					}
-					 transition(edgeName="t04",targetState="work",cond=whenDispatch("resume"))
+					 transition(edgeName="t05",targetState="work",cond=whenDispatch("resume"))
 				}	 
 				state("endWork") { //this:State
 					action { //it:State
-						println("robotboundary | ends")
+						Workduration = getDuration(StartTime)
+						println("robotboundary | ends; duration=$Workduration")
 						updateResourceRep("terminated")
 						terminate(0)
 					}

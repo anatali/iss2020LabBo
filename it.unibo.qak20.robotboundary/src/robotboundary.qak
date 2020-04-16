@@ -6,7 +6,7 @@ System robotboundary
 
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)
-Dispatch resume  : resume(ARG)
+Dispatch resume  : resume(ARG) 
 Dispatch cmd     : cmd(MOVE)
 Dispatch end     : end(ARG)
  
@@ -14,7 +14,7 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
  
-//Event collision    : collision(TARGET,AVATAR)  
+Event collision    : collision( ARG )  
  
 Context ctxrobotboundary ip [host="localhost" port=8018]  
 Context ctxBasicrobot    ip [host="127.0.0.1" port=8020] 
@@ -23,13 +23,15 @@ ExternalQActor basicrobot context ctxBasicrobot
 
 QActor robotboundary context ctxrobotboundary  {   
 [#
-var NumStep  = 0
-val StepTime = 350
+var NumStep      = 0
+val StepTime     = 350
+var StartTime    = 0L
+var Workduration = 0L 
 #]
 
-	State s0 initial { 	
+	State s0 initial { 	  
 		println("robotboundary | START")	
-		discardMsg On
+		discardMsg Off  //WE MUST RECEIVE stop
 		println("${mapRoomKotlin.mapUtil.refMapForTesting}")
 		println("-----------------")
 		run mapRoomKotlin.mapUtil.showMap()  //initial map empty
@@ -37,43 +39,46 @@ val StepTime = 350
 //		forward robotboundary -m start : start(auto)
 		updateResource "initial"
 	}	
-	Goto waitcmd 
-	
-	State waitcmd{
-		println("robotboundary | waitcmd")	 
-	}
-	Transition t0 whenMsg start -> work 
- 	    
+	Transition t0 whenMsg start -> startWork 
+ 	
+ 	State startWork{	//just to store the StartTime
+		memoCurrentTime StartTime		 		
+ 	}    
+ 	Goto work
+ 	
 	State work{
 		println("robotboundary | working ${NumStep}")
 		//Activate the motors to go ahead
-		updateResource "working" 
  		request basicrobot -m step : step( $StepTime  )
+		updateResource "working" 
  	}
-	Transition t0 whenMsg  stop      -> stopped 
+	Transition t0 //whenMsg  stop      -> stopped  //to avoid the loss of synch with the grid
 				  whenReply stepdone -> stepDone
 				  whenReply stepfail -> stepFail
 	
 	State stepDone{ //change the map
-	    println("robotboundary | stepDone  ")
+	    //println("robotboundary | stepDone  ")
 	    updateResource "stepDone"
 		run mapRoomKotlin.mapUtil.doMove("w")
 		run mapRoomKotlin.mapUtil.showMap()
 		delay 500
-	}
-	Goto work
+	} 
+	Transition t0 whenMsg  stop -> stopped   
+	else Goto work
 	
 	State stepFail{
-	    println("robotboundary | stepFail  ")
+	    //println("robotboundary | stepFail  ")
 		printCurrentMessage
+		//change the map
+		run mapRoomKotlin.mapUtil.doMove("h")
 		[#
 			NumStep++
 			var Dt = 0L 			
 		#]
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
 			[# Dt = payloadArg(0).toLong()  #]
-			println("robotboundary stepFail after: $Dt")
-			if "( Dt < 3*StepTime/4 )" {
+			//println("robotboundary stepFail after: $Dt vs ${3*StepTime/4.0}")
+			if "( Dt < 3*StepTime/4.0 )" {
 				forward basicrobot -m cmd : cmd( s )
 				delayVar Dt
 				forward basicrobot -m cmd : cmd( h )
@@ -81,15 +86,15 @@ val StepTime = 350
 			updateResource "stepFail"
 			delay 1000		    
 		}
-		//change the map
 		forward basicrobot -m cmd : cmd(l)
 		delay 500
+		//change the map
 		run mapRoomKotlin.mapUtil.doMove("l")
 	}
-	Goto work if "(NumStep<4)" else endWork 
- 	
+ 	Transition t0 whenMsg  stop -> stopped   
+	else Goto work if "(NumStep<4)" else endWork 
   	
-	State stopped{
+	State stopped{ 
 		println("robotboundary | stopped")	
 		updateResource "stopped"
 	}
@@ -97,11 +102,22 @@ val StepTime = 350
  
 	 
  	State endWork{
-		println("robotboundary | ends")
+ 		setDuration Workduration from StartTime
+		println("robotboundary | ends; duration=$Workduration")
 		updateResource "terminated"
 		terminate 0
  	}
  
 }
 
- 
+QActor sensorobserver context ctxrobotboundary  {    
+	State s0 initial { 	  
+		println("sensorobserver | working")	
+	}
+	Transition t0 whenEvent collision -> showCollision
+	
+	State showCollision{
+		printCurrentMessage
+	}
+	Goto s0
+}

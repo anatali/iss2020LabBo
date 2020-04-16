@@ -17,7 +17,7 @@ import it.unibo.kactor.MqttUtils
 class TestRobotboundary {
 var robot             : ActorBasic? = null
 val mqttTest   	      = MqttUtils("test") 
-val initDelayTime     = 3000L   // 
+val initDelayTime     = 1000L   // 
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,7 +33,7 @@ val initDelayTime     = 3000L   //
 
 	@After
 	fun terminate() {
-		println("%%%  boudaryTest terminate ")
+		println("%%%  TestRobotboundary terminate ")
 	}
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,16 +51,23 @@ val initDelayTime     = 3000L   //
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	suspend fun testReqStart() {
-		println("%%%  testReqStart  ")
-		//TODO: activate an user simulator
-	    //or send to the robotboundary the command start
- 			robot = it.unibo.kactor.sysUtil.getActor("robotboundary")!!
-  			//MsgUtil.sendMsg("main", "start","ok",robot)
-			forwardToRobot("start", "start(0)" )
-//			if( robot != null) robot!!.waitTermination()
-	delay(7000)
-// 		println("%%%  boudaryTest performs the final test after user end")		
+	suspend fun testStopResume() {
+		for( i in 1..4 ){
+			delay(5000)
+			forwardToRobot("stop", "stop($i)" )
+			delay(3000)
+			forwardToRobot("resume", "resume($i)" )
+		}
+	}
+	
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+	suspend fun testReqStart( withStop : Boolean=false ) {
+		println("%%%  testReqStart $robot ")
+		forwardToRobot("start", "start(0)" )
+		if( withStop ) testStopResume()
+		println("%%%  testReqStart waits ...  ")
+ 		if( robot != null) robot!!.waitTermination()
 		assertTrue( mapUtil.map.toString().equals( mapRoomKotlin.mapUtil.refMapForTesting ) )
 	}
 	
@@ -71,17 +78,18 @@ val initDelayTime     = 3000L   //
 @Test
 	fun testRobotboundary(){
 	 	runBlocking{
-			delay(initDelayTime)  //time for robot to start
-			robot = it.unibo.kactor.sysUtil.getActor("basicrobot")
+ 			while( robot == null ){
+				println("testRobotboundary wait for robot ... ")
+				delay(initDelayTime)  //time for robot to start
+				robot = it.unibo.kactor.sysUtil.getActor("robotboundary")
+ 			}
 			
- 			testReqStart()
 			
-//			forwardToRobot( "end", "end(0)" )
-//			delay( 500 )
-//			checkResource("move(end)")
-			if( robot != null ) robot!!.waitTermination()
-		}
-	 	println("testBasicRobot BYE  ")  
+ 			testReqStart( withStop=false )
+			
+ 			if( robot != null ) robot!!.waitTermination()
+  		}
+	 	println("testRobotboundary BYE  ")  
 	}
 	
 }//testRobotboundary

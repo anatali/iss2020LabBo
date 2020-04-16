@@ -23,7 +23,7 @@ class testBasicrobot {
 	
 var robot             : ActorBasic? = null
 val mqttTest   	      = MqttUtils("test") 
-val initDelayTime     = 4000L   // 
+val initDelayTime     = 1000L   // 
 val useMqttInTest 	  = false
 val mqttbrokerAddr    = "tcp://broker.hivemq.com" 
 		
@@ -42,8 +42,7 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 					  Thread.sleep(1000)
 					  mqttTest.connect("test_nat", mqttbrokerAddr )					 
 				 }
-////				 sensorObserver("sensorobserver", GlobalScope, usemqtt=true )
-			}	
+ 			}	
  	} 
 }	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -53,40 +52,7 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 		println("testBasicrobot terminated ")
 	}
 	
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
-	fun testObstacleLocal(){
-		println(" --- testObstacleLocal ---")
- 		runBlocking{
-			delay(initDelayTime)  //time for robot to connect to mqttTest broker
- 			if( robot != null ){ MsgUtil.sendMsg( "test","cmd", "w", robot!!   )}
- 			delay(1800)
-			//AFTER obstacle
-  			//assertTrue( basicrobot.rstate == basicrobotstate.obstacle)			
-			if( robot != null ){ MsgUtil.sendMsg( "test", "end", "end", robot!!   ) }
-			println("testObstacleLocal END with robot in  ") //${basicrobot.rstate}
-			//if( robot != null ) robot!!.waitTermination()
-		}
-}
-
-//@kotlinx.coroutines.ObsoleteCoroutinesApi
-//@kotlinx.coroutines.ExperimentalCoroutinesApi
-//	fun testObstacleRemote(){
-//		println(" --- testObstacleRemote ---")
-// 		runBlocking{
-//			delay(initDelayTime)  //time for robot to connect to mqttTest broker
-//			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "cmd(w)", robot!!.name, mqttTest   )
-// 			delay(1500)
-//			//AFTER obstacle
-//  			//assertTrue( basicrobot.rstate == basicrobotstate.obstacle)			
-//			if( robot != null ) MsgUtil.sendMsg( "test", "end", "end", robot!!.name, mqttTest   )
-//			println("testObstacleRemote END with robot in  ") //${basicrobot.rstate}
-//			if( robot != null ) robot!!.waitTermination()
-//		}
-//}
-		
-	
-	
+ 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun forwardToRobot(msgId: String, payload:String){
@@ -155,8 +121,10 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 @Test
 	fun testBasicRobot(){
 	 	runBlocking{
-			delay(initDelayTime)  //time for robot to start
-			robot = it.unibo.kactor.sysUtil.getActor("basicrobot")
+			while( robot == null ){
+				delay(initDelayTime)  //time for robot to start
+				robot = it.unibo.kactor.sysUtil.getActor("basicrobot")				
+			}
 			
 			testReqCmd()
 			delay( 1000 )

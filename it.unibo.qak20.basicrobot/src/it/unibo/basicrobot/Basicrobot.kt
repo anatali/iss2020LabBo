@@ -18,7 +18,8 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
 		  var StepTime      = 0L
-		  var Duration      = 0    
+		  var StartTime     = 0L    
+		  var Duration      = 0L    
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -27,6 +28,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						unibo.robot.robotSupport.move( "l"  )
 						unibo.robot.robotSupport.move( "r"  )
 						updateResourceRep("stopped")
+						discardMessages = false	
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
@@ -67,7 +69,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 								updateResourceRep("step(${StepTime})")
 								println("basicrobot | doStep StepTime =$StepTime ")
 								unibo.robot.robotSupport.move( "w"  )
-								memoTime()
+								StartTime = getCurrentTime()
 						}
 						stateTimer = TimerActor("timer_doStep", 
 							scope, context!!, "local_tout_basicrobot_doStep", StepTime )
@@ -102,9 +104,10 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("stepFail") { //this:State
 					action { //it:State
-						Duration = getDuration()
+						Duration = getDuration(StartTime)
 						updateResourceRep("stepFail($Duration)")
 						println("basicrobot | stepFail after $Duration ")
+						emit("collision", "collision(obstacle)" ) 
 						answer("step", "stepfail", "stepfail($Duration,obstacle)"   )  
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

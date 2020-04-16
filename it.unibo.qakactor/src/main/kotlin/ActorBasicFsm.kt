@@ -162,11 +162,12 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         var b         = hanldeCurrentMessage(msg, nextState)
         while (b) { //handle previous messages
             currentState.enterState()
-            checkDoEmptyMove()
+//            checkDoEmptyMove()	//APR2020: after
             val nextState1 = lookAtMsgQueueStore()
             b = hanldeCurrentMessage(currentMsg, nextState1, memo = false)
         }
-    }
+        checkDoEmptyMoveInState()	//APR2020:
+   }
 
     fun hanldeCurrentMessage(msg: ApplMessage, nextState: State?, memo: Boolean = true): Boolean {
         //sysUtil.traceprintln("$tt ActorBasicFsm $name | hanldeCurrentMessage in ${currentState.stateName} msg=${msg.msgId()}")
@@ -215,6 +216,14 @@ abstract class ActorBasicFsm(  qafsmname:  String,
             currentState = nextState
             currentState.enterState()
             nextState = checkTransition(NoMsg) //EMPTY MOVE
+        }
+    }
+    suspend fun checkDoEmptyMoveInState() {
+        var nextState = checkTransition(NoMsg) //EMPTY MOVE
+        if (nextState is State) {
+            currentMsg = NoMsg
+            currentState = nextState
+            currentState.enterState()
         }
     }
 

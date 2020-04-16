@@ -31,7 +31,8 @@ Context ctxbasicrobot ip [host="localhost" port=8020]
 QActor basicrobot context ctxbasicrobot{
 [#
   var StepTime      = 0L
-  var Duration      = 0    
+  var StartTime     = 0L    
+  var Duration      = 0L    
 #]  
  	State s0 initial { 	
 		println("basicrobot | START")	
@@ -39,6 +40,7 @@ QActor basicrobot context ctxbasicrobot{
 		run unibo.robot.robotSupport.move( "l" )
 		run unibo.robot.robotSupport.move( "r" )
  		updateResource "stopped"
+ 		discardMsg Off  //WE want receive any msg
  	}
 	Goto work
 	
@@ -76,7 +78,7 @@ QActor basicrobot context ctxbasicrobot{
 			updateResource "step(${StepTime})"
 			println("basicrobot | doStep StepTime =$StepTime ")
  			run unibo.robot.robotSupport.move( "w" )
- 			memoCurrentTime
+ 			memoCurrentTime StartTime
 		}  
 	}  
 	Transition t0 
@@ -106,11 +108,12 @@ QActor basicrobot context ctxbasicrobot{
 	Goto work 
 	 
 	State stepFail{ //REQUIREMENT req-onestep-time, req-onestep-info
-		setDuration Duration
+		setDuration Duration from StartTime
  		updateResource "stepFail($Duration)"
 		println("basicrobot | stepFail after $Duration ")
+		emit collision : collision(obstacle)
  		replyTo step with stepfail : stepfail($Duration, obstacle)
-    	}
+    }
 	Goto work 
 	
 	State endwork{ 

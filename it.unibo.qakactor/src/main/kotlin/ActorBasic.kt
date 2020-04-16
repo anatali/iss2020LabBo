@@ -45,7 +45,7 @@ abstract class  ActorBasic(  name:         String,
     protected lateinit var currentSolution : SolveInfo
     protected lateinit var currentProcess  : Process
 
-    private var timeAtStart: Long = 0
+//    private var timeAtStart: Long = 0
 
     internal val requestMap : MutableMap<String, ApplMessage > = mutableMapOf<String,ApplMessage>()  //Oct2019
 
@@ -439,19 +439,13 @@ machineExec
             throw e
         }
     }
-    //TO BE DISCARDED
-    fun startTimer() {
-        timeAtStart = System.currentTimeMillis()
-    }
-    fun memoTime() {
-        timeAtStart = System.currentTimeMillis()
+    fun getCurrentTime():Long {
+        return System.currentTimeMillis()
     }
 
-    fun getDuration() : Int{
-        val duration = (System.currentTimeMillis() - timeAtStart).toInt()
-        //println("DURATION = $duration")
-         //solve("retract( wduration(_) )")		//remove old data
-         //solve("assert( wduration($duration) )")
+    fun getDuration(start: Long) : Long{
+        val duration = (System.currentTimeMillis() - start) 
+        //println("DURATION = $duration start=$start")
         return duration
     }
 
