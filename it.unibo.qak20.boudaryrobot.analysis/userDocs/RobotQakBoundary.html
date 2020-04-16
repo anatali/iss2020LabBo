@@ -228,13 +228,19 @@ and <bc>ts &lt; te</bc>, then the <tt>stepper</tt> should go in the state <m><ks
  Fortunately, this (paradigmatic) problem was discovered during testing:
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.actorfsm/test/TestPlanBoundary.kt" target="web"> 
 TestPlanBoundary.kt</a>. 
- <br/>
- However, this problem 
+ <br/><br/>
+Another problem is that <m><ks>endtime</ks></m> messages are not consumed when <tt>stepKo</tt>.
+ <br/> <br/>
+A possible new solution could be:
+<center><img src="./img/stepperReviewed.png" alt="stepperReviewed" width="70%" ></center>
+<br/><br/>
+
+However, since testing <b>does not assure the discovery</b> of all possible errors, the lesson learned from these problem persuaded us of 
  <div class="remark">
-<center>persuaded us of the need of a more accurate <bc>analysis phase</bc></center>
+<center>the need of a more accurate <bc>analysis phase</bc> <br/>
+and of the opportunity of <bc> fast-prototyping</bc>  the application logic</center>
 </div>
-since testing <b>does not assure the discovery</b> of situations of this kind.
-A possible solution can be found in<br/><br/>
+
 </li>
 
 <li>at this point (during a SCRUM <ks>sprint-retrospective</ks>) we decided to introduce a custom software factory based on a

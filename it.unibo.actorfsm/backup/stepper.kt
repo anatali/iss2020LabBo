@@ -40,8 +40,7 @@ lateinit var robot : Fsm
 				transition( edgeName="t0",targetState="waitcmd", cond=doswitch() )
 			}
 			state("waitcmd") {
-				action {
-					
+				action {					
 					//println("$ndnt stepper waits ... ")
 				}
 				transition( edgeName="t0",targetState="dostep",  cond=whenDispatch("step") )
@@ -76,13 +75,13 @@ lateinit var robot : Fsm
 					delay(100)  //give time to perceive a lost collision
  				}
 				transition( edgeName="t1", targetState="stepKo",       cond=whenDispatch("sensor")    ) //obstacle lost
-				transition( edgeName="t2", targetState="sendToOwner",  cond=doswitch()                )
+				transition( edgeName="t2", targetState="sendDone",  cond=doswitch()                )
 			}
 /*
  WARNING: The step time could terminate just before that a detected collision is perceived
  */
 
-			state("sendToOwner"){
+			state("sendDone"){
 				action {
 					println("sendToOwner  ")
 					if( owner is Fsm ){
@@ -100,6 +99,7 @@ lateinit var robot : Fsm
  				//WARNING: endgauge  should be consumed
 				transition( edgeName="t0",targetState="discardGauge", cond=whenDispatch("endgauge") )
 			}
+			
 			//endgauge could arrive while back in waitcmd 
 			state("discardGauge"){
 				action{
