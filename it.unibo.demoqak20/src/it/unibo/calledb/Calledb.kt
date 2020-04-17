@@ -20,7 +20,6 @@ class Calledb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						println("qak2 init")
 					}
 					 transition(edgeName="t02",targetState="handleRequest",cond=whenRequest("r1"))
 				}	 
@@ -30,6 +29,8 @@ class Calledb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						if( checkMsgContent( Term.createTerm("r1(X)"), Term.createTerm("r1(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 RequestArg = payloadArg(0)  
+								println("	calledb receives the request r1($RequestArg)")
+								println("	calledb askfor r2(theta)")
 								replyreq("r2", "r1", "r2(theta)"   )  
 						}
 						stateTimer = TimerActor("timer_handleRequest", 
@@ -40,10 +41,11 @@ class Calledb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("answerAfterAsk") { //this:State
 					action { //it:State
-						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("a1(X)"), Term.createTerm("a1(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 val R = RequestArg + payloadArg(0)  
+								println("	calledb receives answer to ask a1(${payloadArg(0)})")
+								 val R = "${RequestArg}_${payloadArg(0)}"  
+								println("	calledb replies to orginal request with a1($R)")
 								answer("r1", "a1", "a1($R)"   )  
 						}
 					}

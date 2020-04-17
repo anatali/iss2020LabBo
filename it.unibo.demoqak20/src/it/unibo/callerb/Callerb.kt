@@ -19,14 +19,13 @@ class Callerb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						println("	qak1 starts")
+						println("	callerb request r1(10)")
 						request("r1", "r1(10)" ,"calledb" )  
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
-						println("	qak1 work")
 					}
 					 transition(edgeName="t00",targetState="handleReply",cond=whenReply("a1"))
 					transition(edgeName="t01",targetState="handleAskFromCalled",cond=whenRequest("r2"))
@@ -38,9 +37,10 @@ class Callerb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("handleAskFromCalled") { //this:State
 					action { //it:State
-						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("r2(X)"), Term.createTerm("r2(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("	callerb receives ask from called r2(${payloadArg(0)})")
+								println("	callerb replies with a1(90)")
 								answer("r2", "a1", "a1(90)"   )  
 						}
 					}

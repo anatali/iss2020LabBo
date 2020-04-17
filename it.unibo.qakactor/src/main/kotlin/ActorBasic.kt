@@ -162,12 +162,14 @@ Messaging
                 }
             }
         }//ctx of destination is unknwkn
- //DESTINATION remote, context of dest known and MQTT selected
-		if( ! msg.isRequest() ){
+ //DESTINATION remote, context of dest known 
+        if( attemptToSendViaMqtt(ctx, msg,destName) ) return
+		
+		if( ! msg.isRequest() && ! msg.isReply() ){
         val uri = "coap://${ctx.hostAddr}:${ctx.portNum}/${ctx.name}/$destName"
         //println("$tt ActorBasic sendMessageToActor qak | ${uri} msg=$msg" )
 
-        if( attemptToSendViaMqtt(ctx, msg,destName) ) return
+        //if( attemptToSendViaMqtt(ctx, msg,destName) ) return  //APR2020
 
         sendCoapMsg( uri, msg.toString() )
 		}

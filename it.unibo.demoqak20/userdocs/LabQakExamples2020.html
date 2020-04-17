@@ -172,30 +172,63 @@ At this point, Eclipse should present a window like the following one:
 <center><img src="./img/blsStarting.png" alt="blsStarting" width="50%" height="50%"></center>
 <p>
 
-<h3>Examples</h3>
+<h2>Examples</h2>
 <center><table style="width:95%">
 <tbody>	
 
 <tr>
-<td style="width:50%"><a href="../src/demo0.qak" target="code">demo0.qak</a>
+
+<td style="width:50%">
+<h3 id="demo0">demo0</h3>
+<a href="../src/demo0.qak" target="code">demo0.qak</a>.<br/><br/>
+<m>Run it first with with <bc>discardMsg On</bc> and next with <bc>discardMsg Off</bc>
+and explain the different results.</m>
+<table style="width:95%">
+<td><pre><kc>//discardMsg On</kc>
+demo in s1
+demo in s2 since msg1:msg1(1)
+demo in s3 since msg2:msg2(1)
+demo in s1
+
+</pre></td>
+<td><pre><kc>//discardMsg Off</kc>
+demo in s1
+demo in s2 since msg1:msg1(1)
+demo in s3 since msg2:msg2(1)
+demo in s1
+demo in s2 since msg1:msg1(2)</pre></td>
+<tr>
+</tr>
+</table>
 </td> 
 <td><m>
 This is the example introduced in 
 <a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#demo" target="web"" target="code">LabQakExamples2020.html</a>.
+<center><img src="./img/demoDSL.png" alt="demoDSL" width="70%" ></center>
 </m></td>
 </tr>
 
 <tr>
 <td>
+<h3 id="sentinel">sentinel</h3>
 <a href="../src/sentinel.qak" target="code">sentinel.qak</a>
+<center><img src="./img/sentinel.png" alt="sentinel" width="70%" ></center>
+
 </td>
 <td><m>This is the example introduced in 
 <a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#sentinel" target="web"" target="code">LabQakExamples2020.html</a>.
-<br/><br/>
-'Alien' emitters written in Ptyhon3 are 
-<a href="../python/tcp_emitter.py" target="code">tcp_emitter.py</a> (that makes use of the TCP on the context port)
-and  <a href="../python/mqtt_emitter.py" target="code">mqtt_emitter.py</a> (that makes use of the MQTT broker
-specified by the sentinel).
+
+
+<br/>
+<i><bc>Alens emitting events</bc></i>
+<br/>
+Examples of 'Aliens' written in Ptyhon3 that emit events are:<br/>
+<ul>
+<li><a href="../python/tcp_emitter.py" target="code">tcp_emitter.py</a> (that makes use of the TCP on the context port) <br/><br/></li>
+<li> <a href="../python/mqtt_emitter.py" target="code">mqtt_emitter.py</a> (that makes use of the MQTT broker
+specified by the sentinel)</li>
+</ul>
+ 
 </m></td>
 </tr>
 
@@ -203,6 +236,7 @@ specified by the sentinel).
 
 <tr>
 <td>
+<h3 id="reqsimple">Request simple</h3>
 <a href="../src/demo_req_a.qak" target="code">demo_req_a.qak</a>
 <center><img src="./img/reqreply.png" alt="reqreply" width="90%" ></center>
 </td>
@@ -213,11 +247,12 @@ specified by the sentinel).
 
 <tr>
 <td>
+<h3 id="reqask">Request with askfor</h3>
 <a href="../src/demo_req_b.qak" target="code">demo_req_b.qak</a>
 <center><img src="./img/reqaskreply.png" alt="reqaskreply" width="90%" ></center>
  
 </td>
-<td><m>An example of using request/reply with askFor.
+<td><m>An example of using request/reply with <bc>askFor</bc>.
 </m></td>
 </tr>
  

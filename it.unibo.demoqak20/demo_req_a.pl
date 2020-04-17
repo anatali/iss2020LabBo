@@ -1,6 +1,7 @@
 %====================================================================================
 % demo_req_a description   
 %====================================================================================
-context(ctxdemoreqa, "localhost",  "TCP", "8010").
- qactor( callera, ctxdemoreqa, "it.unibo.callera.Callera").
-  qactor( calleda, ctxdemoreqa, "it.unibo.calleda.Calleda").
+context(ctxcallera, "localhost",  "TCP", "8072").
+context(ctxcalleda, "127.0.0.1",  "TCP", "8074").
+ qactor( callera, ctxcallera, "it.unibo.callera.Callera").
+  qactor( calleda, ctxcalleda, "it.unibo.calleda.Calleda").
