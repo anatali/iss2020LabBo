@@ -177,34 +177,49 @@ At this point, Eclipse should present a window like the following one:
 <tbody>	
 
 <tr>
+<td style="width:50%">
+<h3 id="demonottodo">demonottodo</h3>
+<a href="../src/demonottodo.qak" target="code">demonottodo.qak</a>.<br/>
+<m>A model 'non-model'.<br/><br/>
+We must always remember that a qak file should include the (textual) definition of a <bc>model</bc>, 
+in order to define structure, interaction and behavior of (logical) architectures of distributed systems.
+</m>
+</td>
+<td>
+Since the QAk language aims at capturing the interaction between (distributed) actors, it is not
+'computationally completed' and part of the behavior could be sometimes directly expressed in Kotlin.
+But <bc>without overstating</bc> such a possibility.</m>
+</td>
+</tr>
 
+<tr>
 <td style="width:50%">
 <h3 id="demo0">demo0</h3>
 <a href="../src/demo0.qak" target="code">demo0.qak</a>.<br/><br/>
 <m>Run it first with with <bc>discardMsg On</bc> and next with <bc>discardMsg Off</bc>
 and explain the different results.</m>
-<table style="width:95%">
-<td><pre><kc>//discardMsg On</kc>
-demo in s1
-demo in s2 since msg1:msg1(1)
-demo in s3 since msg2:msg2(1)
-demo in s1
+	<table style="width:95%">
+	<td><pre><kc>//discardMsg On</kc>
+	demo in s1
+	demo in s2 since msg1:msg1(1)
+	demo in s3 since msg2:msg2(1)
+	demo in s1
 
-</pre></td>
-<td><pre><kc>//discardMsg Off</kc>
-demo in s1
-demo in s2 since msg1:msg1(1)
-demo in s3 since msg2:msg2(1)
-demo in s1
-demo in s2 since msg1:msg1(2)</pre></td>
-<tr>
-</tr>
-</table>
+	</pre></td>
+	<td><pre><kc>//discardMsg Off</kc>
+	demo in s1
+	demo in s2 since msg1:msg1(1)
+	demo in s3 since msg2:msg2(1)
+	demo in s1
+	demo in s2 since msg1:msg1(2)</pre></td>
+	<tr>
+	</tr>
+	</table>
 </td> 
 <td><m>
 This is the example introduced in 
 <a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#demo" target="web"" target="code">LabQakExamples2020.html</a>.
-<center><img src="./img/demoDSL.png" alt="demoDSL" width="70%" ></center>
+<center><img src="./img/demoDSL.png" alt="demoDSL" width="90%" ></center>
 </m></td>
 </tr>
 
@@ -247,7 +262,7 @@ specified by the sentinel)</li>
 
 <tr>
 <td>
-<h3 id="reqask">Request with askfor</h3>
+<h3 id="reqask">Request with askfor </h3>
 <a href="../src/demo_req_b.qak" target="code">demo_req_b.qak</a>
 <center><img src="./img/reqaskreply.png" alt="reqaskreply" width="90%" ></center>
  
@@ -256,7 +271,35 @@ specified by the sentinel)</li>
 </m></td>
 </tr>
  
+<tr>
+<td>
+<h3 id="prolog">Using Prolog</h3>
+<a href="../src/prologusage.qak" target="code">prologusage.qak</a>
+ <br/>
+ <m>An example of using Prolog and an user-defined declarative knowledge-base:
+<a href="../userKb.pl" target="code">userKb.pl</a>
+</m>
+
+</td>
+<td><m> The QAk infrastructure makes use of a set of system rules expressed in Prolog:
+ <a href="../sysRules.pl" target="code">sysRules.pl</a></m></td>
+</tr> 
+
+
+<tr>
+<td>
+<h3 id="coap">Actors as CoAP resources</h3>
+<a href="../src/coapdemo.qak" target="code">coapdemo.qak</a>
+ <br/>
+ <m>
+</m>
+
+</td>
+<td><m> An example of users
  
+ <a href="../resources/coap/actorQakCoapClient.kt" target="code">actorQakCoapClient.kt</a>
+ </m></td>
+</tr> 
 
 <center><table style="width:95%">
 <tbody>	

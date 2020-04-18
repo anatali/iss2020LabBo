@@ -12,7 +12,7 @@ Request r2 : r2(X)
 Reply   a1 : a1(X) 
 
 
-//Context ctxdemoreqb ip [host="localhost" port=8014]  
+//Context ctxdemoreqb ip [host="localhost" port=8014]    //for first run (debug)
 Context ctxcallerb ip [host="localhost" port=8076]  
 Context ctxcalledb ip [host="127.0.0.1" port=8078]  
 
@@ -20,6 +20,8 @@ QActor callerb context ctxcallerb {
 	State init initial {
 		println("	callerb request r1(10)")
 		request calledb -m r1 : r1(10)
+		delay 1000
+		request calledb -m r1 : r1(20)
 	}
 	Goto work 
 	
@@ -33,6 +35,7 @@ QActor callerb context ctxcallerb {
 	State handleReply{
 		printCurrentMessage
 	}
+	Goto work 
 	 
 	State handleAskFromCalled{
 //		printCurrentMessage

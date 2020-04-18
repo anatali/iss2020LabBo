@@ -1,0 +1,29 @@
+System coapdemo
+
+Dispatch cmd      : cmd(X)
+
+Context ctxcoapdemo ip [ host= "localhost" port= 8037 ]
+
+QActor actorcoap context ctxcoapdemo{ 
+	State s0 initial{ 
+		println("Please activate a CoAP client observer (e.g.")
+		updateResource "actorcoap init done"
+		delay 1000
+ 	}
+ 	Goto work
+ 	
+ 	State work{
+ 		updateResource "actorcoap is working"		
+ 	}
+ 	Transition t0 whenMsg cmd -> handleCmd
+ 	
+ 	State handleCmd{
+ 		printCurrentMessage
+ 		onMsg( cmd:cmd(V) ){
+ 			[# val V = payloadArg(0) #]
+ 			updateResource "actorcoap is doing cmd($V)"
+ 		}
+  	}
+ 	Transition t0 whenMsg cmd -> handleCmd
+ 	
+}   

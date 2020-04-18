@@ -21,6 +21,8 @@ class Callerb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					action { //it:State
 						println("	callerb request r1(10)")
 						request("r1", "r1(10)" ,"calledb" )  
+						delay(1000) 
+						request("r1", "r1(20)" ,"calledb" )  
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
@@ -34,6 +36,7 @@ class Callerb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
+					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("handleAskFromCalled") { //this:State
 					action { //it:State
