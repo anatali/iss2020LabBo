@@ -36,7 +36,7 @@ QActor basicrobot context ctxbasicrobot{
 #]  
  	State s0 initial { 	
 		println("basicrobot | START")	
- 		run unibo.robot.robotSupport.create(myself,"basicrobotConfig.json")	
+ 		qrun unibo.robot.robotSupport.create(myself,"basicrobotConfig.json")	
 		run unibo.robot.robotSupport.move( "l" )
 		run unibo.robot.robotSupport.move( "r" )
  		updateResource "stopped"

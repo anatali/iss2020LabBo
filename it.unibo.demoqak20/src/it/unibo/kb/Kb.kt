@@ -47,8 +47,10 @@ class Kb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope )
 						println(currentSolution)
 						 val x = getCurSol("X") 
 								   val y = getCurSol("Y") 
-						if(currentSolution.isSuccess()) { println("X=${x} Y=${y}")
-						 }
+						if( currentSolution.isSuccess() ) {println("X=${x} Y=${y}")
+						}
+						else
+						{}
 					}
 					 transition( edgeName="goto",targetState="exampleStart", cond=doswitch() )
 				}	 
@@ -59,18 +61,24 @@ class Kb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope )
 						println(currentSolution)
 						solve("horizontal(line(point(1,1),point(2,Y)))","") //set resVar	
 						 val y = getCurSol("Y")   
-						if(currentSolution.isSuccess()) { println("Y=${y}")
-						 }
+						if( currentSolution.isSuccess() ) {println("Y=${y}")
+						}
+						else
+						{}
 						println(".............................")
 						solve("horizontalLine(point(1,5),P)","") //set resVar	
 						 val P = getCurSol("P")   
-						if(currentSolution.isSuccess()) { println("P=${P} ")
-						 }
+						if( currentSolution.isSuccess() ) {println("P=${P} ")
+						}
+						else
+						{}
 						println(".............................")
 						solve("allHLines(point(1,5),L)","") //set resVar	
 						 val lines = getCurSol("L")   
-						if(currentSolution.isSuccess()) { println("all lines=${lines} ")
-						 }
+						if( currentSolution.isSuccess() ) {println("all lines=${lines} ")
+						}
+						else
+						{}
 					}
 					 transition( edgeName="goto",targetState="exampleKb1", cond=doswitch() )
 				}	 
@@ -140,12 +148,12 @@ class Kb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope )
 				state("exampleKb2Prolog") { //this:State
 					action { //it:State
 						solve("getNextLedName(LEDNAME)","") //set resVar	
-						if(currentSolution.isSuccess()) {  var curledname = getCurSol("LEDNAME")  
+						if( currentSolution.isSuccess() ) { var curledname = getCurSol("LEDNAME")  
 						println("curledname=$curledname")
-						 }
+						}
 						else
-						{ println("no more leds")
-						 }
+						{println("no more leds")
+						}
 					}
 					 transition( edgeName="goto",targetState="exampleKb2Prolog", cond=doswitchGuarded({currentSolution.isSuccess()}) )
 					transition( edgeName="goto",targetState="endOfWork", cond=doswitchGuarded({! (currentSolution.isSuccess()) }) )

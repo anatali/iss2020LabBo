@@ -28,7 +28,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						unibo.robot.robotSupport.move( "l"  )
 						unibo.robot.robotSupport.move( "r"  )
 						updateResourceRep("stopped")
-						discardMessages = false	
+						discardMessages = false
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 

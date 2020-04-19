@@ -21,7 +21,7 @@ class Worker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						discardMessages = false	
+						discardMessages = false
 					}
 					 transition( edgeName="goto",targetState="workshift1", cond=doswitch() )
 				}	 

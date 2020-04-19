@@ -27,14 +27,14 @@ var NumStep      = 0
 val StepTime     = 350
 var StartTime    = 0L
 var Workduration = 0L 
-#]
+#] 
 
 	State s0 initial { 	  
 		println("robotboundary | START")	
 		discardMsg Off  //WE MUST RECEIVE stop
 		println("${mapRoomKotlin.mapUtil.refMapForTesting}")
 		println("-----------------")
-		run mapRoomKotlin.mapUtil.showMap()  //initial map empty
+		run mapRoomKotlin.mapUtil.showMap()  //initial map empty  
 		delay 2000  //just to look at the reference map and the current map
 //		forward robotboundary -m start : start(auto)
 		updateResource "initial"
@@ -42,8 +42,8 @@ var Workduration = 0L
 	Transition t0 whenMsg start -> startWork 
  	
  	State startWork{	//just to store the StartTime
-		memoCurrentTime StartTime		 		
- 	}    
+		memoCurrentTime StartTime	
+  	}    
  	Goto work
  	
 	State work{
@@ -51,7 +51,7 @@ var Workduration = 0L
 		//Activate the motors to go ahead
  		request basicrobot -m step : step( $StepTime  )
 		updateResource "working" 
- 	}
+ 	} 
 	Transition t0 //whenMsg  stop      -> stopped  //to avoid the loss of synch with the grid
 				  whenReply stepdone -> stepDone
 				  whenReply stepfail -> stepFail
@@ -74,11 +74,11 @@ var Workduration = 0L
 		[#
 			NumStep++
 			var Dt = 0L 			
-		#]
+		#]     
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
-			[# Dt = payloadArg(0).toLong()  #]
+			[# Dt = payloadArg(0).toLong()  #] 
 			//println("robotboundary stepFail after: $Dt vs ${3*StepTime/4.0}")
-			if "( Dt < 3*StepTime/4.0 )" {
+			if [# Dt < 3*StepTime/4.0  #] {    
 				forward basicrobot -m cmd : cmd( s )
 				delayVar Dt
 				forward basicrobot -m cmd : cmd( h )

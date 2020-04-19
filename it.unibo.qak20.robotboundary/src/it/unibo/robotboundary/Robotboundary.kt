@@ -25,7 +25,7 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("s0") { //this:State
 					action { //it:State
 						println("robotboundary | START")
-						discardMessages = false	
+						discardMessages = false
 						println("${mapRoomKotlin.mapUtil.refMapForTesting}")
 						println("-----------------")
 						mapRoomKotlin.mapUtil.showMap(  )
@@ -69,10 +69,11 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(DURATION,CAUSE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Dt = payloadArg(0).toLong()   
-								if(( Dt < 3*StepTime/4.0 )){ forward("cmd", "cmd(s)" ,"basicrobot" ) 
+								if(  Dt < 3*StepTime/4.0   
+								 ){forward("cmd", "cmd(s)" ,"basicrobot" ) 
 								delay(Dt)
 								forward("cmd", "cmd(h)" ,"basicrobot" ) 
-								 }
+								}
 								updateResourceRep("stepFail")
 								delay(1000) 
 						}
