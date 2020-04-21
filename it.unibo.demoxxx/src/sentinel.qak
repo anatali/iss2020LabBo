@@ -9,63 +9,56 @@ System sentinel
 Event   alarm : alarm(V)
 
 Context ctxsentinel ip [host="localhost" port=8055]
-   
+ 
 QActor sentinel context ctxsentinel{
 [# var counter=0 #]
-	State s0 initial { 	
-		//println("sentinel | STARTS")	 
-		//[# sysUtil.trace=true #]		
- 	} 
- 	Goto watch if [# counter==0 #] else end
+	State s0 initial { 	 
+		println("sentinel | STARTS")	 	
+		discardMsg On	
+ 	}
+ 	Goto watch //if [# counter>0 #] else end
  	
  	State watch{
  		println("sentinel | WATCH")
  	}	
- 	Transition t0 //whenTime 1000   -> timeout
- 				  whenEvent alarm and "counter==0" -> handleAlarm
- 	 
+ 	Transition t0 
+ 		whenTime 1000   -> timeout
+ 		whenEvent alarm -> handleAlarm  //and "counter==0" 
+
  	State timeout{
    		printCurrentMessage
   		println("sentinel | TIMEOUT")	
   		//["counter++"]	
  	}
- 	Goto s0
+ 	Goto end 
  	 
  	State handleAlarm{
   		printCurrentMessage
   		onMsg ( alarm : alarm(V) ) {
   			println("sentinel | ALARM ${payloadArg(0)} ")  // 
-  		} 
+  		}
+  		delay 3500
    	}
- 	Transition t0 whenTime 1000   -> explore
-   	
- 	State explore{
- 		println("sentinel | exploring ...")
- 	}
- 	Goto watch
- 	//Transition t0 whenTime 1000   -> watch
+ 	Goto watch 
  	
  	State end{
  		println("sentinel | ENDS")	
  		terminate 0
  	}
- 
  }
 
 /*
  * For local test
  */
- 
+
 QActor watcher context ctxsentinel{
 	State s0 initial { 	
- 		 println("			watcher emits fire")
-		 emit alarm : alarm( fire )  
-		 delay 500
- 		 println("			watcher emits tsunami")
+ 		 println("watcher emits fire")
+		 emit alarm : alarm( fire )
+		 delay 300
+ 		 println("watcher emits tsunami")
 		 emit alarm : alarm( tsunami )	 
-		 
-//		 delay 1000
-//		 terminate 0 
+		 terminate 0 
 	}
 	
 }

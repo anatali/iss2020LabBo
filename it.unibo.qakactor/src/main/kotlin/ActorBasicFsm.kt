@@ -194,7 +194,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
     }
 	
     fun handleCurrentMessage(msg: ApplMessage, nextState: State?, memo: Boolean = true): Boolean {
-        //sysUtil.traceprintln("$tt ActorBasicFsm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.msgId()}")
+        sysUtil.traceprintln("$tt ActorBasicFsm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.msgId()}")
         if (nextState is State) {
             currentMsg   = msg
             if( currentMsg.isRequest() ){ requestMap.put(currentMsg.msgId(), currentMsg) }  //Request
