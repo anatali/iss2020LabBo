@@ -160,7 +160,7 @@ table, th, td {
 <li>Download <a href="https://www.eclipse.org/Xtext/download.html" target="web">Eclipse Xtext</a>  and Install Eclipse plugin for Kotlin.</li>
 <li>Set (via <tt>Windws->Preferences</tt>) the Java compiler to version <tt>1.8</tt> and the installed jre to <tt>jre1.8.0_ ... </tt> </li>
 <li>Copy in <tt>dropins</tt> the files that constitute the support to the <bc>qak</bc> meta-model:<br/>
-<bc>it.unibo.Qactork_1.2.1.jar</bc>, <bc>it.unibo.Qactork.ui_1.2.1.jar</bc>, <bc>it.unibo.Qactork.ide_1.2.1.jar</bc>.
+<bc>it.unibo.Qactork_1.2.2.jar</bc>, <bc>it.unibo.Qactork.ui_1.2.2.jar</bc>, <bc>it.unibo.Qactork.ide_1.2.2.jar</bc>.
 <li>In an empty workspace, create a new project of type <tt>Kotlin project</tt> (e.g. <tt>it.unibo.eclipse.bls</tt>).</li>
 <!-- <li>Set the gradle to your <em>Gradle User Home</em> (<tt>Windows->Preferences->Gradle</tt>) </li> -->
 <li>In <tt>src</tt>, create a file with extension <tt>qak</tt></li>
@@ -291,16 +291,20 @@ specified by the sentinel)</li>
 <h3 id="coap">Actors as CoAP resources</h3>
 <a href="../src/coapdemo.qak" target="code">coapdemo.qak</a>
  <br/>
+ <a href="../src/coapdemocaller.qak" target="code">coapdemocaller.qak</a>
  <m>
 </m>
 
 </td>
-<td><m> An example of users
+<td><m> An example of another caller wriiten in Kotlin:
  
  <a href="../resources/coap/actorQakCoapClient.kt" target="code">actorQakCoapClient.kt</a>
+<br/><br/>
+The possibility to write a CoAP caller in Python is still under investigation  
  </m></td>
 </tr> 
 
+<br/><br/>
 <center><table style="width:95%">
 <tbody>	
  

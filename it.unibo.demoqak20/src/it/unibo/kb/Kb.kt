@@ -106,8 +106,10 @@ class Kb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope )
 					action { //it:State
 						solve("chain($CHAINCOUNTER,LED)","") //set resVar	
 					}
-					 transition( edgeName="goto",targetState="exampleKb2continue", cond=doswitchGuarded({currentSolution.isSuccess()}) )
-					transition( edgeName="goto",targetState="exampleKb2end", cond=doswitchGuarded({! (currentSolution.isSuccess()) }) )
+					 transition( edgeName="goto",targetState="exampleKb2continue", cond=doswitchGuarded({ currentSolution.isSuccess()  
+					}) )
+					transition( edgeName="goto",targetState="exampleKb2end", cond=doswitchGuarded({! ( currentSolution.isSuccess()  
+					) }) )
 				}	 
 				state("exampleKb2continue") { //this:State
 					action { //it:State
@@ -155,8 +157,10 @@ class Kb ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope )
 						{println("no more leds")
 						}
 					}
-					 transition( edgeName="goto",targetState="exampleKb2Prolog", cond=doswitchGuarded({currentSolution.isSuccess()}) )
-					transition( edgeName="goto",targetState="endOfWork", cond=doswitchGuarded({! (currentSolution.isSuccess()) }) )
+					 transition( edgeName="goto",targetState="exampleKb2Prolog", cond=doswitchGuarded({ currentSolution.isSuccess()  
+					}) )
+					transition( edgeName="goto",targetState="endOfWork", cond=doswitchGuarded({! ( currentSolution.isSuccess()  
+					) }) )
 				}	 
 				state("endOfWork") { //this:State
 					action { //it:State

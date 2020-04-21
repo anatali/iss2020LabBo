@@ -156,26 +156,15 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-//    suspend fun fsmwork(msg: ApplMessage) {
-//        //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork in ${currentState.stateName} $msg")
-//        var nextState = checkTransition(msg)
-//        var b         = handleCurrentMessage(msg, nextState)
-//        while (b) { //handle previous messages
-//            currentState.enterState()
-//            checkDoEmptyMove()	//APR2020: after while TO GIVE priority to messages
-//            val nextState1 = lookAtMsgQueueStore()
-//            b = handleCurrentMessage(currentMsg, nextState1, memo = false)
-//        }
-//   }
 //APR2020:
     suspend fun fsmwork(msg: ApplMessage) {
         //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork in ${currentState.stateName} $msg")
         var nextState = checkTransition(msg)
         var b         = handleCurrentMessage(msg, nextState)
-        if (b) { //handle previous message
-            currentState.enterState()
+        if (b) { 
+            currentState.enterState() //execute local actions (Moore automaton)
             val nextState1 = lookAtMsgQueueStore()
-			if( nextState1 is State ) fsmwork(currentMsg)
+			if( nextState1 is State ) fsmwork(currentMsg) //handle previous message
 			else checkDoEmptyMoveInState()	 
         }
         //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork ENDS for $msg")

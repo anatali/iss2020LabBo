@@ -45,7 +45,7 @@ QActor robotboundary context ctxrobotboundary  {
 		//TODO: Activate the motors to rotate
 		updateResource "rotating" 
 	}
-	Goto work if "NumStep<4" else endWork
+	Goto work if [# NumStep<4 #] else endWork
    	
 	State stopped{
 		println("boundaryrobot | stopped")	

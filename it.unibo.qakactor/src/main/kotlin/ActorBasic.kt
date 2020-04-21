@@ -140,15 +140,13 @@ Messaging
             return
         }
         val destactor = context!!.hasActor(destName)
-        if( destactor is ActorBasic ) {
-//DESTINATION LOCAL
+        if( destactor is ActorBasic ) { //DESTINATION LOCAL
             //println("$tt ActorBasic sendMessageToActor | ${msg.msgId()}  dest=$destName LOCAL IN ${context!!.name}")
             destactor.actor.send( msg )
             return
         }
         val ctx = sysUtil.getActorContext(destName)
-        if( ctx == null ) {
-//DESTINATION REMOTE but no context known
+        if( ctx == null ) { //DESTINATION REMOTE but no context known
             sysUtil.traceprintln("$tt ActorBasic sendMessageToActor | ${msg.msgId()} dest=$destName REMOTE no context known " )
             if( conn != null ){ //we are sending an answer via TCP to an 'alien'
                 sysUtil.traceprintln("$tt ActorBasic sendMessageToActor | dest=$destName sending answer  ${msg.msgId()} using $conn ")
@@ -162,7 +160,7 @@ Messaging
                 }
             }
         }//ctx of destination is unknwkn
- //DESTINATION remote, context of dest known 
+ //HERE: DESTINATION remote, context of dest known 
         if( attemptToSendViaMqtt(ctx, msg,destName) ) return
 		
 		if( ! msg.isRequest() && ! msg.isReply() ){

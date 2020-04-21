@@ -14,7 +14,7 @@ class CoapToActor( name : String, val exchange: CoapExchange,
     init{
         this.context = owner.context
         context!!.addInternalActor( this )
-		//println(" $tt $name| START in ctx=${context!!.name}")
+		//println(" $tt CoapToActor $name| START in ctx=${context!!.name}")
         scope.launch{ request( msg.msgId(), msg.msgContent(), owner) }
      }
 

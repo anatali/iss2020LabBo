@@ -21,8 +21,10 @@ class Sentinel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 				state("s0") { //this:State
 					action { //it:State
 					}
-					 transition( edgeName="goto",targetState="watch", cond=doswitchGuarded({counter==0}) )
-					transition( edgeName="goto",targetState="end", cond=doswitchGuarded({! (counter==0) }) )
+					 transition( edgeName="goto",targetState="watch", cond=doswitchGuarded({ counter==0  
+					}) )
+					transition( edgeName="goto",targetState="end", cond=doswitchGuarded({! ( counter==0  
+					) }) )
 				}	 
 				state("watch") { //this:State
 					action { //it:State

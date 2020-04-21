@@ -1,0 +1,25 @@
+System coapdemocaller
+
+Dispatch cmd      : cmd(X)
+Request  cmd      : cmd(X)  
+Reply    cmdansw  : cmdansw(X)
+
+Context ctxcoapdemocaller ip [ host= "127.0.0.1" port= 8048 ]
+Context ctxcoapdemoext    ip [ host= "localhost" port= 8037 ]
+
+ExternalQActor actorcoap context ctxcoapdemoext
+
+QActor caller context ctxcoapdemocaller{ 
+	State s0 initial{  
+		println("caller STARTS")
+		request actorcoap -m cmd : cmd(a)
+		delay 500
+		request actorcoap -m cmd : cmd(b)		
+  	}
+ 	Transition t0 whenReply cmdansw -> handleReply
+ 	
+ 	State handleReply{
+ 		printCurrentMessage 
+ 	}
+	Transition t0 whenReply cmdansw -> handleReply
+}

@@ -96,7 +96,7 @@ QActor kb context ctxprologdemo{
 	State exampleKb2{ 
  		solve( chain($CHAINCOUNTER,LED) )
 	}
-	Goto exampleKb2continue if "currentSolution.isSuccess()"  else exampleKb2end
+	Goto exampleKb2continue if [# currentSolution.isSuccess() #]  else exampleKb2end
 	
 	State exampleKb2continue{ 
 		[# val LED = getCurSol("LED") #]
@@ -146,7 +146,7 @@ QActor kb context ctxprologdemo{
 			println( "curledname=$curledname" )		//curledname=...
 		} else { println("no more leds") }    
 	}
-	Goto exampleKb2Prolog if "currentSolution.isSuccess()"  else endOfWork
+	Goto exampleKb2Prolog if [# currentSolution.isSuccess() #]  else endOfWork
  
 	State endOfWork{ 
 		println(" ------------ BYE    ------------ ") 	   	

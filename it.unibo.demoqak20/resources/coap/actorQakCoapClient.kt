@@ -8,8 +8,16 @@ import kotlinx.coroutines.delay
 import it.unibo.kactor.MsgUtil
 import it.unibo.kactor.ApplMessage
 import java.util.Scanner
-import org.eclipse.californium.core.CoapHandler 
- 
+import org.eclipse.californium.core.CoapHandler
+
+object ch : CoapHandler {
+            override fun onLoad(response: CoapResponse) {
+                println("actorQakCoapClient | GET RESP-CODE= " + response.code + " content:" + response.responseText)
+            }
+            override fun onError() {
+                println("actorQakCoapClient | FAILED")
+            }
+        } 
 object actorQakCoapClient {
 
     private val client = CoapClient()
@@ -18,25 +26,34 @@ object actorQakCoapClient {
 	private val sendactor   = "coapalien"
 	private val destactor   = "actorcoap"
 	private val msgId       = "cmd"
-
+	
+	private val resorcePath = "$context/destactor"
+	private var counter     = 0
+	
 	fun init(){
        val uriStr = "coap://localhost:8037/$context/$destactor"
        client.uri = uriStr
-       client.observe(object : CoapHandler {
-            override fun onLoad(response: CoapResponse) {
-                println("ASYNCH GET RESP-CODE= " + response.code + " content:" + response.responseText)
-            }
-            override fun onError() {
-                println("FAILED")
-            }
-        })		
+//       client.observe(object : CoapHandler {
+//            override fun onLoad(response: CoapResponse) {
+//                println("actorQakCoapClient GET RESP-CODE= " + response.code + " content:" + response.responseText)
+//            }
+//            override fun onError() {
+//                println("FAILED")
+//            }
+//        })		
 	}
 
 	fun sendToServer(move: String) {
+		if( move == "h" ){
+			client.get(ch, MediaTypeRegistry.TEXT_PLAIN)
+			//println("GET RESPONSE CODE=  ${respGet.code} ${respGet.getResponseText()}")
+			return
+		}
+		
 		if( move == "p" ){
-			val r = MsgUtil.buildRequest("coapalien", "step", "step(350)", "actorcoap" )
+			val r = MsgUtil.buildRequest("coapalien", "cmd", "cmd(${counter++})", "actorcoap" )
 			val respPut = client.put(r.toString(), MediaTypeRegistry.TEXT_PLAIN)
-			println("PUT ${r} RESPONSE CODE=  ${respPut.code}")
+			println("PUT ${r} RESPONSE CODE=  ${respPut.code} ${respPut.getResponseText()}")
 		}else{
 			val d = MsgUtil.buildDispatch("coapalien", "cmd", "cmd($move)", "actorcoap" )
 	        val respPut = client.put(d.toString(), MediaTypeRegistry.TEXT_PLAIN)

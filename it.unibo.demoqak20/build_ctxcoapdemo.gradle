@@ -55,7 +55,7 @@ dependencies {
 //CUSTOM
     compile name: 'uniboInterfaces'
     compile name: '2p301'
-    compile name: 'it.unibo.qakactor-2.1'
+    compile name: 'it.unibo.qakactor-2.2'
  
     //For p2p two-way connections (TCP, UDP, BTH, Serial ...)
     compile name: 'unibonoawtsupports'
