@@ -57,7 +57,6 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						delay(500) 
 					}
 					 transition(edgeName="t03",targetState="stopped",cond=whenDispatch("stop"))
-					transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("stepFail") { //this:State
 					action { //it:State
@@ -82,10 +81,6 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						mapRoomKotlin.mapUtil.doMove( "l"  )
 					}
 					 transition(edgeName="t04",targetState="stopped",cond=whenDispatch("stop"))
-					transition( edgeName="goto",targetState="work", cond=doswitchGuarded({ NumStep<4  
-					}) )
-					transition( edgeName="goto",targetState="endWork", cond=doswitchGuarded({! ( NumStep<4  
-					) }) )
 				}	 
 				state("stopped") { //this:State
 					action { //it:State

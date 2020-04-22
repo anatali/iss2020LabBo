@@ -9,7 +9,7 @@ System  /* -trace */ demo_req_a
 
 Request r1 : r1(X)
 Request r2 : r2(X)
-Reply   a1 : a1(X) 
+Reply   a1 : a1(X)  
 
 //Context ctxdemoreqa ip [host="localhost" port=8010]   //for first run (debug)
 Context ctxcallera ip [host="localhost" port=8072]  
@@ -45,7 +45,7 @@ QActor calleda context ctxcalleda {
 	Transition t0  
 		whenRequest r1 -> handleRequest
  
-	State handleRequest{ 
+	State handleRequest{  
 		printCurrentMessage		 
  		onMsg( r1 : r1(X) ){  
  			replyTo r1 with a1 : a1(  $payloadArg(0)     )  

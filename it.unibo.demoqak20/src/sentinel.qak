@@ -63,7 +63,7 @@ QActor watcher context ctxsentinel{
 	State s0 initial { 	
  		 println("			watcher emits fire")
 		 emit alarm : alarm( fire )  
-		 delay 1500
+		 delay 500 
  		 println("			watcher emits tsunami")
 		 emit alarm : alarm( tsunami )	 
 		 

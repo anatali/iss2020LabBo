@@ -64,7 +64,7 @@ var Workduration = 0L
 		delay 500
 	} 
 	Transition t0 whenMsg  stop -> stopped   
-	else Goto work
+	//else Goto work		//TODO: automsg?
 	
 	State stepFail{
 	    //println("robotboundary | stepFail  ")
@@ -92,7 +92,7 @@ var Workduration = 0L
 		run mapRoomKotlin.mapUtil.doMove("l")
 	}
  	Transition t0 whenMsg  stop -> stopped   
-	else Goto work if [# NumStep<4 #] else endWork 
+	//else Goto work if [# NumStep<4 #] else endWork   //automsg??
   	
 	State stopped{ 
 		println("robotboundary | stopped")	

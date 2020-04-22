@@ -10,7 +10,7 @@ System /* -trace */ demo_req_b
 Request r1 : r1(X)
 Request r2 : r2(X)
 Reply   a1 : a1(X) 
-
+  
 
 //Context ctxdemoreqb ip [host="localhost" port=8014]    //for first run (debug)
 Context ctxcallerb ip [host="localhost" port=8076]  
