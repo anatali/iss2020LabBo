@@ -185,23 +185,11 @@ abstract class ActorBasicFsm(  qafsmname:  String,
     suspend fun elabMsgInState( ) {
         sysUtil.traceprintln("$tt ActorBasicFsm $name | elabMsgInState in ${currentState.stateName} $currentMsg")
     	currentState.enterState() //execute local actions (Moore automaton)
-	    checkEmptyMove() 
     	if( elabMsgQueueStore() )
 				elabMsgInState()
-//		else checkEmptyMove() 
+		else checkEmptyMove() 
     }
 	 
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
-    suspend fun checkEmptyMove() {
-		//sysUtil.traceprintln("$tt ActorBasicFsm $name | checkDoEmptyMoveInState msgQueueStoreSize=:${msgQueueStore.size}")
-        var nextState = checkTransition(NoMsg) //EMPTY MOVE
-        if (nextState is State) {
-            currentMsg   = NoMsg
-			currentState = nextState
-			elabMsgInState( )
-        }
-    }
 
     suspend fun checkDoEmptyMove() { //used by fsmStartWork
         var nextState = checkTransition(NoMsg) //EMPTY MOVE
@@ -227,9 +215,21 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 			if( elabMsgQueueStore(  ) ) fsmwork(currentMsg)	 
         }
     }
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+    suspend fun checkEmptyMove() {
+		//sysUtil.traceprintln("$tt ActorBasicFsm $name | checkDoEmptyMoveInState msgQueueStoreSize=:${msgQueueStore.size}")
+        var nextState = checkTransition(NoMsg) //EMPTY MOVE
+        if (nextState is State) {
+            currentMsg   = NoMsg
+			currentState = nextState
+			elabMsgInState( )
+        }
+    }
 	
     fun handleCurrentMessage(msg: ApplMessage, nextState: State?, memo: Boolean = true): Boolean {
-        sysUtil.traceprintln("$tt ActorBasicFsm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.msgId()}")
+        sysUtil.trace
+		println("$tt ActorBasicFsm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.msgId()}")
         if (nextState is State) {
             currentMsg   = msg
             if( currentMsg.isRequest() ){ requestMap.put(currentMsg.msgId(), currentMsg) }  //Request
@@ -294,11 +294,12 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         msgQueueStore.forEach {
            val state = checkTransition(it)
            if (state is State) {				
-        	    sysUtil.traceprintln("$tt ActorBasicFsm $name | elabMsgQueueStore state=${state.stateName},curState=${currentState.stateName},it=${it}  ")
+        	   println("$tt ActorBasicFsm $name | elabMsgQueueStore state=${state.stateName},curState=${currentState.stateName},it=${it}  ")
                 currentMsg = msgQueueStore.get( msgQueueStore.indexOf(it) )
                 msgQueueStore.remove(it)
 				var b = handleCurrentMessage(currentMsg, state)	//sets currentState
-				//sysUtil.traceprintln("$tt ActorBasicFsm $name | elabMsgQueueStore state=${state.stateName},curState=${currentState.stateName}, currentMsg=$currentMsg ")
+				//sysUtil.trace
+				println("$tt ActorBasicFsm $name | elabMsgQueueStore state=${state.stateName},curState=${currentState.stateName}, currentMsg=$currentMsg ")
 				if( b ) return true		 
            }
 		}
@@ -307,7 +308,8 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 
     private fun checkTransition(msg: ApplMessage): State? {
         val trans = currentState.getTransitionForMessage(msg)
-        //sysUtil.traceprintln("$tt ActorBasicFsm $name | checkTransition, $msg, curState=${currentState.stateName}, trans=$trans")
+        //sysUtil.trace
+		println("$tt ActorBasicFsm $name | checkTransition, $msg, curState=${currentState.stateName}, trans=$trans")
         return if (trans != null) {
             trans.enterTransition { getStateByName(it) }
         } else {

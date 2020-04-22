@@ -1,23 +1,24 @@
 //https://dl.bintray.com/jetbrains/kotlin/eclipse-plugin/0.8.19/
 
-System demo0
+System   demo0
 //mqttBroker "localhost" : 1883
-
-Dispatch msg1 : msg1(ARG)
-Dispatch msg2 : msg2(ARG)
  
-Event alarm   : alarm( KIND ) 
+Dispatch msg1 : msg1(ARG)
+Dispatch msg2 : msg2(ARG) 
+ 
+Event alarm   : alarm( KIND )   
 
-Context ctxdemo0 ip [host="localhost" port=8055]
+Context ctxdemo0 ip [host="localhost" port=8095]
 
 QActor demo context ctxdemo0{
 	State s0 initial { 	 
 		discardMsg Off
- 	}   
+ 	}    
  	Goto s1 
  	
  	State s1{
- 		println("demo in s1") 
+  		println("demo in s1") 
+ 		//printCurrentMessage 
  	}
  	Transition t0 whenMsg msg1 -> s2
  				  whenMsg msg2 -> s3 
@@ -25,18 +26,19 @@ QActor demo context ctxdemo0{
  	State s2{
  		onMsg( msg1:msg1(ARG) ){
  			println("demo in s2 since msg1:msg1(${payloadArg(0)})")
+ 			delay 1000  
  		}
    	} 
  	Transition t0 whenMsg msg2 -> s3
 
  	State s3{ 
- 		onMsg( msg2:msg2(ARG) ){ 
+ 		printCurrentMessage 	//msg is received but not elaborated
+ 		onMsg( msg2:msg2(1) ){ 
  			println("demo in s3 since msg2:msg2(${payloadArg(0)})")
- 			delay 2000 
  		} 
    	}
-    Goto s1       
-
+    Goto s1      
+ 
 }
  
 
@@ -52,7 +54,7 @@ QActor sender context ctxdemo0{
 		 delay 300
 		 forward demo -m msg2 : msg2(2)		  
 	 
-//		 emit alarm : alarm( fire ) 
+//		 emit alarm : alarm( fire )  
 //		 delay 1200 
 //		 emit alarm : alarm( tsunami )
 //		 delay 1000

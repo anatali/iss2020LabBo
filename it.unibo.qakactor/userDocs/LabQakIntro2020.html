@@ -675,10 +675,12 @@ handles messages by delegating the work to the abstract the method <m><ks>actorB
 
       val <k>actor</k> = <ks>scope.actor&lt;ApplMessage></ks>( 
 				dispatcher, capacity=channelSize ) {
-         for( <ks>msg</ks> <k>in channel</k> ) {
-			...
-			<ks>actorBody( msg )</ks>
-		}
+</pre>			
+<pre id="kaloop"><kc>//Kactor loop</kc>
+	for( <ks>msg</ks> <k>in channel</k> ) {
+		...
+		<ks>actorBody( msg )</ks>
+	}
     <kc>//To be defined by the application designer</kc>
     <k>abstract suspend</k> fun <ks>actorBody</ks>(msg : ApplMessage)
 	 ...
@@ -731,13 +733,13 @@ by defining the  method <m><ks>actorBody</ks></m> so to implement the behavior o
 			
     <k>abstract</k> fun <ks>getBody</ks>(): (ActorBasicFsm.() -> Unit)
     <k>abstract</k> fun <ks>getInitialState</ks>(): String
-
-	...
 	<k>override suspend</k> fun actorBody(msg: ApplMessage) {	
 		...
 		fsmwork(msg)
 	}
-	suspend fun fsmwork(msg: ApplMessage) {	
+</pre>
+<pre id="fsmwork">//<kc>fsmwork: the behavior of <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasicFsm.kt" target="code">ActorBasicFsm.kt</a></kc> 
+	suspend fun fsmwork(<bc>applMsg</bc>: ApplMessage) {	
 		<kc>//see <a href="#msghandlerules">Message handling rules</a> later on</kc>
 		<!--
 		<kc>detect the next state for that msg
@@ -764,7 +766,76 @@ Some help in building and sending messages is given by the class:
 </tr>
 
 
-<tr>
+
+
+<td style="width:55%">
+<h3 id="msghandlerules">Message handling rules</h3>
+With reference to a user-defined QAkactor <m><bc>qa</bc></m> of type <a href=""></a><m><k>ActorBasicFsm</k></m>,
+let us call:<m>
+<ul>
+<li><ks>currentState</ks>: the name the current state of <bc>qa</bc>;</li>
+<li><ks>currentMsg</ks>: the msgId of the message that <bc>qa</bc> is processing;</li>
+<li><ks>kaq</ks> the message-queue of the Kotlin <a href="#kactor"><k>kactor</k></a>;</li>
+<li><ks>mstore</ks> the message-queue local <a href="#ActorBasicFsm"><k>ActorBasicFsm</k></a> ;</li>
+<li><ks>tset</ks>: the set of messages mentioned in the transition related to the <ks>currentState</ks>. </li>
+</ul></m>
+
+Messages sent to <bc>qa</bc> and events are inserted in the <m><ks>kaq</ks></m>.
+<br/><br/>
+<a href="#fsmwork">fsmwork</a> is <i>called in a message-driven way</i> with a new <m><kc>applMsg</kc></m> 
+by the  <a href="#kaloop"><m><k>kactor loop</k></m></a> ,
+while <m><bc>qa</bc></m> is in <m><ks>currentState</ks></m>. Its behavior is: 
+<ol>
+<!-- <li><m><bc>qa</bc></m> is <m><k>inactive</k></m>:<br/>
+<m>
+when a messages is inserted in the <ks>kaq</ks>, look at the <ks>tset</ks>.
+</m>
+</li>
+</li>
+-->
+<li> <m><bc>qa</bc></m>  checks for <m><k>transition</k> for <kc>applMsg</kc>: <br/>
+<!-- if it exists, set <ks>currentMsg=<bc>applMsg</bc></ks>, change <ks>currentState</ks> and goto 2); -->
+
+<ul>
+<li> if it is possible to fire a transition, set <ks>currentMsg=<kc>applMsg</kc></ks>,
+change <ks>currentState</ks> and goto 2)</li>
+<li>if no transition can be fired and <i>discardMessages=false</i>, store the message in the <ks>mstore</ks>;
+<!-- hen remain <k>inactive</k>.--></li>
+</ul>
+
+</li>
+
+
+<li><m><bc>qa</bc></m> executes the actions of a <m><k>state</k></m>:<br/><m>;
+when the state actions terminate, goto 3);</m>
+ </li>
+  
+
+<li>
+<m><bc>qa</bc></m>  looks at the <m><ks>mstore</ks></m> and
+<m>
+<ul>
+<li>if a message <k>ms</k> is found in <ks>tset</ks> : <!-- set <ks>currentMsg</ks> and <ks>currentState</ks> and goto 2);</li> -->
+call <a href="#fsmwork">fsmwork</a>(<k>ms</k>);
+<li>if no message is found and there is an<i>empty move</i> goto 4) </li>
+<li>if there is no move possible, terminate <a href="#fsmwork">fsmwork</a> (the
+next call will be perfomed by the <a href="#kaloop"><k>kactor loop</k></a> );
+</li>
+</ul></m>
+</li>
+
+
+<li><m><bc>qa</bc></m> executes a <m><k>empty-move</k>:<br/>
+set <ks>currentMsg=<kc>NoMsg</kc> </ks>, change <ks>currentState</ks>,
+and goto 2) <!-- and then look at the <ks>mstore</ks> in the 'emtpy-move-mode' -->
+
+</m>
+ </li>
+</ol>
+ 
+</td>
+
+
 <td>
 <h3 id="msgsendrules">Message delivery rules</h3>
 <m>
@@ -795,56 +866,6 @@ and to all the 'alien' connected via <tt>TCP</tt> or via <tt>MQTT</tt>.
 -->
 
 </m>
-</td>
-
-<td style="width:55%">
-<h3 id="msghandlerules">Message handling rules</h3>
-With reference to a user-defined QAkactor <m><ks>qa</ks></m> of type <a href=""></a><m><k>ActorBasicFsm</k></m>,
-let us call:<m>
-<ul>
-<li><ks>currentState</ks>: the name the current state of <ks>qa</ks>;</li>
-<li><ks>currentMsg</ks>: the msgId of the message that <ks>qa</ks> is processing;</li>
-<li><ks>kaq</ks> the message-queue of the Kotlin <a href="#kactor"><k>kactor</k></a>;</li>
-<li><ks>mstore</ks> the message-queue local <a href="#ActorBasicFsm"><k>ActorBasicFsm</k></a> ;</li>
-<li><ks>tset</ks>: the set of messages mentioned in the transition related to the <ks>currentState</ks>. </li>
-</ul></m>
- 
-The possible situations are:
-<ol>
-<li><m><ks>qa</ks></m> is executing the actions of a <m><k>state</k></m>:<br/>
-<m>messages sent to <ks>qa</ks> and events are inserted in the <bc>kaq</bc>
-</m></li>
-
-<li><m><ks>qa</ks></m> is executing a <m><k>transition</k> : 
-look at the <ks>mstore</ks> and
-<ul>
-<li>if a message of the <ks>tset</ks> is found: change <ks>currentMsg</ks>
-and <ks>currentState</ks> and goto 1);</li>
-<li>if no message is found: check for an empty move and  - if it exists - goto 4) </li>
-<li>if there is no move possible, <ks>qa</ks> becomes 'inactive'.
-</li>
-</ul>
-</li>
-<li><m><ks>qa</ks></m> is <m><k>inactive</k></m>:<br/>
-<m>
-when a messages is inserted in the <ks>kaq</ks>, look at the <ks>tset</ks>.
-<ul>
-<li> if it is possible to fire a transition,  change <ks>currentMsg</ks>
-and <ks>currentState</ks> and goto 1)</li>
-<li>if no transition can be fired and <bc>discardMessages=false</bc>, store the message in the <ks>mstore</ks>;
-then remain <k>inactive</k>.</li>
-</ul>
- 
-</m>
-</li>
-<li><m><ks>qa</ks></m> executes a <m><k>empty-move</k>:<br/>
-set <ks>currentMsg=NoMsg</ks>, change <ks>currentState</ks>,
-goto 1) and then look at the <ks>mstore</ks> in the 'emtpy-move-mode'
-
-</m>
- </li>
-</ol>
- 
 </td>
 </tr>
  </tbody>

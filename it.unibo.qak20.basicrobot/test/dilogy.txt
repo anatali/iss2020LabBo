@@ -1,0 +1,64 @@
+lseek(file_descriptor_vector, SEEK_SET, 0);
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+
+ 
+
+
+void readAndShow( int n){
+    char *nomeFile = "testo.txt";
+    printf("%s" , nomeFile);
+int fd ;
+int charletti = 0 ;
+char buf[20];
+if(fd=open(nomeFile ,O_RDONLY)<0)
+{perror("errorediapertura");
+exit(-1);
+} 
+printf("tutto bene %d %d\n" , fd , n);
+
+ 
+
+charletti = read(fd, buf, n);
+
+ 
+
+printf("charletti %c %c %d\n"  , buf[0], buf[1], charletti );
+/*while (charletti >0){
+//write(1,buf,charletti); 
+    printf("aaaa");
+    charletti = read(fd, buf,n);
+}
+close(fd); */
+
+ 
+
+}
+
+ 
+
+void main(int argc , char *argv[]){
+    printf("start %d \n" , argc);
+char *Filename = "xxx/testo2.txt";
+int n = 20;
+printf("start %s \n" , Filename);
+//readAndShow( n);
+int fd ;
+int charletti = 0 ;
+char buf[20];
+if(fd=open(Filename ,O_RDONLY)<0)
+{perror("errorediapertura");
+exit(-1);
+} 
+printf("tutto bene %d %d\n" , fd , n);
+lseek(fd , 0 , 0);
+charletti = read(fd, buf, 10);
+
+ 
+
+printf("charletti %c %c %d\n"  , buf[0], buf[1], charletti );
+}  

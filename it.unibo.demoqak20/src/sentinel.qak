@@ -21,8 +21,8 @@ QActor sentinel context ctxsentinel{
  	State watch{
  		println("sentinel | WATCH")
  	}	
- 	Transition t0 //whenTime 1000   -> timeout
- 				  whenEvent alarm and "counter==0" -> handleAlarm
+ 	Transition t0  
+ 			whenEvent alarm and "counter==0" -> handleAlarm
  	 
  	State timeout{
    		printCurrentMessage
@@ -36,8 +36,12 @@ QActor sentinel context ctxsentinel{
   		onMsg ( alarm : alarm(V) ) {
   			println("sentinel | ALARM ${payloadArg(0)} ")  // 
   		} 
+  		delay 600
    	}
- 	Transition t0 whenTime 1000   -> explore
+ 	Transition t0 whenTime 400  -> explore  
+ 			//if another alarm (tsunami) arrives before 1 sec, it will be lost
+ 			//if the alarm (tsunami)  occurs after 1 sec, it can be sensed
+ 	//Goto watch		//the sentinel is able to perceive the next alarm
    	
  	State explore{
  		println("sentinel | exploring ...")
@@ -49,10 +53,9 @@ QActor sentinel context ctxsentinel{
  		println("sentinel | ENDS")	
  		terminate 0
  	}
- 
  }
 
-/*
+/* 
  * For local test
  */
  
@@ -60,7 +63,7 @@ QActor watcher context ctxsentinel{
 	State s0 initial { 	
  		 println("			watcher emits fire")
 		 emit alarm : alarm( fire )  
-		 delay 500
+		 delay 1500
  		 println("			watcher emits tsunami")
 		 emit alarm : alarm( tsunami )	 
 		 
