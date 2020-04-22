@@ -161,14 +161,16 @@ table, th, td {
 	<li><a href="#messages">Messages</li>
 	<li><a href="#events">Events</li>
 	<li><a href="#behavior">Behavior</li>
-	<li><a href="#msgrules">Message delivery rules</li>
  	</ul>
 
 
 </li>
 <!-- <li><a href="#actorbasic">The class <bc>ActorBasic</bc></li> -->
-<li><a href="#impl">About implementation</li>
-	<ul><li><a href="#qakinfrastr">The Qak-Infrastructure</li>
+<li><a href="#impl">The Qak-Infrastructure</li>
+	<ul><li><a href="#ActorBasic"> ActorBasic</li>
+	<li><a href="#ActorBasicFsm"> ActorBasicFsm</li>
+	<li><a href="#msgsendrules">Message delivery rules</li>
+	<li><a href="#msghandlerules">Message handling rules</li>
 	<li><a href="#Executable">Executable jars</li>
 	</ul>
 <li><a href="#actorplus">More than simple actors</li> 
@@ -650,18 +652,16 @@ with the help of the Eclipse <bc>QActor software factory</bc>  deployed by the
 <h2 id="impl">About implementation</h2>
 
 The metamodel is supported by the <tt>qak-infrastructure</tt> defined in the project <m><k>it.unibo.qakactor</k></m> and
-deployed in <bc>it.unibo.qakactor-2.1.jar</bc>. 
+deployed in <bc>it.unibo.qakactor-2.2.jar</bc>. 
 <center><table style="width:100%">
 <tbody>	
 
 <tr>
 <td style="width:55%">
-<h3 id="qakinfrastr">The <tt>Qak-Infrastructure</tt></h3> 
-<m>
-The <tt>Qak-Infrastructure</tt>  is deployed in a <tt>jar</tt> named <a href="../../unibolibs" target="code">it.unibo.qakactor-2.1.jar</a>.
-It includes:
-
-<ol>
+<h3 id="ActorBasic">The <tt>Qak-Infrastructure</tt>: <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a></h3> 
+ 
+ 
+ 
 <li> <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> is
 an abstract class  that implements the concept of qakactor as a message-driven entity that
 handles messages by delegating the work to the abstract the method <m><ks>actorBody</ks></m>.
@@ -683,30 +683,40 @@ handles messages by delegating the work to the abstract the method <m><ks>actorB
     <k>abstract suspend</k> fun <ks>actorBody</ks>(msg : ApplMessage)
 	 ...
 </pre>
+
 <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> 
-includes an actor associated to a dispatcher defined as follows:
-</m>
-<pre>
-    protected val dispatcher =
-        if( <k>confined</k> ) sysUtil.singleThreadContext
-        else  if( <k>ioBound</k> ) sysUtil.ioBoundThreadContext
-              else sysUtil.cpusThreadContext <kc>//Default</kc>
-</pre>
+includes a Kotlin actor (let us name it as <bc id="kactor">kactor</bc>) associated to a dispatcher defined as follows:
+<m>
 <ul>
-<li>The default of type <tt>kotlinx.coroutines.newFixedThreadPoolContext</tt> 
-handles as many Threads as the number of CPUs available.</li>
  
 <li>If <m><k>confined=true</k></m>, the actor is activated with a <tt>kotlinx.coroutines.newSingleThreadContext</tt>
 that makes use of just 1 Thread </li>
 
-<li>If <m><k>confined=true</k></m>, the actor is activated with a <tt>kotlinx.coroutines.newFixedThreadPoolContext</tt>
+<li>If <m><k>confined=false</k></m> and  <m><k>iobound=true</k></m>, the actor is activated with a <tt>kotlinx.coroutines.newFixedThreadPoolContext</tt>
 with 64 Threads </li>
+
+<li>If <m><k>confined=false</k></m> and  <m><k>iobound=false</k></m>, the default of type <tt>kotlinx.coroutines.newFixedThreadPoolContext</tt> 
+is selected, that handles as many Threads as the number of CPUs available.</li>
+
 </ul>
-<br/><br/>
+</m>
+ 
 </li>
+<!--
+<li><a href="../../it.unibo.qakactor/src/main/kotlin/ApplMessage.kt" target="code">ApplMessage.kt</a> (that requires
+<a href="http://tuprolog.sourceforge.net/doc/2p-guide.pdf" target="web">tuProlog</a> )<br/><br/></li>
+<li><a href="../../it.unibo.qakactor/src/main/kotlin/MsgUtil.kt" target="code">MsgUtil.kt</a></li>
+-->
+ 
+
+</m>
+</td>
+<td>
+<h3 id="ActorBasicFsm">The <tt>Qak-Infrastructure</tt>: <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasicFsm.kt" target="code">ActorBasicFsm.kt</a></h3> 
+
 <li> <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasicFsm.kt" target="code">ActorBasicFsm.kt</a> is
 an abstract class  that extends <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> 
-by defining the  method <k>actorBody</k> ao to implement the behavior of a <tt>FSM</tt>. 
+by defining the  method <m><ks>actorBody</ks></m> so to implement the behavior of a <tt>FSM</tt>. 
 
 
 <pre>
@@ -718,41 +728,45 @@ by defining the  method <k>actorBody</k> ao to implement the behavior of a <tt>F
 		channelSize : Int = 50
 	): <k>ActorBasic</k>( qafsmname, fsmscope, 
 			discardMessages, confined, ioBound, channelSize )  {  
+			
+    <k>abstract</k> fun <ks>getBody</ks>(): (ActorBasicFsm.() -> Unit)
+    <k>abstract</k> fun <ks>getInitialState</ks>(): String
+
 	...
-	override suspend fun actorBody(msg: ApplMessage) {	
+	<k>override suspend</k> fun actorBody(msg: ApplMessage) {	
 		...
 		fsmwork(msg)
 	}
 	suspend fun fsmwork(msg: ApplMessage) {	
+		<kc>//see <a href="#msghandlerules">Message handling rules</a> later on</kc>
+		<!--
 		<kc>detect the next state for that msg
 		if no state exists, memo the message if <k>! discardMessages</k>
 		if a next state exists, execute its body (Moore machine)
-		and afterwards, look at the stored messages (if any)</kc>
+		and afterwards, look at the stored messages (if any)</kc> -->
 	}
 </pre>
- 
+ <m>
 This class is designed according the same principles exposed in 
 <a href="../../it.unibo.actorfsm/userDocs/FSM.html" target="lab">FSM | A kotlin-based DSL</a>
-
-</li>
-<!--
-<li><a href="../../it.unibo.qakactor/src/main/kotlin/ApplMessage.kt" target="code">ApplMessage.kt</a> (that requires
-<a href="http://tuprolog.sourceforge.net/doc/2p-guide.pdf" target="web">tuProlog</a> )<br/><br/></li>
-<li><a href="../../it.unibo.qakactor/src/main/kotlin/MsgUtil.kt" target="code">MsgUtil.kt</a></li>
--->
-</ol>
-
 </m>
-</td>
-<td>
 <h3>Qak-Message support</h3>
 <m>A received message has type:
 <a href="../../it.unibo.qakactor/src/main/kotlin/ApplMessage.kt" target="code">ApplMessage.kt</a>, that requires
-the <a href="http://tuprolog.sourceforge.net/doc/2p-guide.pdf">tuProlog</a> library. <br/>
+the <a href="http://tuprolog.sourceforge.net/doc/2p-guide.pdf">tuProlog</a> library. 
 Some help in building and sending messages is given by the class:
 <a href="../../it.unibo.qakactor/src/main/kotlin/MsgUtil.kt" target="code">MsgUtil.kt</a>.
 </m>
-<h3 id="msgrules">Message delivery rules</h3>
+
+</li>
+
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3 id="msgsendrules">Message delivery rules</h3>
 <m>
 When a sender-actor and a receiver-actor work  in different contexts on different nodes the <tt>Qak-Infrastructure</tt>
 attempts to find the <tt>ipaddress-port</tt> of the receiver context. 
@@ -782,8 +796,57 @@ and to all the 'alien' connected via <tt>TCP</tt> or via <tt>MQTT</tt>.
 
 </m>
 </td>
-</tr>
 
+<td style="width:55%">
+<h3 id="msghandlerules">Message handling rules</h3>
+With reference to a user-defined QAkactor <m><ks>qa</ks></m> of type <a href=""></a><m><k>ActorBasicFsm</k></m>,
+let us call:<m>
+<ul>
+<li><ks>currentState</ks>: the name the current state of <ks>qa</ks>;</li>
+<li><ks>currentMsg</ks>: the msgId of the message that <ks>qa</ks> is processing;</li>
+<li><ks>kaq</ks> the message-queue of the Kotlin <a href="#kactor"><k>kactor</k></a>;</li>
+<li><ks>mstore</ks> the message-queue local <a href="#ActorBasicFsm"><k>ActorBasicFsm</k></a> ;</li>
+<li><ks>tset</ks>: the set of messages mentioned in the transition related to the <ks>currentState</ks>. </li>
+</ul></m>
+ 
+The possible situations are:
+<ol>
+<li><m><ks>qa</ks></m> is executing the actions of a <m><k>state</k></m>:<br/>
+<m>messages sent to <ks>qa</ks> and events are inserted in the <bc>kaq</bc>
+</m></li>
+
+<li><m><ks>qa</ks></m> is executing a <m><k>transition</k> : 
+look at the <ks>mstore</ks> and
+<ul>
+<li>if a message of the <ks>tset</ks> is found: change <ks>currentMsg</ks>
+and <ks>currentState</ks> and goto 1);</li>
+<li>if no message is found: check for an empty move and  - if it exists - goto 4) </li>
+<li>if there is no move possible, <ks>qa</ks> becomes 'inactive'.
+</li>
+</ul>
+</li>
+<li><m><ks>qa</ks></m> is <m><k>inactive</k></m>:<br/>
+<m>
+when a messages is inserted in the <ks>kaq</ks>, look at the <ks>tset</ks>.
+<ul>
+<li> if it is possible to fire a transition,  change <ks>currentMsg</ks>
+and <ks>currentState</ks> and goto 1)</li>
+<li>if no transition can be fired and <bc>discardMessages=false</bc>, store the message in the <ks>mstore</ks>;
+then remain <k>inactive</k>.</li>
+</ul>
+ 
+</m>
+</li>
+<li><m><ks>qa</ks></m> executes a <m><k>empty-move</k>:<br/>
+set <ks>currentMsg=NoMsg</ks>, change <ks>currentState</ks>,
+goto 1) and then look at the <ks>mstore</ks> in the 'emtpy-move-mode'
+
+</m>
+ </li>
+</ol>
+ 
+</td>
+</tr>
  </tbody>
 </table>
 </center>

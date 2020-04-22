@@ -170,7 +170,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork ENDS for $msg")
    }
 
-    suspend fun checkDoEmptyMove() {
+    suspend fun checkDoEmptyMove() { //used by fsmStartWork
         var nextState = checkTransition(NoMsg) //EMPTY MOVE
         while (nextState is State) {
             currentMsg = NoMsg
@@ -185,7 +185,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 		//sysUtil.traceprintln("$tt ActorBasicFsm $name | checkDoEmptyMoveInState msgQueueStoreSize=:${msgQueueStore.size}")
         var nextState = checkTransition(NoMsg) //EMPTY MOVE
         if (nextState is State) {
-            currentMsg = NoMsg
+            currentMsg   = NoMsg
             currentState = nextState
             currentState.enterState()
             val nextState1 = lookAtMsgQueueStore(emptyMove=true)
@@ -240,7 +240,10 @@ abstract class ActorBasicFsm(  qafsmname:  String,
             val state = checkTransition(it)
             if (state is State) {
 				//sysUtil.traceprintln("$tt ActorBasicFsm $name | lookAtMsgQueueStore state=${state.stateName},curState=${currentState.stateName} ")
-				if( ! emptyMove && state != currentState ) return null
+				if( ! emptyMove && state != currentState ){
+					println(" AAAAAAAAAAAAAAA $tt ActorBasicFsm $name | lookAtMsgQueueStore state=${state.stateName},curState=${currentState.stateName} ")
+					return null
+				} 
                 currentMsg = msgQueueStore.get( msgQueueStore.indexOf(it) )
                 //sysUtil.traceprintln("$tt ActorBasicFsm $name | lookAtMsgQueueStore FOUND $currentMsg state=${state.stateName}")
                 msgQueueStore.remove(it)
