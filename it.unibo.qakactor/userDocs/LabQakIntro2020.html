@@ -531,6 +531,7 @@ A <bc>guard</bc> is expressed as a condition written in user-defined Kotlin code
 	printCurrentMessage
 	<k>onMsg</k> ( alarm : alarm(V) ) { <kc>//QActor action</kc>
 		println("sentinel | ALARM ${<ks>payloadArg</ks>(0)}") 
+		delay 1000
 	}
   }
   Goto <ks>s0</ks> 
@@ -807,31 +808,32 @@ change <ks>currentState</ks> and goto 2)</li>
 </li>
 
 
-<li><m><bc>qa</bc></m> executes the actions of a <m><k>state</k></m>:<br/><m>;
-when the state actions terminate, goto 3);</m>
+<li><m><bc>qa</bc></m> executes the actions of a <m><k>state</k></m>:<br/> 
+<m>when the state actions terminate, if there is an empty-move goto 3) else goto 4);</m>
  </li>
   
-
-<li>
-<m><bc>qa</bc></m>  looks at the <m><ks>mstore</ks></m> and
-<m>
-<ul>
-<li>if a message <k>ms</k> is found in <ks>tset</ks> : <!-- set <ks>currentMsg</ks> and <ks>currentState</ks> and goto 2);</li> -->
-call <a href="#fsmwork">fsmwork</a>(<k>ms</k>);
-<li>if no message is found and there is an<i>empty move</i> goto 4) </li>
-<li>if there is no move possible, terminate <a href="#fsmwork">fsmwork</a> (the
-next call will be perfomed by the <a href="#kaloop"><k>kactor loop</k></a> );
-</li>
-</ul></m>
-</li>
-
-
 <li><m><bc>qa</bc></m> executes a <m><k>empty-move</k>:<br/>
 set <ks>currentMsg=<kc>NoMsg</kc> </ks>, change <ks>currentState</ks>,
 and goto 2) <!-- and then look at the <ks>mstore</ks> in the 'emtpy-move-mode' -->
 
 </m>
  </li>
+ 
+<li>
+<m><bc>qa</bc></m>  looks at the <m><ks>mstore</ks></m> and
+<m>
+<ul>
+<li>if a message <k>ms</k> is found in <ks>tset</ks> : <!-- set <ks>currentMsg</ks> and <ks>currentState</ks> and goto 2);</li> -->
+call <a href="#fsmwork">fsmwork</a>(<k>ms</k>);
+<li>if no message is found <!-- and there is an<i>empty move</i> goto 4) </li>
+<li>if there is no move possible, --> terminate <a href="#fsmwork">fsmwork</a> (the
+next call will be perfomed by the <a href="#kaloop"><k>kactor loop</k></a> );
+</li>
+</ul></m>
+</li>
+
+
+
 </ol>
  
 </td>
@@ -840,27 +842,34 @@ and goto 2) <!-- and then look at the <ks>mstore</ks> in the 'emtpy-move-mode' -
 <td>
 <h3 id="msgsendrules">Message delivery rules</h3>
 <m>
-When a sender-actor and a receiver-actor work  in different contexts on different nodes the <tt>Qak-Infrastructure</tt>
-attempts to find the <tt>ipaddress-port</tt> of the receiver context. 
+<ul>
+<li>A message sent from <tt>a</tt> to a local actor <tt>b</tt>, is inserted in the <ks>kaq</ks> of the  <a href="#kactor"><k>kactor</k></a> of <tt>b</tt>.
 <br/><br/>
-If this information is available,
-the message is sent via <tt>MQTT</tt> if a <tt>MQTT</tt> broker is specifiedor in the model;
-otherwise it is sent via <tt>CoAP</tt>. 
-<br/><br/>
-If the system does not find information about the context of the receiver, the message to deliver should be a <bc>reply</bc>
-to a request made by some 'alien'.
-
-<br/> 
-
-The system first checks for the existence of an active <tt>TCP</tt> connection
-with the receiver (the 'alien' made a request via <tt>TCP</tt>).
-In such a connection is found, the message is sent over it. Otherwise, an 
-attempt is made to send the reply via <tt>MQTT</tt>, hoping that the 'alien' was <tt>MQTT</tt>-connected.
-<br/>
-A request made to an actor via <tt>CoAP</tt> will not receive any answer.
-<br/><br/>
-An <bc>event</bc> raised in some <tt>Context</tt>, is delivered to all the other known <tt>Contexts</tt> of the system
+</li>
+<li>An <bc>event</bc> raised in some <tt>Context</tt>, is delivered to all the other known <tt>Contexts</tt> of the system
 and to all the 'alien' connected via <tt>TCP</tt> or via <tt>MQTT</tt>.
+</li>
+</ul>
+When a message sent from <tt>a</tt>  to  actor <tt>b</tt> working in a <bc>different context</bc> (on a different node),
+the <tt>Qak-Infrastructure</tt> attempts to find the <tt>ipaddress-port</tt> of the receiver context:
+
+<ul>
+<li>If information about the context of  <tt>b</tt> is found and a <tt>MQTT</tt> broker is specified in the model,
+the message is sent via <tt>MQTT</tt>; otherwise it is sent via <tt>CoAP</tt>. <br/><br/></li>
+<li>If no information about the context of  <tt>b</tt>  is found, the message to deliver should be a <bc>reply</bc>
+to a request made by some 'alien'.<br/>
+The system first checks for the existence of an active <tt>TCP</tt> connection
+with the receiver (the 'alien' made a request via <tt>TCP</tt>).<br/>
+In such a connection is found, the message is sent over it. <br/>
+Otherwise, an 
+attempt is made to send the reply via <tt>MQTT</tt>, hoping that the 'alien' was <tt>MQTT</tt>-connected.
+</li>
+</li>
+</ul> 
+ 
+ 
+<!-- A request made to an actor via <tt>CoAP</tt> will not receive any answer.
+<br/><br/> -->
 
 <!--
 <center><img src="./img/qakproxy.png" alt="qakproxy" width="90%"></center>
