@@ -20,6 +20,7 @@ class Sentinel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						println("sentinel | STARTS")
 					}
 					 transition( edgeName="goto",targetState="watch", cond=doswitchGuarded({ counter==0  
 					}) )
@@ -29,13 +30,18 @@ class Sentinel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 				state("watch") { //this:State
 					action { //it:State
 						println("sentinel | WATCH")
+						stateTimer = TimerActor("timer_watch", 
+							scope, context!!, "local_tout_sentinel_watch", 1000.toLong() )
 					}
-					 transition(edgeName="t00",targetState="handleAlarm",cond=whenEventGuarded("alarm",{counter==0}))
+					 transition(edgeName="t00",targetState="timeout",cond=whenTimeout("local_tout_sentinel_watch"))   
+					transition(edgeName="t01",targetState="handleAlarm",cond=whenEventGuarded("alarm",{ counter==0  
+					}))
 				}	 
 				state("timeout") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						println("sentinel | TIMEOUT")
+						 counter++ 	 
 					}
 					 transition( edgeName="goto",targetState="s0", cond=doswitch() )
 				}	 
@@ -46,22 +52,21 @@ class Sentinel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("sentinel | ALARM ${payloadArg(0)} ")
 						}
-						delay(600) 
+						delay(1500) 
 						stateTimer = TimerActor("timer_handleAlarm", 
-							scope, context!!, "local_tout_sentinel_handleAlarm", 400.toLong() )
+							scope, context!!, "local_tout_sentinel_handleAlarm", 10.toLong() )
 					}
-					 transition(edgeName="t01",targetState="explore",cond=whenTimeout("local_tout_sentinel_handleAlarm"))   
+					 transition(edgeName="t02",targetState="explore",cond=whenTimeout("local_tout_sentinel_handleAlarm"))   
 				}	 
 				state("explore") { //this:State
 					action { //it:State
-						println("sentinel | exploring ...")
+						println("sentinel | exploring (quite fast) ...")
 					}
 					 transition( edgeName="goto",targetState="watch", cond=doswitch() )
 				}	 
 				state("end") { //this:State
 					action { //it:State
 						println("sentinel | ENDS")
-						terminate(0)
 					}
 				}	 
 			}

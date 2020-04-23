@@ -23,11 +23,7 @@ class Sender ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						delay(300) 
 						forward("msg1", "msg1(2)" ,"demo" ) 
 						delay(300) 
-						forward("msg1", "msg1(3)" ,"demo" ) 
-						delay(300) 
 						forward("msg2", "msg2(1)" ,"demo" ) 
-						delay(300) 
-						forward("msg2", "msg2(2)" ,"demo" ) 
 					}
 				}	 
 			}

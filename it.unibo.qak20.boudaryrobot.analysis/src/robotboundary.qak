@@ -6,12 +6,12 @@ System boundaryrobot
   
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)
-Dispatch resume  : resume(ARG)
+Dispatch resume  : resume(ARG) 
 
 Event simulateobstacle    : simulateobstacle(ARG)
 Event collision           : collision(TARGET,AVATAR)
  
-Context ctxrobotboundary ip [host="localhost" port=8018]  
+Context ctxrobotboundary ip [host="localhost" port=8018]    
 //CodedQActor obstaclesimulator context ctxrobotboundary  className "actors.simulator"	     
 
 QActor robotboundary context ctxrobotboundary  {   
@@ -45,7 +45,7 @@ QActor robotboundary context ctxrobotboundary  {
 		//TODO: Activate the motors to rotate
 		updateResource "rotating" 
 	}
-	Goto work if [# NumStep<4 #] else endWork
+	Goto work if [# NumStep<4 #] else endWork 
    	
 	State stopped{
 		println("boundaryrobot | stopped")	

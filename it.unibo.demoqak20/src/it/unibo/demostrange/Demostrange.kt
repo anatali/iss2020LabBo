@@ -20,28 +20,27 @@ class Demostrange ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 				state("s0") { //this:State
 					action { //it:State
 						println("demostrange | s0")
+						println("$name in ${currentState.stateName} | $currentMsg")
 						forward("cmd", "cmd(a)" ,"demostrange" ) 
-						stateTimer = TimerActor("timer_s0", 
-							scope, context!!, "local_tout_demostrange_s0", 1000.toLong() )
 					}
-					 transition(edgeName="t00",targetState="s1",cond=whenTimeout("local_tout_demostrange_s0"))   
-					transition(edgeName="t01",targetState="s2",cond=whenDispatch("cmd"))
-					transition( edgeName="goto",targetState="s1", cond=doswitch() )
+					 transition( edgeName="goto",targetState="s1", cond=doswitch() )
 				}	 
 				state("s1") { //this:State
 					action { //it:State
 						println("demostrange | s1")
 						forward("cmd", "cmd(b)" ,"demostrange" ) 
 					}
-					 transition(edgeName="t02",targetState="s2",cond=whenDispatch("cmd"))
+					 transition( edgeName="goto",targetState="s2", cond=doswitch() )
 				}	 
 				state("s2") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						println("demostrange | s2, BYE")
+						println("demostrange | s2 ")
+						stateTimer = TimerActor("timer_s2", 
+							scope, context!!, "local_tout_demostrange_s2", 10.toLong() )
 					}
-					 transition(edgeName="t03",targetState="s2",cond=whenDispatch("cmd"))
-					transition( edgeName="goto",targetState="s3", cond=doswitch() )
+					 transition(edgeName="t00",targetState="s3",cond=whenTimeout("local_tout_demostrange_s2"))   
+					transition(edgeName="t01",targetState="s2",cond=whenDispatch("cmd"))
 				}	 
 				state("s3") { //this:State
 					action { //it:State

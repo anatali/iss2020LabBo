@@ -136,48 +136,35 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg: ApplMessage) {
-        //println(" --- | ActorBasicFsm $name | msg=$msg")
-        if (msg.msgId() == autoStartMsg.msgId() && !isStarted) {
-            //scope.launch{ fsmwork() } //The actot must continue to receive msgs
-            fsmStartWork()
-            //println("ActorBasicFsm $name | BACK TO MAIN ACTOR AFTER INIT")
-        } else {
-            fsmwork(msg)
-            //println("ActorBasicFsm $name | BACK TO MAIN ACTOR")
-        }
-    }
-
-    suspend fun fsmStartWork() {
-        isStarted = true
-        //println("ActorBasicFsm $name | fsmStartWork in STATE ${currentState.stateName}")
-        currentState.enterState()
-        checkDoEmptyMove()
+         if ( !isStarted && msg.msgId() == autoStartMsg.msgId() ) fsmStartWork( msg )
+         else  fsmwork(msg)
     }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-//APR2020:
-//    suspend fun fsmworkold(msg: ApplMessage) {
-//        //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork in ${currentState.stateName} $msg")
-//        var nextState = checkTransition(msg)
-//        var b         = handleCurrentMessage(msg, nextState)
-//        if (b) { 
-//            currentState.enterState() //execute local actions (Moore automaton)
-//            val nextState1 = lookAtMsgQueueStore()
-//			if( nextState1 is State ) fsmwork(currentMsg) //handle previous message
-// 			else checkDoEmptyMoveInState()	 
-//        }
-//        //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork ENDS for $msg")
-//   }
-	
-    suspend fun fsmwork(msg: ApplMessage) {
+    suspend fun fsmStartWork( msg: ApplMessage ) {
+        isStarted = true
+        //println("ActorBasicFsm $name | fsmStartWork in STATE ${currentState.stateName}")
+        currentMsg = msg
+        currentState.enterState()
+        var nextState = checkTransition(NoMsg) //check FIRST EMPTY MOVE
+        while (nextState is State) {
+            currentMsg   = NoMsg
+            currentState = nextState
+            currentState.enterState()
+			nextState = checkTransition(NoMsg) //check other EMPTY MOVE
+         }
+          sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmStartWork ENDS ")
+     }
+
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+     suspend fun fsmwork(msg: ApplMessage) {
         //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork in ${currentState.stateName} $msg")
         var nextState = checkTransition(msg)
         var b         = handleCurrentMessage(msg, nextState)
-        if (b){
-			   elabMsgInState( )
-         }
-        //sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork ENDS for $msg")
+        if (b)  elabMsgInState( )
+        sysUtil.traceprintln("$tt ActorBasicFsm $name | fsmwork ENDS for $msg")
    }
 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -186,9 +173,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         sysUtil.traceprintln("$tt ActorBasicFsm $name | elabMsgInState in ${currentState.stateName} $currentMsg")
     	currentState.enterState() //execute local actions (Moore automaton)
 	    checkEmptyMove() 
-    	if( elabMsgQueueStore() )
-				elabMsgInState()
-//		else checkEmptyMove() 
+    	if( elabMsgQueueStore() ) elabMsgInState()
     }
 	 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -203,32 +188,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         }
     }
 
-    suspend fun checkDoEmptyMove() { //used by fsmStartWork
-        var nextState = checkTransition(NoMsg) //EMPTY MOVE
-        while (nextState is State) {
-            currentMsg = NoMsg
-            currentState = nextState
-            currentState.enterState()
-            nextState = checkTransition(NoMsg) //EMPTY MOVE
-        }
-    }
-@kotlinx.coroutines.ObsoleteCoroutinesApi
-@kotlinx.coroutines.ExperimentalCoroutinesApi
-    suspend fun checkDoEmptyMoveInState() {
-		//sysUtil.traceprintln("$tt ActorBasicFsm $name | checkDoEmptyMoveInState msgQueueStoreSize=:${msgQueueStore.size}")
-        var nextState = checkTransition(NoMsg) //EMPTY MOVE
-        if (nextState is State) {
-            currentMsg   = NoMsg
-            currentState = nextState
-            currentState.enterState()
-			//APR2020
-            //val nextState1 = lookAtMsgQueueStore(emptyMove=true)
-			//if( nextState1 is State ) fsmwork(currentMsg)
-			if( elabMsgQueueStore(  ) ) fsmwork(currentMsg)	 
-        }
-    }
-	
-    fun handleCurrentMessage(msg: ApplMessage, nextState: State?, memo: Boolean = true): Boolean {
+     fun handleCurrentMessage(msg: ApplMessage, nextState: State?, memo: Boolean = true): Boolean {
         sysUtil.traceprintln("$tt ActorBasicFsm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.msgId()}")
         if (nextState is State) {
             currentMsg   = msg
@@ -243,19 +203,9 @@ abstract class ActorBasicFsm(  qafsmname:  String,
                             )
             currentState = nextState
 
-            //sysUtil.traceprintln("               %%% ActorBasicFsm $name | handleCurrentMessage currentState= ${currentState.stateName}  ")
-            //sysUtil.traceprintln("               %%% ActorBasicFsm $name | handleCurrentMessage currentMsg= $currentMsg  ")
-            /*
-            if( currentMsg.msgId() != "local_noMsg" &&
-                ! currentMsg.msgContent().startsWith("local_tout_")  &&
-                currentMsg.msgContent().contains(currentState.stateName)
-                && (stateTimer !== null) ) {
-            */
             if( endTheTimer && (stateTimer !== null) ){
                 stateTimer!!.endTimer() //terminate TimerActor
-                //stateTimer = null
-            }
-
+             }
             return true
         } else { //EXCLUDE EVENTS FROM msgQueueStore
             if (!memo) return false
@@ -268,25 +218,6 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         }
     }
 
-
-//    private fun lookAtMsgQueueStore(emptyMove : Boolean = false ): State? {
-//        //sysUtil.traceprintln("$tt ActorBasicFsm $name | lookAtMsgQueueStore :${msgQueueStore.size}")
-//        msgQueueStore.forEach {
-//            val state = checkTransition(it)
-//            if (state is State) {
-//				//sysUtil.traceprintln("$tt ActorBasicFsm $name | lookAtMsgQueueStore state=${state.stateName},curState=${currentState.stateName} ")
-//				if( ! emptyMove && state != currentState ){
-//					println(" AAAAAAAAAAAAAAA $tt ActorBasicFsm $name | lookAtMsgQueueStore state=${state.stateName},curState=${currentState.stateName} ")
-//					return null
-//				} 
-//                currentMsg = msgQueueStore.get( msgQueueStore.indexOf(it) )
-//                sysUtil.traceprintln("$tt ActorBasicFsm $name | lookAtMsgQueueStore FOUND $currentMsg state=${state.stateName}")
-//                msgQueueStore.remove(it)
-//                return state
-//            }
-//        }
-//        return null
-//    }
 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -404,11 +335,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
                 }
     }
 
-/*
-    fun ignoreCurrentCaller() {
-        currentMsg = NoMsg
-    }
-*/
+
 
     fun storeCurrentMessageForReply() {
         msgToReply = currentMsg
@@ -424,23 +351,11 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         //println( " replyToCaller  $msgId : $msg  to $caller" );
         forward(msgId, msg, caller)
     }
- /*
-    suspend fun replyToCaller(msgId: String, msg: String) {
-        if (currentMsg != null) {
-            val caller = currentMsg.msgSender()
-            println( " replyToCaller  $msgId : $msg  to $caller" );
-            forward(msgId, caller, msg)
-        }
-        else if (msgToReply != NoMsg) { //Aug4
-            println( " replyToCaller msgToReply=" + msgToReply);
-            currentMsg = msgToReply
-            replyToCaller(msgId, msg)
-            currentMsg = NoMsg
-        }
-    }
-*/
+	
 /*
+ -------------------------------------------------------------------
 UTILITIES TO HANDLE MSG CONTENT
+ -------------------------------------------------------------------
  */
     private var msgArgList = mutableListOf<String>()
 

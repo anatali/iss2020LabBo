@@ -507,7 +507,7 @@ A <bc>guard</bc> is expressed as a condition written in user-defined Kotlin code
 <k>Event</k>   alarm : alarm(V)
 
 <ks>QActor</ks> sentinel context ctxdemo{
-["val counter=0"]	<kc>//Kotlin code</kc>
+[# val counter=0 	#]	<kc>//Kotlin code</kc>
   <ks>State s0</ks> initial { 	
 	println("sentinel | STARTS") <kc>//QActor action</kc>	  		  
   }
@@ -516,13 +516,14 @@ A <bc>guard</bc> is expressed as a condition written in user-defined Kotlin code
   <ks>State watch</ks>{
 	println("sentinel | WATCH")
   }	
-  Transition t0 <k>whenTime</k> 1000 -> <ks>timeout</ks>
-	<k>whenEvent</k> <ks>alarm</ks> <k>and "counter==0"</k> -> <ks>handleAlarm</ks> <kc>//guard</kc>
+  Transition t0 
+   <k>whenTime</k> 1000 -> <ks>timeout</ks>
+   <k>whenEvent</k> <ks>alarm</ks> <k>and [# counter==0 #]</k> -> <ks>handleAlarm</ks> <kc>//guard</kc>
  	
   <ks>State timeout</ks>{
 	printCurrentMessage		<kc>//QActor action</kc>
 	println("sentinel | TIMEOUT")	
-	["counter++"]	 	<kc>//Kotlin code</kc>
+	[# counter++ 	#]	 	<kc>//Kotlin code</kc>
   }
   Goto <ks>s0</ks> 
  	 

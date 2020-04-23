@@ -160,7 +160,7 @@ table, th, td {
 <li>Download <a href="https://www.eclipse.org/Xtext/download.html" target="web">Eclipse Xtext</a>  and Install Eclipse plugin for Kotlin.</li>
 <li>Set (via <tt>Windws->Preferences</tt>) the Java compiler to version <tt>1.8</tt> and the installed jre to <tt>jre1.8.0_ ... </tt> </li>
 <li>Copy in <tt>dropins</tt> the files that constitute the support to the <bc>qak</bc> meta-model:<br/>
-<bc>it.unibo.Qactork_1.2.2.jar</bc>, <bc>it.unibo.Qactork.ui_1.2.2.jar</bc>, <bc>it.unibo.Qactork.ide_1.2.2.jar</bc>.
+<bc>it.unibo.Qactork_1.2.3.jar</bc>, <bc>it.unibo.Qactork.ui_1.2.3.jar</bc>, <bc>it.unibo.Qactork.ide_1.2.3.jar</bc>.
 <li>In an empty workspace, create a new project of type <tt>Kotlin project</tt> (e.g. <tt>it.unibo.eclipse.bls</tt>).</li>
 <!-- <li>Set the gradle to your <em>Gradle User Home</em> (<tt>Windows->Preferences->Gradle</tt>) </li> -->
 <li>In <tt>src</tt>, create a file with extension <tt>qak</tt></li>
@@ -194,10 +194,32 @@ But <bc>without overstating</bc> such a possibility.</m>
 
 <tr>
 <td style="width:50%">
+<h3 id="demostrange">demostrange</h3>
+<a href="../src/demostrange.qak" target="code">demostrange.qak</a>.<br/>
+<m> This example allows us to better understand the behavior of empty-moves 
+and the 
+<a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#msghandlerules" target="lab">Message handling rules</a>
+
+</m>
+</td>
+<td>
+<center><img src="./img/demostrange.png" alt="demostrange" width="60%" ></center>
+ 
+<m></m>
+</td>
+</tr>
+
+
+<tr>
+<td style="width:50%">
 <h3 id="demo0">demo0</h3>
-<a href="../src/demo0.qak" target="code">demo0.qak</a>.<br/><br/>
-<m>Run it first with with <bc>discardMsg On</bc> and next with <bc>discardMsg Off</bc>
-and explain the different results.</m>
+<a href="../src/demo0.qak" target="code">demo0.qak</a>.<br/>
+<m>This is the example introduced in 
+<a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#demo" target="web"" target="code">LabQakExamples2020.html</a>.</m>
+<br/>
+<m>
+If we send the sequence: <tt>msg1, msg1, msg2</tt> and
+run with <bc>discardMsg On</bc> or with <bc>discardMsg Off</bc>, we have different results:</m>
 	<table style="width:95%">
 	<td><pre><kc>//discardMsg On</kc>
 	demo in s1
@@ -217,8 +239,6 @@ and explain the different results.</m>
 	</table>
 </td> 
 <td><m>
-This is the example introduced in 
-<a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#demo" target="web"" target="code">LabQakExamples2020.html</a>.
 <center><img src="./img/demoDSL.png" alt="demoDSL" width="90%" ></center>
 </m></td>
 </tr>
@@ -226,22 +246,66 @@ This is the example introduced in
 <tr>
 <td>
 <h3 id="sentinel">sentinel</h3>
-<a href="../src/sentinel.qak" target="code">sentinel.qak</a>
+<a href="../src/sentinel.qak" target="code">sentinel.qak</a><br/>
+<m>This is the example introduced in 
+<a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#sentinel" target="web"" target="code">LabQakExamples2020.html</a>
+and shows guards in transition.
 <center><img src="./img/sentinel.png" alt="sentinel" width="70%" ></center>
+</m>
+	<table style="width:95%">
+	<td><pre><kc>//Output</kc>
+sentinel | STARTS
+		watcher emits fire
+sentinel | WATCH
+<m>sentinel in handleAlarm | msg(...<k>alarm(fire)</k>,8)</m>
+sentinel | ALARM fire 
+sentinel | STARTS
+sentinel | WATCH
+<m>sentinel in timeout | msg(local_tout_...)</m>
+sentinel | TIMEOUT
+sentinel | STARTS
+sentinel | ENDS
+		watcher emits tsunami
+	</pre></td>
+	<td><pre><kc>//output when no <bc>whenTime</bc> in <tt>(1)</tt></kc>
+ sentinel | STARTS
+			watcher emits fire
+sentinel | WATCH
+<m>sentinel in handleAlarm | msg(...<k>alarm(fire)</k>,8)</m>
+sentinel | ALARM fire 
+sentinel | STARTS
+sentinel | WATCH
+			watcher emits tsunami
+<m>sentinel in handleAlarm | msg(... <k>alarm(tsunami)</k>,9)</m>
+sentinel | ALARM tsunami 
+sentinel | STARTS
+sentinel | WATCH	
+<pre>
+<tr>
+	</tr>
+	</table>
+<m>To understand why the sentinel perceives the second alarm, see  
+<a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#msghandlerules" target="lab">Message handling rules</a>
+<br/>
+Note that, if we  insert <bc>delay 1500</bc> in state <tt>handleAlarm</tt>, eliminate <bc>Goto s0</bc> in <tt>(2)</tt>
+and insert the commented  <bc>Transition t0 whenTime 10  -> explore</bc>,
+the second alarm is lost.
+
+</m>
 
 </td>
-<td><m>This is the example introduced in 
-<a href="../../it.unibo.qakactor/userdocs/LabQakIntro2020.html#sentinel" target="web"" target="code">LabQakExamples2020.html</a>.
-
-
-<br/>
-<i><bc>Alens emitting events</bc></i>
-<br/>
+<td>
+<h3>Events emitted by 'aliens'</h3>
+<m>
+Comment <bc>whenTime</bc> in <tt>(1)</tt> and insert <bc>Goto watch</bc> in <tt>(3)</tt>.<br/><br/>
 Examples of 'Aliens' written in Ptyhon3 that emit events are:<br/>
+
 <ul>
-<li><a href="../python/tcp_emitter.py" target="code">tcp_emitter.py</a> (that makes use of the TCP on the context port) <br/><br/></li>
-<li> <a href="../python/mqtt_emitter.py" target="code">mqtt_emitter.py</a> (that makes use of the MQTT broker
-specified by the sentinel)</li>
+<li><a href="../resources/python/tcp_emitter.py" target="code">tcp_emitter.py</a> (that makes use of the TCP on the context port) <br/><br/></li>
+<li> <a href="../resources/python/mqtt_emitter.py" target="code">mqtt_emitter.py</a> (that makes use of the MQTT broker
+specified by the sentinel). <br/> <br/>
+Remember to activate the 'sentinel' by specifying a MQTT Broker.
+</li>
 </ul>
  
 </m></td>
@@ -298,7 +362,7 @@ specified by the sentinel)</li>
 </td>
 <td><m> An example of another caller wriiten in Kotlin:
  
- <a href="../resources/coap/actorQakCoapClient.kt" target="code">actorQakCoapClient.kt</a>
+ <a href="../resources/coap/actorQakCoapClient.kt" target="code">resources/coap/actorQakCoapClient.kt</a>
 <br/><br/>
 The possibility to write a CoAP caller in Python is still under investigation  
  </m></td>

@@ -1,6 +1,6 @@
 //https://dl.bintray.com/jetbrains/kotlin/eclipse-plugin/0.8.19/
 
-System   demo0
+System   demo0 
 //mqttBroker "localhost" : 1883
  
 Dispatch msg1 : msg1(ARG)
@@ -12,9 +12,9 @@ Context ctxdemo0 ip [host="localhost" port=8095]
 
 QActor demo context ctxdemo0{
 	State s0 initial { 	 
-		discardMsg Off
- 	}    
- 	Goto s1 
+		discardMsg On
+ 	}     
+ 	Goto s1  
  	
  	State s1{
   		println("demo in s1") 
@@ -47,12 +47,12 @@ QActor sender context ctxdemo0{
  		 forward demo -m msg1 : msg1(1)
 		 delay 300
 		 forward demo -m msg1 : msg1(2)
-		 delay 300
-		 forward demo -m msg1 : msg1(3)
+//		 delay 300
+//		 forward demo -m msg1 : msg1(3)
 		 delay 300
 		 forward demo -m msg2 : msg2(1)		  
-		 delay 300
-		 forward demo -m msg2 : msg2(2)		  
+//		 delay 300
+//		 forward demo -m msg2 : msg2(2)		  
 	 
 //		 emit alarm : alarm( fire )  
 //		 delay 1200 
