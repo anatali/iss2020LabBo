@@ -63,7 +63,8 @@ var Workduration = 0L
 		run mapRoomKotlin.mapUtil.showMap()
 		delay 500
 	} 
-	Transition t0 whenMsg  stop -> stopped   
+	Transition t0 whenTime  10  ->  work 
+				  whenMsg  stop -> stopped   
 	//else Goto work		//TODO: automsg?
 	
 	State stepFail{
@@ -91,7 +92,13 @@ var Workduration = 0L
 		//change the map
 		run mapRoomKotlin.mapUtil.doMove("l")
 	}
- 	Transition t0 whenMsg  stop -> stopped   
+	Goto endWork if [# NumStep==4 #] else continueWork //to be more reactive to stop
+
+	State continueWork{
+		
+	}
+ 	Transition t0 whenTime  10  ->  work 
+ 	              whenMsg  stop -> stopped   
 	//else Goto work if [# NumStep<4 #] else endWork   //automsg??
   	
 	State stopped{ 

@@ -34,7 +34,7 @@ QActor basicrobot context ctxbasicrobot{
   var StartTime     = 0L    
   var Duration      = 0L    
 #]  
- 	State s0 initial { 	
+ 	State s0 initial { 	 
 		println("basicrobot | START")	
  		qrun unibo.robot.robotSupport.create(myself,"basicrobotConfig.json")	
 		run unibo.robot.robotSupport.move( "l" )

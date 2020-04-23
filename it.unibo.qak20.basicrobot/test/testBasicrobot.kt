@@ -71,7 +71,7 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 	fun checkResource(value: String){		
 		if( robot != null ){
 			println(" --- checkResource --- ${robot!!.geResourceRep()} value=$value")
-			//assertTrue( robot!!.geResourceRep() == value)
+			assertTrue( robot!!.geResourceRep() == value)
 		}  
 	}
 	
@@ -125,7 +125,8 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 				delay(initDelayTime)  //time for robot to start
 				robot = it.unibo.kactor.sysUtil.getActor("basicrobot")				
 			}
-			
+			delay( 1000 )
+			checkResource("stopped")
 			testReqCmd()
 			delay( 1000 )
 			testReqStep()

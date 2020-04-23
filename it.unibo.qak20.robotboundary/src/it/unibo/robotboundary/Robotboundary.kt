@@ -55,8 +55,11 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						mapRoomKotlin.mapUtil.doMove( "w"  )
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(500) 
+						stateTimer = TimerActor("timer_stepDone", 
+							scope, context!!, "local_tout_robotboundary_stepDone", 10.toLong() )
 					}
-					 transition(edgeName="t03",targetState="stopped",cond=whenDispatch("stop"))
+					 transition(edgeName="t03",targetState="work",cond=whenTimeout("local_tout_robotboundary_stepDone"))   
+					transition(edgeName="t04",targetState="stopped",cond=whenDispatch("stop"))
 				}	 
 				state("stepFail") { //this:State
 					action { //it:State
@@ -80,14 +83,25 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						delay(500) 
 						mapRoomKotlin.mapUtil.doMove( "l"  )
 					}
-					 transition(edgeName="t04",targetState="stopped",cond=whenDispatch("stop"))
+					 transition( edgeName="goto",targetState="endWork", cond=doswitchGuarded({ NumStep==4  
+					}) )
+					transition( edgeName="goto",targetState="continueWork", cond=doswitchGuarded({! ( NumStep==4  
+					) }) )
+				}	 
+				state("continueWork") { //this:State
+					action { //it:State
+						stateTimer = TimerActor("timer_continueWork", 
+							scope, context!!, "local_tout_robotboundary_continueWork", 10.toLong() )
+					}
+					 transition(edgeName="t05",targetState="work",cond=whenTimeout("local_tout_robotboundary_continueWork"))   
+					transition(edgeName="t06",targetState="stopped",cond=whenDispatch("stop"))
 				}	 
 				state("stopped") { //this:State
 					action { //it:State
 						println("robotboundary | stopped")
 						updateResourceRep("stopped")
 					}
-					 transition(edgeName="t05",targetState="work",cond=whenDispatch("resume"))
+					 transition(edgeName="t07",targetState="work",cond=whenDispatch("resume"))
 				}	 
 				state("endWork") { //this:State
 					action { //it:State

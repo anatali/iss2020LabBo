@@ -1714,3 +1714,129 @@ java.net.BindException: Address already in use: Cannot bind
 2020-04-20 18:14:46 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:51179, recv buf = 65536, send buf = 65536, recv packet size = 2048
 2020-04-20 18:14:46 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:51179
 2020-04-20 18:14:46 INFO  EndpointManager:140 - created implicit endpoint coap://0.0.0.0:51179 for coap
+2020-04-23 18:47:01 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 18:47:03 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:47:03 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:47:03 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:47:03 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:47:03 INFO  CoapServer:207 - Starting server
+2020-04-23 18:47:03 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:47:03 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:47:03 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 18:48:10 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 18:48:11 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:48:11 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:48:12 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:48:12 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:48:12 INFO  CoapServer:207 - Starting server
+2020-04-23 18:48:12 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:48:12 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:48:12 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 18:48:41 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 18:48:43 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:48:43 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:48:43 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:48:43 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:48:43 INFO  CoapServer:207 - Starting server
+2020-04-23 18:48:43 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:48:43 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:48:43 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 18:53:27 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 18:53:28 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:53:28 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:53:28 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:53:28 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:53:28 INFO  CoapServer:207 - Starting server
+2020-04-23 18:53:28 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:53:28 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:53:28 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 18:53:34 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:53:34 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:53:34 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:53:34 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:53:34 INFO  CoapEndpoint:452 - Endpoint [coap://0.0.0.0:0] requires an executor to start, using default single-threaded daemon executor
+2020-04-23 18:53:34 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:53:34 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:51206, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:53:34 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:51206
+2020-04-23 18:53:34 INFO  EndpointManager:140 - created implicit endpoint coap://0.0.0.0:51206 for coap
+2020-04-23 18:54:55 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 18:54:56 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:54:56 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:54:56 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:54:56 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:54:56 INFO  CoapServer:207 - Starting server
+2020-04-23 18:54:56 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:54:56 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:54:56 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 18:55:55 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 18:55:56 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:55:56 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:55:56 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:55:56 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:55:56 INFO  CoapServer:207 - Starting server
+2020-04-23 18:55:56 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:55:57 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:55:57 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 18:56:04 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:56:04 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:56:04 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:56:04 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:56:04 INFO  CoapEndpoint:452 - Endpoint [coap://0.0.0.0:0] requires an executor to start, using default single-threaded daemon executor
+2020-04-23 18:56:04 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:56:04 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:58608, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:56:04 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:58608
+2020-04-23 18:56:04 INFO  EndpointManager:140 - created implicit endpoint coap://0.0.0.0:58608 for coap
+2020-04-23 18:56:59 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 18:57:00 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:57:00 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:57:00 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:57:00 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:57:00 INFO  CoapServer:207 - Starting server
+2020-04-23 18:57:00 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:57:00 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:57:00 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 18:57:08 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 18:57:08 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 18:57:08 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 18:57:08 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 18:57:08 INFO  CoapEndpoint:452 - Endpoint [coap://0.0.0.0:0] requires an executor to start, using default single-threaded daemon executor
+2020-04-23 18:57:08 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 18:57:08 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:58614, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 18:57:08 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:58614
+2020-04-23 18:57:08 INFO  EndpointManager:140 - created implicit endpoint coap://0.0.0.0:58614 for coap
+2020-04-23 19:04:27 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 19:04:28 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 19:04:29 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 19:04:29 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 19:04:29 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 19:04:29 INFO  CoapServer:207 - Starting server
+2020-04-23 19:04:29 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 19:04:29 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 19:04:29 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 19:04:49 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 19:04:50 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 19:04:51 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 19:04:51 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 19:04:51 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 19:04:51 INFO  CoapServer:207 - Starting server
+2020-04-23 19:04:51 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 19:04:51 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 19:04:51 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 19:05:20 INFO  NetworkConfig:372 - loading properties from file C:\Didattica2018Work\iss2020LabBo\it.unibo.qak20.robotboundary\Californium.properties
+2020-04-23 19:05:21 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 19:05:21 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 19:05:21 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 19:05:21 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 19:05:21 INFO  CoapServer:207 - Starting server
+2020-04-23 19:05:21 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 19:05:21 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:8018, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 19:05:21 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:8018
+2020-04-23 19:05:29 INFO  RandomTokenGenerator:55 - using tokens of 8 bytes in length
+2020-04-23 19:05:29 INFO  CoapEndpoint:423 - CoapEndpoint uses udp plain
+2020-04-23 19:05:29 INFO  BlockwiseLayer:207 - BlockwiseLayer uses MAX_MESSAGE_SIZE=1024, PREFERRED_BLOCK_SIZE=512, BLOCKWISE_STATUS_LIFETIME=300000 and MAX_RESOURCE_BODY_SIZE=8192
+2020-04-23 19:05:29 INFO  ReliabilityLayer:83 - ReliabilityLayer uses ACK_TIMEOUT=2000, ACK_RANDOM_FACTOR=1.5, and ACK_TIMEOUT_SCALE=2.0
+2020-04-23 19:05:29 INFO  CoapEndpoint:452 - Endpoint [coap://0.0.0.0:0] requires an executor to start, using default single-threaded daemon executor
+2020-04-23 19:05:29 INFO  UDPConnector:161 - UDPConnector starts up 4 sender threads and 4 receiver threads
+2020-04-23 19:05:29 INFO  UDPConnector:187 - UDPConnector listening on 0.0.0.0/0.0.0.0:56414, recv buf = 65536, send buf = 65536, recv packet size = 2048
+2020-04-23 19:05:29 INFO  CoapEndpoint:485 - Started endpoint at coap://0.0.0.0:56414
+2020-04-23 19:05:29 INFO  EndpointManager:140 - created implicit endpoint coap://0.0.0.0:56414 for coap
