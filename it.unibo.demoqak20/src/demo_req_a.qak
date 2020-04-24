@@ -11,21 +11,21 @@ Request r1 : r1(X)
 Request r2 : r2(X)
 Reply   a1 : a1(X)  
 
-//Context ctxdemoreqa ip [host="localhost" port=8010]   //for first run (debug)
-Context ctxcallera ip [host="localhost" port=8072]  
-Context ctxcalleda ip [host="127.0.0.1" port=8074]  
+Context ctxdemoreqa ip [host="localhost" port=8010]   //for first run (debug)
+//Context ctxcallera ip [host="localhost" port=8072]  
+//Context ctxcalleda ip [host="127.0.0.1" port=8074]  
 
-QActor callera context ctxcallera {
+QActor callera1 context ctxdemoreqa {
 	State init initial {
-		println("	caller1a starts")
+		println("	callera1 starts")
 		request calleda -m r1 : r1(10)
-		delay 500
+ 		delay 50 
 		request calleda -m r1 : r1(20)
 	}
 	Goto work 
 	
 	State work{
-		println("	caller1a work")
+//		println("	callera1 work")
 	}
 	Transition t0 
 		whenReply   a1 -> handleReply
@@ -33,14 +33,34 @@ QActor callera context ctxcallera {
 	State handleReply{
 		printCurrentMessage
  	}
-	Goto work
+	Goto work	
+} 
+QActor callera2 context ctxdemoreqa {
+	State init initial {
+		println("	callera2 starts")
+		request calleda -m r1 : r1(100)
+ 		delay 500
+		request calleda -m r1 : r1(200)
+	}
+	Goto work 
 	
+	State work{
+//		println("	callera2 work")
+	}
+	Transition t0 
+		whenReply   a1 -> handleReply
+	
+	State handleReply{
+		printCurrentMessage
+ 	}
+	Goto work	
 } 
 
-QActor calleda context ctxcalleda {
+QActor calleda context ctxdemoreqa {
  
 	State init initial {
-		println("called1a waits ...")
+		[# sysUtil.logMsgs = true #]
+//		println("calleda waits ...") 
 	}
 	Transition t0  
 		whenRequest r1 -> handleRequest
@@ -48,7 +68,8 @@ QActor calleda context ctxcalleda {
 	State handleRequest{  
 		printCurrentMessage		 
  		onMsg( r1 : r1(X) ){  
- 			replyTo r1 with a1 : a1(  $payloadArg(0)     )  
+ 			[# val Answer = "${currentMsg.msgSender()}_${payloadArg(0)}" #]
+ 			replyTo r1 with a1 : a1( $Answer )  
  		} 
 	} 
 	Goto init   

@@ -9,11 +9,15 @@ import java.io.FileWriter
 import java.io.ObjectOutputStream
 import java.io.FileOutputStream
 import it.unibo.kactor.ActorBasic
+import java.io.File
 
 class Logger(name : String) : ActorBasic(name){
 	var pw : PrintWriter
 	
- 	init{   pw = PrintWriter( FileWriter(name+".txt") ) }
+ 	init{
+		pw = PrintWriter( FileWriter(name+".txt") )
+		File("${name}_MsgLog.txt").delete()
+	}
     
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,6 +36,7 @@ class Logger(name : String) : ActorBasic(name){
 	fun saveData(   data : String )   {		
   		pw.append( "$data\n " )
 		pw.flush()
+		File("${name}_MsgLog.txt").appendText("${data}\n")
     }
 
 }

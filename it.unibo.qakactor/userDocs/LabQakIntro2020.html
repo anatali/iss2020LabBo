@@ -1006,6 +1006,11 @@ Reactive programming allows to <i>propagates event changes</i> to registered obs
 <br/><br/>
 Reactive capabilities are achieved by adding some property  to our 
 <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> class:
+
+<center><table style="width:95%">
+<tbody>	
+<tr>
+<td style="width:50%">
 <pre>
 abstract class  ActorBasic( ... ) {
 protected val <k>subscribers</k> = mutableListOf<ActorBasic>()
@@ -1022,6 +1027,21 @@ protected val <k>subscribers</k> = mutableListOf<ActorBasic>()
         subscribers.forEach { it.actor.send(v) }
     }
 </pre>
+</td>
+<td><m></m></td>
+</tr>
+
+<tr>
+<td >
+</td> 
+<td><m></m></td>
+</tr>
+
+ 
+</tbody>	
+</table></center>
+
+
 
 We can use a <tt>QAkActor</tt> as an <bc>observable producer</bc> of data; it can be observed by other actors
 subscribed to it. Each subscriber will process the data 'in parallel' with the others and can work as an observable in its turn.

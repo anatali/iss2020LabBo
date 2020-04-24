@@ -19,16 +19,17 @@ class Calleda ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						println("called1a waits ...")
+						 sysUtil.logMsgs = true  
 					}
-					 transition(edgeName="t01",targetState="handleRequest",cond=whenRequest("r1"))
+					 transition(edgeName="t02",targetState="handleRequest",cond=whenRequest("r1"))
 				}	 
 				state("handleRequest") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("r1(X)"), Term.createTerm("r1(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								answer("r1", "a1", "a1(${payloadArg(0)})"   )  
+								 val Answer = "${currentMsg.msgSender()}_${payloadArg(0)}"  
+								answer("r1", "a1", "a1($Answer)"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="init", cond=doswitch() )

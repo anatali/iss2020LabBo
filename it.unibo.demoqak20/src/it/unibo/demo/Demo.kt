@@ -19,7 +19,6 @@ class Demo ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						discardMessages = true
 					}
 					 transition( edgeName="goto",targetState="s1", cond=doswitch() )
 				}	 
@@ -32,21 +31,13 @@ class Demo ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope
 				}	 
 				state("s2") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("msg1(ARG)"), Term.createTerm("msg1(ARG)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("demo in s2 since msg1:msg1(${payloadArg(0)})")
-								delay(1000) 
-						}
+						println("demo in s2")
 					}
 					 transition(edgeName="t02",targetState="s3",cond=whenDispatch("msg2"))
 				}	 
 				state("s3") { //this:State
 					action { //it:State
-						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("msg2(ARG)"), Term.createTerm("msg2(1)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("demo in s3 since msg2:msg2(${payloadArg(0)})")
-						}
+						println("demo in s3")
 					}
 					 transition( edgeName="goto",targetState="s1", cond=doswitch() )
 				}	 
