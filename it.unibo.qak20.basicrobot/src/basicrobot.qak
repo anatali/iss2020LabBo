@@ -35,6 +35,7 @@ QActor basicrobot context ctxbasicrobot{
   var Duration      = 0L    
 #]  
  	State s0 initial { 	 
+ 		[# sysUtil.logMsgs=true #]		//store all the received messages in basicrobot_MsgLog
 		println("basicrobot | START")	
  		qrun unibo.robot.robotSupport.create(myself,"basicrobotConfig.json")	
 		run unibo.robot.robotSupport.move( "l" )

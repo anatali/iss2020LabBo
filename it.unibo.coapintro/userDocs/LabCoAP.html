@@ -150,13 +150,15 @@ table, th, td {
     
 <body>
 <div id="top">
-<h1>LabCoAP | Introduction to CoAP<font size="5"></font> </h1>
+<h1>LabCoAP | Introduction to <a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol" target="web">CoAP</a><font size="5"></font> </h1>
 </div>  
 
 <div class="body"> 
-<h2>Introduction: Representational State Transfer (REST)</h2>
+<h2>Introduction: <a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="web">Representational State Transfer (REST)</a></h2>
 
-REST is a <em>resource-oriented architecture</em> (<k>ROA</k>), where every component of a system or an
+REST is a 
+<a href="https://en.wikipedia.org/wiki/Resource-oriented_architecture" target="web">resource-oriented architecture (<k>ROA</k>)</a>, 
+where every component of a system or an
 application is called a <em>resource</em>. A resource is explicitly identified and can be individually addressed.  
 <br/><br/>
 Using the exact same standard naming scheme as all other web resources
@@ -168,7 +170,8 @@ Let us recall the basic concepts:
 
 
 <ol>
-<li>Interactions between components are based on the <em>request-response pattern</em>, where a client
+<li>Interactions between components are based on the 
+<a href="https://en.wikipedia.org/wiki/Request%E2%80%93response" target="web">request-response pattern</a>, where a client
 sends a request to a server and gets back a response</li>
 <li>Loose coupling between components can be achieved using a <em>uniform interface</em> that all components in the system respect.<br/>
 Uniform interfaces make it easy to design a <em>layered system</em>, which means that several
@@ -178,13 +181,25 @@ intermediate components can hide what’s behind them.</li>
 that needs to be referenced or used. Every resource must have a <em>unique identifier</em>
 and should be addressable using a <em>unique referencing mechanism</em>. On the
 web, this is done by assigning every resource a unique <k>URL</k> .</li>
-<li>A <k>URL</k> (<em>Uniform Resource Locator</em>) is a type of <tt>URI</tt> ( (<em>Uniform Resource Identifier</em>)) that identifies a resource via a representation of its primary
+<li>A 
+<a href="https://en.wikipedia.org/wiki/URL" target="web">Uniform Resource Locator (<k>URL</k>)</a>
+is a type  of 
+<a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier" target="web">Uniform Resource Identifier (<k>URI</k>)</a>
+that identifies a resource via a representation of its primary
 access mechanism. On the web, a <tt>URL</tt> is a <tt>URI</tt> beginning with the <tt>http:// scheme</tt>
 <br/>
 <table style="width:100%" border="1">
 <tr>
 <td style="width:50%">
-<img src="./img/thingURL.png" alt="thingURL" width="90%"  />
+<img src="./img/thingURL.png" alt="thingURL" width="90%"  /><br/>
+<m>
+A <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier" target="web">URI</a> (standard scheme defined in <tt>RFC 3986.4</tt>) 
+is a sequence of characters that unambiguously identifies an abstract or physical
+resource.</m>
+
+<pre>
+&lt;scheme> ":" <authority><path> [ "?" query ] [ "#" fragment ]
+</pre>
 </td>
 <td><h3>A Thing URL</h3>
 <m>
@@ -200,22 +215,13 @@ finally the <tt>REST</tt> resource is specified.
 <br/> 
 
 </li>
-<li>A <k>URI</k> (standard scheme defined in <tt>RFC 3986.4</tt>) 
-is a sequence of characters that unambiguously identifies an abstract or physical
-resource.
-
-<pre>
-
-&lt;scheme> ":" <authority><path> [ "?" query ] [ "#" fragment ]
-
-</pre>
-</li>
+ 
 
 <li>Servers shouldn’t keep track of each client’s state because stateless applications are easier to scale.
 Instead, application state should be addressable via its own URL, and each
 resource should contain links and information about what operations are possible
 in each state and how to navigate across states 
-(<em>Hypermedia as the engine of the application state</em> (<k>HATEOAS</k>)).</li>
+(<a href="https://en.wikipedia.org/wiki/HATEOAS" target="web">Hypermedia as the engine of the application state - <k>HATEOAS</k></a>).</li>
 </ol>
 
 
@@ -227,7 +233,8 @@ CoAP Protocol: Step-by-Step Guide</a><br/>
 From <a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol" target="web">wikipedia</a> we read:
 
 <hr/><m>
-Constrained Application Protocol (CoAP) is a specialized Internet Application Protocol for constrained devices.
+<a href="https://coap.technology/spec.html" target="web">Constrained Application Protocol (CoAP Specification)</a> 
+is a specialized Internet Application Protocol for constrained devices.
 It is a <i>service layer protocol</i> that is intended for use in resource-constrained Internet devices,
 such as wireless sensor network nodes.
 <br/><br/>
@@ -235,10 +242,16 @@ Multicast, low overhead, and simplicity are extremely important for Internet of 
 which tend to be deeply embedded and have much less memory and power supply than traditional Internet devices have. 
 Therefore, efficiency is very important. CoAP can run on most devices that support <tt>UDP</tt> or a <tt>UDP</tt> analogue.
 <br/><br/>
-The Internet Engineering Task Force (<ks>IETF</ks>) Constrained RESTful Environments Working Group (<ks>CoRE</ks>) has done the major standardization work for this protocol.
+The <a href="https://en.wikipedia.org/wiki/Internet_Engineering_Task_Force" target="web">Internet Engineering Task Force (<ks>IETF</ks>)</a>
+ <i>Constrained RESTful Environments Working Group</i> (
+ <a href="https://datatracker.ietf.org/wg/core/charter/" target="web"><ks>CoRE</ks></a>
+ ) has done the major standardization work for this protocol.
 </m><hr/>
 
-<h3>Codes</h3>
+<h3>
+<a href="https://tools.ietf.org/html/rfc7252#section-12.1.2 "target="web">Response Codes Codes (RFC 7252 section-12.1.2)</a>
+
+</h3>
 <pre><m>
 +------+------------------------------+-----------+
 | Code | Description                  | Reference |
@@ -293,7 +306,7 @@ It is invoked whenever the path of a resource changes, when a child resource is 
 </li>
 </ul>
 
-
+<!--
 <h2>Example</h2>
 
  <table style="width:98%">
@@ -318,7 +331,7 @@ ResourceClientReader.java</a></li>
 <li>Activate a observer-client <a href="../src/it/unibo/coapintro/ResourceClientObserver.java" target="code">ResourceClientObserver.java</a></li>
 <li>Update the resource by running the producer-client <a href="../src/it/unibo/coapintro/ResourceClientProducer.java" target="code">ResourceClientProducer.java</a></li>
 </ol>
-
+-->
 <h3>Installation notes</h3>
 The Californium framework makes use of the logger library <tt>slf4j</tt> that should be included
 in the dependencies: 

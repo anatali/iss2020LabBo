@@ -15,6 +15,7 @@ import org.eclipse.californium.core.coap.CoAP.ResponseCode.CHANGED
 import org.eclipse.californium.core.coap.CoAP.ResponseCode.CREATED
 import org.eclipse.californium.core.coap.CoAP.ResponseCode.DELETED
 import org.eclipse.californium.core.coap.MediaTypeRegistry
+import java.io.File
 
 
 /*
@@ -36,7 +37,7 @@ abstract class  ActorBasic(  name:         String,
     var resVar  : String ="fail"      // see solve
     val pengine     = Prolog()      //USED FOR LOCAL KB
     val NoMsg       = MsgUtil.buildEvent(name, "local_noMsg", "noMsg")
-
+				
     val mqtt        = MqttUtils(name)
     protected val subscribers = mutableListOf<ActorBasic>()
     var mqttConnected = false
@@ -49,6 +50,10 @@ abstract class  ActorBasic(  name:         String,
 
     internal val requestMap : MutableMap<String, ApplMessage > = mutableMapOf<String,ApplMessage>()  //Oct2019
 
+    private   var logo             : String 	        //Coap Jan2020
+    protected var ActorResourceRep : String 			//Coap Jan2020
+    
+	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     protected val dispatcher =
@@ -71,9 +76,17 @@ abstract class  ActorBasic(  name:         String,
             }
         }
     }
-    //To be defined by the application designer
+	
+    init{                                   //Coap Jan2020
+        isObservable = true
+        logo    = "       ActorBasic(Resource) $name "
+        ActorResourceRep = "$logo | created  "
+ 		
+    }
+	
+    //To be overridden by the application designer
     abstract suspend fun actorBody(msg : ApplMessage)
-
+ 
 	
 	
 	fun setDiscard( v: Boolean){
@@ -92,7 +105,7 @@ TERMINATION
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     fun terminate(arg: Int=0){
 		println("$tt ActorBasic $name | terminates $arg ")
-        context!!.actorMap.remove(  name )
+        if( context !== null ) context!!.actorMap.remove(  name )
         actor.close()
     }
     fun terminateCtx(arg: Int=0){
@@ -488,14 +501,6 @@ KNOWLEDGE BASE
      About CoAP: Jan 2020
 =======================================================================
 */
-    private   var logo             : String 	        //Coap Jan2020
-    protected var ActorResourceRep : String 			//Coap Jan2020
-
-    init{                                   //Coap Jan2020
-        isObservable = true
-        logo    = "       ActorBasic(Resource) $name "
-        ActorResourceRep = "$logo | created  "
-    }
 
     fun updateResourceRep( v : String){
         ActorResourceRep = v

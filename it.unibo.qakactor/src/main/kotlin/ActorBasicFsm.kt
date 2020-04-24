@@ -3,6 +3,7 @@ package it.unibo.kactor
 import alice.tuprolog.*
 import kotlinx.coroutines.*
 import java.util.NoSuchElementException
+import java.io.File
 
 /*
 ================================================================
@@ -117,9 +118,10 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 
     init {
         //println("ActorBasicFsm INIT")private val
-        myself  = this
+         File("${name}_MsLog.txt").delete()  //clear
+         myself  = this
         setBody(getBody(), getInitialState())
-    }
+	 }
 
     abstract fun getBody(): (ActorBasicFsm.() -> Unit)
     abstract fun getInitialState(): String
@@ -136,6 +138,9 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg: ApplMessage) {
+		 if( sysUtil.logMsgs ) {
+			 File("${name}_MsgLog.txt").appendText("${msg}\n")
+		 }
          if ( !isStarted && msg.msgId() == autoStartMsg.msgId() ) fsmStartWork( msg )
          else  fsmwork(msg)
     }

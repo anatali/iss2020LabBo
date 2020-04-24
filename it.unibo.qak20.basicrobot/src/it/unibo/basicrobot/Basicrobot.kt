@@ -23,6 +23,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						 sysUtil.logMsgs=true  
 						println("basicrobot | START")
 						unibo.robot.robotSupport.create(myself ,"basicrobotConfig.json" )
 						unibo.robot.robotSupport.move( "l"  )

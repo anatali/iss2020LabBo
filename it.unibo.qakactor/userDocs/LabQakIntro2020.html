@@ -688,6 +688,11 @@ handles messages by delegating the work to the abstract the method <m><ks>actorB
 	 ...
 </pre>
 
+<center><img src="./img/ActorBasic.png" alt="ActorBasic" width="60%" ></center>
+
+
+ 
+
 <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> 
 includes a Kotlin actor (let us name it as <bc id="kactor">kactor</bc>) associated to a dispatcher defined as follows:
 <m>
@@ -703,6 +708,9 @@ with 64 Threads </li>
 is selected, that handles as many Threads as the number of CPUs available.</li>
 
 </ul>
+The class <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> can be used to define
+applicative actors working in message-driven way:
+<center><img src="./img/ApplActorBasic.png" alt="ApplActorBasic" width="60%" ></center>
 </m>
  
 </li>
@@ -751,8 +759,15 @@ by defining the  method <m><ks>actorBody</ks></m> so to implement the behavior o
 	}
 </pre>
  <m>
-This class is designed according the same principles exposed in 
+This class <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasicFsm.kt" target="code">ActorBasicFsm.kt</a>  is designed according the same principles exposed in 
 <a href="../../it.unibo.actorfsm/userDocs/FSM.html" target="lab">FSM | A kotlin-based DSL</a>
+
+It can be used to define
+applicative actors working as Finite State Machines:
+<center><img src="./img/ApplActorBasicFsm.png" alt="ApplActorBasicFsm" width="90%" ></center>
+
+
+
 </m>
 <h3>Qak-Message support</h3>
 <m>A received message has type:
