@@ -1,0 +1,4 @@
+item(qasink,s0,msg(autoStartSysMsg,dispatch,qasink,qasink,start,9)).
+item(qasink,work,msg(obstacle,event,distancefilter,none,obstacle(7),16)).
+item(qasink,work,msg(obstacle,event,distancefilter,none,obstacle(5),18)).
+item(qasink,work,msg(obstacle,event,distancefilter,none,obstacle(3),20)).

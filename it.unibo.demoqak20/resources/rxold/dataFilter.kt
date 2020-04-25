@@ -12,7 +12,7 @@ import alice.tuprolog.Term
 import alice.tuprolog.Struct
 
 //This actor works without any Context
-class dataFilter (name : String, val owner : ActorBasic) : ActorBasic( name ) {
+class dataFilter (name : String, val owner : ActorBasic? = null) : ActorBasic( name ) {
 val LimitDistance = 8
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +30,7 @@ val LimitDistance = 8
  		if( Distance < LimitDistance ){
 	 			val m1 = MsgUtil.buildEvent(name, "obstacle", "obstacle($data)")
 				println("   ${name} |  emit m1= $m1")
- 				owner.emit( m1, avatar=true ) 				//emits the qak event sonarRobot
+ 				if( owner!==null ) owner!!.emit( m1, avatar=true ) 				//emits the qak event sonarRobot
     	}else{
 			//println("   $name |  DISCARDS $Distance ")
  		}				

@@ -26,22 +26,22 @@ class sonarSimulator ( name : String ) : ActorBasic( name ) {
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg : ApplMessage){
-        //println("	--- sonarHCSR04Simulator | received  msg= $msg "  ) 
+        //println("	--- sonarSimulator | received  msg= $msg "  ) 
 		println("$tt $name | received  $msg "  )
-		startDataReadSimulation(   )
+		if( msg.msgId() == "start") startDataReadSimulation(   )
      }
   	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun startDataReadSimulation(    ){
   			var i = 0
-			while( i < 7 ){
+			while( i < 10 ){
  	 			val m1 = "sonar( ${data.elementAt(i*2)} )"
 				i++
-				println("$tt $name | generates $m1")
- 				val event = MsgUtil.buildEvent( "sonarHCSR04Simulator","sonarRobot",m1)								
+				//println("$tt $name | generates $m1")
+ 				val event = MsgUtil.buildEvent( name,"sonarRobot",m1)								
  				emitLocalStreamEvent( event )
- 				delay( 1000 )
+ 				delay( 500 )
   			}			
 			terminate()
 	}
@@ -55,7 +55,7 @@ fun main() = runBlocking{
 	val consumer  = dataConsumer("dataconsumer")
 	val simulator = sonarSimulator( "datasimulator" )
 	val filter    = dataFilter("datafilter", consumer)
-	val logger    = Logger("logger")
+	val logger    = dataLogger("logger")
 	simulator.subscribe( logger ).subscribe( filter ).subscribe( consumer ) 
 	MsgUtil.sendMsg("start","start",simulator)
 	simulator.waitTermination()

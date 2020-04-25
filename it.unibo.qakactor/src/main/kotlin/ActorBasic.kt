@@ -413,7 +413,8 @@ Messaging
     suspend fun emitLocalStreamEvent(v: ApplMessage ){
         subscribers.forEach {
             sysUtil.traceprintln(" $tt ActorBasic $name | emitLocalStreamEvent $it $v " );
-            it.actor.send(v) }
+            it.actor.send(v)
+		}
     }
 
 

@@ -1,4 +1,4 @@
-System basicrobot 
+System -msglog basicrobot 
  	//"tcp://mqtt.eclipse.org:1883"
 	//mqtt.eclipse.org
 	//tcp://test.mosquitto.org
@@ -7,7 +7,7 @@ System basicrobot
  
 //mqttBroker "broker.hivemq.com" : 1883
 
-Dispatch cmd       : cmd(MOVE)   
+Dispatch cmd       : cmd(MOVE)    
 Dispatch end       : end(ARG)
  
 Request  step      : step( TIME )	
@@ -35,8 +35,7 @@ QActor basicrobot context ctxbasicrobot{
   var Duration      = 0L    
 #]  
  	State s0 initial { 	 
- 		[# sysUtil.logMsgs=true #]		//store all the received messages in basicrobot_MsgLog
-		println("basicrobot | START")	
+ 		println("basicrobot | START")	
  		qrun unibo.robot.robotSupport.create(myself,"basicrobotConfig.json")	
 		run unibo.robot.robotSupport.move( "l" )
 		run unibo.robot.robotSupport.move( "r" )

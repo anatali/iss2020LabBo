@@ -1,0 +1,10 @@
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(15),11)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(13),12)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(11),13)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(9),14)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(7),15)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(5),17)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(3),19)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(1),21)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(-1),22)).
+item(datacleaner,nostate,msg(sonarRobot,event,sonarsimulator,none,sonar(-3),23)).

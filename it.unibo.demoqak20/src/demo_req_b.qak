@@ -1,4 +1,4 @@
-System /* -trace */ demo_req_b
+System -msglog /* -trace */ demo_req_b
  	//"tcp://mqtt.eclipse.org:1883"
 	//mqtt.eclipse.org
 	//tcp://test.mosquitto.org

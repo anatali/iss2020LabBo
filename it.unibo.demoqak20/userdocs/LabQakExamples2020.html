@@ -371,13 +371,71 @@ Remember to activate the 'sentinel' by specifying a MQTT Broker.
 The possibility to write a CoAP caller in Python is still under investigation  
  </m></td>
 </tr> 
+
+<tr>
+<td>
+<h3 id="qastreams">Actors as streams</h3>
+<center><img src="./img/demoStreams.png" alt="demoStreams" width="100%"></center>
+<a href="../src/streamsdemo.qak" target="code">streamsdemo.qak</a>
+ <br/><br/>
+ <i>Actors that work in message-driven way</i>
+ <m>
+ <ul>
+ <li><a href="../resources/rx/sonarSimulator.kt" target="code">sonarSimulator.kt</a>: once activated, exploits a 
+  <a href="../../it.unibo.kotlinIntro/userDocs/LabIntroductionToKotlin.html#sequences" target="lab">Suspendable Sequence</a>
+ to generate a  sequence of (sonar) data  in the form of <i>qak events</i>: <bc>Event sonarRobot  : sonar(DISTANCE)</bc>
+ <br/><br/></li>
+ <li><a href="../resources/rx/dataLogger.kt" target="code">dataLogger.kt</a>: when it receives a message from the previous component in the pipe,
+shows the message and aftwerwards propagates the message (as it is) to the next  component of the pipe.
+  <br/><br/></li>
+ <li><a href="../resources/rx/dataCleaner.kt" target="code">dataCleaner.kt</a>: when it receives a message (event <bc>sonarRobot</bc>) from the previous component in the pipe,
+propagates to the next component only the events whose <bc>DISTANCE</bc> is within a prefixed interval of values;
+  <br/><br/></li>
+ <li><a href="../resources/rx/distanceFilter.kt" target="code">distanceFilter.kt</a>;
+ when it receives a message (event <bc>sonarRobot</bc>) from the previous component in the pipe,
+propagates to the next component a new event (<bc>Event obstacle : obstacle(DISTANCE)</bc>) when  the value of <bc>DISTANCE</bc> i sless than 
+a prefixed value;
+<br/><br/></li>
+ <li><bc>qasink</bc>: is the actor defined in the model <a href="../src/streamsdemo.qak" target="code">streamsdemo.qak</a>.
+ It crreates the pipe and handles the events emitted by <a href="../resources/rx/distanceFilter.kt" target="code">distanceFilter.kt</a>
+ </li>
+ 
+ </ul>
+</m>  
+
+</td>
+<td>
+<h3>Coded QAkactors</h3>
+<m> 
+The model  <a href="../src/streamsdemo.qak" target="code">streamsdemo.qak</a> defines a system composed by the <bc>qasink</bc>
+and a set of actors qualified as <tt>CodedQActor</tt>.
+<br/><br/>
+A <bc>CodedQActor</bc> is an actor completely written in Kotlin that can be included in the system by specifying its class name.
+Its presence is included in the description of the system. In fact, in our case, such a descripiton, wrtiten in
+<a href="../streamsdemo.pl" target="code">streamsdemo.pl</a> is:
+<pre>
+context(ctxstreamsdemo, "localhost",  "TCP", "8045").
+ qactor( sonarsimulator, ctxstreamsdemo, "rx.sonarSimulator").
+  qactor( datalogger, ctxstreamsdemo, "rx.dataLogger").
+  qactor( datacleaner, ctxstreamsdemo, "rx.dataCleaner").
+  qactor( distancefilter, ctxstreamsdemo, "rx.distanceFilter").
+  qactor( qasink, ctxstreamsdemo, "it.unibo.qasink.Qasink").
+</pre>
+ 
+Thus, the <tt>QA-infrastructure</tt> handles a <tt>CodedQActor</tt> as a usual; in particular, it will <bc>'inject'</bc> into it the context
+specified by the model. 
+<br/>
+Note that each <tt>CodedQActor</tt> in this example is defined as a specialized version of 
+<a href="../../it.unibo.qakactor/userDocs/LabQakIntro2020.html#ActorBasic" tragte="lab">ActorBasic</a> that has no context at creation time.
+  </m></td>
+</tr> 
+
 </tbody>	
 </table></center>
 
 <br/><br/>
 <center><table style="width:95%">
 <tbody>	
- 
 <tr>
 <td style="width:40%">
 </td>
@@ -397,8 +455,6 @@ The possibility to write a CoAP caller in Python is still under investigation
 <td><m> 
 </m></td>
 </tr>
-
-
 </tbody>	
 </table></center>
 

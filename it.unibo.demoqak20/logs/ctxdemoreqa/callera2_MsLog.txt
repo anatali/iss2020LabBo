@@ -1,3 +1,0 @@
-item(callera2,init,msg(autoStartSysMsg,dispatch,callera2,callera2,start,7)).
-item(callera2,work,msg(a1,reply,calleda,callera2,a1(callera2_100),13)).
-item(callera2,work,msg(a1,reply,calleda,callera2,a1(callera2_200),17)).

@@ -62,7 +62,7 @@ EACH CONNECTION WORKS IN ITS OWN COROUTINE
                     sysUtil.traceprintln("               %%% QakContextServer  $name | receives:$msg in ${sysUtil.curThread()}")
                     if( msg != null ) {
                         val inputmsg = ApplMessage(msg)
-						sysUtil.updateLogfile( actorLogfileName, inputmsg.toString() )
+						sysUtil.updateLogfile( actorLogfileName, inputmsg.toString(), dir=msgLogNoCtxDir )
                         if (inputmsg.msgType() == ApplMessageType.event.toString()) {
                             propagateEvent(inputmsg)
                             continue

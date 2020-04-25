@@ -266,7 +266,7 @@ object sysUtil{
  		val logDirectory = File("$userDirectory/$dir")
 		logDirectory.mkdirs()	//have the object build the directory structure, if needed
 		var file = File(logDirectory, fname)
-		println("               %%% sysUtil | createFile file $file in $dir")
+//		println("               %%% sysUtil | createFile file $file in $dir")
 		file.writeText("")	//file is created and nothing is written to it
 	}
 	

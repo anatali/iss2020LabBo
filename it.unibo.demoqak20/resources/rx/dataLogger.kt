@@ -11,32 +11,25 @@ import java.io.FileOutputStream
 import it.unibo.kactor.ActorBasic
 import java.io.File
 
-class Logger(name : String) : ActorBasic(name){
+class dataLogger(name : String) : ActorBasic(name){
 	var pw : PrintWriter
 	
  	init{
 		pw = PrintWriter( FileWriter(name+".txt") )
-		File("${name}_MsgLog.txt").delete()
-	}
+ 	}
     
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	override suspend fun actorBody(msg: ApplMessage) {
- 		val vStr  = (Term.createTerm( msg.msgContent() ) as Struct).getArg(0).toString()
-        //println("   $name |  handles msg= $msg  vStr=$vStr")
-		elabData( vStr )
-		emitLocalStreamEvent(msg.msgId(),"sonar($vStr)")	//wec could change the event ...
+  		elabData( msg )
+		emitLocalStreamEvent(msg)	//propagate ... 
 	}
  
- 	protected suspend fun elabData(data : String ){
+ 	protected suspend fun elabData( msg: ApplMessage ){
+ 		val data  = (Term.createTerm( msg.msgContent() ) as Struct).getArg(0).toString()
 		println("	-------------------------------------------- $name data=$data")
-		saveData( data)
-	}
-	
-	fun saveData(   data : String )   {		
-  		pw.append( "$data\n " )
+   		pw.append( "$data\n " )
 		pw.flush()
-		File("${name}_MsgLog.txt").appendText("${data}\n")
-    }
+     }
 
 }

@@ -171,6 +171,7 @@ table, th, td {
 	<li><a href="#ActorBasicFsm"> ActorBasicFsm</li>
 	<li><a href="#msghandlerules">Message handling rules</li>
 	<li><a href="#msgsendrules">Message delivery rules</li>
+	<li><a href="#codedqa">CodedQActors</li>
 	<li><a href="#Executable">Executable jars</li>
 	</ul>
 <li><a href="#actorplus">More than simple actors</li> 
@@ -711,6 +712,8 @@ is selected, that handles as many Threads as the number of CPUs available.</li>
 The class <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasic.kt" target="code">ActorBasic.kt</a> can be used to define
 applicative actors working in message-driven way:
 <center><img src="./img/ApplActorBasic.png" alt="ApplActorBasic" width="60%" ></center>
+<br/>
+See for example <a href="#codedqa">CodedQActors</a>.
 </m>
  
 </li>
@@ -893,6 +896,36 @@ attempt is made to send the reply via <tt>MQTT</tt>, hoping that the 'alien' was
 </m>
 </td>
 </tr>
+
+<tr>
+<td><h3 id="codedqa">CodedQActors</h3>
+A <bc>CodedQActor</bc> is an actor completely written in Kotlin that can be included in a qak-model by specifying its class name. For example:
+<pre>
+System  ...
+Context  <ks>ctxabc</ks>
+
+<k>CodedQActor</k> qacodedname <k>context</k> <ks>ctxabc</ks> 
+                                     <k>className</k> "unibo.classname"
+</pre>
+Its presence is included in the description of the system. 
+<br/><br/>
+The <tt>QA-infrastructure</tt> handles a <tt>CodedQActor</tt> as a usual; in particular, it will <bc>'inject'</bc> into it the context
+specified by the model. 
+</td>
+<td>
+A <tt>CodedQActor</tt> is usually introduced as a specilization of <a href="#ActorBasic">ActorBasic</a>:
+<pre>
+class qacoded (name : String ) : <k>ActorBasic</k>( name ) {
+    <k>override</k> suspend fun actorBody(msg: ApplMessage) {
+  		<kc>//TODO</bc>
+ 	}
+}
+</pre>
+For a complete example, see:
+<a href="../../it.unibo.demoqak20/userdocs/LabQakExamples2020.html#qastreams" target="web"" target="code">LabQakExamples2020.html#qastreams</a>
+</td>
+</tr>
+
  </tbody>
 </table>
 </center>
@@ -1028,7 +1061,19 @@ protected val <k>subscribers</k> = mutableListOf<ActorBasic>()
     }
 </pre>
 </td>
-<td><m></m></td>
+<td>
+<center><img src="./img/demoStreams.png" alt="demoStreams" width="100%"></center><br/>
+
+A <tt>QAkActor</tt> can work as an <bc>observable producer</bc> of data; it can be observed by other actors
+subscribed to it. 
+<m>
+<br/>
+Each subscriber will process the data 'in parallel' with the others and can work as an observable in its turn.
+<br/>
+See the example in 
+<a href="../../it.unibo.demoqak20/userdocs/LabQakExamples2020.html#qastreams" target="web"" target="code">LabQakExamples2020.html</a>
+
+</m></td>
 </tr>
 
 <tr>
@@ -1043,8 +1088,6 @@ protected val <k>subscribers</k> = mutableListOf<ActorBasic>()
 
 
 
-We can use a <tt>QAkActor</tt> as an <bc>observable producer</bc> of data; it can be observed by other actors
-subscribed to it. Each subscriber will process the data 'in parallel' with the others and can work as an observable in its turn.
 
 <m>
 <div class="remark"> 
