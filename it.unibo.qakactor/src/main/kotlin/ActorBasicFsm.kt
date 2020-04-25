@@ -94,7 +94,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 	
     private var isStarted = false
     protected var myself : ActorBasicFsm
-    protected lateinit var currentState: State
+    protected lateinit var currentState: State	//inherited
     protected var currentMsg       = NoMsg
     protected var msgToReply       = NoMsg
     lateinit protected var mybody: ActorBasicFsm.() -> Unit
@@ -102,7 +102,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 
     private val stateList = mutableListOf<State>()
     private val msgQueueStore = mutableListOf<ApplMessage>()
-
+ 
     //================================== STRUCTURAL =======================================
     fun state(stateName: String, build: State.() -> Unit) {
         val state = State(stateName, scope)
@@ -118,8 +118,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
 
     init {
         //println("ActorBasicFsm INIT")private val
-         File("${name}_MsLog.txt").delete()  //clear
-         myself  = this
+        myself  = this
         setBody(getBody(), getInitialState())
 	 }
 
@@ -135,12 +134,18 @@ abstract class ActorBasicFsm(  qafsmname:  String,
         scope.launch { autoMsg(autoStartMsg) }  //auto-start
     }
 
+	//Now there is a state ....
+ 	override  fun writeMsgLog( msg: ApplMessage ){ //APR2020
+		//Update the log of the actor
+         sysUtil.updateLogfile(actorLogfileName,  "item($name,${currentState.stateName},$msg).", dir=msgLogDir )  
+		//Update the log of the context
+         if( context !== null )
+			 sysUtil.updateLogfile(context!!.ctxLogfileName, "item($name,${currentState.stateName},$msg).", dir=msgLogNoCtxDir )		
+	}
+	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg: ApplMessage) {
-		 if( sysUtil.logMsgs ) {
-			 File("${name}_MsgLog.txt").appendText("${msg}\n")
-		 }
          if ( !isStarted && msg.msgId() == autoStartMsg.msgId() ) fsmStartWork( msg )
          else  fsmwork(msg)
     }

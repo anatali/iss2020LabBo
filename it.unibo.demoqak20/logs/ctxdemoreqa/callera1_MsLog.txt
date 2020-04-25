@@ -1,0 +1,3 @@
+item(callera1,init,msg(autoStartSysMsg,dispatch,callera1,callera1,start,5)).
+item(callera1,work,msg(a1,reply,calleda,callera1,a1(callera1_10),12)).
+item(callera1,work,msg(a1,reply,calleda,callera1,a1(callera1_20),15)).

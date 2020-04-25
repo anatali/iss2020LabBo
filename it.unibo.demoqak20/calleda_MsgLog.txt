@@ -1,4 +1,0 @@
-msg(r1,request,callera1,calleda,r1(10),10)
-msg(r1,request,callera2,calleda,r1(100),11)
-msg(r1,request,callera1,calleda,r1(20),14)
-msg(r1,request,callera2,calleda,r1(200),16)

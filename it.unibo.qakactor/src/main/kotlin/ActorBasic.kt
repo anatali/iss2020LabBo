@@ -45,14 +45,23 @@ abstract class  ActorBasic(  name:         String,
 
     protected lateinit var currentSolution : SolveInfo
     protected lateinit var currentProcess  : Process
-
+ 
 //    private var timeAtStart: Long = 0
 
     internal val requestMap : MutableMap<String, ApplMessage > = mutableMapOf<String,ApplMessage>()  //Oct2019
 
     private   var logo             : String 	        //Coap Jan2020
     protected var ActorResourceRep : String 			//Coap Jan2020
+	protected var actorLogfileName  : String = ""
+	protected var msgLogNoCtxDir   = "logs/noctx"
+	protected var msgLogDir        = msgLogNoCtxDir
     
+    init{                                   //Coap Jan2020
+ 		createMsglogFile()					//APR2020 : an Actor could have no context
+        isObservable = true
+        logo    = "       ActorBasic(Resource) $name "
+        ActorResourceRep = "$logo | created  " 		
+    }
 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -61,6 +70,33 @@ abstract class  ActorBasic(  name:         String,
         else  if( ioBound ) sysUtil.ioBoundThreadContext
               else sysUtil.cpusThreadContext
 
+/*
+ ===================================================
+Message-driven kactor
+ ===================================================
+*/ 	
+	
+	open fun createMsglogFile(){
+		actorLogfileName  = "${name}_MsLog.txt"
+  		sysUtil.createFile( actorLogfileName, dir=msgLogNoCtxDir   )		
+	}
+	fun createMsglogFileInContext(){	//called by QAkContext.addInternalActor when a context is injected
+		if( context !== null ){
+			sysUtil.deleteFile( actorLogfileName, dir=msgLogNoCtxDir )
+			msgLogDir = "logs/${context!!.name}"
+			sysUtil.createFile( actorLogfileName, dir=msgLogDir )				
+		}else println("ActorBasic $name | WARNING: createMsglogFileInContext you should never be here")	
+	}
+	
+ 	open fun writeMsgLog( msg: ApplMessage ){ //APR2020
+          if( context !== null ){ 
+        	  //Update the log of the context
+ 			   sysUtil.updateLogfile(context!!.ctxLogfileName, "item($name,nostate,$msg).", dir=msgLogNoCtxDir )
+		  }	
+          //Update the log of the actor
+          sysUtil.updateLogfile(actorLogfileName,  "item($name,nostate,$msg).", dir=msgLogDir )  
+	}
+	
     @kotlinx.coroutines.ExperimentalCoroutinesApi
     @kotlinx.coroutines.ObsoleteCoroutinesApi
     val actor = scope.actor<ApplMessage>(
@@ -68,21 +104,14 @@ abstract class  ActorBasic(  name:         String,
         //println("ActorBasic $name |  RUNNING IN $dispatcher"  )
         for( msg in channel ) {
             sysUtil.traceprintln("$tt ActorBasic  $name |  msg= $msg "  )
-            if( msg.msgContent() == "stopTheActor") {
-                channel.close()
-            }
+			writeMsgLog( msg )
+			if( msg.msgContent() == "stopTheActor") {  channel.close() }
             else{
-                actorBody( msg )
+				 actorBody( msg )
             }
         }
     }
 	
-    init{                                   //Coap Jan2020
-        isObservable = true
-        logo    = "       ActorBasic(Resource) $name "
-        ActorResourceRep = "$logo | created  "
- 		
-    }
 	
     //To be overridden by the application designer
     abstract suspend fun actorBody(msg : ApplMessage)

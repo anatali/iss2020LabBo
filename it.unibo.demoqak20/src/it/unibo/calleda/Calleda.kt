@@ -19,7 +19,6 @@ class Calleda ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
-						 sysUtil.logMsgs = true  
 					}
 					 transition(edgeName="t02",targetState="handleRequest",cond=whenRequest("r1"))
 				}	 

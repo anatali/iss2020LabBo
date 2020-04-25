@@ -17,6 +17,7 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
     private var resourceCtx : CoapResourceCtx
 	lateinit var ctxserver  : QakContextServer
 	lateinit var serverCoap : CoapServer
+ 	lateinit var ctxLogfileName : String
 	
     companion object {
         val workTime = 600000L		 
@@ -49,6 +50,7 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
     }
 
     init{
+  		 ctxLogfileName    = "${name}_MsLog.txt"	//APR2020
         //OCT2019 --> NOV2019 Create a QakContextServer also when we use MQTT
         resourceCtx = CoapResourceCtx( name, this )   //must be ininitialized here
         if( ! external ){
@@ -88,6 +90,7 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
 
     fun addActor( actor: ActorBasic ) {
         actor.context = this    //injects the context
+ 		actor.createMsglogFileInContext()
         actorMap.put( actor.name, actor )
         actor.checkMqtt()
         //sysUtil.traceprintln("               %%% QakContext $name | addActor ${actor.name}")
@@ -96,6 +99,7 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
 
     fun addInternalActor( actor: ActorBasic ) {
         actor.context = this    //injects the context
+// 		actor.createMsglogFileInContext()	//internal actors have no context !
         actorMap.put( actor.name, actor )
     }
 

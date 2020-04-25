@@ -1,4 +1,4 @@
-System  /* -trace */ demo_req_a
+System  /* -trace */ -msglog demo_req_a
  	//"tcp://mqtt.eclipse.org:1883"
 	//mqtt.eclipse.org
 	//tcp://test.mosquitto.org
@@ -9,7 +9,7 @@ System  /* -trace */ demo_req_a
 
 Request r1 : r1(X)
 Request r2 : r2(X)
-Reply   a1 : a1(X)  
+Reply   a1 : a1(X)   
 
 Context ctxdemoreqa ip [host="localhost" port=8010]   //for first run (debug)
 //Context ctxcallera ip [host="localhost" port=8072]  
@@ -17,6 +17,7 @@ Context ctxdemoreqa ip [host="localhost" port=8010]   //for first run (debug)
 
 QActor callera1 context ctxdemoreqa {
 	State init initial {
+		//[# sysUtil.logMsgs = true #]
 		println("	callera1 starts")
 		request calleda -m r1 : r1(10)
  		delay 50 
@@ -59,7 +60,6 @@ QActor callera2 context ctxdemoreqa {
 QActor calleda context ctxdemoreqa {
  
 	State init initial {
-		[# sysUtil.logMsgs = true #]
 //		println("calleda waits ...") 
 	}
 	Transition t0  

@@ -7,6 +7,7 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.newSingleThreadContext
 import java.io.FileInputStream
 import java.lang.reflect.Constructor
+import java.io.File
 
 /*
 ECLIPSE KOTLIN
@@ -22,8 +23,9 @@ object sysUtil{
 	val ctxOnHost =  mutableListOf<QakContext>()
 
 	val runtimeEnvironment     = Runtime.getRuntime()
-
+	val userDirectory          = System.getProperty("user.dir")
 	val cpus                   = Runtime.getRuntime().availableProcessors()
+	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	val singleThreadContext    = newSingleThreadContext("qaksingle")
@@ -68,6 +70,7 @@ object sysUtil{
 		loadTheory( desrFilePath )
 		loadTheory( rulesFilePath )
 		if( solve("tracing", "" ).equals("success") ) trace=true
+		if( solve("msglogging", "" ).equals("success") ) logMsgs=true
 		try {
 			mqttBrokerIP   = solve("mqttBroker(IP,_)", "IP")
 			mqttBrokerPort = solve("mqttBroker(_,PORT)", "PORT")
@@ -254,6 +257,24 @@ object sysUtil{
 
 	fun traceprintln( msg : String ){
 		if( sysUtil.trace ) println( msg  )
+	}
+	
+/*
+ 	MSG LOGS
+*/ 	
+	fun createFile( fname : String, dir : String = "logs" ){
+ 		val logDirectory = File("$userDirectory/$dir")
+		logDirectory.mkdirs()	//have the object build the directory structure, if needed
+		var file = File(logDirectory, fname)
+		println("               %%% sysUtil | createFile file $file in $dir")
+		file.writeText("")	//file is created and nothing is written to it
+	}
+	
+	fun deleteFile( fname : String, dir  : String ){
+		File("$userDirectory/$dir/$fname").delete()
+	}
+	fun updateLogfile( fname: String, msg : String, dir : String = "logs" ){
+		if( logMsgs ) File("$userDirectory/$dir/$fname").appendText("${msg}\n")
 	}
 
 }//sysUtil

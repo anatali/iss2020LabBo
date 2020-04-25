@@ -8,4 +8,5 @@ QActor actorcoap context ctxcoapdemo{
 	State s0 initial{ 
 		println("Please activate a CoAP client observer (e.g.")
 		updateResource "actorcoap starts"
-} 
+	} 
+}

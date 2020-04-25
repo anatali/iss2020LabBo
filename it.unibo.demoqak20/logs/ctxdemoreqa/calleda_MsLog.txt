@@ -1,0 +1,5 @@
+item(calleda,init,msg(autoStartSysMsg,dispatch,calleda,calleda,start,9)).
+item(calleda,init,msg(r1,request,callera1,calleda,r1(10),10)).
+item(calleda,init,msg(r1,request,callera2,calleda,r1(100),11)).
+item(calleda,init,msg(r1,request,callera1,calleda,r1(20),14)).
+item(calleda,init,msg(r1,request,callera2,calleda,r1(200),16)).
