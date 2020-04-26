@@ -14,7 +14,7 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
  
-Event collision    : collision( ARG )  
+Event collision    : collision( ARG )   
  
 Context ctxrobotboundary ip [host="localhost" port=8018]  
 Context ctxBasicrobot    ip [host="127.0.0.1" port=8020] 

@@ -31,7 +31,7 @@ QActor robotboundary context ctxrobotboundary  {
 	State work{
 		println("boundaryrobot | working ${NumStep}")
 		//TODO: Activate the motors to go ahead
-		updateResource "moving" 
+		updateResource [# "moving" #] 
 		
 		//TOREMOVE: Generate collision event
 		emit simulateobstacle : simulateobstacle(0)   
@@ -43,20 +43,20 @@ QActor robotboundary context ctxrobotboundary  {
 		[# NumStep++ #]
 		println("boundaryrobot | handleCollision ${NumStep}")
 		//TODO: Activate the motors to rotate
-		updateResource "rotating" 
+		updateResource [# "rotating"  #]
 	}
 	Goto work if [# NumStep<4 #] else endWork 
    	
 	State stopped{
 		println("boundaryrobot | stopped")	
-		updateResource "stopped"
+		updateResource [# "stopped" #]
 	}
 	Transition t0 whenMsg resume  -> work
  
 	 
  	State endWork{
 		println("boundaryrobot | ends")
-		updateResource "terminated"
+		updateResource [# "terminated" #]
 		terminate 0
  	}
  

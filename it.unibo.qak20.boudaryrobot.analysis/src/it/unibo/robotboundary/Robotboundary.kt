@@ -34,7 +34,8 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("work") { //this:State
 					action { //it:State
 						println("boundaryrobot | working ${NumStep}")
-						updateResourceRep("moving")
+						updateResourceRep( "moving"  
+						)
 						emit("simulateobstacle", "simulateobstacle(0)" ) 
 					}
 					 transition(edgeName="t01",targetState="stopped",cond=whenDispatch("stop"))
@@ -44,7 +45,8 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						 NumStep++  
 						println("boundaryrobot | handleCollision ${NumStep}")
-						updateResourceRep("rotating")
+						updateResourceRep( "rotating"   
+						)
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitchGuarded({ NumStep<4  
 					}) )
@@ -54,14 +56,16 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("stopped") { //this:State
 					action { //it:State
 						println("boundaryrobot | stopped")
-						updateResourceRep("stopped")
+						updateResourceRep( "stopped"  
+						)
 					}
 					 transition(edgeName="t03",targetState="work",cond=whenDispatch("resume"))
 				}	 
 				state("endWork") { //this:State
 					action { //it:State
 						println("boundaryrobot | ends")
-						updateResourceRep("terminated")
+						updateResourceRep( "terminated"  
+						)
 						terminate(0)
 					}
 				}	 
