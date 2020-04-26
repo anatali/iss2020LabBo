@@ -37,7 +37,7 @@ var Workduration = 0L
 		run mapRoomKotlin.mapUtil.showMap()  //initial map empty  
 		delay 2000  //just to look at the reference map and the current map
 // 		forward robotboundary -m start : start(auto) 
-		updateResource "initial"
+		updateResource [# "initial" #]
 	}	
 	Transition t0 whenMsg start -> startWork 
  	
@@ -50,7 +50,7 @@ var Workduration = 0L
 		println("robotboundary | working ${NumStep}")
 		//Activate the motors to go ahead
  		request basicrobot -m step : step( $StepTime  )
-		updateResource "working" 
+		updateResource [# "working" #]
  	} 
 	Transition t0 //whenMsg  stop      -> stopped  //to avoid the loss of synch with the grid
 				  whenReply stepdone -> stepDone
@@ -58,7 +58,7 @@ var Workduration = 0L
 	
 	State stepDone{ //change the map
 	    //println("robotboundary | stepDone  ")
-	    updateResource "stepDone"
+	    updateResource [# "stepDone" #]
 		run mapRoomKotlin.mapUtil.doMove("w")
 		run mapRoomKotlin.mapUtil.showMap()
 		delay 500
@@ -84,7 +84,7 @@ var Workduration = 0L
 				delayVar Dt
 				forward basicrobot -m cmd : cmd( h )
 			}	
-			updateResource "stepFail"
+			updateResource [# "stepFail" #]
 			delay 1000		    
 		}
 		forward basicrobot -m cmd : cmd(l)
@@ -103,7 +103,7 @@ var Workduration = 0L
   	
 	State stopped{ 
 		println("robotboundary | stopped")	
-		updateResource "stopped"
+		updateResource [# "stopped" #]
 	}
 	Transition t0 whenMsg resume  -> work
  
@@ -111,7 +111,7 @@ var Workduration = 0L
  	State endWork{
  		setDuration Workduration from StartTime
 		println("robotboundary | ends; duration=$Workduration")
-		updateResource "terminated"
+		updateResource [# "terminated" #]
 		terminate 0
  	}
  

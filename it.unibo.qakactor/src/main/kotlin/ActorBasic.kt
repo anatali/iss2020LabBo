@@ -205,12 +205,11 @@ Messaging
         if( attemptToSendViaMqtt(ctx, msg,destName) ) return
 		
 		if( ! msg.isRequest() && ! msg.isReply() ){
-        val uri = "coap://${ctx.hostAddr}:${ctx.portNum}/${ctx.name}/$destName"
-        //println("$tt ActorBasic sendMessageToActor qak | ${uri} msg=$msg" )
-
-        //if( attemptToSendViaMqtt(ctx, msg,destName) ) return  //APR2020
-
-        sendCoapMsg( uri, msg.toString() )
+	        val uri = "coap://${ctx.hostAddr}:${ctx.portNum}/${ctx.name}/$destName"
+	        //println("$tt ActorBasic sendMessageToActor qak | ${uri} msg=$msg" )
+	
+	        //if( attemptToSendViaMqtt(ctx, msg,destName) ) return  //APR2020
+	        sendCoapMsg( uri, msg.toString() )
 		}
  //DESTINATION remote, context of destName known and NO MQTT  => using proxy
         // REMOVED: Coap 2020 but not for request
@@ -556,17 +555,16 @@ KNOWLEDGE BASE
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override fun handlePUT(exchange: CoapExchange) {
-        val arg = exchange.requestText  //arg =
+        val arg = exchange.requestText   
         sysUtil.traceprintln("$logo | handlePUT arg=$arg")
         try{
             val msg    = ApplMessage( arg )
-            updateResourceRep("$msg redirected")
-            fromPutToMsg( msg, exchange )  //could change answer (if msg is a request)
+            //updateResourceRep("$msg redirected")
+            fromPutToMsg( msg, exchange )   
         }catch( e : Exception){
             updateResourceRep("error on msg $arg")
             println("$logo | handlePUT ERROR on msg ")
         }
-        //exchange.respond( CHANGED )
     }
 
     override fun handleDELETE(exchange: CoapExchange) {
@@ -585,8 +583,14 @@ KNOWLEDGE BASE
         }
         if( msg.isRequest() ) {
             //println("$logo | fromPutToMsg request=$msg")
-            CoapToActor("caoproute${count++}", exchange, this, msg)
-        }
+            val coapactor = CoapToActor("caoproute${count++}", exchange, this, msg)
+			//TODO: a quite long computation without using suspended functions
+ 			while( ! coapactor.answer.contains("reply")){
+				println("$logo | fromPutToMsg is processing ...")				
+			}
+			println("$logo | fromPutToMsg respond !!!!!!!!!!!!!!!!! ")
+  			exchange.respond( "PUT  ${coapactor.answer}  " )
+         }
      }
 
 

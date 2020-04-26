@@ -103,8 +103,11 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
         actorMap.put( actor.name, actor )
     }
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
     fun removeInternalActor( actor: ActorBasic ){
         actorMap.remove( actor.name )
+ 		actor.terminate()
      }
 
     fun hasActor( actorName: String ) : ActorBasic? {

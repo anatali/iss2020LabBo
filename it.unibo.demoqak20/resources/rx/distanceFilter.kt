@@ -1,6 +1,5 @@
 package rx
  
-
 import it.unibo.kactor.MsgUtil
 import kotlinx.coroutines.delay
 import it.unibo.kactor.ActorBasic

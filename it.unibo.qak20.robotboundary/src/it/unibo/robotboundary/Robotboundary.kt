@@ -30,7 +30,8 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						println("-----------------")
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(2000) 
-						updateResourceRep("initial")
+						updateResourceRep( "initial"  
+						)
 					}
 					 transition(edgeName="t00",targetState="startWork",cond=whenDispatch("start"))
 				}	 
@@ -44,14 +45,16 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						println("robotboundary | working ${NumStep}")
 						request("step", "step($StepTime)" ,"basicrobot" )  
-						updateResourceRep("working")
+						updateResourceRep( "working"  
+						)
 					}
 					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
 					transition(edgeName="t02",targetState="stepFail",cond=whenReply("stepfail"))
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State
-						updateResourceRep("stepDone")
+						updateResourceRep( "stepDone"  
+						)
 						mapRoomKotlin.mapUtil.doMove( "w"  )
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(500) 
@@ -76,7 +79,8 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								delay(Dt)
 								forward("cmd", "cmd(h)" ,"basicrobot" ) 
 								}
-								updateResourceRep("stepFail")
+								updateResourceRep( "stepFail"  
+								)
 								delay(1000) 
 						}
 						forward("cmd", "cmd(l)" ,"basicrobot" ) 
@@ -99,7 +103,8 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("stopped") { //this:State
 					action { //it:State
 						println("robotboundary | stopped")
-						updateResourceRep("stopped")
+						updateResourceRep( "stopped"  
+						)
 					}
 					 transition(edgeName="t07",targetState="work",cond=whenDispatch("resume"))
 				}	 
@@ -107,7 +112,8 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						Workduration = getDuration(StartTime)
 						println("robotboundary | ends; duration=$Workduration")
-						updateResourceRep("terminated")
+						updateResourceRep( "terminated"  
+						)
 						terminate(0)
 					}
 				}	 
