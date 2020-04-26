@@ -1,0 +1,2 @@
+item(proxyctxcoapdemoext,nostate,msg(cmd,request,caller,actorcoap,cmd(a),10)).
+item(proxyctxcoapdemoext,nostate,msg(cmd,request,caller,actorcoap,cmd(b),12)).

@@ -1,0 +1,14 @@
+item(coapobserver,s0,msg(autoStartSysMsg,dispatch,coapobserver,coapobserver,start,9)).
+item(caller,s0,msg(autoStartSysMsg,dispatch,caller,caller,start,7)).
+item(coapobserver,work,msg(local_resrep,event,observer,none,resrep('actorcoap is ready to work'),11)).
+item(caller,s0,msg(local_resrep,event,observer,none,resrep('actorcoap is ready to work'),11)).
+item(caller,s0,msg(cmdansw,reply,actorcoap,caller,cmdansw(answerTo_a),6)).
+item(coapobserver,work,msg(local_resrep,event,observer,none,resrep('actorcoap is handling request cmd(a)'),13)).
+item(caller,handleReply,msg(local_resrep,event,observer,none,resrep('actorcoap is handling request cmd(a)'),13)).
+item(caller,handleReply,msg(local_resrep,event,observer,none,resrep('actorcoap is ready to work'),14)).
+item(coapobserver,work,msg(local_resrep,event,observer,none,resrep('actorcoap is ready to work'),14)).
+item(caller,handleReply,msg(cmdansw,reply,actorcoap,caller,cmdansw(answerTo_b),7)).
+item(coapobserver,work,msg(local_resrep,event,observer,none,resrep('actorcoap is handling request cmd(b)'),15)).
+item(caller,handleReply,msg(local_resrep,event,observer,none,resrep('actorcoap is handling request cmd(b)'),15)).
+item(caller,handleReply,msg(local_resrep,event,observer,none,resrep('actorcoap is ready to work'),16)).
+item(coapobserver,work,msg(local_resrep,event,observer,none,resrep('actorcoap is ready to work'),16)).

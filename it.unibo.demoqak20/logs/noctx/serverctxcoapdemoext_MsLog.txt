@@ -1,0 +1,4 @@
+item(serverctxcoapdemoext,nostate,msg(start,dispatch,serverctxcoapdemoext,serverctxcoapdemoext,startQakContextServer,4)).
+msg(cmd,request,caller,actorcoap,cmd(a),10)
+msg(cmd,request,caller,actorcoap,cmd(b),11)
+msg(resrep,event,observer,none,'resrep()',12)

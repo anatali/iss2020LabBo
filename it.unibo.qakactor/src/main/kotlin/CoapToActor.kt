@@ -14,14 +14,14 @@ class CoapToActor( name : String, val exchange: CoapExchange,
     init{
         this.context = owner.context
         context!!.addInternalActor( this )
-		//println(" $tt CoapToActor $name| START in ctx=${context!!.name}")
+		sysUtil.traceprintln("$tt $name| START in ctx=${context!!.name}")
         scope.launch{ request( msg.msgId(), msg.msgContent(), owner) }
      }
 
      override suspend fun actorBody(msg : ApplMessage){
-        //println(" $tt $name | received  $msg "  ) //msg.msgContent() is the answer
+//        sysUtil.traceprintln(" $tt $name | received  $msg "  ) //msg.msgContent() is the answer
         if( msg.isReply() ){    //defensive
-            //println(" $tt $name | respond  ${msg.msgContent()} "  ) //msg.msgContent() is the answer
+            sysUtil.traceprintln("$tt $name | respond  ${msg.msgContent()} "  ) //msg.msgContent() is the answer
             exchange.respond( msg.toString() )
             context!!.removeInternalActor( this )
             //println(" $tt $name | ENDS   "  )

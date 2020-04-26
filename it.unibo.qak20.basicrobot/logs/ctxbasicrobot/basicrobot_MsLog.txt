@@ -1,0 +1,12 @@
+item(basicrobot,s0,msg(autoStartSysMsg,dispatch,basicrobot,basicrobot,start,5)).
+item(basicrobot,work,msg(cmd,dispatch,test,basicrobot,cmd(r),6)).
+item(basicrobot,work,msg(cmd,dispatch,test,basicrobot,cmd(l),7)).
+item(basicrobot,work,msg(cmd,dispatch,test,basicrobot,cmd(w),8)).
+item(basicrobot,work,msg(cmd,dispatch,test,basicrobot,cmd(s),9)).
+item(basicrobot,work,msg(cmd,dispatch,test,basicrobot,cmd(h),10)).
+item(basicrobot,work,msg(step,request,test,basicrobot,step(350),11)).
+item(basicrobot,doStep,msg(local_tout_basicrobot_doStep,event,timer_doStep,none,local_tout_basicrobot_doStep,14)).
+item(basicrobot,stepPerhapsDone,msg(local_tout_basicrobot_stepPerhapsDone,event,timer_stepPerhapsDone,none,local_tout_basicrobot_stepPerhapsDone,17)).
+item(basicrobot,work,msg(cmd,dispatch,test,basicrobot,cmd(w),19)).
+item(basicrobot,work,msg(collision,dispatch,vr,basicrobot,collision(wallDown),20)).
+item(basicrobot,work,msg(end,dispatch,test,basicrobot,end(0),22)).

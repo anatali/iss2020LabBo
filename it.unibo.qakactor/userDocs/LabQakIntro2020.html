@@ -172,6 +172,8 @@ table, th, td {
 	<li><a href="#msghandlerules">Message handling rules</li>
 	<li><a href="#msgsendrules">Message delivery rules</li>
 	<li><a href="#codedqa">CodedQActors</li>
+	<li><a href="#msglog">Flag <bc>-msglog</bc></li>
+	<li><a href="#trace">Flag <bc>-trace</bc></li>
 	<li><a href="#Executable">Executable jars</li>
 	</ul>
 <li><a href="#actorplus">More than simple actors</li> 
@@ -893,6 +895,25 @@ attempt is made to send the reply via <tt>MQTT</tt>, hoping that the 'alien' was
 <center><img src="./img/qakproxy.png" alt="qakproxy" width="90%"></center>
 -->
 
+</m>
+</td>
+</tr>
+
+<tr>
+<td><h3 id="msglog">Flag <bc>-msglog</bc></h3>
+<pre>
+System ... <bc>-msglog</bc>
+</pre>
+<m>
+When this flag is set, the  <tt>qak-infrastructure</tt> creates a messag-log file for each actor and for each context in the system.
+</m>
+</td>
+<td><h3 id="trace">Flag <bc>-trace</bc></h3>
+<pre>
+System ... <bc>-trace</bc>
+</pre>
+<m>
+When this flag is set, the  <tt>qak-infrastructure</tt> shows details about its internal behavior
 </m>
 </td>
 </tr>

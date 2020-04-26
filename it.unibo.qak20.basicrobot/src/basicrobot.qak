@@ -39,7 +39,7 @@ QActor basicrobot context ctxbasicrobot{
  		qrun unibo.robot.robotSupport.create(myself,"basicrobotConfig.json")	
 		run unibo.robot.robotSupport.move( "l" )
 		run unibo.robot.robotSupport.move( "r" )
- 		updateResource "stopped"
+ 		updateResource [# "stopped" #]
  		discardMsg Off  //WE want receive any msg
  	}
 	Goto work
@@ -55,7 +55,7 @@ QActor basicrobot context ctxbasicrobot{
 		//printCurrentMessage
 		println("basicrobot | handleCollision")	
 		onMsg( collision  : collision( TARGET ) ){
-			updateResource "collision"
+			updateResource [# "collision" #]
 			emit collision : collision(obstacle)
 		}
 	}
@@ -64,7 +64,7 @@ QActor basicrobot context ctxbasicrobot{
 	State execcmd{
 		//printCurrentMessage
 		onMsg( cmd : cmd(MOVE) ){
-			updateResource "move(${payloadArg(0)})"
+			updateResource [# "move(${payloadArg(0)})" #]
   			//activate the motors 
 			run unibo.robot.robotSupport.move( payloadArg(0 ) )
 		}
@@ -75,7 +75,7 @@ QActor basicrobot context ctxbasicrobot{
  		//printCurrentMessage  
 		onMsg( step : step( T ) ){  
 			[#	StepTime = payloadArg(0).toLong() 	#]  
-			updateResource "step(${StepTime})"
+			updateResource [# "step(${StepTime})" #]
 			println("basicrobot | doStep StepTime =$StepTime ")
  			run unibo.robot.robotSupport.move( "w" )
  			memoCurrentTime StartTime
@@ -96,7 +96,7 @@ QActor basicrobot context ctxbasicrobot{
 	State stepDone{   
  		run unibo.robot.robotSupport.move( "h" )  //stop the robot
 		println("basicrobot | stepDone ")
-		updateResource "stepDone"
+		updateResource [# "stepDone" #]
    		replyTo step with stepdone : stepdone(ok)
   	}
 	Goto work  
@@ -109,7 +109,7 @@ QActor basicrobot context ctxbasicrobot{
 	 
 	State stepFail{ //REQUIREMENT req-onestep-time, req-onestep-info
 		setDuration Duration from StartTime
- 		updateResource "stepFail($Duration)"
+ 		updateResource [# "stepFail($Duration)" #]
 		println("basicrobot | stepFail after $Duration ")
 		emit collision : collision(obstacle)
  		replyTo step with stepfail : stepfail($Duration, obstacle)
@@ -119,7 +119,7 @@ QActor basicrobot context ctxbasicrobot{
 	State endwork{ 
 		onMsg( end : end( V ) ){ 
 			println("basicrobot | endwork")
-			updateResource "move(end)"			
+			updateResource [# "move(end)" #]	 		
 			run utils.virtualRobotSupportQak.terminatevr( )
 		}
  		emit endall : endall(normal) 

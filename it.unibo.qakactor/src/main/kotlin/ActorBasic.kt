@@ -99,8 +99,7 @@ Message-driven kactor
 	
     @kotlinx.coroutines.ExperimentalCoroutinesApi
     @kotlinx.coroutines.ObsoleteCoroutinesApi
-    val actor = scope.actor<ApplMessage>(
-            dispatcher, capacity=channelSize ) {
+    val actor = scope.actor<ApplMessage>( dispatcher, capacity=channelSize ) {
         //println("ActorBasic $name |  RUNNING IN $dispatcher"  )
         for( msg in channel ) {
             sysUtil.traceprintln("$tt ActorBasic  $name |  msg= $msg "  )

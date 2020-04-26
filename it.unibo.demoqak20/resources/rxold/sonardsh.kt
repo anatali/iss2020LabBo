@@ -1,4 +1,4 @@
-package rx
+package rxold
 /*
 fcor each (sonar) value V, perfoms some flitering acion
 and - if ok - emitLocalStreamEvent   sonarData:sonarData(V)

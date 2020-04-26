@@ -1,0 +1,3 @@
+item(serverctxcoapdemo,nostate,msg(start,dispatch,serverctxcoapdemo,serverctxcoapdemo,startQakContextServer,3)).
+msg(cmd,request,caller,actorcoap,cmd(a),10)
+msg(cmd,request,caller,actorcoap,cmd(b),12)
