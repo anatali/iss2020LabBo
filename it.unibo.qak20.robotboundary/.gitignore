@@ -24,5 +24,3 @@ gradlew.bat
 docker/
 /.metadata/
 /src-gen/
-/robotboundary.pl
-/sysRules.pl

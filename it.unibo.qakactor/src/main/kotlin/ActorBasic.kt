@@ -583,13 +583,7 @@ KNOWLEDGE BASE
         }
         if( msg.isRequest() ) {
             //println("$logo | fromPutToMsg request=$msg")
-            val coapactor = CoapToActor("caoproute${count++}", exchange, this, msg)
-			//TODO: a quite long computation without using suspended functions
- 			while( ! coapactor.answer.contains("reply")){
-				println("$logo | fromPutToMsg is processing ...")				
-			}
-			println("$logo | fromPutToMsg respond !!!!!!!!!!!!!!!!! ")
-  			exchange.respond( "PUT  ${coapactor.answer}  " )
+            CoapToActor("caoproute${count++}", exchange, this, msg)
          }
      }
 

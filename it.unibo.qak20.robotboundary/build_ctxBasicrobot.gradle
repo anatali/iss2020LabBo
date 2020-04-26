@@ -47,7 +47,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.eclipse.californium/californium-proxy
 	compile group: 'org.eclipse.californium', name: 'californium-proxy', version: '2.0.0-M12'
 //LOG4j	
-	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25' 
 //MONGO
 	// https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
 	//compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.8.2'
@@ -55,7 +55,7 @@ dependencies {
 //CUSTOM
     compile name: 'uniboInterfaces'
     compile name: '2p301'
-    compile name: 'it.unibo.qakactor-2.1'
+    compile name: 'it.unibo.qakactor-2.3'
  
     //For p2p two-way connections (TCP, UDP, BTH, Serial ...)
     compile name: 'unibonoawtsupports'

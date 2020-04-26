@@ -24,4 +24,3 @@ gradlew.bat
 docker/
 /.metadata/
 /src-gen/
-/streamsdemo.pl

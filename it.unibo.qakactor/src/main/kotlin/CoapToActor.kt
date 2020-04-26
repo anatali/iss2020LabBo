@@ -17,24 +17,23 @@ var answer = "noanswer"
         this.context = owner.context
         context!!.addInternalActor( this )
 		sysUtil.traceprintln("$tt $name| CREATED in ctx=${context!!.name} exchange=${exchange.getSourceAddress()}")
-//        exchange.respond( "CoapToActor ${answer}" )
-// 		scope.launch{ request( extmsg.msgId(), extmsg.msgContent(), owner) }
-		scope.launch{ autoMsg("start", "start") }
+		//scope.launch{ autoMsg("start", "start") }
+		scope.launch{ request( extmsg.msgId(), extmsg.msgContent(), owner) }
      }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
      override suspend fun actorBody(msg : ApplMessage){
-		if( msg.msgId() == "start") {
-	        sysUtil.traceprintln("$tt $name | map PUT in request to ${owner.name}:  $extmsg "  )
- 			request( extmsg.msgId(), extmsg.msgContent(), owner)
-		} 
+//		if( msg.msgId() == "start") {
+//	        sysUtil.traceprintln("$tt $name | map PUT in request to ${owner.name}:  $extmsg "  )
+// 			request( extmsg.msgId(), extmsg.msgContent(), owner)
+//		} 
         if( msg.isReply() ){
   	        sysUtil.traceprintln("$tt $name | PUT response: $msg exchange=${exchange.getSourceAddress()}"  )
  			answer = msg.toString().replace(name,owner.name)
 			owner.updateResourceRep( answer )
-//			exchange.respond( ... ) //DOES NOT WORK
-//            context!!.removeInternalActor( this )
+ 			exchange.respond( answer ) //DOES NOT WORK
+            context!!.removeInternalActor( this )
          }
 	}
 }
