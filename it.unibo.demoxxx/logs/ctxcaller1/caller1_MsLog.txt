@@ -1,4 +1,0 @@
-item(caller1,s0,msg(autoStartSysMsg,dispatch,caller1,caller1,start,6)).
-item(caller1,s0,msg(replytocmd,reply,resource,caller1,replytocmd(answerFor_caller1),6)).
-item(caller1,handleReply,msg(alarm,event,caller2,none,alarm(tsunami),8)).
-item(caller1,handleAlarm,msg(alarm,event,caller1,none,alarm(fire),8)).
