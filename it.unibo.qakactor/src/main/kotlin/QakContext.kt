@@ -116,12 +116,15 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
 
     fun addCtxProxy( ctx : QakContext ){
         if( ctx.mqttAddr.length > 1 ) return
-        //sysUtil.traceprintln("               %%% QakContext $name | addCtxProxy ${ctx.name}")
+        sysUtil.traceprintln("               %%% QakContext $name | addCtxProxy ${ctx.name}")
         val proxy = NodeProxy("proxy${ctx.name}", this, Protocol.TCP, ctx.hostAddr, ctx.portNum)
         proxyMap.put( ctx.name, proxy )
+		//APR2020: we should remove the active connection from
+		
     }
 
     fun addCtxProxy( ctxName :String, hostAddr: String, portNum : Int  ){
+        sysUtil.traceprintln("               %%% QakContext $name | addCtxProxy host=$hostAddr portNum=${portNum}")
         val proxy = NodeProxy("proxy${ctxName}", this, Protocol.TCP, hostAddr, portNum)
         proxyMap.put( ctxName, proxy )
     }

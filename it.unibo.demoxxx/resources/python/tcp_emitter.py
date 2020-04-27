@@ -10,6 +10,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 alarmFire     = "msg(alarm,event,python,none,alarm(firetcp),1)"
 alarmTsunami  = "msg(alarm,event,python,none,alarm(tsunamitcp),2)"
 onPressed     = "msg(onPressed,event,python,none,onPressed(python),2)"  
+
 def connect(port) :
     server_address = ('localhost', port)
     sock.connect(server_address)    
@@ -22,7 +23,8 @@ def emit( message ) :
     sock.send(byt)
 
 def work() :
-    emit( onPressed ) 
+    ## emit( onPressed ) 
+    emit( alarmFire ) 
     time.sleep(1)
  
 

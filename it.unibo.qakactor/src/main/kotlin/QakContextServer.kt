@@ -56,7 +56,7 @@ EACH CONNECTION WORKS IN ITS OWN COROUTINE
     suspend protected fun handleConnection(conn: IConnInteraction ) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                sysUtil.traceprintln("               %%% QakContextServer $name | new conn:$conn")
+                sysUtil.traceprintln("               %%% QakContextServer $name | NEWWWWWWWWWW conn:$conn")
                 while (true) {
                     val msg = conn.receiveALine()       //BLOCKING
                     sysUtil.traceprintln("               %%% QakContextServer  $name | receives:$msg in ${sysUtil.curThread()}")

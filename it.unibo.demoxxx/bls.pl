@@ -7,4 +7,3 @@ context(ctxbls, "127.0.0.1",  "TCP", "8095").
   qactor( button, ctxbutton, "it.unibo.button.Button").
   qactor( main, ctxbutton, "it.unibo.main.Main").
 tracing.
-msglogging.

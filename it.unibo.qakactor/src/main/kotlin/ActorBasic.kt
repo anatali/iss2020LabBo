@@ -326,7 +326,7 @@ Messaging
         if( event.msgId().startsWith("local")) return       //local_ => no propagation
         //EMIT VIA MQTT IF there is
         if( context!!.mqttAddr.length != 0 ) {
-            println("$tt ActorBasic $name | emit MQTT ${event.msgId()}  ")
+            sysUtil.traceprintln("$tt ActorBasic $name | emit MQTT ${event.msgId()}  ")
             //mqtt.sendMsg(event, "unibo/qak/events")
 			mqtt.publish("unibo/qak/events", event.toString() )
         }
@@ -334,24 +334,25 @@ Messaging
 
 		//APR2020: we do not look anymore at the ctxsMap since we have introduced sysUtil.connActive for TCP connections
 	
-//        sysUtil.ctxsMap.forEach{
-//            val ctxName  = it.key
-//            //val ctx      = it.value
-//            sysUtil.traceprintln("$tt ActorBasic $name | ${context!!.name } try to propagate event ${event.msgId()} to ${ctxName}  ")
-//            val proxy  = context!!.proxyMap.get(ctxName)
-//            if( proxy is ActorBasic && proxy.name != this.context!!.name ){
-//                sysUtil.traceprintln("$tt ActorBasic $name | emit ${event}  towards $ctxName " )
-//                proxy.actor.send( event )    //Propagate via proxy THAT MUST exist if we know the context
-//            } 
-//
-//        //sysUtil.traceprintln(" $tt ActorBasic $name | emit ${event.msgId()}  ENDS")
-//        }
-	
-        // DEC2019 propagate on TCP connections  
-        sysUtil.connActive.forEach {
-            println(" $tt ActorBasic $name | emit ${event.msgId()} on active conn: $it")
-            it.sendALine(event.toString() )
+        sysUtil.ctxsMap.forEach{
+            val ctxName  = it.key
+            //val ctx      = it.value
+            sysUtil.traceprintln("$tt ActorBasic $name | ${context!!.name } try to propagate event ${event.msgId()} to ${ctxName}  ")
+            val proxy  = context!!.proxyMap.get(ctxName)
+            if( proxy is ActorBasic && proxy.name != this.context!!.name ){
+                sysUtil.traceprintln("$tt ActorBasic $name | emit ${event}  towards $ctxName " )
+                proxy.actor.send( event )    //Propagate via proxy THAT MUST exist if we know the context
+            } 
+
+        //sysUtil.traceprintln(" $tt ActorBasic $name | emit ${event.msgId()}  ENDS")
         }
+	
+        // DEC2019 propagate on TCP connections
+        //APR2020 : no more events to aliens on TCP - only via MQTT
+//        sysUtil.connActive.forEach {
+//            println(" $tt ActorBasic $name | emit ${event.msgId()} on active conn: $it")
+//            it.sendALine(event.toString() )
+//        }
 }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -512,7 +513,7 @@ KNOWLEDGE BASE
 */
 
     fun updateResourceRep( v : String){
-        ActorResourceRep = v
+         ActorResourceRep = v
         changed()             //DO NOT FORGET!!!
     }
     fun geResourceRep() : String{
@@ -520,7 +521,7 @@ KNOWLEDGE BASE
 	}
 
     override fun handleGET(exchange: CoapExchange) {
-//        println("$logo | handleGET from: ${exchange.sourceAddress} arg: ${exchange.requestText}")
+        sysUtil.traceprintln("$logo | handleGET from: ${exchange.sourceAddress} arg: ${exchange.requestText}")
         exchange.respond( "$ActorResourceRep")
     }
     /*

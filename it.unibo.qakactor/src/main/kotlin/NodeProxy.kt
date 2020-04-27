@@ -20,7 +20,7 @@ class NodeProxy( name: String, val ctx: QakContext, val protocol: Protocol,
         while (conn == null) {
             when (protocol) {
                 Protocol.TCP, Protocol.UDP ->
-                    conn = MsgUtil.getConnection(protocol, hostName, portNum, "ledProxy")
+                    conn = MsgUtil.getConnection(protocol, hostName, portNum, name)
                 Protocol.SERIAL -> conn = MsgUtil.getConnectionSerial("", 9600)
                 else -> println("               %%% NodeProxy $name | WARNING: protocol unknown")
             }

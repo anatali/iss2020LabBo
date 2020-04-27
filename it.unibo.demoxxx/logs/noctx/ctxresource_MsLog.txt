@@ -1,0 +1,5 @@
+item(resource,s0,msg(autoStartSysMsg,dispatch,resource,resource,start,5)).
+item(resource,s0,msg(cmd,request,caller1,resource,cmd(caller1),7)).
+item(resource,s0,msg(cmd,request,caller2,resource,cmd(caller2),7)).
+item(resource,s0,msg(alarm,event,caller2,none,alarm(tsunami),8)).
+item(resource,handleAlarm,msg(alarm,event,caller1,none,alarm(fire),8)).

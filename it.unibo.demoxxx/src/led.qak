@@ -1,4 +1,4 @@
-System -trace -msglog bls
+System -trace bls
 
 //Led e button modellati come attori
 //appartenenti allo stesso sistema distribuito
@@ -14,7 +14,7 @@ Event onPressed : onPressed(V)
 Dispatch press: press(V) 
 
 Context ctxButton ip [host="localhost" port=8074]
-Context ctxBls ip [host="127.0.0.1" port=8095]
+Context ctxBls    ip [host="127.0.0.1" port=8095]
 
 QActor led context ctxBls{
 	[#
@@ -60,7 +60,7 @@ QActor button context ctxButton{
 	}
 	Goto wait
 	
-	State wait { 
+	State wait {
 		println("Button in wait state")
 	}
 	Transition t0
