@@ -68,7 +68,7 @@ QActor button context ctxButton{
 	
 	State pressed {
 		println("Button pressed, emitting onPressed signal...")
-		emit onPressed: onPressed(buttonPressed)
+		emit onPressed: onPressed(ButtonPressed)
 	}
 	Goto wait
 }

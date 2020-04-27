@@ -5,6 +5,10 @@ bin/default
 .project
 build
 
+log
+
+log4jInfo.log
+
 #node
 nodeCode/*/node_modules/
 *.lck

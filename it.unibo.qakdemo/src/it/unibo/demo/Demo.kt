@@ -16,12 +16,9 @@ class Demo ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		
-			var A = 0L
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						A = getCurrentTime()
 					}
 					 transition( edgeName="goto",targetState="s1", cond=doswitch() )
 				}	 

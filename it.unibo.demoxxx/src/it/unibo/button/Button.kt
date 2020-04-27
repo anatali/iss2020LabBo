@@ -32,7 +32,7 @@ class Button ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("pressed") { //this:State
 					action { //it:State
 						println("Button pressed, emitting onPressed signal...")
-						emit("onPressed", "onPressed(buttonPressed)" ) 
+						emit("onPressed", "onPressed(ButtonPressed)" ) 
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
