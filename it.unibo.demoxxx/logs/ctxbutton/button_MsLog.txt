@@ -1,0 +1,2 @@
+item(button,s0,msg(autoStartSysMsg,dispatch,button,button,start,7)).
+item(button,wait,msg(press,dispatch,main,button,press(press),10)).
