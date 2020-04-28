@@ -1,0 +1,6 @@
+item(demo,s0,msg(autoStartSysMsg,dispatch,demo,demo,start,5)).
+item(demo,s1,msg(msg1,dispatch,sender,demo,msg1(1),10)).
+item(demo,s2,msg(msg1,dispatch,sender,demo,msg1(2),11)).
+item(demo,s2,msg(msg2,dispatch,sender,demo,msg2(1),12)).
+item(demo,s2,msg(alarm,event,sender,none,alarm(fire),13)).
+item(demo,s2,msg(alarm,event,sender,none,alarm(tsunami),14)).

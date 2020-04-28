@@ -27,7 +27,7 @@ var terminated = false;
     }
 
     fun endTimer(){
-        //println("TimerActor $name TERMINATED ")
+        sysUtil.traceprintln("TimerActor $name TERMINATED ")
         terminated = true;
     }
 }

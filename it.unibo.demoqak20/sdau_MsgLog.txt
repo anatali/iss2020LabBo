@@ -1,7 +1,0 @@
-msg(obstacle,event,filter,none,obstacle(6),16)
-msg(obstacle,event,filter,none,obstacle(3),20)
-msg(obstacle,event,filter,none,obstacle(6),16)
-msg(obstacle,event,filter,none,obstacle(3),20)
-msg(obstacle,event,filter,none,obstacle(5),22)
-msg(obstacle,event,filter,none,obstacle(5),22)
-msg(obstacle,event,filter,none,obstacle(3),26)

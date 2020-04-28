@@ -1,0 +1,13 @@
+item(led,s0,msg(autoStartSysMsg,dispatch,led,led,start,5)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(on),8)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(off),12)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(on),16)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(off),20)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(on),24)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(off),28)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(on),33)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(off),37)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(on),41)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(off),45)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(on),49)).
+item(led,waitCmd,msg(ledCmd,dispatch,blsblink,led,ledCmd(off),53)).

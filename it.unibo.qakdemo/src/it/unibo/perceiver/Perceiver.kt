@@ -21,7 +21,7 @@ class Perceiver ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("perceiver waits ..")
 					}
-					 transition(edgeName="t03",targetState="handleAlarm",cond=whenEvent("alarm"))
+					 transition(edgeName="t05",targetState="handleAlarm",cond=whenEvent("alarm"))
 				}	 
 				state("handleAlarm") { //this:State
 					action { //it:State

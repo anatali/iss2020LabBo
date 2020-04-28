@@ -432,32 +432,80 @@ Note that each <tt>CodedQActor</tt> in this example is defined as a specialized 
 </tbody>	
 </table></center>
 
-<br/><br/>
+
+<h2>Case studies</h2>
+
+
 <center><table style="width:95%">
 <tbody>	
 <tr>
-<td style="width:40%">
+<td style="width:70%">
+<m>
+<k>es0</k>: Design and build a software system (named<em>workshift</em>) that allows to manage a machine according to three turns:
+
+<ol>
+<li>in the first turn (in the morning) the machine is able to handle messages (dispatches) of type <tt>m1:m1(V)</tt></li>
+<li>in the second turn (in the afternoon) the machine is able to handle messages (dispatches) of type <tt>m2:m2(V)</tt></li>
+<li>in the third turn (in the nigth) the machine 'sleeps'</li>
+</ol>
+
+Messages of types <tt>m1</tt> and <tt>m2</tt> can be sent by external entities at every time.
+</m>
+
 </td>
-<td><m></m></td>
+<td><a href="../src/workshift.qak" target="code">workshift.qak</a></td>
 </tr>
 
 <tr>
-<td style="width:40%">
+<td><m>
+<k>es4</k>:Design and build a  software system (named <em>taskdeploy</em>) that makes a teacher able to 
+assign a set of <ks>N (N>0)</ks> different tasks to the students, like that we are using now.
+</m>
+</td> 
+<td>
+<a href="../src/gettaskdeploy.qak" target="code">gettaskdeploy.qak</a>
+<m></m></td>
+</tr>
+
+
+<tr>
+<td><m>
+Design and build a <tt>ButtonLed</tt> software system (<em>bls</em>) that makes human users able to control a <em>led</em> 
+according to different control policies each time a <em>button</em> is pressed:
+
+<ol>
+<li><k>es1</k>: Turn on/off the <em>led</em></li>
+<li><k>es2</k>-Blink/un-blink the <em>led</em></li>
+<li><k>es3</k>-Control the <em>led</em> to send  a  maritime signal (e.g. 'passage to the east'
+( blank ) blinking at groups of three, every 5 seconds) </li>
+</ol>
+
+The system should be a distributed system, in which the Button and the Led run on a <i>different computational supports</i>, e.g. a Conventional PC, a RaspberryPi or Arduino.
+</m>
+</td> 
+<td>
+<a href="../src/blses1_onoff.qak" target="code">blses1_onoff.qak</a><br/> 
+<a href="../src/blses2_blink.qak" target="code">blses2_blink.qak</a> 
+<h3>Distributed version</h3>
+<a href="../src/blsledonly.qak" target="code">blsledonly.qak</a><br/>
+<a href="../src/blsblink.qak" target="code">blsblink.qak</a><br/>
+<m></m></td>
+</tr>
+
+<tr>
+<td>
 </td> 
 <td><m></m></td>
 </tr>
 
-<tr>
-<td style="width:40%">
-
-</td>
-<td><m> 
-</m></td>
-</tr>
+ 
 </tbody>	
 </table></center>
 
+<br/><br/>
 </div>
+
+
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
 By AN Unibo-DISI    
 </div> 

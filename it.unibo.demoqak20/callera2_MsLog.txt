@@ -1,8 +1,0 @@
-msg(a1,reply,calleda,callera2,a1(callera2_100),13)
-msg(a1,reply,calleda,callera2,a1(callera2_200),17)
-msg(a1,reply,calleda,callera2,a1(callera2_100),13)
-msg(a1,reply,calleda,callera2,a1(callera2_200),17)
-msg(a1,reply,calleda,callera2,a1(callera2_100),13)
-msg(a1,reply,calleda,callera2,a1(callera2_200),17)
-msg(a1,reply,calleda,callera2,a1(callera2_100),13)
-msg(a1,reply,calleda,callera2,a1(callera2_200),17)

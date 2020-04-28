@@ -1,7 +1,7 @@
 /*
  * This is a MODEL, instance of the QAK metamodel
  */
-System sys0
+System  -msglog  sys0
 //mqttBroker "localhost" : 1883
 
 Dispatch msg1 : msg1(ARG)
@@ -17,16 +17,19 @@ QActor demo context ctxdemo0{
 #]
 	State s0 initial { 	 
 		 memoCurrentTime A
+		 discardMsg Off //default
  	} 
  	Goto s1 
  	
  	State s1 {
- 		println("demo in s1")
+		printCurrentMessage
+  		println("demo in s1")
  	}
  	Transition t0 whenMsg msg1 -> s2
  				  whenMsg msg2 -> s3
 
  	State s2{
+ 		printCurrentMessage
  		println("demo in s2")		 
  	}
  	Transition t0 whenMsg msg2 -> s3
@@ -34,12 +37,14 @@ QActor demo context ctxdemo0{
  	State s3{
   		println("demo in s3")		
  	}
- 	Goto s1
+ 	Transition t0 whenMsg msg1 -> s2 
+ 				  whenMsg msg2 -> s3
 
 }
 QActor sender context ctxdemo0{
 	State s0 initial { 	
-		 forward demo -m msg1 : msg1(1)
+		 println("sender starts ..")
+		 forward demo -m msg1 : msg1(1) 
 		 delay 300
 		 forward demo -m msg1 : msg1(2)
 		 delay 300
@@ -61,5 +66,5 @@ QActor perceiver context ctxdemo0{
 		printCurrentMessage
 	}
 	Goto s0
-	
+	 
 }

@@ -1,0 +1,15 @@
+item(blsblink,s0,msg(autoStartSysMsg,dispatch,blsblink,blsblink,start,6)).
+item(blsblink,waitclick,msg(local_buttonCmd,event,buttonEventEmitter,none,local_buttonCmd('/'(blink,unblink)),7)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,11)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,15)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,19)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,23)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,27)).
+item(blsblink,startblink,msg(local_buttonCmd,event,buttonEventEmitter,none,local_buttonCmd('/'(blink,unblink)),31)).
+item(blsblink,waitclick,msg(local_buttonCmd,event,buttonEventEmitter,none,local_buttonCmd('/'(blink,unblink)),32)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,36)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,40)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,44)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,48)).
+item(blsblink,startblink,msg(local_tout_blsblink_startblink,event,timer_startblink,none,local_tout_blsblink_startblink,52)).
+item(blsblink,startblink,msg(local_buttonCmd,event,buttonEventEmitter,none,local_buttonCmd('/'(blink,unblink)),56)).
