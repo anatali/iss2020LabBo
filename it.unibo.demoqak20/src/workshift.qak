@@ -1,4 +1,10 @@
-//https://dl.bintray.com/jetbrains/kotlin/eclipse-plugin/0.8.19/
+/*
+ * This model gives essential and relevant information about
+ * 	     STRUCTURE, INTERACTION and BEHAVIOR
+ * about the system
+ * 
+ * The model is EXECUTABLE
+ */
 
 System -msglog workshift
 //mqttBroker "localhost" : 1883

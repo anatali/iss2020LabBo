@@ -1,3 +1,11 @@
+/*
+ * This model gives essential and relevant information about
+ * 	     STRUCTURE, INTERACTION and BEHAVIOR
+ * about the system
+ * 
+ * The model is EXECUTABLE
+ */
+
 System  gettaskdeploy
  	//"tcp://mqtt.eclipse.org:1883"
 	//mqtt.eclipse.org
