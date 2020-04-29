@@ -1,14 +1,12 @@
 package it.unibo.bls.devices.gui;
 
 import it.unibo.bls.appl.BlsApplicationLogic;
-import it.unibo.bls.appl.MainBlsAppl;
 import it.unibo.bls.components.ButtonObserver;
 import it.unibo.bls.interfaces.IAppLogic;
-import it.unibo.bls.interfaces.IApplListener;
-import it.unibo.bls.interfaces.IButton;
+import it.unibo.bls.interfaces.IApplListener; 
 import it.unibo.bls.interfaces.IButtonObservable;
 import it.unibo.bls.interfaces.ILed;
-import it.unibo.bls.interfaces.IObservable;
+ 
 
 public class MainBlsGuiBase   {
  	public static MainBlsGuiBase createTheSystem(){
@@ -23,6 +21,7 @@ public class MainBlsGuiBase   {
 		
 		bobs.setControl( applLogic );
 		applLogic.setControlled(led);
+		led.turnOff();
 		
 		button.addObserver( bobs );	//starts the job
 		
