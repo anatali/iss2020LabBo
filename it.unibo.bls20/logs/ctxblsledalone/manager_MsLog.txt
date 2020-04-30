@@ -1,0 +1,8 @@
+item(manager,s0,msg(autoStartSysMsg,dispatch,manager,manager,start,7)).
+item(manager,end,msg(ledchanged,event,led,none,ledchanged(off),9)).
+item(manager,end,msg(ledchanged,event,led,none,ledchanged(on),11)).
+item(manager,end,msg(ledchanged,event,led,none,ledchanged(off),13)).
+item(manager,end,msg(ledchanged,event,led,none,ledchanged(on),15)).
+item(manager,end,msg(ledchanged,event,led,none,ledchanged(off),17)).
+item(manager,end,msg(ledchanged,event,led,none,ledchanged(on),19)).
+item(manager,end,msg(ledchanged,event,led,none,ledchanged(off),21)).

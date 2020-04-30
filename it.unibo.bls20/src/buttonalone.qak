@@ -1,0 +1,43 @@
+/*
+ * This model gives essential and relevant information about
+ * 	     STRUCTURE, INTERACTION and BEHAVIOR
+ * about the system
+ * 
+ * The model is EXECUTABLE
+ */
+
+ 	//"tcp://mqtt.eclipse.org:1883"
+	//mqtt.eclipse.org
+	//tcp://test.mosquitto.org
+	//mqtt.fluux.io
+	//"tcp://broker.hivemq.com" 
+
+System -msglog buttonalone
+mqttBroker "broker.hivemq.com" :  1883 
+
+Context ctxbuttonalone   ip [host="localhost" port=8065] 	 	 
+  
+QActor button context ctxbuttonalone {  
+ 	State s0 initial {  		
+  		println("button started")
+  		qrun resources.bls.kotlin.buttonEventEmitter.create(myself, "clickOnOff")
+  	} 
+}
+
+ /*
+  * DOMANDE:
+  * cosa catturo le proprietà essenziali del concetto di  button evocato dai requisiti 
+  * in termini di struttura, interazione e comportamento.
+  * 
+  * Dai requisiti (es1): 
+  * 0) inizialmente il led è nello stato 'spento'
+  * 1) l'human user preme il button     e il led cambia di stato, cioè diventa 'acceso'
+  * quindi, per come è stato modellato il led, occorre forward turnOn
+  * 2) l'human user (ri)preme il button e il led ricambia di stato, cioè diventa 'spento'
+  * quindi, per come è stato modellato il led, occorre forward turnOff
+  * 
+  * MA IL BUTTON NON DEVE SAPERE NULLA DELLA 'business logic' 
+  */
+
+ 
+ 

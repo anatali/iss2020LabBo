@@ -1,0 +1,438 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+top {
+	width: 100%;
+}
+
+
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #abe876;
+    color: #1632cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 700px;
+    font-size: 15px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px; 
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 130%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #C0F0E0;
+    font-size: 100%;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+	
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #ffffff;	
+    border: 1.5px solid #d5f2ed;
+    padding: 15px;
+    margin: 10px;
+	border-radius: 25px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+} 
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}     
+
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+	
+}
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}
+
+  -->
+</style>
+    
+<head>
+   
+<title>bls2020</title></head>
+    
+<body>
+<div id="top">
+<h1>BLS2020: The button-led system</h1>
+</div>  
+
+<div class="body"> 
+
+
+<h2>Introduction</h2>
+ 
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+<h3>Concrete devices</h3>
+<img src="./img/buttonledconcrete.png" alt="buttonledconcrete" width="80%"  />
+</td>
+<td>Technology dependent layer.<br/><br/> 
+See for example:<br/> 
+<a href="../resources/it/unibo/bls/devices/mock/LedMock.java" target="code">LedMock.java</a><br/>
+<a href="../resources/it/unibo/bls/devices/gui/LedAsGui.java" target="code">LedAsGui.java</a><br/><br/>
+<a href="../resources/it/unibo/bls/devices/gui/ButtonAsGui.java" target="code">ButtonAsGui.java</a>
+</td>
+</tr>
+
+<tr>
+<td><h3>0 - Object oriented</h3>
+<img src="./img/blsoo.png" alt="blsoo" width="90%"  />
+</td>
+
+<td>The <i>button</i> is an 'active' object and the <i>led</i> is a <bc>'event listener'</bc>.
+See for example a  <a href="https://www.computerhope.com/jargon/e/event-listener.htm" target="web">definition of event listener</a>
+that requires some critical analysis. 
+<h4>Analysis</h4>
+pros:<br/>
+cons: 
+<br/><br/>
+See also the (horrible) system:<br/> 
+<li><a href="../resources/it/unibo/bls/devices/gui/ButtonAsGui.java" target="code">ButtonAsGui.java</a> </li>
+<li><a href="../resources/it/unibo/bls/devices/gui/LedListenerAsGui.java" target="code">LedListenerAsGui.java</a></li>
+<li><a href="../resources/it/unibo/bls/devices/gui/MainBlsGuiNaive.java" target="code">MainBlsGuiNaive.java</a></li>
+
+ </td>
+</tr>
+
+<tr>
+<td>
+<h3>1 - Actor-based </h3>
+<img src="./img/blsqak.png" alt="blsqak" width="90%"  />
+</td>
+<td>The <i>button</i> and the <i>led</i> are (qak) actors able to interact.<br/>
+<m>Technological details are hidden into a proper adapter' object.</m><br/>
+The problem is to define the <bc>'logical interaction'</bc> between them.<br/><br/>
+At the moment, we can introduce a model for the led:
+<a href="../src/ledalone.qak" target="code">ledalone.qak</a>
+
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3>2 - Actor-based: polling</h3>
+<img src="./img/blsqakpolling.png" alt="blsqakpolling" width="90%"  />
+</td>
+<td>The <i>button</i> and the <i>led</i> are (qak) actors able to interact.
+The  <i>led</i> sends a <bc>request</bc> to the <i>button</i> in order to know its state.
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3>3 - Actor-based: direct call</h3>
+<img src="./img/blsqakcall.png" alt="blsqakcall" width="90%"  />
+</td>
+<td>
+The <i>button</i> forwards a <bc>dispatch</bc> to the <i>led</i> each time it changes its state.
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3>4 - Actor-based: events</h3>
+<img src="./img/blsqakevents.png" alt="blsqakevents" width="90%"  />
+</td>
+<td>
+The <i>button</i> emits an <bc>event</bc> each time it changes its state, hoping that the <i>led</i> can perceive it.
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3>5 - Introducing a component called by button</h3>
+ 
+<img src="./img/blsqakcontrol.png" alt="blsqakcontrol" width="90%"  /><br/>
+ 
+</td>
+<td>
+The <i>button</i>  does not interact with the <i>led</i>, but with another component (<i>control</i>) that embeds the 
+<bc>'business logic'</bc>  of the system.
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3>6 - The <i>control</i> as button-observer</h3>
+<img src="./img/blsqakeventcontrol.png" alt="blsqakeventcontrol" width="90%"  />
+
+</td>
+<td>
+The <i>control</i> is an 'observer' of the <i>button</i> sin it is able to  <bc>perceive events</bc> emitted
+by the  <i>button</i>  when it changes its state.
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3>7 - The <i>button</i> is embedded</h3>
+<img src="./img/blsqakbuttonembedded.png" alt="blsqakbuttonembedded" width="60%"  />
+</td>
+<td>The <i>button</i>  is just a resource embedded into the <i>control</i> to allow human interaction.
+
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/>
+</td>
+</tr>
+ 
+
+ 
+
+
+<tr>
+<td>
+<h3>8 - Using a browser</h3>
+<img src="./img/blsqakbrowser.png" alt="blsqakbrowser" width="80%"  />
+</td>
+<td>
+Human interaction is based on the usage of a browser provided by a <i>frontend</i> component that
+interacts in some way (to be designed) with the <i>control</i>.
+<h4>Analysis</h4>
+pros:<br/>
+cons:<br/></td>
+</tr>
+
+<tr> 
+<td>
+</td>
+<td></td>
+</tr>
+
+
+</table>
+
+<!--
+<h2>BLSDChain </h2>  
+<div class="req">
+Design and build a <tt>Distributed</tt> software system   with one <tt>Button</tt> and a 
+<em>chain of Led</em> made of <tt>n>2</tt>:
+<a href="../resources/it/unibo/chain/segment7/LedSegment.kt" target="code">LedSegment.kt</a>.
+</div>	 
+<h3>Problem analysis</h3>
+Since we have more than two leds, our system can take several configurations:
+
+<center><table style="width:90%">
+<tbody>	
+
+<tr>
+<td style="width:35%"><img src="./img/chain0.png" alt="chain0" width="100%"  ></td>
+<td><em>Two nodes only</em> and the leds on a <bc>single node</bc>. The <tt>control</tt> should be in the node of the led.</td>
+</tr>
+
+<tr>
+<td style="width:35%"><img src="./img/chain01.png" alt="chain01" width="100%" ></td>
+<td><em>Two nodes only</em> and the leds on <bc>both the nodes</bc>. The <tt>control</tt> should be in one of the nodes 
+but which is better? </td>
+</tr>
+
+
+<tr>
+<td><img src="./img/chain1.png" alt="chain1" width="100%"  ></td>
+<td><em>More than two nodes</em>. The leds of the chain are spread on several nodes.
+The <tt>control</tt> should be ... </td>
+</tr>
+
+<tr>
+<td></td>
+<td></td>
+</tr>
+
+</tbody>	
+</table></center>
+
+ <br/> 
+
+Suppose that, after a meeting with the customer, our reference configuration is <tt>More than two nodes</tt>
+with the <tt>control</tt> on the node of the <tt>button</tt>. In this case, with our previous approach,
+we should introduce a <tt>proxy-server</tt> pair for each led, even  when there are several leds on the same node.
+
+<br/><br/>
+Since this is quite impractical, an important <em>non-functional requirement</em> seems to arise at this point:
+<div class="req">
+Since different customers can decide to allocate the leds in different ways, we should design an 
+easily configurable software system. Moreover we should be able to build in automatic way the infrastructural 
+network support required to reach our applicative goals.
+</div>	 
+
+-->
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+</td>
+<td></td>
+</tr>
+</table>
+	      	
+<br/>	
+</div>  
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div>
+</body>
+</html>

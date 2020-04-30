@@ -1,0 +1,162 @@
+/*
+ * This model gives essential and relevant information about
+ * 	     STRUCTURE, INTERACTION and BEHAVIOR
+ * about the system
+ * 
+ * The model is EXECUTABLE
+ */
+
+ 	//"tcp://mqtt.eclipse.org:1883"
+	//mqtt.eclipse.org
+	//tcp://test.mosquitto.org
+	//mqtt.fluux.io
+	//"tcp://broker.hivemq.com" 
+
+System -msglog ledalone
+mqttBroker "broker.hivemq.com" :  1883  
+
+Dispatch turnOn  : turnOn(X)       
+Dispatch turnOff : turnOff(X)    
+Dispatch config  : config(TYPE)
+
+Event ledchanged : ledchanged( V ) 
+
+Event buttonCmd  : buttonCmd(V)
+
+Context ctxledalone      ip [host="localhost" port=8080] 	 	 
+//Context ctxbbb   ip [host="127.0.0.1" port=8065] 
+
+  
+QActor led context ctxledalone {     
+[#   
+   var state   = false  
+   lateinit var leddev : it.unibo.bls.interfaces.ILed  //CONCRETE DEVICE 
+#]    
+	State s0 initial {  		
+  		println("led started")
+  		forward led -m config  : config( ledgui )
+ 	} 
+ 	Transition t0 whenMsg  config -> doConfig
+ 	
+ 	State doConfig{
+ 		println(" === LED CONFIGURATION === ")
+ 		onMsg( config : config( TYPE ) ){
+ 			[# leddev = resources.bls.kotlin.ledsupport.create( payloadArg(0) ) 
+			   state = false 
+			   delay(1000)  //give the time to setup
+  		       leddev.turnOff()   
+ 			#] 			
+			emit ledchanged : ledchanged(off)
+ 		}
+ 	}
+	Goto waitCmd       
+	 
+	State waitCmd{  
+		println("led waits ...") 
+	}   
+	Transition t0     
+ 		whenMsg turnOn  -> turnLedOn
+		whenMsg turnOff -> turnLedOff
+		whenMsg  config -> doConfig
+  	  
+	State  turnLedOn{  
+		printCurrentMessage   
+ 		[# leddev.turnOn()	#]  
+		[# state = true 	#]
+		emit ledchanged : ledchanged(on)
+		updateResource [# "ledstate($state)"#]
+		
+ 	}	
+	Goto waitCmd  
+	      
+	State  turnLedOff{  
+ 		printCurrentMessage   
+		[# leddev.turnOff() 	#]  
+		[# state = false 		#]		 
+		emit ledchanged : ledchanged(off)
+		updateResource [# "ledstate($state)"	#]
+ 	}	
+	Goto waitCmd         
+}
+
+/* 
+QActor anobserver context ctxledalone{
+	[# var on = false #]
+	State s0 initial {  		  		 
+ 	} 
+ 	Transition t0 whenEvent  buttonCmd -> handleButtonCmd
+ 	
+ 	State handleButtonCmd{
+ 		if [# ! on #]{
+ 			forward led -m turnOn : turnOn(ok)
+ 		}
+ 		if [# on #]{
+ 			forward led -m turnOff : turnOff(ok)
+   		}
+	    [# on = !on #]
+ 	}
+ 	Goto s0
+	
+}
+* */
+ 
+/*
+ * WARNING:
+ * Events are not perceived by an entity external not working via MQTT
+ * 
+ */
+ 
+/*
+ * Just to test ...
+ */
+/*  
+QActor manager context ctxledalone { 
+	[# var counter = 0 #]
+	State s0 initial {   
+		forward led -m config  : config( ledgui )
+	}
+	Goto work
+	
+	State work {  
+  		println("manager starts $counter ")
+  		[# counter++ #]
+  		delay 100
+  		forward led -m turnOn  : turnOn(0)
+   		delay 500
+		forward led -m turnOff :  turnOff(0)   	
+		delay 2000	    
+	 } 	
+	 Goto end if [# counter == 3 #] else  work	
+
+	 State end{ println("manager BYE") }
+}
+
+ 
+QActor abutton context ctxledalone {  
+	[# var on = false #]
+ 	State s0 initial {  	
+ 		forward led -m config  : config( ledgui )	
+   		qrun resources.bls.kotlin.buttonEventEmitter.create(myself, "clickOnOff")
+   		forward led -m turnOff : turnOff(ok)
+  	} 
+  	Goto work
+  	
+  	State work{ 		
+  	}
+  	Transition t0 whenEvent buttonCmd and [# ! on #] -> turnTheledOn 
+  				  whenEvent buttonCmd and [#   on #] -> turnTheledOff
+
+  	State turnTheledOn{
+  		[# on = true #]
+  		forward led -m turnOn : turnOn(ok)
+  	}
+   	Goto work
+  	
+  	State turnTheledOff{
+  		[# on = false #]
+  		forward led -m turnOff : turnOff(ok)
+  	}
+  	Goto work
+  	
+}
+*/ 

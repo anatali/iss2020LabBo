@@ -1,0 +1,48 @@
+//docker build --rm -t uniboledonly8080 .			//create image
+//docker run --rm -p8080:8080 uniboledonly8080
+ 
+//docker build --rm -t ledjava .			//create image
+//docker run --rm  ledjava
+
+//docker tag uniboledonly8080 habibridho/uniboledonly8080
+//docker push habibridho/uniboledonly8080
+//docker pull habibridho/uniboledonly8080
+ 
+//docker run --rm -p8080:8080 habibridho/uniboledonly8080
+
+
+//https://medium.com/@habibridho/docker-as-deployment-tools-5a6de294a5ff 
+ /*
+List all images:
+	docker images
+Remove image:
+	docker rmi _image_tag_
+List all containers:
+	docker ps -a
+Remove container:
+	docker stop _container_name_
+	docker rm _container_name_
+Build image:
+	docker build -t _image_tag_ .
+Run container:
+	docker run --name _container_name_ -p 80:80 -p 443:443 -d -t _image_tag_
+Launch application:
+	boot2docker ip
+browser: http:// _your_ip_  
+
+
+docker run -p 8484 -a stdin -a stdout -i -t --name natdocker node:nat /bin/bash
+docker ps
+docker start /stop --container
+
+
+
+  
+docker run -ti -p 1883:1883 -p 9001:9001 eclipse-mosquitto
+Run for MQTT + websocket:
+docker run -d -p 1883:1883 -p 9001:9001 --name=mosquitto sourceperl/mosquitto
+docker ps -a
+docker start d8a5f1fefc5b
+docker ps
+docker exec -it d8a5f1fefc5b /bin/bash wizardly_ride
+* */
