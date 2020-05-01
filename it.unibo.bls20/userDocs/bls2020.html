@@ -192,7 +192,7 @@ div.imagedesc{
    
 <title>bls2020</title></head>
     
-<body>
+<body>sent here a
 <div id="top">
 <h1>BLS2020: The button-led system</h1>
 </div>  
@@ -201,7 +201,14 @@ div.imagedesc{
 
 
 <h2>Introduction</h2>
- 
+Case-studies based on the usage of one or more <i>button</i> and one or more <i>led</i> are simple but not simplistic, since
+they include the main aspects of information-processing systems: <bc>input</bc>, <bc>output </bc> and <bc>elaboration</bc>.
+<br/><br/>
+Since <k>there is no code without a project, no project without problem analysis and no problem without requirements</k>, let us
+present here a possible scenario related to the case-study <bc>led-blink</bc> proposed in:
+<a href="../../it.unibo.demoqak20/userdocs/ApplProposal0.html" target="lab">ApplProposal0.html | A set of tasks to do </a>.
+
+<br/><br/>
 <table style="width:100%" border="1">
 <tr>
 <td style="width:50%">
@@ -296,7 +303,7 @@ cons:<br/>
 
 <tr>
 <td>
-<h3>5 -  </h3>
+<h3>5 - Actor-based: request </h3>
 <img src="./img/blsqakcallMazzuca.png" alt="blsqakcallMazzuca" width="60%"  />
 </td>
 <td>
@@ -308,7 +315,7 @@ cons:<br/>
 
 <tr>
 <td>
-<h3>6 - Introducing a component called by button</h3>
+<h3>6 - Introducing another component</h3>
  
 <img src="./img/blsqakcontrol.png" alt="blsqakcontrol" width="90%"  /><br/>
  
@@ -339,7 +346,7 @@ cons:<br/>
 
 <tr>
 <td>
-<h3>8 - All events </h3>
+<h3>8 - All event-based observers </h3>
 <img src="./img/blsqakallevents.png" alt="blsqakallaevents.png" width="90%"  />
 
 </td>
@@ -354,7 +361,7 @@ cons:<br/>
 
 <tr>
 <td>
-<h3>9 - The <i>button</i> is embedded</h3>
+<h3>9 - Embedding the <i>button</i></h3>
 <img src="./img/blsqakbuttonembedded.png" alt="blsqakbuttonembedded" width="60%"  />
 </td>
 <td>The <i>button</i>  is just a resource embedded into the <i>control</i> to allow human interaction.
@@ -371,7 +378,7 @@ cons:<br/>
 
 <tr>
 <td>
-<h3>10 - Using a browser</h3>
+<h3>10 - The  <i>button</i> in a browser</h3>
 <img src="./img/blsqakbrowser.png" alt="blsqakbrowser" width="80%"  />
 </td>
 <td>
@@ -391,6 +398,8 @@ cons:<br/></td>
 
 </table>
 
+<h2>Other considerations</h2>
+....
 <!--
 <h2>BLSDChain </h2>  
 <div class="req">
@@ -460,6 +469,14 @@ network support required to reach our applicative goals.
 <!--
 https://git-lfs.github.com/
 git lfs track "*.zip"
+git add pi3b+.zip
+git commit -m "Add sd file"
+git push origin master
+
+git lfs uninstall
+
+git config -l
+git config lfs.https://github.com/anatali/iss2020LabBo.git/info/lfs.locksverify false
 -->
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
 By AN Unibo-DISI  
