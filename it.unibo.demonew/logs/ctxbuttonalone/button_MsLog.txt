@@ -1,0 +1,17 @@
+item(button,s0,msg(autoStartSysMsg,dispatch,button,button,start,5)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),6)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(on),19)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),7)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(off),21)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),8)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(on),23)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),9)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(off),25)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),10)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(on),27)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),11)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(off),29)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),12)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(on),31)).
+item(button,s0,msg(buttonCmd,event,buttonEventEmitter,none,buttonCmd(clickOnOff),13)).
+item(button,s0,msg(ledchanged,event,led,none,ledchanged(off),33)).
