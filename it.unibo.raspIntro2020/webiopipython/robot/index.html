@@ -1,0 +1,94 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content = "height = device-height, width = 420, user-scalable = no" />
+	<title>Osoyoo RobotCar</title>
+	<style type="text/css">
+		button {
+			margin: 15px 15px 15px 15px;
+			width: 300px;
+			height: 100px;
+			font-size: 28pt;
+			font-weight: bold;
+			color: black;
+		}
+	</style>
+</head>
+<body>
+<h2>Osoyoo RobotCar</h2>
+	<div id="content" align="center">
+		<img src=""  id="img_src" alt=""  width="320" height="240"><br/> 
+		<div id="up"></div>
+		<div id="middle"></div>
+		<div id="down"></div>
+		<div id="speed"></div>
+	</div>
+</body>
+
+<script type="text/javascript" src="/webiopi.js"></script>
+<script type="text/javascript">
+	 var url = window.location.host;
+     var len = url.length;
+     var n= url.indexOf(":");
+     var j = url.substring(n+1,len);
+     var ip = url.replace(j,'8899');
+	 ip = "http://" + ip + "/?action=stream";
+	 alert(ip);						//http://192.168.1.7:8899/?action=stream
+     document.getElementById("img_src").src = ip;
+
+	 function init() {
+		 var button;
+		 button = webiopi().createButton("up", "/\\", go_forward, stop);
+		 $("#up").append(button);
+
+		 button = webiopi().createButton("left", "<", turn_left, stop);
+		 $("#middle").append(button);
+
+		 button = webiopi().createButton("stop", "||", stop);
+		 $("#middle").append(button);
+
+		 button = webiopi().createButton("right", ">", turn_right, stop);
+		 $("#middle").append(button);
+
+		 button = webiopi().createButton("down","\\/",go_backward,stop);
+		 $("#down").append(button);
+
+		 button = webiopi().createButton("sub","-",down_speed,stop);
+		 $("#speed").append(button);
+
+		 button = webiopi().createButton("add","+",add_speed,stop);
+		 $("#speed").append(button);
+
+	 }
+
+	 function go_forward() {
+	 	webiopi().callMacro("go_forward");
+	 }
+
+	 function go_backward() {
+	 	webiopi().callMacro("go_backward");
+	 }
+
+	 function turn_right() {
+	 	webiopi().callMacro("turn_right");
+	 }
+
+	 function turn_left() {
+	 	webiopi().callMacro("turn_left");
+	 }
+
+	 function stop() {
+	 	webiopi().callMacro("stop");
+	 }
+
+	 function down_speed() {
+	 	webiopi().callMacro("down_speed");
+	 }
+
+	 function add_speed() {
+	 	webiopi().callMacro("add_speed");
+	 }
+	
+	 webiopi().ready(init);
+</script>
+</html>
