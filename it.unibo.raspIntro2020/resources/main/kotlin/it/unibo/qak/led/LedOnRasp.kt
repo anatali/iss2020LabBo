@@ -5,6 +5,11 @@ import it.unibo.kactor.ApplMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/*
+ Message-driven ActorBasic
+ Message and events are not ecplicitly declared
+ See ledalone.qak
+ */
 class LedOnRasp(name:String, scope: CoroutineScope) : ActorBasic( name, scope ){
 
     override suspend fun actorBody(msg : ApplMessage){

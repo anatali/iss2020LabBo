@@ -1,5 +1,5 @@
 ##############################################################
-# tcp_emitter.py
+# ledCmdmitter.py
 ##############################################################
 import socket
 import time
@@ -11,8 +11,8 @@ alarmFire     = "msg(alarm,event,python,none,alarm(firetcp),1)"
 alarmTsunami  = "msg(alarm,event,python,none,alarm(tsunamitcp),2)"
 onPressed     = "msg(onPressed,event,python,none,onPressed(python),2)"  
 
-ledon         = "msg(turnOn, dispatch,python,led,turnOn(a),2)"
-ledoff        = "msg(turnOff,dispatch,python,led,turnOff(a),3)"
+ledon         = "msg(turnOn, dispatch,python,led,turnOn(1),2)"
+ledoff        = "msg(turnOff,dispatch,python,led,turnOff(1),3)"
 
 def connect(port) :
     server_address = ('localhost', port)

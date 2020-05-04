@@ -6,6 +6,7 @@ import java.util.Observable;
 
 import it.unibo.bls.interfaces.IButton;
 import it.unibo.bls.interfaces.IButtonObservable;
+import it.unibo.bls.interfaces.ILed;
 import it.unibo.bls.interfaces.IObserver;
  
 
@@ -25,8 +26,14 @@ public static IButtonObservable  createButton(  String cmd  ){
 	}
 	@Override  //from ActionListener
 	public void actionPerformed(ActionEvent e) {
-		//System.out.println("	ButtonAsGui | actionPerformed ..." + e.getActionCommand() );
+		System.out.println("	ButtonAsGui | actionPerformed ..." + e.getActionCommand() );
 		this.setChanged();
 		this.notifyObservers(e.getActionCommand());
 	}
+	
+ 	public static void main(String[] args) {
+ 		IButtonObservable button	= ButtonAsGui.createButton("click");
+   }
+	
+	
 }

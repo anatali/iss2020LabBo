@@ -18,26 +18,13 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		   
 		   var state   = false  
-		   lateinit var leddev : it.unibo.bls.interfaces.ILed  //CONCRETE DEVICE 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("led started")
-						forward("config", "config(ledgui)" ,"led" ) 
-					}
-					 transition(edgeName="t00",targetState="doConfig",cond=whenDispatch("config"))
-				}	 
-				state("doConfig") { //this:State
-					action { //it:State
-						println(" === LED CONFIGURATION === ")
-						if( checkMsgContent( Term.createTerm("config(TYPE)"), Term.createTerm("config(TYPE)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 leddev = resources.bls.kotlin.ledsupport.create( payloadArg(0) ) 
-											   state = false 
-											   delay(1000)  //give the time to setup
-								  		       leddev.turnOff()   
-								emit("ledchanged", "ledchanged(off)" ) 
-						}
+						 machineExec( "sudo bash led25GpioTurnOn.sh" ) 
+						delay(1000) 
+						 machineExec( "sudo bash led25GpioTurnOff.sh" ) 
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
@@ -45,14 +32,14 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 					action { //it:State
 						println("led waits ...")
 					}
-					 transition(edgeName="t01",targetState="turnLedOn",cond=whenDispatch("turnOn"))
-					transition(edgeName="t02",targetState="turnLedOff",cond=whenDispatch("turnOff"))
-					transition(edgeName="t03",targetState="doConfig",cond=whenDispatch("config"))
+					 transition(edgeName="t00",targetState="turnLedOn",cond=whenDispatch("turnOn"))
+					transition(edgeName="t01",targetState="turnLedOff",cond=whenDispatch("turnOff"))
 				}	 
 				state("turnLedOn") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 leddev.turnOn()	 
+						currentProcess=machineExec("sudo bash led25GpioTurnOn.sh")
+						 machineExec( "sudo bash led25GpioTurnOn.sh" )  
 						 state = true 	 
 						emit("ledchanged", "ledchanged(on)" ) 
 						updateResourceRep( "ledstate($state)" 
@@ -63,7 +50,7 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("turnLedOff") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 leddev.turnOff() 	 
+						 machineExec( "sudo bash led25GpioTurnOff.sh" )  
 						 state = false 		 
 						emit("ledchanged", "ledchanged(off)" ) 
 						updateResourceRep( "ledstate($state)"	 

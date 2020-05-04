@@ -5,7 +5,7 @@
 <script type="text/javascript" src="../css/issStyle.js"></script>
 -->
 <style type="text/css">
-<!--
+ 
 body
 {
     margin-left:  30px;
@@ -142,8 +142,8 @@ div.req{
     margin: 10px;
 }       
 div.remark{
-	background-color: #ffffff;	
-    border: 1.5px solid #d5f2ed;
+	background-color: #CEF6F5 ;	
+    border: 1.5px solid #FA58F4  ;
     padding: 15px;
     margin: 10px;
 	border-radius: 25px;
@@ -185,7 +185,7 @@ div.imagedesc{
 	margin: auto;
 }
     
-  -->
+ 
 </style>
     
 <head>
@@ -210,12 +210,23 @@ div.imagedesc{
 		<li><a href="#git">Install GIT</a></li>
 		<li><a href="#i2c">Enable I2C</a></li>
 		<li><a href="#mjpg">Install mjpg-streamer</a></li>
+		<li><a href="#aiocoap">Install aiocoap</a></li>
+		<li><a href="#nodejs">Install Node.js</a></li>
+		<li><a href="#samba">Install Samba</a></li>
+		
+		
+		 
  	</ul>
 	
 <li><a href="#hardware">The hardware</a></li>
-<li><a href="#cabling">Connect the hardware</a></li>
-<li><a href="#robots">Robots</a></li>
- 
+<li><a href="#cabling">Connect the hardware</a>
+<ul><li><a href="#bls">ButtonLed Code - Low Level)</a></li>
+<li><a href="#robots">Devices for home-made DDR</a></li>
+
+</ul>
+</li>
+
+<li><a href="#blsqak">Led - Qak </a></li> 
 </ol>
 
 
@@ -527,8 +538,55 @@ ls   /dev/video*      <kc>//the device is on /dev/video0</kc>
 </td>
 </tr>
 
- 
- 
+ <tr>
+<td>
+<h3 id="aiocoap">Install <a href="https://aiocoap.readthedocs.io/en/latest/" target="web">aiocoap</a></h3> 
+<h4>Install Copper in Chrome in Windows10</h4>
+See <a href="https://github.com/mkovatsc/Copper4Cr">Copper for Chrome (Cu4Cr) CoAP user-agent</a>
+</td>
+<td><pre>
+https://aiocoap.readthedocs.io/en/latest/
+wget https://aiocoap.readthedocs.io/en/latest/aiocoap-0.3.tar.gz
+tar xvzf aiocoap-0.3.tar.gz
+cd aiocoap-0.3
+sudo ./setup.py install</pre>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3 id="nodejs">Install Node.js</h3> </td>
+<td><pre>
+sudo apt remove nodejs nodejs-legacy -y
+sudo apt remove npm -y
+sudo apt remove --purge node
+
+<kc>//updates our Debian apt package repository 
+//to include the NodeSource packages</kc>
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+sudo apt-get install -y nodejs  // to install Node.js 13.x and npm
+
+node -v				<kc>//v13.7.0</kc>
+npm --version		<kc>//6.13.6</kc>
+
+npm init 			<kc>//create package.json</kc>
+npm install serialport	<kc>//--save is implicit</kc>
+
+npm install express
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3 id="samba">Install <a href="https://linuxconfig.org/how-to-set-up-a-samba-server-on-debian-10-buster" target="web">Samba</a></h3> </td>
+<td><pre>
+sudo apt install -y samba
+</pre>
+</td>
+</tr>
 
  </tbody>
 </table>
@@ -543,6 +601,9 @@ ls   /dev/video*      <kc>//the device is on /dev/video0</kc>
 <tr>
 <td style="width:50%" >
 <img src="./img/raspberry-pi-rev2-gpio-pinout.jpg" alt="RaspRev2" width="100%" />
+<h4>under voltage detected</h4>
+You need one that supplies 5v at about 2Amps or more (2.5 for a Pi3b+)
+
 <h3>Resistors</h3>
 
 The Raspberry Pi has internal <em>pull-up</em> and <em>pull-down</em> resistors that can be specified when the pin declarations are made.
@@ -717,7 +778,7 @@ sudo python
  
 
             
-<h3>ButtonLed Code</h3>           
+<h3 id="bls">ButtonLed Code - Low Level </h3>           
 <table style="width:98%">
 <tbody>	
 <tr>
@@ -742,8 +803,11 @@ sudo python
  </td>
 </tr>
  </table>          
+ 
+ 
+ 
 
-<h2 id="robots">Robots</h2> 
+<h3 id="robots">Devices for home-made DDR</h3> 
 <table style="width:98%">
 <tbody>	
 <tr>
@@ -752,17 +816,18 @@ sudo python
 <img src="./img/robotSkeleton.png" alt="robotSkeleton" width="100%"/>
 </td>
 <td>
-<h3 id="usefulnotes">Ddr robots home made</h3>
+<h4 id="usefulnotes">Home-made DDR</h4>
 <a href="./devsDdr.html" target="code">Devices for a ddr robot</a><br/><br/>
 
 
-<h3>Sensors</h3>  
+<h4>Sensors</h4>  
 <bc>HC-SR04</bc>  <tt>UltraSonic Distance Measure Module Range Sensor</tt>.<br/>
 <a href="../resources/sensors/SonarAlone.c" target="code">SonarAlone.c</a><br/>
 
-<h3>Motors</h3>  
+<h4>Motors</h4>  
 <a href="../resources/motors/nanoMotorDriveA.sh" target="code">nanoMotorDriveA.sh</a><br/>
-<a href="../resources/motors/nanoMotorDriveB.sh" target="code">nanoMotorDriveB.sh</a><br/>
+<a href="../resources/motors/nanoMotorDriveA.sh" target="code">nanoMotorDriveA.sh</a><br/>
+<a href="../resources/motors/Motors.c" target="code">Motors.c</a><br/>
 
 
 
@@ -773,7 +838,61 @@ sudo python
  
 
  
-  
+ <h2 id="blsqak">Led - Qak </h2>  
+Let us introduce a here a qak-model for a Led mounted on a RaspberryPi (the anode on <tt>GPIO25</tt>, cathod on a <tt>GND</tt>).<br/><br/>
+<table style="width:98%">
+<tbody>	
+<tr>
+ 
+    <th>Led: Model (on RaspberryPi) </th>
+    <th>Command the Led (from the PC)</th>
+    <th>Led ledobservers (on the PC)</th>
+    </tr>
+  <tr class="alt">
+    <td style="width:33%">
+<a href="../src/ledalone.qak" target="code">ledalone.qak</a><br/><br/>
+This is component that:
+<ul>
+<li>can be controlled via TCP, MQTT and CoAP<br/><br/></li>
+<li>works as a CoAP resource<br/><br/></li>
+<li>updates a physical Led by using (user-defined) <bc>bash</bc> programs<br/><br/></li>
+<li>when changes its state emits the event <bc>ledchanged : ledchanged( V )</bc> and updates the resource representation<br/><br/></li>
+<li>can be observed by CoAP clients or by other Qak components<br/><br/></li>
+<li>...</li>
+</ul>
+<div class="remark">
+Thus, it is  'almost' (Quasi) an actor.
+</div>
+</td> 
+<td style="width:33%"> 
+<h4>Using Kotlin</h4> 
+<ul>
+<li><a href="../resources/coap/actorQakCoapClient.kt" target="code">actorQakCoapClient.kt</a>: sends commands via <tt>CoAP</tt><br/></li>
+</ul>
+
+
+<h4>Using Python</h4> 
+<ul>
+<li><a href="../resources/python/ledCmdemitter.py" target="code">ledCmdemitter.py</a>: sends commands via <tt>TCP</tt><br/></li>
+</ul>
+
+<h4>Using a GUI</h4>   
+<ul>
+<li><a href="../resources/consolegui/consoleGuiTcp.kt" target="code">consoleGuiTcp.kt</a>: sends commands via <tt>TCP</tt><br/></li>
+<li><a href="../resources/consolegui/consoleGuiCoap.kt" target="code">consoleGuiCoap.kt</a>: sends commands via <tt>CoAP</tt><br/></li>
+<li><a href="../resources/consolegui/consoleGuiMqtt.kt" target="code">consoleGuiMqtt.kt</a>: sends commands via <tt>MQTT</tt><br/></li>
+</ul>
+
+</td> 
+<td >    
+<h4>Using Kotlin</h4> 
+<a href="../resources/coap/actorQakCoapObserver.kt" target="code">actorQakCoapObserver.kt</a>: works with <tt>CoAP</tt>
+
+<h4>A Qak component that perceives the <bc>ledchanged</bc>  event</h4> 
+<a href="../src/ledobserver.qak" target="code">ledobserver.qak</a>
+ </td>
+</tr>
+ </table>           
 	
 	
  
