@@ -6,8 +6,13 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.jetbrains.kotlin.core.kotlinNature</nature>
+		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 	</natures>
 	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
+			<arguments/>
+		</buildCommand>
 		<buildCommand>
 			<name>org.jetbrains.kotlin.ui.kotlinBuilder</name>
 			<arguments/>

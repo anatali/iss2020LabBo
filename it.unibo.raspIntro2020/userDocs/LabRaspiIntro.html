@@ -190,11 +190,11 @@ div.imagedesc{
     
 <head>
    
-<title>LabRaspiWeb</title></head>
+<title>LabRaspiIntro</title></head>
     
 <body>
 <div id="body">
-<h1>LabRaspiWebi | Using the Raspberry via Web<font size="5"></font> </h1>
+<h1>LabRaspiIntro | Using the RaspberryPi<font size="5"></font> </h1>
 
 <h2>Overview</h2>
 
@@ -242,6 +242,9 @@ network={
 	<li>on your <tt>MODEM HUB</tt> look at the <bc>Raspberry IP address</bc> (optionally, connect the RaspberryPi with an Ethernet cable to the <tt>MODEM</tt>) 
 	<li>Connect via ssh (by using <a href="https://www.putty.org/" target="web">Putty</a> ) 
 </ol>
+
+See also: <a href="https://www.raspberryitaly.com/raspberrypi-tutti-i-comandi-utili-a-colpo-docchio/" target="web">
+RaspberryPi: Tutti i comandi utili a colpo d’occhio</a>
 
 </td>
 <td>
@@ -314,18 +317,6 @@ BUG_REPORT_URL="http://www.raspbian.org/RaspbianBugs"
 </pre>
 
 
-<h3 id="python">About Python</h3>   
-On the RaspberriPi B+ pre-Buster Lite, there are pre-installed Python <tt>2.7.13</tt> and <tt>Python 3.5.3</tt>. <br/>  
-On Buster Lite, there is <ks>Python 3.7.3</ks> and we wiil use it.
-
-<pre>
-sudo apt-get install python3-pip
-</pre> 
-<b>View processes and kill</b>   
-<pre>
-ps -fA | grep python
-sudo kill -s KILL &lt;process number>
-</pre>
 
 
 
@@ -362,11 +353,23 @@ sudo apt-get install cmake
 
 <tr>
 <td style="width:50%" >
+<h3 id="python">About Python</h3>   
+On the RaspberriPi B+ pre-Buster Lite, there are pre-installed Python <tt>2.7.13</tt> and <tt>Python 3.5.3</tt>. <br/>  
+On Buster Lite, there is <ks>Python 3.7.3</ks> and we wiil use it.
+
+
 
  
 </td>
 <td>
- 
+ <pre>
+sudo apt-get install python3-pip
+</pre> 
+<h4>View processes and kill</h4>   
+<pre>
+ps -fA | grep python
+sudo kill -s KILL &lt;process number>
+</pre>
 </td>
 </tr>
 
@@ -384,7 +387,52 @@ fswebcam -r 1280x720 image2.jpg		<kc>//USB camera</kc>
 
 <tr>
 <td>
-<h3 id="java">Install Java</h3> </td>
+<h3 id="java">Install <a href="http://wiringpi.com/" target="web">wiringpi</a></h3> 
+
+<pre>
+<ks>gpio -v</ks>
+Raspberry Pi Details:
+  Type: Model B+, Revision: 02, Memory: 512MB, Maker: Sony
+  * Device tree is enabled.
+  *--> Raspberry Pi Model B Plus Rev 1.2
+  * This Raspberry Pi supports user-level GPIO access.
+
+</pre>
+<m>
+<!--
+<h4>Links (introduction to GPIO control)</h4>         
+<ul>        
+<li><a href="https://www.youtube.com/watch?v=D-cTUEKbJJA" target="web">VIDEO: Raspberry Pi GPIO with Java</a></li>
+<li>About pins: <a href="http://elinux.org/RPi_Low-level_peripherals" target="web">RPi_Low-level_peripherals</a></li>
+<li>About Raspberry Pi GPIOs control: <a href="http://elinux.org/RPi_GPIO_Code_Samples" target="web">RPi GPIO Code Samples</a></li>
+<li><a href="http://wiringpi.com/the-gpio-utility/" target="web">Command-line utility gpio  (used by Wiringpi)</a></li>
+    <li><a href="http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/" target="web">gpio-pins-and-python</a></li>
+<li><a href="http://wiringpi.com//" target="web">Wiringpi</a></li>
+<li><a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/RaspberryPi_Setup/RaspberryPi_Setup.html" target="web">Oracle java/RaspberryPi_Setup</a>  </li>         
+<li><a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/RaspberryPi_GPIO/RaspberryPi_GPIO.html" target="web">Oracle java/RaspberryPi_GPIO</a>  </li>   
+<li>Java <a href="https://bitbucket.org/sbub/raspberry-pi-gpio-web-control/overview" target="web">gpio-web-control</a></li>    
+</ul>
+-->      
+</m>
+</td>
+<td><pre>sudo apt-get install wiringpi</pre>
+   
+<pre>
+<kc>//Example</kc>
+gpio unexportall
+gpio export 25 out
+gpio export 1 out
+gpio write 25 0
+gpio write 1 0
+</pre>	
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3 id="java">Install Java</h3> 
+</td>
 <td><pre> 
 sudo apt install openjdk-8-jdk openjdk-8-jre
 update-alternatives --config java
@@ -398,6 +446,20 @@ JRE_HOME=/usr/lib/jvm/java-8-openjdk-armhf/jre/bin/java
 </tr>
 
 
+<tr>
+<td>
+<h3 id="java">Notes on Pi4J</h3> 
+ <b>Using Pi4J : useful links</b> <br/>
+    <a href="http://www.austinjug.org/presentations/RaspberryPi-AustinJUG.pdf" target="code">Java8+Pi4j (pdf)</a> <br/>        
+    <a href="http://pi4j.com/"  target="code">Pi4j site</a>    
+ 
+
+</td>
+<td>For the <bc>Rasperry B+  (V1.2)</bc> the <bc>Pi4J</bc> library to use can be found in 
+<pre><k>pi4j-core.jar</k></pre> 
+This library has been built from the <em>2-12 SNAPSHOT</em> and is not available in <tt>MavenCentral</tt>.
+</td>
+</tr>
 
 
 
@@ -471,43 +533,245 @@ ls   /dev/video*      <kc>//the device is on /dev/video0</kc>
  
 
  
-<!-- 
+<h2>The hardware</h2>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<img src="./img/raspberry-pi-rev2-gpio-pinout.jpg" alt="RaspRev2" width="100%" />
+<h3>Resistors</h3>
 
-<h1>A front-end for the BasicRobot </h1>
+The Raspberry Pi has internal <em>pull-up</em> and <em>pull-down</em> resistors that can be specified when the pin declarations are made.
+ <br/>
+ If we need some resistor:
+     
+<a href="http://www.digikey.com/en/resources/conversion-calculators/conversion-calculator-resistor-color-code-4-band">resistor color code</a>
 
-<h2>Starting</h2>
-On the Raspberry:
-<ol>
+</td>
+<td>
+<pre>gpio readall
+ +-----+-----+---------+------+---+-Model B2-+---+------+---------+-----+-----+
+ | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
+ +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
+ |     |     |    3.3v |      |   |  1 || 2  |   |      | 5v      |     |     |
+ |   2 |   8 |   SDA.1 | ALT0 | 1 |  3 || 4  |   |      | 5V      |     |     |
+ |   3 |   9 |   SCL.1 | ALT0 | 1 |  5 || 6  |   |      | 0v      |     |     |
+ |   4 |   7 | GPIO. 7 |   IN | 1 |  7 || 8  | 1 | ALT0 | TxD     | 15  | 14  |
+ |     |     |      0v |      |   |  9 || 10 | 0 | OUT  | RxD     | 16  | 15  |
+ |  17 |   0 | GPIO. 0 |   IN | 0 | 11 || 12 | 0 | OUT  | GPIO. 1 | 1   | 18  |
+ |  27 |   2 | GPIO. 2 |   IN | 0 | 13 || 14 |   |      | 0v      |     |     |
+ |  22 |   3 | GPIO. 3 |   IN | 0 | 15 || 16 | 0 | IN   | GPIO. 4 | 4   | 23  |
+ |     |     |    3.3v |      |   | 17 || 18 | 0 | IN   | GPIO. 5 | 5   | 24  |
+ |  10 |  12 |    MOSI | ALT0 | 0 | 19 || 20 |   |      | 0v      |     |     |
+ |   9 |  13 |    MISO | ALT0 | 0 | 21 || 22 | 0 | IN   | GPIO. 6 | 6   | 25  |
+ |  11 |  14 |    SCLK | ALT0 | 0 | 23 || 24 | 1 | ALT0 | CE0     | 10  | 8   |
+ |     |     |      0v |      |   | 25 || 26 | 1 | ALT0 | CE1     | 11  | 7   |
+ +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
+ |  28 |  17 | GPIO.17 |   IN | 0 | 51 || 52 | 0 | IN   | GPIO.18 | 18  | 29  |
+ |  30 |  19 | GPIO.19 |   IN | 0 | 53 || 54 | 0 | IN   | GPIO.20 | 20  | 31  |
+ +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
+ | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
+ +-----+-----+---------+------+---+-Model B2-+---+------+---------+-----+-----+
+</pre>
+</td>
+</tr>
 
-<li><ks>Launch the mjpg streamer</ks>: 
-<pre>
-cd /home/pi/nat/mjpg-streamer/mjpg-streamer-experimental
+<tr>
+<td><h3 id="h3">Model B+ </h3>
+Model B+ uses the same numbering as the Model B2.0, and adds some new pins.
+<center>
+    <img src="./img/Raspberry-Pi-GPIO-Layout-Model-B-Plus.png" alt="RaspRev2" width="100%"  />
+</center>
+</td>
+<td>
+<pre>gpio readall
+ +-----+-----+---------+------+---+---Pi B+--+---+------+---------+-----+-----+
+ | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
+ +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
+ |     |     |    3.3v |      |   |  1 || 2  |   |      | 5v      |     |     |
+ |   2 |   8 |   SDA.1 | ALT0 | 1 |  3 || 4  |   |      | 5v      |     |     |
+ |   3 |   9 |   SCL.1 | ALT0 | 1 |  5 || 6  |   |      | 0v      |     |     |
+ |   4 |   7 | GPIO. 7 |   IN | 1 |  7 || 8  | 1 | ALT0 | TxD     | 15  | 14  |
+ |     |     |      0v |      |   |  9 || 10 | 1 | ALT0 | RxD     | 16  | 15  |
+ |  17 |   0 | GPIO. 0 |   IN | 0 | 11 || 12 | 0 | IN   | GPIO. 1 | 1   | 18  |
+ |  27 |   2 | GPIO. 2 |   IN | 0 | 13 || 14 |   |      | 0v      |     |     |
+ |  22 |   3 | GPIO. 3 |   IN | 0 | 15 || 16 | 0 | IN   | GPIO. 4 | 4   | 23  |
+ |     |     |    3.3v |      |   | 17 || 18 | 0 | IN   | GPIO. 5 | 5   | 24  |
+ |  10 |  12 |    MOSI |   IN | 0 | 19 || 20 |   |      | 0v      |     |     |
+ |   9 |  13 |    MISO |   IN | 0 | 21 || 22 | 0 | OUT  | GPIO. 6 | 6   | 25  |
+ |  11 |  14 |    SCLK |   IN | 0 | 23 || 24 | 1 | IN   | CE0     | 10  | 8   |
+ |     |     |      0v |      |   | 25 || 26 | 1 | IN   | CE1     | 11  | 7   |
+ |   0 |  30 |   SDA.0 |   IN | 1 | 27 || 28 | 1 | IN   | SCL.0   | 31  | 1   |
+ |   5 |  21 | GPIO.21 |   IN | 1 | 29 || 30 |   |      | 0v      |     |     |
+ |   6 |  22 | GPIO.22 |   IN | 1 | 31 || 32 | 0 | IN   | GPIO.26 | 26  | 12  |
+ |  13 |  23 | GPIO.23 |   IN | 0 | 33 || 34 |   |      | 0v      |     |     |
+ |  19 |  24 | GPIO.24 |   IN | 0 | 35 || 36 | 0 | IN   | GPIO.27 | 27  | 16  |
+ |  26 |  25 | GPIO.25 |   IN | 0 | 37 || 38 | 0 | IN   | GPIO.28 | 28  | 20  |
+ |     |     |      0v |      |   | 39 || 40 | 0 | IN   | GPIO.29 | 29  | 21  |
+ +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
+ | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
+ +-----+-----+---------+------+---+---Pi B+--+---+------+---------+-----+-----+
+
+</pre>
+</td>
+</tr>
+ </tbody>
+</table>
+
+
+
+<h3 >Basic Experiments (interactive) </h3> 
+           
+<table style="width:98%">
+<tbody>	
+ 
+  <tr>
+    <th>Bash</th>
+    <th>Gpio</th>
+    <th>Python</th>
+    </tr>
+  <tr class="alt">
+    <td>
+
+      <pre>
+echo Unexporting.
+echo 25 > /sys/class/gpio/unexport #
+echo 25 > /sys/class/gpio/export #
+cd /sys/class/gpio/gpio25 #
+
+echo Setting direction to out.
+echo out > direction #
+echo Setting pin high.
+echo 1 > value #
+sleep 1 #
+echo Setting pin low
+echo 0 > value #
+sleep 1 #
+echo Setting pin high.
+echo 1 > value #
+sleep 1 #
+echo Setting pin low
+echo 0 > value #      
+      </pre>
+<a href="../resources/bls/bash/led25OnOff.sh" target="code">led25OnOff.sh</a>      
+</td>
+<td>
+      <pre>
+gpio readall #
+echo Setting direction to out
+gpio mode 6 out #
+echo Write 1
+gpio write 6 1 #
+sleep 1 #
+echo Write 0
+gpio write 6 0 #    
+      </pre>
+<a href="../resources/bls/bash/gpio/led25Gpio.sh" target="code">led25Gpio.sh</a>      
+      </td> 
+    <td>   
+ 
+        The newest version of Raspbian has the <br/>
+        <tt>RPi.GPIO</tt> library pre-installed. 
+        <pre>
+sudo python
+>>> import RPi.GPIO as GPIO
+>>> GPIO.VERSION
+>>> GPIO.setmode(GPIO.BCM) 
+>>> GPIO.setup(25,GPIO.OUT)
+>>> while True:
+>>>     GPIO.output(25,GPIO.HIGH)
+>>>     time.sleep(1)
+>>>     GPIO.output(25,GPIO.LOW)
+>>>     time.sleep(1)
+>>> quit()
+</pre> 
+ <a href="../resources/bls/python/ledPython25.py" target="code">ledPython25.py</a>
+</td>
+   </tr>
+ </table> 
+
+
+
+
+          
+	
+	
+<h2>Connect the hardware</h2>
+
+<table style="width:98%">
+<tbody>	
+<tr><td style="width:40%"><em>ButtonLed</em></td><td><em>Motors</em></td></tr>
+<tr>
+<td><img src="./img/butLedRasp.jpg" alt="butLedRasp" width="100%"  /></td>
+<td><img src="./img/robotConnections.png" alt="robotConnections" width="100%"/></td>
+</tr>
+</tbody>
+</table>
+
 
  
-<kc># RUN</kc>
-export LD_LIBRARY_PATH=.
-./mjpg_streamer -i "input_uvc.so" -o "output_http.so -p 8090 -w /usr/local/share/mjpg-streamer/www" &
-
-<kc># TEST</kc>
-http://192.168.1.8:8090/stream.html 
-http://192.168.1.8:8090/?action=stream
-</pre>
-
-</li>
-
-<li><ks>Launch the basic robot application</ks>:  
-<pre>
- cd /home/pi/nat/it.unibo.basicrobot2020-1.0/bin
-
-nohup  bash  it.unibo.basicrobot2020 &
-
-</pre>
-</li>
-
--->
  
 
+            
+<h3>ButtonLed Code</h3>           
+<table style="width:98%">
+<tbody>	
+<tr>
+ 
+    <th>Bash</th>
+    <th>Gpio</th>
+    <th>Python</th>
+    </tr>
+  <tr class="alt">
+    <td>
+<a href="../resources/bls/bash/led25OnOff.sh" target="code">led25OnOff.sh</a><br/>
+<a href="../resources/bls/bash/buttonOn24Click.sh" target="code">buttonOn24Click.sh</a>  <br/>
+<a href="../resources/bls/bash/buttonLed.sh" target="code">buttonLed.sh</a>          
+</td> 
+<td>    <a href="../resources/bls/bash/gpio/led25Gpio.sh" target="code">led25Gpio.sh</a><br/>
+<a href="../resources/bls/bash/gpio/button24Gpio.sh " target="code">button24Gpio.sh</a>  
+</td> 
+<td>    <a href="../resources/bls/python/ledPython25.py" target="code">ledPython25.py</a><br/>
+        <a href="../resources/bls/python/buttonPython24.py" target="code">buttonPython24.py</a>
+<br/>
+        <a href="../resources/bls/gpio/python/buttonLedPython.py" target="code">buttonLedPython.py</a>
+ </td>
+</tr>
+ </table>          
 
+<h2>Robots</h2> 
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:60%" >
+ 
+<img src="./img/robotSkeleton.png" alt="robotSkeleton" width="100%"/>
+</td>
+<td>
+<h3 id="usefulnotes">Ddr robots home made</h3>
+<a href="./devsDdr.html" target="code">Devices for a ddr robot</a><br/><br/>
+
+
+<h3>Sensors</h3>  
+<bc>HC-SR04</bc>  <tt>UltraSonic Distance Measure Module Range Sensor</tt>.<br/>
+<a href="../resources/sensors/SonarAlone.c" target="code">SonarAlone.c</a><br/>
+
+<h3>Motors</h3>  
+<a href="../resources/motors/nanoMotorDriveA.sh" target="code">nanoMotorDriveA.sh</a><br/>
+<a href="../resources/motors/nanoMotorDriveB.sh" target="code">nanoMotorDriveB.sh</a><br/>
+
+
+
+</td>
+</tr>
+ </tbody>
+</table>
+ 
+
+ 
+  
+	
+	
  
 <table style="width:98%">
 <tbody>	

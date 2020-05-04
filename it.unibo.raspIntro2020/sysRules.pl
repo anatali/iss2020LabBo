@@ -8,7 +8,7 @@ getCtxPortNames(PORTNAMES) :-
 getTheContexts(CTXS) :-
 	findall( context( CTX, HOST, PROTOCOL, PORT ), context( CTX, HOST, PROTOCOL, PORT ), CTXS).
 getTheActors(ACTORS) :-
-	findall( qactor( A, CTX ), qactor( A, CTX ), ACTORS).
+	findall( qactor( A, CTX, CLASS ), qactor( A, CTX, CLASS ), ACTORS).
 
 
 getOtherContexts(OTHERCTXS, MYSELF) :-
@@ -23,16 +23,10 @@ getOtherContextNames(OTHERCTXS, MYSELF) :-
 		(context( CTX, HOST, PROTOCOL, PORT ), CTX \== MYSELF),
 		OTHERCTXS
 	).
-/*
-	stdout <- println(CTXS),
-	'$tolist'(CTXS,OTHERCTXS),
-	stdout <- println( aaa(OTHERCTXS) ).
-*/
 	
 getTheActors(ACTORS,CTX) :-
 	findall( qactor( A, CTX, CLASS ), qactor( A, CTX, CLASS ),   ACTORS).
 getActorNames(ACTORS,CTX) :-
-    %%stdout <- println( getActorNames(ACTORS,CTX) ),
     findall( NAME, qactor( NAME, CTX, CLASS ),   ACTORS).
 
 getCtxHost( NAME, HOST )  :- context( NAME, HOST, PROTOCOL, PORT ).
@@ -65,12 +59,6 @@ msgContentToAPlan( MSG, [_|R], [_|P], RES ):-
 	%stdout <- println( msgContentToAPlan( MSG, R, P, RES ) ),
 	msgContentToPlan(MSG, R, P, RES).	
 
-/*
---------------------------------
-DEC2018
---------------------------------
-*/
-%% version 1.5.13.1
 removeCtx( CtxName, HOST, PORT ) :-
 	%% stdout <- println( removeCtx(  CtxName ) ),
 	retract( context( CtxName, HOST, _ , PORT ) ),!,
@@ -98,7 +86,31 @@ showListOfElements([]).
 showListOfElements([C|R]):-
 	stdout <- println( C ),
 	showElements(R).
-	
+
+unify(A,B)    :-  A = B.
+
+assign( I,V ) :-  retract( value(I,_) ),!, assert( value( I,V )).
+assign( I,V ) :-  assert( value( I,V )).
+getVal( I, V ):-  value(I,V), !.
+getVal( I, fail ).
+inc(I,K,N):- value( I,V ), N is V + K, assign( I,N ).
+dec(I,K,N):- value( I,V ), N is V - K, assign( I,N ).
+
+addRule( Rule ):-
+	%%output( addRule( Rule ) ),
+	assert( Rule ).
+removeRule( Rule ):-
+	retract( Rule ),
+	%%output( removedFact(Rule) ),
+	!.
+removeRule( A  ):- 
+	%%output( remove(A) ),
+	retract( A :- B ),!.
+removeRule( _  ).
+
+replaceRule( Rule, NewRule ):-
+	removeRule( Rule ),addRule( NewRule ).
+
 %==============================================
 % MEMENTO
 %==============================================
@@ -112,4 +124,3 @@ showListOfElements([C|R]):-
 % msg( MSGID, MSGTYPE, SENDER, RECEIVER, CONTENT, SEQNUM )
 % MSGTYPE : dispatch request answer
 %%% --------------------------------------------------
-

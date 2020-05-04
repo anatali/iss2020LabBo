@@ -20,6 +20,7 @@ class Button ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("s0") { //this:State
 					action { //it:State
 						println("button started")
+						resources.bls.kotlin.buttonEventEmitter.create(myself ,"clickOnOff" )
 					}
 				}	 
 			}
