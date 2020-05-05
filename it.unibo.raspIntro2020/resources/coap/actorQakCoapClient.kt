@@ -31,7 +31,7 @@ object actorQakCoapClient {
 	private var counter     = 0
 	
 	fun init(){
-       val uriStr = "coap://192.168.1.88:8080/$context/$destactor"
+       val uriStr = "coap://192.168.1.14:8080/$context/$destactor"
        client.uri = uriStr
 	   print("actorQakCoapClient init uriStr ")
 	   client.get(ch, MediaTypeRegistry.TEXT_PLAIN)

@@ -4,7 +4,7 @@
 import socket
 import time
 
-hostAddr = '192.168.1.88'
+hostAddr = '192.168.1.14'
 port = 8080
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

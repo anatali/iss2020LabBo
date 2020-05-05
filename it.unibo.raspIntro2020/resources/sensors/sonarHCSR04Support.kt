@@ -1,4 +1,4 @@
-package itunibo.robotRaspOnly
+package sensors
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -7,28 +7,40 @@ import kotlinx.coroutines.launch
 import it.unibo.kactor.ActorBasic
 import kotlinx.coroutines.delay
 
+/*
+ Emits the event sonarRobot : sonar( V )
+ */
 object sonarHCSR04Support {
 	lateinit var reader : BufferedReader
 	
-	//g++  SonarAlone.c -l wiringPi -o  SonarAlone
-	fun create( actor : ActorBasic, todo : String="" ){
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+	fun create( owner : ActorBasic? = null  ){
 		println("sonarHCSR04Support CREATING")
 		val p = Runtime.getRuntime().exec("sudo ./SonarAlone")
 		reader = BufferedReader(  InputStreamReader(p.getInputStream() ))
-		startRead( actor )
+		startRead( owner )
 	}
 	
-	fun startRead( actor: ActorBasic  ){
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+	fun startRead( owner: ActorBasic?  ){
 		GlobalScope.launch{
+			var counter = 0
 			while( true ){
 				var data = reader.readLine()
 				//println("sonarHCSR04Support data = $data"   )
 				if( data != null ){
-	 				val m1 = "sonar( $data )"
-					//println("sonarHCSR04Support m1 = $m1"   )
-					actor.emit("sonarRobot",m1 )
+					try{
+						val v = data.toInt()
+						if( v <= 150 ){	//A first fileter ...
+							val m1 = "sonar( $v )"
+							if(owner != null) owner.emit("sonarRobot",m1 )
+							println("sonarHCSR04Support ${counter++} m1 = $m1 "   )
+						}
+					}catch(e: Exception){}
 				}
-				delay( 250 )
+				delay( 100 ) 
 			}
 		}
 	}

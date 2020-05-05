@@ -1,0 +1,40 @@
+/*
+ * This model gives essential and relevant information about
+ * 	     STRUCTURE, INTERACTION and BEHAVIOR
+ * about the system
+ * 
+ * The model is EXECUTABLE
+ */
+
+ 	//"tcp://mqtt.eclipse.org:1883"
+	//mqtt.eclipse.org
+	//tcp://test.mosquitto.org
+	//mqtt.fluux.io
+	//"tcp://broker.hivemq.com" 
+
+/*
+ * Declares the messages and the events in explicit way
+ */
+System -msglog sonar
+mqttBroker "broker.hivemq.com" :  1883   
+
+Event    sonarRobot : sonar( V )   //emitted by sonarHCSR04Support
+
+Context ctxsonar      ip [host="localhost" port=8068] 	 	 
+  
+QActor sonar context ctxsonar {     
+ 	State s0 initial {  		
+  		println("sonar started")
+   		qrun sensors.sonarHCSR04Support.create(myself)
+  	} 
+  	Transition t0 whenEvent sonarRobot -> handleEvent
+/*
+ * WARNING: with MQTT active, the events are sent to this actor too
+ * the sonar QUEUE could become full if the events are not elaborated
+ */  	
+  	State handleEvent{
+//  		printCurrentMessage
+  	}
+   	Transition t0 whenEvent sonarRobot -> handleEvent
+ }
+

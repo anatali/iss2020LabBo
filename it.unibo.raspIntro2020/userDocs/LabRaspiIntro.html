@@ -221,6 +221,9 @@ div.imagedesc{
 <li><a href="#hardware">The hardware</a></li>
 <li><a href="#cabling">Connect the hardware</a>
 <ul><li><a href="#bls">ButtonLed Code - Low Level)</a></li>
+<li><a href="#sonar">Sonar HC-SR04</a></li>
+ 
+
 <li><a href="#robots">Devices for home-made DDR</a></li>
 
 </ul>
@@ -258,6 +261,11 @@ network={
 	<li>Connect via ssh (by using <a href="https://www.putty.org/" target="web">Putty</a> ) 
 </ol>
 
+
+<div class="remark">
+<ks>Under-voltage detected</ks><br/>
+The voltage drop may be caused by the USB cable used: length, cable thickness, connector quality
+</div>
 See also: <a href="https://www.raspberryitaly.com/raspberrypi-tutti-i-comandi-utili-a-colpo-docchio/" target="web">
 RaspberryPi: Tutti i comandi utili a colpo d’occhio</a>
 
@@ -805,7 +813,40 @@ sudo python
  </table>          
  
  
+<h3 id="sonar">Sonar HC-SR04  <tt>UltraSonic Distance Measure Module Range Sensor</tt></h3>           
+<table style="width:98%">
+<tbody>	
+<tr>
  
+    <th>Low-level</th>
+    <th>Sonar support for QAk components</th>
+    <th>Qak components</th>
+    </tr>
+  <tr class="alt">
+    <td style="width:30%">
+<a href="../resources/sensors/SonarAlone.c" target="code">SonarAlone.c</a><br/>
+Writes data on the standard output.<br/> 
+<pre>g++  SonarAlone.c -l wiringPi -o  SonarAlone
+./SonarAlone</pre>
+</td> 
+<td style="width:30%"><a href="../resources/sensors/sonarHCSR04Support.kt" target="code">sonarHCSR04Support.kt</a><br/> <br/>
+Uses a given ActorBasic (<tt>owner</tt>) to emit the event <bc>sonarRobot : sonar(V)</bc>
+</td> 
+<td >  
+<h4>sonar.qak</h4>
+<a href="../src/sonar.qak" target="code">sonar.qak</a><br/> 
+Simply activates <tt>sonarHCSR04Support.kt</tt>. Works by using a <tt>MQTT</tt> broker. 
+<h4>sonarobserver.qak</h4>
+<a href="../src/sonarobserver.qak" target="code">sonarobserver.qak</a><br/> 
+Perceives the events <bc>sonarRobot</bc>
+<h4>Python observer (via MQTT)</h4>
+<a href="../resources/python/sonarobserver.qak" target="code">mqttPlotQakEvents.py</a><br/> <br/> 
+See also the <a href="https://ipython.org/ipython-doc/dev/notebook/notebook.html" target="web">IPython Notebook</a>   file 
+<a href="../resources/python/mqttPlotQakEvents.ipynb" target="code">mqttPlotQakEvents.ipynb</a><br/> 
+Perceives the events <bc>sonarRobot</bc>
+ </td>
+</tr>
+ </table>           
 
 <h3 id="robots">Devices for home-made DDR</h3> 
 <table style="width:98%">
@@ -821,7 +862,7 @@ sudo python
 
 
 <h4>Sensors</h4>  
-<bc>HC-SR04</bc>  <tt>UltraSonic Distance Measure Module Range Sensor</tt>.<br/>
+<bc>HC-SR04</bc>:
 <a href="../resources/sensors/SonarAlone.c" target="code">SonarAlone.c</a><br/>
 
 <h4>Motors</h4>  
@@ -860,9 +901,11 @@ This is component that:
 <li>can be observed by CoAP clients or by other Qak components<br/><br/></li>
 <li>...</li>
 </ul>
+<!--
 <div class="remark">
 Thus, it is  'almost' (Quasi) an actor.
 </div>
+-->
 </td> 
 <td style="width:33%"> 
 <h4>Using Kotlin</h4> 
@@ -877,6 +920,9 @@ Thus, it is  'almost' (Quasi) an actor.
 </ul>
 
 <h4>Using a GUI</h4>   
+<img src="./img/blsGuiCoap.png" alt="blsGuiCoap" width="40%"/>
+ 
+
 <ul>
 <li><a href="../resources/consolegui/consoleGuiTcp.kt" target="code">consoleGuiTcp.kt</a>: sends commands via <tt>TCP</tt><br/></li>
 <li><a href="../resources/consolegui/consoleGuiCoap.kt" target="code">consoleGuiCoap.kt</a>: sends commands via <tt>CoAP</tt><br/></li>

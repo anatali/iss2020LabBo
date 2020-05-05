@@ -14,10 +14,10 @@ import kotlinx.coroutines.launch
 
 object ch : CoapHandler {
             override fun onLoad(response: CoapResponse) {
-                println("actorQakCoapObserver chhhhhhhhh | GET RESP-CODE= " + response.code + " content:" + response.responseText)
+                println("actorQakCoapObserver ch | GET RESP-CODE= " + response.code + " content:" + response.responseText)
             }
             override fun onError() {
-                println("actorQakCoapObserver chhhhhhhhh | FAILED")
+                println("actorQakCoapObserver ch | FAILED")
             }
         } 
  
@@ -42,7 +42,7 @@ object actorQakCoapObserver {
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main( ) { //82.56.16.191
-		actorQakCoapObserver.activate("ctxledalone", "led", "localhost:8080" )
-		System.`in`.read()   //to avoid exit
+		actorQakCoapObserver.activate("ctxledalone", "led", "192.168.1.14:8080" )
+		System.`in`.read()   //to avoid exit 
  }
 

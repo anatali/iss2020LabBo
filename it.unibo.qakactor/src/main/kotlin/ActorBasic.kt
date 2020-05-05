@@ -328,7 +328,7 @@ Messaging
         if( context!!.mqttAddr.length != 0 ) {
             sysUtil.traceprintln("$tt ActorBasic $name | emit MQTT ${event.msgId()}  ")
             //mqtt.sendMsg(event, "unibo/qak/events")
-			mqtt.publish("unibo/qak/events", event.toString() )
+			mqtt.publish("unibo/qak/events", event.toString() )  //Are perceived also by the emitter
         }
         //sysUtil.traceprintln(" $tt ActorBasic $name | ctxsMap SIZE = ${sysUtil.ctxsMap.size}")
 
