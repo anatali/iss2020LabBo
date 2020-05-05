@@ -18,58 +18,35 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		   
 		   var state   = false  
-		   lateinit var leddev : it.unibo.bls.interfaces.ILed  //CONCRETE DEVICE 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("led started")
-						forward("config", "config(ledgui)" ,"led" ) 
-					}
-					 transition(edgeName="t00",targetState="doConfig",cond=whenDispatch("config"))
-				}	 
-				state("doConfig") { //this:State
-					action { //it:State
-						println(" === LED CONFIGURATION === ")
-						if( checkMsgContent( Term.createTerm("config(TYPE)"), Term.createTerm("config(TYPE)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 leddev = resources.bls.kotlin.ledsupport.create( payloadArg(0) ) 
-											   state = false 
-											   delay(1000)  //give the time to setup
-								  		       leddev.turnOff()   
-								emit("ledchanged", "ledchanged(off)" ) 
-						}
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
 				state("waitCmd") { //this:State
 					action { //it:State
-						println("led waits ...")
 					}
-					 transition(edgeName="t01",targetState="turnLedOn",cond=whenDispatch("turnOn"))
-					transition(edgeName="t02",targetState="turnLedOff",cond=whenDispatch("turnOff"))
-					transition(edgeName="t03",targetState="doConfig",cond=whenDispatch("config"))
+					 transition(edgeName="t00",targetState="firstClick",cond=whenEvent("buttonCmd"))
 				}	 
-				state("turnLedOn") { //this:State
+				state("firstClick") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 leddev.turnOn()	 
 						 state = true 	 
-						emit("ledchanged", "ledchanged(on)" ) 
-						updateResourceRep( "ledstate($state)" 
+						updateResourceRep( "ledstate($state)"   
 						)
 					}
-					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
+					 transition(edgeName="t01",targetState="secondClick",cond=whenEvent("buttonCmd"))
 				}	 
-				state("turnLedOff") { //this:State
+				state("secondClick") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 leddev.turnOff() 	 
-						 state = false 		 
-						emit("ledchanged", "ledchanged(off)" ) 
-						updateResourceRep( "ledstate($state)"	 
+						 state = false 	 
+						updateResourceRep( "ledstate($state)"   
 						)
 					}
-					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
+					 transition(edgeName="t02",targetState="firstClick",cond=whenEvent("buttonCmd"))
 				}	 
 			}
 		}

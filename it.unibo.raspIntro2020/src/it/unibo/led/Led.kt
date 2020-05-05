@@ -22,9 +22,7 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("s0") { //this:State
 					action { //it:State
 						println("led started")
-						 machineExec( "sudo bash led25GpioTurnOn.sh" ) 
 						delay(1000) 
-						 machineExec( "sudo bash led25GpioTurnOff.sh" ) 
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
@@ -38,11 +36,10 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("turnLedOn") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						currentProcess=machineExec("sudo bash led25GpioTurnOn.sh")
 						 machineExec( "sudo bash led25GpioTurnOn.sh" )  
 						 state = true 	 
 						emit("ledchanged", "ledchanged(on)" ) 
-						updateResourceRep( "ledstate($state)" 
+						updateResourceRep( "ledstate($state)"  
 						)
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )

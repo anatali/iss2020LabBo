@@ -31,9 +31,9 @@ QActor led context ctxledalone {
 #]    
 	State s0 initial {  		
   		println("led started")
-  		[# machineExec( "sudo bash led25GpioTurnOn.sh" )#]
+//  		[# machineExec( "sudo bash led25GpioTurnOn.sh" )#]
   		delay 1000
-  		[# machineExec( "sudo bash led25GpioTurnOff.sh" )#]
+//  		[# machineExec( "sudo bash led25GpioTurnOff.sh" )#]
  	} 
  	Goto waitCmd       
 	 
@@ -46,11 +46,11 @@ QActor led context ctxledalone {
    	  
 	State  turnLedOn{  
 		printCurrentMessage   
-		machineExec '"sudo bash led25GpioTurnOn.sh"'
+		//machineExec '"sudo bash led25GpioTurnOn.sh"'
  		[# machineExec( "sudo bash led25GpioTurnOn.sh" ) #]
  		[# state = true 	#]
 		emit ledchanged : ledchanged(on)
-		updateResource [# "ledstate($state)"#]
+		updateResource [# "ledstate($state)" #]
 		
  	}	
 	Goto waitCmd  

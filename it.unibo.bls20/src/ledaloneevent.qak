@@ -1,0 +1,61 @@
+/*
+ * This model gives essential and relevant information about
+ * 	     STRUCTURE, INTERACTION and BEHAVIOR
+ * about the system
+ * 
+ * The model is EXECUTABLE
+ */
+
+ 	//"tcp://mqtt.eclipse.org:1883"
+	//mqtt.eclipse.org
+	//tcp://test.mosquitto.org
+	//mqtt.fluux.io
+	//"tcp://broker.hivemq.com" 
+
+System -msglog ledaloneevent
+mqttBroker "broker.hivemq.com" :  1883  
+
+Event ledchanged : ledchanged( V ) 
+
+Event buttonCmd  : buttonCmd(V)
+
+Context ctxledalone      ip [host="localhost" port=8080] 	 	 
+  
+QActor led context ctxledalone {     
+[#   
+   var state   = false  
+#]    
+	State s0 initial {  		
+  		println("led started")
+  	} 
+ 	Goto waitCmd       
+	 
+	State waitCmd{  
+//		println("led waits ...") 
+	}   
+	Transition t0  whenEvent buttonCmd ->  firstClick
+	  
+   	State firstClick{
+		printCurrentMessage   
+		[# state = true 	#]   		 
+		updateResource [# "ledstate($state)"  #]
+   	}  
+   	Transition t0  whenEvent buttonCmd ->  secondClick
+
+   	State secondClick{
+		printCurrentMessage   
+		[# state = false 	#]   		
+		updateResource [# "ledstate($state)"  #]
+   	}  
+   	Transition t0  whenEvent buttonCmd ->  firstClick
+   	
+ }
+
+/*
+ * Sentinel: ha il SOLO scopo di perecepire gli eventi emessi dal Button
+ * e trasformarli (se si ritiene il caso ) in MESSAGGI per il Led
+ */
+
+//QActor sentinel
+
+ 

@@ -1,0 +1,1 @@
+item(led,s0,msg(autoStartSysMsg,dispatch,led,led,start,5)).
