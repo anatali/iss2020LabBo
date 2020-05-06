@@ -1,4 +1,0 @@
-item(anobserver,s0,msg(autoStartSysMsg,dispatch,anobserver,anobserver,start,7)).
-item(anobserver,s0,msg(ledchanged,event,led,none,ledchanged(off),13)).
-item(anobserver,s0,msg(ledchanged,event,led,none,ledchanged(off),14)).
-item(anobserver,s0,msg(ledchanged,event,led,none,ledchanged(off),15)).

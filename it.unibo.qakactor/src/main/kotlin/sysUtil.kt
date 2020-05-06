@@ -38,11 +38,16 @@ object sysUtil{
 
 	var mqttBrokerIP : String? = ""
 	var mqttBrokerPort : String? = ""
-
+	var mqttBrokerEventTopic : String? = ""
 	var trace   : Boolean = false
 	var logMsgs : Boolean = false
 	val connActive : MutableSet<IConnInteraction> = mutableSetOf<IConnInteraction>()    //Oct2019
 
+	
+	fun getMqttEventTopic() : String {
+		if(mqttBrokerEventTopic !== null ) return mqttBrokerEventTopic!!
+		else return "unibo/qak/events"
+	}
 
 	fun getPrologEngine() : Prolog = pengine
 	fun curThread() : String = "thread=${Thread.currentThread().name}"
@@ -72,8 +77,9 @@ object sysUtil{
 		if( solve("tracing", "" ).equals("success") ) trace=true
 		if( solve("msglogging", "" ).equals("success") ) logMsgs=true
 		try {
-			mqttBrokerIP   = solve("mqttBroker(IP,_)", "IP")
-			mqttBrokerPort = solve("mqttBroker(_,PORT)", "PORT")
+			mqttBrokerIP         = solve("mqttBroker(IP,_,_)", "IP" )
+			mqttBrokerPort       = solve("mqttBroker(_,PORT,_)", "PORT")
+			mqttBrokerEventTopic = solve("mqttBroker(_,_,EVTOPIC)", "EVTOPIC")
 		}catch(e: Exception){
 			println("               %%% sysUtil | NO MQTT borker FOUND")
 		}

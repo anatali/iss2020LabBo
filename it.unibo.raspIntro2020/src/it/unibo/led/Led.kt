@@ -36,7 +36,6 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("turnLedOn") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 machineExec( "sudo bash led25GpioTurnOn.sh" )  
 						 state = true 	 
 						emit("ledchanged", "ledchanged(on)" ) 
 						updateResourceRep( "ledstate($state)"  
@@ -47,7 +46,6 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("turnLedOff") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 machineExec( "sudo bash led25GpioTurnOff.sh" )  
 						 state = false 		 
 						emit("ledchanged", "ledchanged(off)" ) 
 						updateResourceRep( "ledstate($state)"	 

@@ -42,7 +42,7 @@ object actorQakCoapObserver {
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 fun main( ) { //82.56.16.191
-		actorQakCoapObserver.activate("ctxledalone", "led", "192.168.1.14:8080" )
+		actorQakCoapObserver.activate("ctxledalone", "led", "192.168.1.22:8080" )
 		System.`in`.read()   //to avoid exit 
  }
 

@@ -1,7 +1,0 @@
-item(serverctxledalone,nostate,msg(start,dispatch,serverctxledalone,serverctxledalone,startQakContextServer,3)).
-msg(turnOn,dispatch,python,led,turnOn(a),2)
-msg(turnOff,dispatch,python,led,turnOff(a),3)
-msg(turnOn,dispatch,python,led,turnOn(a),2)
-msg(turnOff,dispatch,python,led,turnOff(a),3)
-msg(turnOn,dispatch,python,led,turnOn(a),2)
-msg(turnOff,dispatch,python,led,turnOff(a),3)

@@ -326,9 +326,10 @@ Messaging
         if( event.msgId().startsWith("local")) return       //local_ => no propagation
         //EMIT VIA MQTT IF there is
         if( context!!.mqttAddr.length != 0 ) {
-            sysUtil.traceprintln("$tt ActorBasic $name | emit MQTT ${event.msgId()}  ")
-            //mqtt.sendMsg(event, "unibo/qak/events")
-			mqtt.publish("unibo/qak/events", event.toString() )  //Are perceived also by the emitter
+//            sysUtil.trace
+			println("$tt ActorBasic $name | emit MQTT ${event.msgId()}  on ${ sysUtil.getMqttEventTopic() }")
+            //mqtt.sendMsg(event, sysUtil.getMqttEventTopic())
+			mqtt.publish(sysUtil.getMqttEventTopic(), event.toString() )  //Are perceived also by the emitter
         }
         //sysUtil.traceprintln(" $tt ActorBasic $name | ctxsMap SIZE = ${sysUtil.ctxsMap.size}")
 
@@ -408,7 +409,7 @@ MQTT
             mqtt.connect(name,context!!.mqttAddr)
             mqttConnected = true
             mqtt.subscribe(this, "unibo/qak/$name")
-            mqtt.subscribe(this, "unibo/qak/events")
+            mqtt.subscribe( this, sysUtil.getMqttEventTopic() )
         }
     }
     fun removeFromMqtt(){

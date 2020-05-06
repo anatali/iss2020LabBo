@@ -1,7 +1,7 @@
 System ledobserver
-mqttBroker "broker.hivemq.com" :  1883 
+mqttBroker "broker.hivemq.com" :  1883   eventTopic "unibo/ledalone/events"
 
-Event    ledchanged : ledchanged( V ) 
+Event    ledchanged : ledchanged( V )
 
 Context ctxdummy         ip [host="192.168.1.88" port=8080] 	 	 
 Context ctxledobserver   ip [host="localhost" port=8083]   

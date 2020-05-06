@@ -13,7 +13,7 @@
 	//"tcp://broker.hivemq.com" 
 
 System -msglog ledaloneevent
-mqttBroker "broker.hivemq.com" :  1883  
+mqttBroker "broker.hivemq.com" :  1883  eventTopic "unibo/ledaloneevent/events"
 
 Event ledchanged : ledchanged( V ) 
 
