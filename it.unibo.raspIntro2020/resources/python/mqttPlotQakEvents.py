@@ -36,8 +36,8 @@ client.on_message=on_message            # Bind function to callback
 
 client.connect(brokerAddr)              #connect
 print("connected to broker ", brokerAddr)
-print("subscribing to unibo/qak/events")
-client.subscribe("unibo/qak/events")      #subscribe
+print("subscribing to unibo/sonar/events")
+client.subscribe("unibo/sonar/events")      #subscribe
 
 print("collecting values; please wait ..." )
 client.loop_start()             #start loop to process received messages

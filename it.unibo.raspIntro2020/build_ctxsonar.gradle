@@ -12,7 +12,7 @@ USAGE:
 plugins {
     id 'java'
     id 'eclipse'
-    //id 'application'
+    id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.3.71'
 }
 
@@ -88,8 +88,8 @@ sourceSets {
     main.java.srcDirs += 'resources'
     test.java.srcDirs += 'test'		//test is specific
 }
-/*
-mainClassName = 'it.unibo.TODOKt'
+ 
+mainClassName = 'it.unibo.ctxsonar.MainCtxsonarKt'
 
 jar {
     println("executing jar")
@@ -98,4 +98,4 @@ jar {
         attributes 'Main-Class': "$mainClassName"
     }
 }
-*/
+ 

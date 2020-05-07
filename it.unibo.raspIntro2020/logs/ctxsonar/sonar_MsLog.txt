@@ -1,0 +1,1 @@
+item(sonar,s0,msg(autoStartSysMsg,dispatch,sonar,sonar,start,10)).

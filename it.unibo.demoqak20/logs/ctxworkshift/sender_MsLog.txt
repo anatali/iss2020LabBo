@@ -1,7 +1,0 @@
-item(sender,s0,msg(autoStartSysMsg,dispatch,sender,sender,start,7)).
-item(sender,s0,msg(local_tout_worker_workshiftMorning,event,timer_workshiftMorning,none,local_tout_worker_workshiftMorning,19)).
-item(sender,s0,msg(local_tout_worker_workshiftAfternoon,event,timer_workshiftAfternoon,none,local_tout_worker_workshiftAfternoon,30)).
-item(sender,s0,msg(local_tout_worker_sleeping,event,timer_sleeping,none,local_tout_worker_sleeping,34)).
-item(sender,s0,msg(local_tout_worker_workshiftMorning,event,timer_workshiftMorning,none,local_tout_worker_workshiftMorning,41)).
-item(sender,s0,msg(local_tout_worker_workshiftAfternoon,event,timer_workshiftAfternoon,none,local_tout_worker_workshiftAfternoon,46)).
-item(sender,s0,msg(local_tout_worker_sleeping,event,timer_sleeping,none,local_tout_worker_sleeping,49)).

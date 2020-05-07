@@ -199,7 +199,7 @@ abstract class ActorBasicFsm(  qafsmname:  String,
     }
 
      fun handleCurrentMessage(msg: ApplMessage, nextState: State?, memo: Boolean = true): Boolean {
-        sysUtil.traceprintln("$tt ActorBasicFsm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.msgId()}")
+        sysUtil.traceprintln("$tt ActorBasicFsmmmm $name | handleCurrentMessage in ${currentState.stateName} msg=${msg.msgId()} memo=$memo")
         if (nextState is State) {
             currentMsg   = msg
             if( currentMsg.isRequest() ){ requestMap.put(currentMsg.msgId(), currentMsg) }  //Request
@@ -217,14 +217,17 @@ abstract class ActorBasicFsm(  qafsmname:  String,
                 stateTimer!!.endTimer() //terminate TimerActor
              }
             return true
-        } else { //EXCLUDE EVENTS FROM msgQueueStore
-            if (!memo) return false
+        } else { //No nextstate => EXCLUDE EVENTS FROM msgQueueStore
+            if (!memo) return false   //
             if (!(msg.isEvent()) && ! discardMessages) {
                 msgQueueStore.add(msg)
                 println("		$tt ActorBasicFsm $name |  added $msg in msgQueueStore")
             }
-            //else sysUtil.traceprintln("$tt ActorBasicFsm $name | DISCARDING THE EVENT: ${msg.msgId()}")
-            return false
+            else {
+				//sysUtil.traceprintln("$tt ActorBasicFsm $name | DISCARDING : ${msg.msgId()}")
+				sysUtil.updateLogfile(actorLogfileName,  "discard($name,${currentState.stateName},$msg).", dir=msgLogDir) 
+			}
+			return false
         }
     }
 

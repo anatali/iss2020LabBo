@@ -54,27 +54,27 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/uniboInterfaces.jar">
+	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/uniboInterfaces.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/2p301.jar">
+	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/2p301.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/unibonoawtsupports.jar">
+	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/it.unibo.qakactor-2.4.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/radarPojo.jar">
+	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/unibonoawtsupports.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/labbaseRobotSam.jar">
+	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/radarPojo.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -196,6 +196,5 @@
 			<attribute name="gradle_used_by_scope" value="test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/it.unibo.qakactor-2.4.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

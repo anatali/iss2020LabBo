@@ -17,9 +17,13 @@ object sonarHCSR04Support {
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	fun create( owner : ActorBasic? = null  ){
 		println("sonarHCSR04Support CREATING")
-		val p = Runtime.getRuntime().exec("sudo ./SonarAlone")
-		reader = BufferedReader(  InputStreamReader(p.getInputStream() ))
-		startRead( owner )
+		try{
+			val p = Runtime.getRuntime().exec("sudo ./SonarAlone")
+			reader = BufferedReader(  InputStreamReader(p.getInputStream() ))
+			startRead( owner )
+		}catch( e : Exception){
+			println("WARNING: sonarHCSR04Support does not find SonarAlone")
+		}
 	}
 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi

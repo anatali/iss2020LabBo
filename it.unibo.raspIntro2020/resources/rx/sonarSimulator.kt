@@ -26,8 +26,7 @@ class sonarSimulator ( name : String ) : ActorBasic( name ) {
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg : ApplMessage){
-        //println("	--- sonarSimulator | received  msg= $msg "  ) 
-		println("$tt $name | received  $msg "  )
+  		println("$tt $name | received  $msg "  )
 		if( msg.msgId() == "simulatorstart") startDataReadSimulation(   )
      }
   	
@@ -39,9 +38,9 @@ class sonarSimulator ( name : String ) : ActorBasic( name ) {
  	 			val m1 = "sonar( ${data.elementAt(i*2)} )"
 				i++
  				val event = MsgUtil.buildEvent( name,"sonarRobot",m1)								
- 				emitLocalStreamEvent( event )
-//				println("$tt $name | generates $event")
-				emit(event)  //NOT APPROPRIATE
+  				emitLocalStreamEvent( event )
+ 				//println("$tt $name | generates $event")
+//				emit(event)  //APPROPRIATE ONLY IF NOT INCLUDED IN A PIPE
  				delay( 500 )
   			}			
 			terminate()
