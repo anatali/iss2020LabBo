@@ -1070,15 +1070,19 @@ Reactive capabilities are achieved by adding some property  to our
 abstract class  ActorBasic( ... ) {
 protected val <k>subscribers</k> = mutableListOf<ActorBasic>()
 
-    fun subscribe( a : ActorBasic) : ActorBasic {
+    fun <ks>subscribe</ks>( a : ActorBasic) : ActorBasic {
         subscribers.add(a)
         return a
     }
-    fun unsubscribe( a : ActorBasic) {
+    fun <ks>subscribeLocalActor</ks>( actorName : String) : ActorBasic {
+        val a = sysUtil.getActor(actorName)
+        if( a != null  ){ subscribers.add(a); return a}
+    }
+    fun <ks>unsubscribe</ks>( a : ActorBasic) {
         subscribers.remove(a)
     }
 
-    suspend fun <k>emitLocalStreamEvent</k>(v: ApplMessage ){
+    suspend fun <ks>emitLocalStreamEvent</ks>(v: ApplMessage ){
         subscribers.forEach { it.actor.send(v) }
     }
 </pre>
