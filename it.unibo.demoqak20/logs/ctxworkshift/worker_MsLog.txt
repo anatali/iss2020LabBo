@@ -1,0 +1,15 @@
+item(worker,s0,msg(autoStartSysMsg,dispatch,worker,worker,start,5)).
+item(worker,startTheWork,msg(m2,dispatch,sender,worker,m2(1),8)).
+item(worker,startTheWork,msg(m1,dispatch,sender,worker,m1(1),11)).
+item(worker,workshiftMorning,msg(m2,dispatch,sender,worker,m2(2),14)).
+item(worker,workshiftMorning,msg(m2,dispatch,sender,worker,m2(3),15)).
+item(worker,workshiftMorning,msg(m1,dispatch,sender,worker,m1(2),16)).
+item(worker,workshiftMorning,msg(local_tout_worker_workshiftMorning,event,timer_workshiftMorning,none,local_tout_worker_workshiftMorning,19)).
+item(worker,workshiftAfternoon,msg(m1,dispatch,sender,worker,m1(3),28)).
+item(worker,workshiftAfternoon,msg(m1,dispatch,sender,worker,m1(4),29)).
+item(worker,workshiftAfternoon,msg(local_tout_worker_workshiftAfternoon,event,timer_workshiftAfternoon,none,local_tout_worker_workshiftAfternoon,30)).
+item(worker,sleeping,msg(m2,dispatch,sender,worker,m2(4),33)).
+item(worker,sleeping,msg(local_tout_worker_sleeping,event,timer_sleeping,none,local_tout_worker_sleeping,34)).
+item(worker,workshiftMorning,msg(local_tout_worker_workshiftMorning,event,timer_workshiftMorning,none,local_tout_worker_workshiftMorning,41)).
+item(worker,workshiftAfternoon,msg(local_tout_worker_workshiftAfternoon,event,timer_workshiftAfternoon,none,local_tout_worker_workshiftAfternoon,46)).
+item(worker,sleeping,msg(local_tout_worker_sleeping,event,timer_sleeping,none,local_tout_worker_sleeping,49)).
