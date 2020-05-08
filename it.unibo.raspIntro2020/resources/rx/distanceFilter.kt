@@ -20,7 +20,7 @@ val LimitDistance = 10
  	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	  suspend fun elabData( msg: ApplMessage ){ //		 
+	  suspend fun elabData( msg: ApplMessage ){ //OPTIMISTIC		 
  		val data  = (Term.createTerm( msg.msgContent() ) as Struct).getArg(0).toString()
 //  		println("$tt $name |  data = $data ")
 		val Distance = Integer.parseInt( data ) 

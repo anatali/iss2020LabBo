@@ -18,6 +18,7 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		   
 		   var state   = false  
+		//   lateinit var leddev : it.unibo.bls.interfaces.ILed  //CONCRETE DEVICE 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -27,26 +28,30 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("waitCmd") { //this:State
 					action { //it:State
+						println("led waits ...")
 					}
-					 transition(edgeName="t00",targetState="firstClick",cond=whenEvent("buttonCmd"))
+					 transition(edgeName="t00",targetState="turnLedOn",cond=whenDispatch("turnOn"))
+					transition(edgeName="t01",targetState="turnLedOff",cond=whenDispatch("turnOff"))
 				}	 
-				state("firstClick") { //this:State
+				state("turnLedOn") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
 						 state = true 	 
-						updateResourceRep( "ledstate($state)"   
+						emit("ledchanged", "ledchanged(on)" ) 
+						updateResourceRep( "ledstate($state)"    
 						)
 					}
-					 transition(edgeName="t01",targetState="secondClick",cond=whenEvent("buttonCmd"))
+					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
-				state("secondClick") { //this:State
+				state("turnLedOff") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 state = false 	 
-						updateResourceRep( "ledstate($state)"   
+						 state = false 		 
+						emit("ledchanged", "ledchanged(off)" ) 
+						updateResourceRep( "ledstate($state)"	 
 						)
 					}
-					 transition(edgeName="t02",targetState="firstClick",cond=whenEvent("buttonCmd"))
+					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
 			}
 		}

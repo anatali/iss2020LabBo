@@ -43,7 +43,6 @@ class Sonar ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 				state("handleObstacle") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						 emit( currentMsg )  
 					}
 					 transition(edgeName="t01",targetState="handleObstacle",cond=whenEvent("obstacle"))
 					transition(edgeName="t02",targetState="handleEvent",cond=whenEvent("sonarRobot"))

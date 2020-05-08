@@ -1,0 +1,3 @@
+item(serverctxledalone,nostate,msg(start,dispatch,serverctxledalone,serverctxledalone,startQakContextServer,3)).
+msg(turnOn,dispatch,cmdgui,led,turnOn(1),1)
+msg(turnOff,dispatch,cmdgui,led,turnOff(1),2)
