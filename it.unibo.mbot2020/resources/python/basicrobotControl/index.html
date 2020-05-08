@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<style type="text/css">
+</style>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content = "height = device-height, width = 420, user-scalable = no" /> 
+	<title>BasciRobotCmd</title>
+	<script type="text/javascript" src="/webiopi.js"></script>
+	
+	<script type="text/javascript">
+
+	webiopi().ready(function() {
+		var leddisplay, button;
+ 		leddisplay = $("#led");	
+ 		// create a "LED" labeled button for GPIO 17
+		button = webiopi().createGPIOButton(17, "Led17");
+		leddisplay.append(button);  
+ 
+/*
+	button = webiopi().createButton("w", "w", callbakBottonDown, callbakBottomUp  )
+*/  
+ 		button = webiopi().createButton("w", "w", function(){webiopi().callMacro("do_w")}  );
+		$("#cw").append(button);  
+
+		button = webiopi().createButton("s", "s", function(){webiopi().callMacro("do_s")});
+		$("#cs").append(button);  
+
+		button = webiopi().createButton("r", "r", function(){webiopi().callMacro("do_r")});
+		$("#cr").append(button);  
+
+ 		button = webiopi().createButton("l", "l", function(){webiopi().callMacro("do_l")});
+		$("#cl").append(button);  
+
+ 		button = webiopi().createButton("x", "x", function(){webiopi().callMacro("do_x")});
+		$("#cx").append(button);  
+
+ 		button = webiopi().createButton("z", "z", function(){webiopi().callMacro("do_z")});
+		$("#cz").append(button);  
+		
+ 		button = webiopi().createButton("h", "h", function(){webiopi().callMacro("do_h")});
+		$("#ch").append(button);  
+		
+		webiopi().refreshGPIO(false);   //MANDATORY! - false by AN  
+	});
+ 
+	</script>
+	
+	<style type="text/css">
+		table, th, td {
+		  border: 1px solid black;
+		  border-collapse: collapse;
+		}    
+		
+		button {
+			background-color: #4CAF50; /* Green */
+			display: block;
+			margin: 5px 5px 5px 5px;
+			width: 140px;
+			height: 45px;
+			font-size: 24pt;
+			font-weight: bold; 
+			color: white;
+		}
+		
+		input[type="range"] {
+			display: block;
+			width: 160px;
+			height: 45px;
+		}
+		
+		.LOW {
+			background-color: Green;
+		}
+		
+		.HIGH {
+			background-color: Red;
+		}
+	</style>
+</head>
+<body>
+Send a command to Arduino.<br/><br/>
+Each button calls a <tt>macro</tt> defined in <tt>probotscript.py</tt>.
+<h2>Basic robot commands</h2>
+	<table style="width:50%">
+	<tbody>
+	<tr>
+	<td><div id="cw" align="center"></div></td>
+	<td><div id="cs" align="center"></div></td>
+	</tbody>
+	</tr>
+
+	<tr>
+	<td><div id="cr" align="center"></div></td>
+	<td><div id="cl" align="center"></div></td>
+	</tbody>
+	</tr>
+
+	<tr>
+	<td><div id="cx" align="center"></div></td>
+	<td><div id="cz" align="center"></div></td>
+	</tbody>
+	</tr>
+
+	<tr>
+	<td><div id="ch" align="center"></div></td>
+	<td><div id="led" align="center"></div></td>
+	</tbody>
+	</tr>
+	
+	</table>
+	 
+</body>
+</html>

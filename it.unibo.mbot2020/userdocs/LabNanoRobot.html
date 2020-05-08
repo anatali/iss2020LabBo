@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+	width: 750px;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>Lab3_2020</title></head>
+    
+<body>
+<div id="top">
+<h1>LabNanoRobot | The home-made basicrobot  <font size="5"></font> </h1>
+</div>  
+
+<div class="body"> 
+
+ <table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:50%" >
+<img src="./img/robotSkeleton.png" alt="robotSkeleton.png" width="100%"  />
+<td>
+<img src="./img/robotConnections.png" alt="robotConnections.png" width="100%"  />
+ </td>
+</tr>
+ 
+<tr>
+<td><h3>Low-level support code for nano</h3><m>
+<a href="../resources/itunibo/robot/robotSupport.kt" target="code">robotSupport.kt</a><br/>
+<a href="../resources/itunibo/robotRaspOnly/nanoSupport.kt" target="code">nanoSupport.kt</a><br/>
+<a href="../resources/itunibo/robotRaspOnly/motorscSupport.kt" target="code">motorscSupport.kt</a><br/>
+<a href="../resources/itunibo/robotRaspOnly/sonarHCSR04Support.kt" target="code">sonarHCSR04Support.kt</a><br/>
+</m></td>
+<td> 
+<h3>High-level support code for nano</h3> 
+<li><a href="../resources/itunibo/robot/robotAdapterQaStream.kt" target="code">robotAdapterQaStream.kt</a> </li>
+<li><a href="../src/basicrobot.qak" target="code">basicrobot.qak</a></li>
+<h3>External service</h3>
+<li><a href="../../it.unibo.qak.radar2020/src/radargui.qak" target="web">radargui.qak</a></li>
+ 
+</td>
+</tr>
+
+</tbody>
+</table>
+
+<h2>The low-level support</h2>
+The technology-dependent part of the robot is embedded in the object
+<a href="../resources/itunibo/robotRaspOnly/nanoSupport.kt" target="code">nanoSupport.kt</a> 
+that provides two main operations:
+
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:40%" >
+<pre>
+fun <k>create</k>(<ks>owner</ks>: ActorBasic, 
+	withSonar : Boolean = true)
+</pre> 
+</td>
+<td>
+<m>Creates a support to be used by the given <ks>owner</ks> actor.<br/>
+The flag <tt>withSonar</tt> is used to create a <a href="../resources/itunibo/robotRaspOnly/sonarHCSR04Support.kt" target="code">sonarHCSR04Support.kt</a>
+that transforms the <ks>owner</ks>  in a event stream.
+<br/> <br/>
+Ths operation is called by the <a href="../resources/itunibo/robot/robotSupport.kt" target="code">robotSupport.kt</a>
+that creates the proper support for each specific robot type specified in the file  <m><ks>basicRobotConfig.pl</ks></m>.
+</m> 
+</td> 
+</td>
+</tr>
+ 
+<tr>
+<td >
+<pre>
+fun <k>move</k>( cmd : String )
+</pre> 
+</td>
+<td>
+<m>Send a move command to the robot by using the
+ <a href="../resources/itunibo/robotRaspOnly/motorscSupport.kt" target="code">motorscSupport.kt</a> that in turn uses
+ <a href="../resources/itunibo/robotRaspOnly/Motors.c" target="code">Motors.c</a>.
+ 
+
+</m>  
+</td> 
+</td>
+</tr> 
+
+</tbody>
+</table>
+
+<h3>The robot adapter</h3>
+The actor <a href="../resources/itunibo/robot/robotAdapterQaStream.kt" target="code">robotAdapterQaStream.kt</a>
+provides an 'adapter-utility' that allows application designers to
+send commands the robot actuators (e.g. to execute robot move-commands) without knowing any detail of their low-level configuration.
+<br/><br/>
+Moreover, the adapter works as a an observable data source with respect to the data generated by the robot senors.
+For example, robot-sonar data can be made available by this component in different forms; for example:
+
+<ol>
+<li>as a stream of values that can be handled by a proper subscriber</li>
+<li>as a generator of qak-events, e.g. <m><ks>sonarRobot : sonar( D )</ks></m></li>
+</ol>
+
+Since a sonar usually emits data with a quite high frequency and since these data are sometimes not reliable, a good strategy (that we will
+adopt in the following) is to avoid the direct generation of qak-events by the 
+<a href="../resources/itunibo/robot/robotAdapterQaStream.kt" target="code">robotAdapterQaStream.kt</a>
+(see also <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.qakintro2020/userDocs/LabQakIntro2020.html#actorasstream" target="web">
+LabQakIntro2020.html | Observable Actors</a>).
+
+<br/><br/>
+Rather, this component could better work as a data-stream source connected with a filter able to select more reliable data and
+to generate qak-events for those data only.
+<br/><br/>
+Moreover, we can easily add to this data-pipe another filter able to generate other events, e.g. <m><ks>obstacle : obstacle( D )</ks></m>
+when the sonar distance is under a prefixed limit.
+
+
+<h2 id="basicrobot">The basicrobot</h2>
+
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:50%" >
+<h3>The robotSupport and the sonar pipe</h3>
+<img src="./img/sonarpipe.png" alt="sonarpipe.png" width="100%"  />
+<m>
+ 
+</m>
+</td>
+<td><m>
+ 
+<ul>
+<li><em>robotAdapterQaStream</em>: a QActor that provides an 'adapter-utility' to send commands the robot actuators
+and works as an observable sonar data source.
+<br/>See <a href="../resources/itunibo/robot/robotAdapterQaStream.kt" target="code">robotAdapterQaStream.kt</a> 
+<br/><br/>
+</li>
+<li><em>sonardh</em>: an ActorBasic that eliminates 'wrong' sonar data
+<br/>See <a href="../resources/itunibo/robot/rx/sonardsh.kt" target="code">sonardsh.kt</a> 
+<br/><br/></li>
+<li><em>filter</em>: : an ActorBasic that detects obstacles and emits (using the <em>robotAdapterQaStream</em>) the <k>obstacle</k> event.
+It is the end of a built-in pipe that can be extended by the application designer.
+<br/>See <a href="../resources/itunibo/robot/rx/sonaractorfilter.kt" target="code">sonaractorfilter.kt</a>.
+<br/><br/>
+</li>
+<li><em>sonarforradar</em>: : an ActorBasic defined by the application designer
+that emits <k>polar</k> events.
+ <br/><br/>
+</li>
+</ul>
+ </m>
+</td>
+</tr>
+
+
+<tr>
+<td style="width:50%" >
+<h3>The basicrobot layer</h3>
+<img src="./img/basicrobot.png" alt="basicrobot.png" width="100%"  />
+<m>
+The model:  <a href="../src/basicrobot.qak" target="code">basicrobot.qak</a>   
+</m>
+</td>
+<td><m>
+The <em>basicrobot</em>:
+<ul>
+<li>accepts commands for the actuators (motors) via MQTT or via the TCP-port 8018</li>
+<li>handles sensor data (sonar) by using a reactive pipe (made of components of <tt>ActorBasic</tt> type) and emits events related
+to the perceived distance.</li>
+<li>can be used by means of a console working as a TCP-client or as a MQTT-publisher
+<center><img src="./img/jupConsole.png" alt="jupConsole.png" width="40%"  /> </center>
+</li>
+</ul>
+ </m>
+</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+<h2>High-level models</h2>
+<ol>
+<li>The basic robot (project model): <a href="../src/basicrobot.qak" target="code">basicrobot.qak</a> on Raspberry
+</li>
+<li>A radar service (project model): 
+ <a href="../../it.unibo.qak.radar2020/src/radargui.qak" target="web">radargui.qak</a> in project <em>it.unibo.qak.radar2020</em></li>
+</ol>
+<!--
+
+See LabRobotUsage
+
+<h2>Run</h2>
+<ol>
+<li>Activate the MQTT broker (mosquitto)
+See  <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.qakintro2020/userDocs/LabQakIntro2020.html#mqtt" target="web">
+LabQakIntro2020.html | Using MQTT </a></li>
+<li>Activate <a href="../src/basicrobot.qak" target="code">basicrobot.qak</a> on Raspberry
+</li>
+<li>Activate a qak radar
+ <a href="../../it.unibo.qak.radar2020/src/radargui.qak" target="web">radargui.qak</a>
+in project <em>it.unibo.qak.radar2020</em>
+</li>
+<li>Launch the Jupyter notebook <a href="./sBasicRobotUserCmdMqt.ipynb" target="code">BasicRobotUserCmdMqt.ipynb</a>
+</li>
+<li>Launch a frontend web-server(<tt>C:\Didattica2018Work\iss2019Lab\it.unibo.frontend19\nodeCode\frontend</tt>)
+and open a browser on <tt>PC-IP:8080</tt>
+</li>
+</ol>
+-->
+
+<h1>Requirements</h1>
+<div class="req">
+Build a robot-radar system that includes a <em>basicrobot</em> (equipped with a <em>robot-sonar</em>), a <em>userconsole</em> 
+and a <em>radarGui</em> so that:
+
+<ol>
+<h3>SPRINT1</h3>
+<li><m><kc>REQ-SHOW-DATA</kc></m>: the data produced by the <em>robot-sonar</em> should be <i>properly</i> shown by the <em>radarGui</em>.</li>
+<li><m><kc>REQ-MOVE</kc></m>: an human user can move the robot by using the  <em>userconsole</em>.</li>
+<h3>SPRINT2</h3>
+<li><m><kc>REQ-TURN</kc></m>:  the<em>basicrobot</em> must be able to detect obstacles and turn left of <m><k>90</k></m> degrees when an obstacle
+is detected.</li>
+<h3>SPRINT3</h3>
+<li><m><kc>REQ-STEP</kc></m>:  the <em>basicrobot</em> must be able to execute a command <m><k>step(T)</k></m> that moves the robot for
+the given time <m><k>T</k></m>.
+</ol>
+</div>
+
+See <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.basicrobotusage/userDocs/LabRobotUsage.html" target="lab">LabRobotUsage | Using the basicrobot</a>
+ 
+</div>  
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+
+</body>
+</html>

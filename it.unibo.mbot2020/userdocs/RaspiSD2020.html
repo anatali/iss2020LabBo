@@ -1,0 +1,510 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+	width: 750px;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+</style>
+    
+<head>
+   
+<title>RaspiSD2020</title></head>
+    
+<body>
+<div id="body">
+<h1>RaspiSD2020 | Raspberry SD<font size="5"></font> </h1>
+
+<h2>Overview</h2>
+
+ 
+
+
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:30%" >
+<h3 id="busterlite">Setup Buster Lite</h3> 
+<pre>
+cat /etc/os-release
+</pre>
+On the RaspberriPi B+ there are pre-installed
+<ul>
+<li>Python 2.7.16</li>
+<li>Python 3.7.3</li>
+</ul>
+
+We will use <ks>pyhton3</ks>.
+
+</td>
+<td>
+Create a file <ks>boot/wpa_supplicant.conf</ks> with content:
+<pre>ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=IT
+network={
+     ssid="..."
+     psk="..."
+     key_mgmt=WPA-PSK
+}
+</pre>
+See alse <a href="https://www.digikey.com/en/maker/blogs/raspberry-pi-wi-fi-bluetooth-setup-how-to-configure-your-pi-4-model-b-3-model-b" target="web">
+B+ Connectivity</a>. <br/><br/>
+Create a file <ks>boot/ssh</ks> (no content)
+<h3>/ect/network/interfaces</h3>
+<pre>
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 192.168.137.2
+        netmask 255.255.255.0
+        gateway 192.168.137.1
+        dns-nameservers 8.8.8.8
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+pre-up wpa_supplicant -Dwext -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf  
+iface default inet dhcp
+</pre>
+
+<h3>/usr/local/bin/checkwifi.sh</h3>
+<pre>
+ping -c4 192.168.1.1 > /dev/null
+ 
+if [ $? != 0 ] 
+then
+  echo "No network connection, restarting wlan0"
+  /sbin/ifdown 'wlan0'
+  sleep 5
+  /sbin/ifup --force 'wlan0'
+fi
+
+------------------------------------------------------------------------------
+crontab -e
+*/5 * * * * /usr/bin/sudo -H /usr/local/bin/checkwifi.sh >> /dev/null 2>&1
+------------------------------------------------------------------------------
+sudo chmod 775 /usr/local/bin/checkwifi.sh
+</pre>
+</td>
+</tr>
+
+<tr>
+<td >
+<h3 id="startconfig">Start Configuration</h3> 
+On the RaspberriPi B+ pre-Buster Lite, there are pre-installed
+<ul>
+<li>Python 2.7.13</li>
+<li>Python 3.5.3</li>
+</ul>
+
+We will use <ks>pyhton3</ks>.
+
+ 
+</td>
+<td><pre>sudo apt-get update -y
+sudo apt-get upgrade -y   	<kc>or</kc>  sudo apt full-upgrade
+
+sudo raspi-config
+<div class="remark"><k>Enable Cam, I2C, UART</k></div>
+sudo reboot
+<ks>Install cmake</ks>
+sudo apt-get install cmake
+<ks>Standard USB webcam</ks>
+sudo apt install fswebcam	 
+
+sudo route add default gw 192.168.1.1 wlan0   <kc>//if required</kc>
+</pre>
+<b>View processes and kill</b>  <br/>
+<pre>
+ps -fA | grep python
+sudo kill -s KILL &lt;process number>
+</pre>
+ 
+</td>
+</tr>
+
+
+
+
+<tr>
+<td>
+<h3 id="i2c">Enable I2C</h3> </td>
+<td><pre>
+sudo nano /boot/config.txt
+	<kc>Add the line</kc>
+	dtparam=i2c_baudrate=10000
+sudo apt-get install i2c-tools
+sudo i2cdetect -y 1
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td >
+<h3 id="git">Install GIT</h3> </td>
+<td><pre>sudo apt-get install git
+git --version 	<kc>//git version 2.20.1</kc>
+</pre>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3 id="java">Install Java</h3> </td>
+<td><pre>
+sudo apt install openjdk-8-jdk openjdk-8-jre
+update-alternatives --config java
+java -version
+<kc>-------------------JAVA HOME -----------------</kc>
+Include in <ks>/etc/environment</ks>
+JRE_HOME=/usr/lib/jvm/java-8-openjdk-armhf/jre/bin/java                      
+</pre>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3 id="testcam">Test the camera</h3> </td>
+<td><pre>
+raspistill -o image.jpg
+raspivid -o video.h264 -t 5000		<kc>//in msecs</kc>
+
+fswebcam -r 1280x720 image2.jpg		<kc>//USB camera</kc>
+</pre>
+</td>
+</tr>
+
+
+
+
+<tr>
+<td>
+<h3 id="mjpg">Install mjpg-streamer</h3> 
+<ul>
+<li><a href="https://github.com/cncjs/cncjs/wiki/Setup-Guide:-Raspberry-Pi-%7C-MJPEG-Streamer-Install-&-Setup-&-FFMpeg-Recording" target="web">
+Setup Guide: Raspberry Pi | MJPEG Streamer Install & Setup & FFMpeg Recording</a><br/><br/>
+</li>
+<li><a href="https://en.wikipedi0.org/wiki/Motion_JPEG" target="web">Motion JPEG</a><br/><br/>
+</li>
+
+<li><a href="https://whatismyipaddress.com/" target="web">My IP Address</a></li>
+</ul>
+</td>
+<td><pre><!-- sudo apt-get install build-essential libjpeg8-dev imagemagick libv4l-dev cmake -y -->
+sudo apt-get install cmake libjpeg8-dev
+
+git clone https://github.com/jacksonliam/mjpg-streamer.git
+cd mjpg-streamer/mjpg-streamer-experimental
+make all
+sudo make install
+
+ls   /dev/video*      <kc>//the device is on /dev/video0</kc>
+
+./start.sh 			<kc>or</kc> bash start.sh
+<ks>http://192.168.x.y:8080/stream.html</ks>   
+--------------------------------------------------------------------------
+/usr/local/bin/mjpg_streamer -i "input_uvc.so -r 1280x720 
+	-d /dev/video0 -f 30" -o "output_http.so -p 8080 
+	-w /usr/local/share/mjpg-streamer/www"	
+</pre>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3 id="aiocoap">Install aiocoap</h3> </td>
+<td><pre>
+https://aiocoap.readthedocs.io/en/latest/
+wget https://aiocoap.readthedocs.io/en/latest/aiocoap-0.3.tar.gz
+tar xvzf aiocoap-0.3.tar.gz
+cd aiocoap-0.3
+sudo ./setup.py install</pre>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3 id="aiocoap">Install Copper in Chrome in Windows10</h3> </td>
+<td>
+See <a href="https://github.com/mkovatsc/Copper4Cr">Copper for Chrome (Cu4Cr) CoAP user-agent</a>
+<pre>
+
+</pre>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<h3 id="aiocoap">Install Node.js</h3> </td>
+<td><pre>
+ 
+sudo apt remove nodejs nodejs-legacy -y
+sudo apt remove npm -y
+sudo apt remove --purge node
+
+//updates our Debian apt package repository to include the NodeSource packages
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+sudo apt-get install -y nodejs  // to install Node.js 13.x and npm
+
+node -v				<kc>//v13.7.0</kc>
+npm --version		<kc>//6.13.6</kc>
+
+npm init 			<kc>//create package.json</kc>
+npm install serialport	<kc>//--save is implicit</kc>
+
+npm install express
+</pre>
+</td>
+</tr>
+
+<tr>
+<td>
+<h3 id="aiocoap">Install Samba</h3> </td>
+<td><pre>
+sudo apt install -y samba
+</pre>
+</td>
+</tr>
+
+
+
+
+ </tbody>
+</table>
+ <br/><br/>
+ 
+  <br/><br/>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+ 
+
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+</div>  
+
+ 
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+
+</body>
+</html>
+
+<!--
+<h2>INSTALL PYTHON</h2>
+ <br/><br/>
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:70%" > 
+ <pre>
+---------------------  INSTALL PYTHON
+DEPENDENCIES
+sudo apt-get install -y build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev 
+libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev 
+
+
+wget https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tar.xz
+tar xf Python-3.7.6.tar.xz
+cd Python-3.7.6
+./configure --enable-optimizations
+make -j 4
+sudo make altinstall
+# It will created the binary and lib dirs with the version in /usr/local. 
+# This way you can choose which python you want at run time.
+python3.7 -V       #check the version
+
+sudo ./configure --enable-optimizations
+sudo make -j 4
+sudo make altinstall 
+# It will created the binary and lib dirs with the version in /usr/local. 
+# This way you can choose which python you want at run time.
+python3.8 -V #check the version 
+
+
+
+wget https://www.python.org/ftp/python/3.8.1/Python-3.8.1.tar.xz
+tar xf Python-3.8.1.tar.xz
+cd Python-3.8.1
+//To overcome the problem No module named '_ctypes'.
+git clone https://github.com/python/cpython.git
+
+ 
+ 
+</pre>
+<pre> 
+/home/pi/nat/cam-robot/WebIOPi-0.7.1/<ks>python/webiopi/__main__.py</ks>
+
+
+	server = Server(port=8000, configfile=configfile, scriptfile=scriptfile)
+Configuration file in <ks>python/config</ks>  (<kc>HTTP, COAP</kc> enabled) See also <kc>python\webiopi\utils\config.py</kc>
+			self.restHandler = <ks>rest.RESTHandler()</ks>   //in <kc>python\webiopi\protocols</kc>
+			<ks>http.HTTPServer</ks>(self.host, http_port, self.restHandler, context, docroot, index, auth, realm)
+			<ks>coap.COAPServer</ks>(self.host, coap_port, self.restHandler)
+	runLoop()
+	server.stop()
+
+sudo python3 __main__.py -c /etc/webiopi/config
+
+
+</pre>
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>
+ 
+</td>
+<td></td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/> 
+ -->
+ 

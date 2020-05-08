@@ -1,0 +1,16 @@
+{
+  "name": "testserial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "testSerial.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serialport": "^8.0.6",
+    "utf8": "^3.0.0"
+  }
+}

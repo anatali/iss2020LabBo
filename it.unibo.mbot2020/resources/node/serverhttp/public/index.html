@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<style type="text/css">
+</style>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content = "height = device-height, width = 420, user-scalable = no" /> 
+	<title>BasciRobotCmd</title>
+	
+	<style type="text/css">
+		table, th, td {
+		  border: 1px solid black;
+		  border-collapse: collapse;
+		}    
+		
+		button {
+			display: block;
+			margin: 5px 5px 5px 5px;
+			width: 160px;
+			height: 45px;
+			font-size: 24pt;
+			font-weight: bold; 
+			color: black;
+		}
+		
+		input[type="range"] {
+			display: block;
+			width: 160px;
+			height: 45px;
+		}
+		
+		.LOW {
+			background-color: White;
+		}
+		
+		.HIGH {
+			background-color: Red;
+		}
+	</style>
+</head>
+<body>
+Send a command to Arduino.<br/><br/>
+Each button submits using <tt>POST</tt> .
+<h2>Basic robot commands</h2>
+
+	<table style="width:50%">
+	<tbody>
+	<tr>
+	<td><form action="/w" method="post"><button type="submit"/>w</form></td>
+	<td><form action="/s" method="post"><button type="submit"/>s</form></td>
+	</tbody>
+	</tr>
+
+	<tr>
+	<td><form action="/r" method="post"><button type="submit"/>r</form></td>
+	<td><form action="/l" method="post"><button type="submit"/>l</form></td>
+	</tbody>
+	</tr>
+
+	<tr>
+	<td><form action="/x" method="post"><button type="submit"/>x</form></td>
+	<td><form action="/z" method="post"><button type="submit"/>z</form></td>
+	</tbody>
+	</tr>
+
+	<tr>
+	<td><form action="/h" method="post"><button type="submit"/>h</form></td>
+	<td><form action="/h" method="post"><button type="submit"/>h</form></td>
+	</tbody>
+	</tr>
+	
+	</table>
+	 
+</body>
+</html>

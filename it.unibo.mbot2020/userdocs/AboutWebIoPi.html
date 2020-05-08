@@ -1,0 +1,563 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ 
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+	font-size: 100%;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 12pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+	width: 750px;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+</style>
+    
+<head>
+   
+<title>Mbot2020</title></head>
+    
+<body>
+<div id="body">
+<h1>Mbot2020 | The reference ddr robot<font size="5"></font> </h1>
+
+<h2>Hardware</h2>
+
+ <ol>
+ <li>  
+The robot <br/> 
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<h3>MBOT (wifi) base</h3>
+ 
+<a href="https://www.robotstore.it/Makeblock-mBot-S-Explorer-Kit" target="web">https://www.robotstore.it/Makeblock-mBot-S-Explorer-Kit</a>
+<br/> 
+<img src="./img/mbot-S.jpg" alt="mbot-S" width="70%" /> 
+ 
+
+</td>
+<td>
+<h3>MBOT as an IOT device</h3>
+<a href="https://en.wikipedia.org/wiki/Internet_of_things" target="web">https://en.wikipedia.org/wiki/Internet_of_things</a>
+<br/><br/> 
+<img src="./img/mbot.png" alt="mbot" width="80%" /><br/> <br/> 
+</td>
+</tr>
+ </tbody>
+</table>
+<br/><br/> 
+ 
+ 
+  </li>
+ 
+<li><b>Raspberry PI 3 Model B+</b> (42,85)<br/> 
+<b>Wires</b>	 	 
+<a href="https://www.amazon.it/Elegoo-Multicolore-FFemmina-MEGA2560-Raspberry/dp/B01N40EK6M/ref=sr_1_3?s=english-books&ie=UTF8&qid=1505917408&sr=8-3&keywords=cavetti+raspberry" target="web">
+male-male / male-female / female-female</a>
+<br/>
+<b>Distance Sensor</b>
+    <a href="http://www.amazon.it/gp/product/B00E0NXTJW?psc=1&redirect=true&ref_=oh_aui_detailpage_o03_s00" target="ddr">Sonar HC-SR04</a>
+ 
+
+
+<br/> <br/> 
+</li>
+<li>    
+<b>Batteria</b>	<a href="http://www.amazon.it/gp/product/B00Y03M2XQ?psc=1&redirect=true&ref_=oh_aui_detailpage_o02_s00" target="web">
+    EasyAcc Colorato 10000mAh</a> (19,99)
+ 
+
+</li>    
+</ol>
+
+<h2>Arduino layer</h2>
+
+<a href="../arduino/uniboControl/uniboControl.ino" target="code">uniboControl.ino</a> 
+
+<br/> <br/>
+The <em>Robot</em> is able to execute a set of <i>movement-commands</i>:
+<ul>
+<li> <k>w</k>: forward</li>
+<li> <k>s</k>: backward</li>
+<li> <k>a</k>: rotate left</li>
+<li> <k>d</k>: rotate right</li>
+<li> <k>r</k>: rotate left <tt>90</tt> degrees</li>
+<li> <k>l</k>: rotate right <tt>90</tt> degrees</li>
+<li> <k>x</k>: rotate left <tt>10</tt> degrees</li>
+<li> <k>l</k>: rotate right <tt>10</tt> degrees </li>
+<li> <k>h</k>: stop the robot movement</li>
+</ul>
+
+<h2>Arduino connected to the <a href="../../it.unibo.raspIntro2020/userDocs/LabRaspiIntro.html" target="lab">RaspberryPi</a> </h2>
+
+
+
+A Python program that allows us to send commands to Arduino using the serial line:
+ <a href="../python/testSerial.py" target="code">testSerial.py</a><br/><br/>
+
+A NodeJs program that allows us to send commands to Arduino using the serial line:
+ <a href="../node/testSerial.js" target="code">testSerial.js</a><br/><br/>
+
+ <h2>Remote control</h2>
+ <center>
+<table style="width:85%">
+<tbody>	
+<tr>
+<td style="width:80%" >
+<h3>A NodeJs HTTP server</h3>
+ A  <a href="https://www.w3schools.com/nodejs/" target="web">Node.js</a>
+server that allows us to send commands to Arduino using a Web-Gui (<tt>HTTP</tt>):
+
+	<ul>
+	<li><a href="../node/serverHTTP/package.json" target="code">package.json</a></li>
+	<li><a href="../node/serverHTTP/app.js" target="code">app.js</a></li>
+	<li><pre>npm install 
+node app.js</pre></li>
+	</ul>
+	
+Usage: 
+<ul>
+<li>Click on a button: send a <tt>POST</tt> request</li>
+<li>Write on a browser <tt>http://192.168.1.8:3000/r</tt>: sends a <tt>GET</tt> that movs the robot => 
+<a href="https://en.wikipedia.org/wiki/Representational_state_transfer">REST principles</a> violated!</li>
+</ul>
+
+</td>
+<td>
+<img src="./img/probotnode.png" alt="probotnode" width="80%"/>
+</td>
+</tr>
+ </tbody>
+</table>
+</center>
+
+<br/><br/>
+ <center>
+<table style="width:85%">
+<tbody>	
+<tr>
+<td style="width:80%" >
+<h3>CoAP interaction using a Server written in Python </h3>
+Use <a href="https://aiocoap.readthedocs.io/en/latest/" target="web">aiocoap</a>
+ to create a <tt>CoAP</tt> server and a <tt>CoAP</tt> client.<!-- txThings is for Python 2.7 -->
+ <ul>
+ <li><tt>python3 <a href="../python/coap/basicrobotAiocoapServer.py" target="code">basicrobotAiocoapServer.py<a></tt><br/>
+ 
+ The server provides a resource (<tt>BasicrobotResource</tt>) that implements a <k>PUT</k> request by 
+changing its 'state' and by sending a command to Arduino on the Serial line. 
+</li>
+ <li><tt>python3 <a href="../python/coap/basicrobotAiocoapClient.py" target="code">basicrobotAiocoapClient.py<a></tt><br/>
+ The client provides a simple console to send commands (<tt>w,s,a,d,r,l,z,x</tt>) to the <tt>BasicrobotResource</tt>.
+ </li>
+ <li><tt> <a href="../src/it/unibo/code/basicrobotQakCoapClient.kt" target="code">basicrobotQakCoapClient.kt<a></tt><br/>
+ A client wriiten in Kotlin that provides a simple console to send commands (<tt>w,s,a,d,r,l,z,x</tt>) to the <tt>BasicrobotResource</tt>.
+ </li>
+
+</ul>
+ 
+ 
+</td>
+<td>
+<!-- <img src="./img/probot.png" alt="probot" width="80%"/> -->
+</td>
+</tr>
+ </tbody>
+</table>
+</center>
+<br/><br/>
+
+<h2>Using HTTP and CoAP together</h2>
+
+<ul>
+<li>
+<a href="https://www.deviceplus.com/raspberry-pi/raspberrypi_entry_030/" target="code">WebIoPi<a>
+ solution: the HTTP server redirects POST commands to the same handler used by the CoAP server.
+The Web page given by the HTTP server contains a script that <k>DOES NOT work</k> as a CoAP client observer.
+Rather it performs polling over the resource state to be updated.  <br/><br/></li>
+
+<li>Unibo solution: the HTTP server handles a POST command by generating a CoAP request and by sending to the HTTP client the same
+answer given by the CoAP server (that interacts with Arduino). The HTTP server works also as an observable CoAP client
+and updates web pages by using <k>socketio</k>.</li>
+</ul>
+ 
+
+
+<h2>WebIoPi</h2>
+<pre>
+sudo route add default gw 192.168.1.1 wlan0 
+sudo webiopi -d -c /etc/webiopi/config
+</pre>
+
+ <center>
+<table style="width:85%">
+<tbody>	
+<tr>
+<td style="width:60%" >
+<h3>WebIoPi </h3>
+
+WebIOPi is a REST framework to remote control Raspberry Pi GPIO/I2C/SPI/...
+The Pi is enough powered to handle HTTP requests, but HTTP uses TCP which has its pro and cons.
+Built on top of UDP, CoAP can decrease latency and allows multicast which is a premiere for the Pi !
+
+
+WebIOPi is a software used to materialize the “IoT (Internet of Things)” with Raspberry Pi.
+In WebIOPi’s case, input and output are performed with a browser. 
+You can operate GPIO with a browser button, and likewise acquire values from GPIO and display them quite easily. 
+The appeal in using a browser is that you can even easily modify web pages design with CSS and more!
+
+See 
+
+<ol>
+<li><a href="https://www.deviceplus.com/how-tos/raspberrypi-guide/raspberrypi_entry_030/" target="web">
+Raspberry Pi WebIOPi IOT Part 1 : Operating GPIO With a Browser</a><br/> </li>
+<li><a href="https://www.deviceplus.com/how-tos/raspberrypi-guide/raspberry-pi-webiopi-iot-part-2-making-a-flashing-led-button/" target="web">
+Part 2 – Making a flashing LED button </a><br/> </li>
+<li><a href="https://www.deviceplus.com/how-tos/raspberrypi-guide/raspberry-pi-webiopi-iot-part-3-programming-basics-inputoutput/" target="web">
+Part 3 – Programming Basics (Input/Output) </a><br/> </li>
+<li><a href="https://webiopi.trouch.com/INSTALL.html/" target="web">
+WebIOPi Installation</a><br/> </li>
+<li><a href="https://www.raspberrypi.org/forums/viewtopic.php?t=38740/" target="web">
+WebIOPi now includes a CoAP stack</a><br/> </li>
+ 
+</ol>
+
+<pre>
+# Create a WebIOPi client
+client = PiHttpClient("raspberrypi")   # HTTP only
+#client = PiMixedClient("raspberrypi") # CoAP with HTTP fallback
+#client = PiCoapClient("raspberrypi")  # CoAP only
+#client = PiMulticastClient()          # CoAP Multicast
+
+</pre>
+
+
+The WebIOPi interface uses javascript to control our GPIO from a web page.
+<ol>
+<li><a href="http://webiopi.trouch.com/" target="web">WebIoPi </a><br/> </li>
+<li><a href="https://webiopi.trouch.com/Tutorial_Devices.html" target="web">
+WebIoPi Tutorial : Using devices</a><br/> </li>
+<li><a href="https://webiopi.trouch.com/DEVICES.html" target="web">
+WebIoPi Device support</a><br/></li>
+<li><a href="http://webiopi.trouch.com/Tutorial_Basis.html" target="web">
+WebIoPi Tutorial : Framework basis</a><br/></li>
+<li><a href="http://techcofounderdating.com/raspberry-pi-custom-web-control/" target="web">
+WebIoPi video</a><br
+</li>
+</ol>
+</td>
+<td>
+<img src="./img/webiopi-rest.png" alt="webiopi-rest" width="100%"/>
+</td>
+</tr>
+
+<tr>
+<td >
+<h3>A Python3 server based on WebIoPi </h3>
+A Python server that allows us to send commands to RaspberryPi-Arduino using 
+    <tt>HTTP</tt>, <tt>CoAP</tt> under <a href="http://webiopi.trouch.com/" target="web">WebIoPi</a>
+	(see also See 
+ <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.raspIntro2020/userDocs/LabRaspiWeb.html" target="web">
+ LabRaspiWeb.html</a> in project <i>it.unibo.raspIntro2020</i>):
+	<ul>
+	<li><a href="../python/basicrobotControl/probotconfig" target="code">probotconfig</a></li>
+	<li><a href="../python/basicrobotControl/probotscript.py" target="code">probotscript.py</a></li>
+	<li><pre>sudo python3 -m webiopi -d -c /home/pi/nat/projectrobot/probotconfig</pre></li>
+	</ul>
+</td>
+<td>
+<img src="./img/probot.png" alt="probot" width="80%"/>
+</td>
+</tr>
+ </tbody>
+</table>
+</center>
+
+ <br/><br/>
+ <center>
+<table style="width:85%">
+<tbody>	
+<tr>
+<td style="width:80%" >
+<h3>CoAP interaction (WebIoPi) using Node</h3>
+A <a href="https://www.w3schools.com/nodejs/" target="web">Node.js</a> server that allows us to send commands to RaspberryPi-Arduino using 
+<a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol" target="web">CoAP</a> (Constrained Application Protocol):
+	<ul>
+	<li><pre>npm install coap</pre></li>
+	<li><a href="../node/coap/basicrobotNodeCoapDemo.js" target="code">basicrobotNodeCoapDemo.js</a></li>
+	<li><a href="../src/it/unibo/code/basicrobotCoapClient.java" target="code">basicrobotCoapClient.java</a></li>
+	<li><a href="../src/it/unibo/code/basicrobotCoapClient.kt" target="code">basicrobotCoapClient.kt</a></li>
+	<li><pre></pre></li>
+	</ul>
+	
+TODO: with the CoAP servr written in Python.
+</td>
+<td>
+<!-- <img src="./img/probot.png" alt="probot" width="80%"/> -->
+</td>
+</tr>
+ </tbody>
+</table>
+</center>
+ 
+ 
+ <br/><br/>
+<h2>Actors via CoAP</h2>
+ 
+ <table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+	<ul>
+ 	<li><a href="../src/it/unibo/code/basicrobotQakCoapClient.kt" target="code">basicrobotQakCoapClient.kt</a></li>
+   	<li><pre></pre></li>
+	</ul>
+ 
+
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
+
+ <br/><br/>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+ 
+
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+</div>  
+
+ 
+ 
+<tbody>	
+<tr>
+<td style="width:50%" >
+ 
+
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
+
+ <br/><br/>
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+
+</body>
+</html>
+
+<!--
+<h2>INSTALL PYTHON</h2>
+ <br/><br/>
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:70%" > 
+ <pre>
+---------------------  INSTALL PYTHON
+DEPENDENCIES
+sudo apt-get install -y build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev 
+libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev 
+
+
+wget https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tar.xz
+tar xf Python-3.7.6.tar.xz
+cd Python-3.7.6
+./configure --enable-optimizations
+make -j 4
+sudo make altinstall
+# It will created the binary and lib dirs with the version in /usr/local. 
+# This way you can choose which python you want at run time.
+python3.7 -V       #check the version
+
+sudo ./configure --enable-optimizations
+sudo make -j 4
+sudo make altinstall 
+# It will created the binary and lib dirs with the version in /usr/local. 
+# This way you can choose which python you want at run time.
+python3.8 -V #check the version 
+
+
+
+wget https://www.python.org/ftp/python/3.8.1/Python-3.8.1.tar.xz
+tar xf Python-3.8.1.tar.xz
+cd Python-3.8.1
+//To overcome the problem No module named '_ctypes'.
+git clone https://github.com/python/cpython.git
+
+ 
+ 
+</pre>
+<pre> 
+/home/pi/nat/cam-robot/WebIOPi-0.7.1/<ks>python/webiopi/__main__.py</ks>
+
+
+	server = Server(port=8000, configfile=configfile, scriptfile=scriptfile)
+Configuration file in <ks>python/config</ks>  (<kc>HTTP, COAP</kc> enabled) See also <kc>python\webiopi\utils\config.py</kc>
+			self.restHandler = <ks>rest.RESTHandler()</ks>   //in <kc>python\webiopi\protocols</kc>
+			<ks>http.HTTPServer</ks>(self.host, http_port, self.restHandler, context, docroot, index, auth, realm)
+			<ks>coap.COAPServer</ks>(self.host, coap_port, self.restHandler)
+	runLoop()
+	server.stop()
+
+sudo python3 __main__.py -c /etc/webiopi/config
+
+
+</pre>
+</td>
+<td>
+
+</td>
+</tr>
+
+<tr>
+<td>
+ 
+</td>
+<td></td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/> 
+ -->
+ 

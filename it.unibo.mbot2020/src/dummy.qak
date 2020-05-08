@@ -1,0 +1,11 @@
+System dummy
+
+Dispatch cmd      : cmd(X)
+
+Context ctxDummy ip [ host= "localhost" port= 8022 ]
+
+QActor qadummy context ctxDummy{ 
+	State s0 initial{ 
+		forward qadummy -m cmd : cmd(r)
+	}
+}  
