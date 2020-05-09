@@ -17,13 +17,25 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-			var counter = 0 
-			val leddev = resources.bls.kotlin.led.create()	
+		   var state   = false  
+		   lateinit var leddev : it.unibo.bls.interfaces.ILed  //CONCRETE DEVICE 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("led started")
-						 leddev.turnOff()  
+					}
+					 transition(edgeName="t00",targetState="doConfig",cond=whenDispatch("config"))
+				}	 
+				state("doConfig") { //this:State
+					action { //it:State
+						println(" === LED CONFIGURATION === ")
+						if( checkMsgContent( Term.createTerm("config(TYPE)"), Term.createTerm("config(TYPE)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 leddev = resources.bls.kotlin.ledsupport.create( payloadArg(0) ) 
+											   state = false 
+								  		       leddev.turnOff()   
+								emit("ledchanged", "ledchanged(off)" ) 
+						}
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
@@ -31,28 +43,29 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 					action { //it:State
 						println("led waits ...")
 					}
-					 transition(edgeName="t00",targetState="handleLedCmd",cond=whenDispatch("ledCmd"))
+					 transition(edgeName="t01",targetState="turnLedOn",cond=whenDispatch("turnOn"))
+					transition(edgeName="t02",targetState="turnLedOff",cond=whenDispatch("turnOff"))
+					transition(edgeName="t03",targetState="doConfig",cond=whenDispatch("config"))
 				}	 
-				state("handleLedCmd") { //this:State
+				state("turnLedOn") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("ledCmd(X)"), Term.createTerm("ledCmd(X)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 val Cmd = payloadArg(0)
-											   counter++
-								if(  Cmd == "on"  
-								 ){println("led ON counter=$counter")
-								 leddev.turnOn()  
-								updateResourceRep( "ledOn"  
-								)
-								}
-								else
-								 {println("led OFF counter=$counter")
-								  leddev.turnOff()  
-								 updateResourceRep( "ledOff"  
-								 )
-								 }
-						}
+						 leddev.turnOn()	 
+						 state = true 	 
+						emit("ledchanged", "ledchanged(on)" ) 
+						updateResourceRep( "ledstate($state)" 
+						)
+					}
+					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
+				}	 
+				state("turnLedOff") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
+						 leddev.turnOff() 	 
+						 state = false 		 
+						emit("ledchanged", "ledchanged(off)" ) 
+						updateResourceRep( "ledstate($state)"	 
+						)
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 

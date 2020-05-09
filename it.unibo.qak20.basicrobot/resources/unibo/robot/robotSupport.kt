@@ -37,9 +37,8 @@ object robotSupport{
 		when( robotKind ){
 			"mockrobot"  ->  { robotMock.mockrobotSupport.create(  ) }
 			"virtual"    ->  { robotVirtual.virtualRobotSupportQak.initClientConn( owner, "localhost", robotPort) }
-			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) }
-//			//port="/dev/ttyUSB0"   "COM6"
-//			"realnano"   ->  { it.unibo.robotRaspOnly.nanoSupport.create(actor, true ) }
+			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) } //port="/dev/ttyUSB0"   "COM6"
+ 			"realnano"   ->  { robotNano.motorscSupport.create( owner ) }
 			else -> println( "		--- robotSupport | robot $robotKind unknown" )
 		}
 	}
@@ -57,7 +56,7 @@ object robotSupport{
 			"mockrobot"  -> { robotMock.mockrobotSupport.move( cmd ) 					  }
 			"virtual"    -> { robotVirtual.virtualRobotSupportQak.doApplMove(  cmd ) 	  }	
 			"realmbot"   -> { robotMbot.mbotSupport.move( cmd ) 	}
-//			"realnano"   -> { it.unibo.robotRaspOnly.nanoSupport.move( cmd)	}
+ 			"realnano"   -> { robotNano.motorscSupport.move( cmd)	}
 			else         -> println( "		--- robotSupport | robot unknown")
 		}		
 	}
@@ -67,7 +66,7 @@ object robotSupport{
 			"mockrobot"  -> {  					                  }
 			"virtual"    -> { robotVirtual.virtualRobotSupportQak.terminatevr(  ) 	  }	
  			"realmbot"   -> { /* robotMbot.mbotSupport.terminate(  ) */	}
-//			"realnano"   -> { it.unibo.robotRaspOnly.nanoSupport.move( cmd)	}
+ 			"realnano"   -> {robotNano.motorscSupport.terminate( )	}
 			else         -> println( "		--- robotSupport | robot unknown")
 		}		
 		

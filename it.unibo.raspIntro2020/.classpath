@@ -54,31 +54,6 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/uniboInterfaces.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/2p301.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/it.unibo.qakactor-2.4.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/unibonoawtsupports.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Temp/iss2020LabBo/unibolibs/radarPojo.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/anatali/.gradle/caches/modules-2/files-2.1/com.googlecode.aima-java/aima-core/3.0.0/fd46a9bdd8ea9d9988adcd296c3af02af267df8a/aima-core-3.0.0.jar" sourcepath="C:/Users/anatali/.gradle/caches/modules-2/files-2.1/com.googlecode.aima-java/aima-core/3.0.0/364606d9cf7caf3afd0ab345a4713e8c98a2441e/aima-core-3.0.0-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
@@ -196,5 +171,11 @@
 			<attribute name="gradle_used_by_scope" value="test"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/2p301.jar"/>
+	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/it.unibo.qakactor-2.4.jar"/>
+	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/it.unibo.robotPojo-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/uniboInterfaces.jar"/>
+	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/unibonoawtsupports.jar"/>
+	<classpathentry kind="lib" path="C:/Didattica2018Work/iss2020LabBo/unibolibs/radarPojo.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

@@ -1,6 +1,4 @@
 item(serverctxbasicrobot,nostate,msg(start,dispatch,serverctxbasicrobot,serverctxbasicrobot,startQakContextServer,3)).
-msg(cmd,dispatch,console,basicrobot,cmd(r),1)
-msg(cmd,dispatch,console,basicrobot,cmd(l),2)
+msg(step,request,console,basicrobot,step(600),1)
+msg(step,request,console,basicrobot,step(600),2)
 msg(step,request,console,basicrobot,step(600),3)
-msg(step,request,console,basicrobot,step(600),4)
-msg(step,request,console,basicrobot,step(600),5)
