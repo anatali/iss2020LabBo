@@ -14,7 +14,6 @@ package unibo.robot
 
 import it.unibo.kactor.ActorBasic
 import it.unibo.kactor.ActorBasicFsm
-import unibo.robotMock.mockrobotSupport
 import org.json.JSONObject
 import java.io.File
  
@@ -36,9 +35,9 @@ object robotSupport{
 		println( "		--- robotSupport | CREATED for $robotKind port=$robotPort" )
 
 		when( robotKind ){
-			"mockrobot"  ->  { unibo.robotMock.mockrobotSupport.create(  ) }
-			"virtual"    ->  { unibo.robotVirtual.virtualRobotSupportQak.initClientConn( owner, "localhost", robotPort) }
-//			"realmbot"   ->  { itunibo.robotMbot.mbotSupport.create( actor, port  ) }
+			"mockrobot"  ->  { robotMock.mockrobotSupport.create(  ) }
+			"virtual"    ->  { robotVirtual.virtualRobotSupportQak.initClientConn( owner, "localhost", robotPort) }
+			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) }
 //			//port="/dev/ttyUSB0"   "COM6"
 //			"realnano"   ->  { it.unibo.robotRaspOnly.nanoSupport.create(actor, true ) }
 			else -> println( "		--- robotSupport | robot $robotKind unknown" )
@@ -55,9 +54,9 @@ object robotSupport{
 	fun move( cmd : String ){ //cmd = msg(M) M=w | a | s | d | h
 //		println("robotSupport move cmd=$cmd robotKind=$robotKind" )
 		when( robotKind ){
-			"mockrobot"  -> { mockrobotSupport.move( cmd ) 					                  }
-			"virtual"    -> { unibo.robotVirtual.virtualRobotSupportQak.doApplMove(  cmd ) 	  }	
-//			"realmbot"   -> { itunibo.robotMbot.mbotSupport.move( cmd ) 	}
+			"mockrobot"  -> { robotMock.mockrobotSupport.move( cmd ) 					  }
+			"virtual"    -> { robotVirtual.virtualRobotSupportQak.doApplMove(  cmd ) 	  }	
+			"realmbot"   -> { robotMbot.mbotSupport.move( cmd ) 	}
 //			"realnano"   -> { it.unibo.robotRaspOnly.nanoSupport.move( cmd)	}
 			else         -> println( "		--- robotSupport | robot unknown")
 		}		
@@ -66,8 +65,8 @@ object robotSupport{
 	fun terminate(){
 		when( robotKind ){
 			"mockrobot"  -> {  					                  }
-			"virtual"    -> { unibo.robotVirtual.virtualRobotSupportQak.terminatevr(  ) 	  }	
-//			"realmbot"   -> { itunibo.robotMbot.mbotSupport.move( cmd ) 	}
+			"virtual"    -> { robotVirtual.virtualRobotSupportQak.terminatevr(  ) 	  }	
+ 			"realmbot"   -> { /* robotMbot.mbotSupport.terminate(  ) */	}
 //			"realnano"   -> { it.unibo.robotRaspOnly.nanoSupport.move( cmd)	}
 			else         -> println( "		--- robotSupport | robot unknown")
 		}		

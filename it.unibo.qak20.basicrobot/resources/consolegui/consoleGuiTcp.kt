@@ -6,6 +6,6 @@ object consoleGuiTcp{
 	}
 }
 fun main(){
-	consoleGuiTcp.create( "localhost", "8020", "basicrobot")
+	consoleGuiTcp.create( hostAddr, port, qakdestination)
 }
  

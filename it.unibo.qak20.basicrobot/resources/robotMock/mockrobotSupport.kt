@@ -1,4 +1,4 @@
-package unibo.robotMock
+package robotMock
 
 object mockrobotSupport{
 	

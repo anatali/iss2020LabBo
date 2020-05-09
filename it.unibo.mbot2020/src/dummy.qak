@@ -8,4 +8,4 @@ QActor qadummy context ctxDummy{
 	State s0 initial{ 
 		forward qadummy -m cmd : cmd(r)
 	}
-}    
+}  

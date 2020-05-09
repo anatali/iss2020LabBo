@@ -61,19 +61,16 @@ class connQakMqtt(hostIP : String,  port : String,  destName : String ) :
  		}
 	}
 	
-	override fun forward( move : String ){
-    	val msg = MsgUtil.buildDispatch(clientid,"cmd","cmd($move)", destName)
-		publish(msg.toString(), "unibo/qak/$destName")		
+	override fun forward(  msg: ApplMessage){
+ 		publish(msg.toString(), "unibo/qak/$destName")		
 	}
 	
-	override fun request( move : String ){
-		val msg = MsgUtil.buildRequest(clientid, move,"$move(600)", destName)
-		publish(msg.toString(), "unibo/qak/$destName")
+	override fun request(  msg: ApplMessage){
+ 		publish(msg.toString(), "unibo/qak/$destName")
 		//The answer should be in unibo/qak/clientmqtt		
 	}
 	
-	override fun emit( ev : String ){
-    	val msg = MsgUtil.buildEvent(clientid,ev,"$ev(0)" )
-		publish(msg.toString(), "unibo/qak/events")		
+	override fun emit( msg: ApplMessage ){
+ 		publish(msg.toString(), "unibo/qak/events")		
 	}	
 }

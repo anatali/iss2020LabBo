@@ -52,7 +52,7 @@ QActor led context ctxledalone {
 		emit ledchanged : ledchanged(on)
 		updateResource [# "ledstate($state)" #]
 		
- 	}	
+ 	}	  
 	Goto waitCmd  
 	      
 	State  turnLedOff{  

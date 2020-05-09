@@ -7,6 +7,6 @@ object consoleGuiCoap{
 }
 
 fun main(){
-	consoleGuiCoap.create( "localhost", "8020", "basicrobot")
+	consoleGuiCoap.create( hostAddr, port, qakdestination)
 }
  

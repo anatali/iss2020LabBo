@@ -3,6 +3,7 @@ package connQak
 import it.unibo.supports.FactoryProtocol
 import it.unibo.`is`.interfaces.protocols.IConnInteraction
 import it.unibo.kactor.MsgUtil
+import it.unibo.kactor.ApplMessage
 
 class connQakTcp( hostIP : String,  port : String,  destName : String ) :
 										           connQakBase(hostIP, port, destName){
@@ -13,21 +14,18 @@ class connQakTcp( hostIP : String,  port : String,  destName : String ) :
 	    conn      = fp.createClientProtocolSupport(hostIP, port.toInt() )    
 	}
 	
-	override fun forward( move : String ){
-		val msg = MsgUtil.buildDispatch("connQakTcp","cmd","cmd($move)", destName)
-		conn.sendALine( msg.toString()  )				
+	override fun forward( msg: ApplMessage ){
+ 		conn.sendALine( msg.toString()  )				
 	}
 	
-	override fun request( move : String ){
-		val msg = MsgUtil.buildRequest("connQakTcp", move,"$move(600)", destName)
-		conn.sendALine( msg.toString()  )
+	override fun request( msg: ApplMessage ){
+ 		conn.sendALine( msg.toString()  )
 		//Acquire the answer	
 		val answer = conn.receiveALine()
 		println("connQakTcp | answer= $answer")		
 	}
 	
-	override fun emit( ev : String ){
-		val msg = MsgUtil.buildEvent("connQakTcp",ev,"$ev(0)" )
-		conn.sendALine( msg.toString()  )			
+	override fun emit( msg: ApplMessage ){
+ 		conn.sendALine( msg.toString()  )			
 	}	
 }
