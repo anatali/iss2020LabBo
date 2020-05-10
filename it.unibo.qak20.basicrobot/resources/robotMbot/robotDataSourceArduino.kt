@@ -29,6 +29,8 @@ class  robotDataSourceArduino( name : String, val owner : ActorBasic ,
 		elabData( vStr )
 	}
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 	suspend fun elabData(data : String ){
          while (true) {
  			try {

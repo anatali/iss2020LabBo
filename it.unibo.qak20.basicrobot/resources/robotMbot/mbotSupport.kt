@@ -28,7 +28,7 @@ object mbotSupport{
 			val serialConn = JSSCSerialComm()
 			conn = serialConn.connect(port)	//returns a SerialPortConnSupport
 			println("   	%%% mbotSupport |  initConn port=$port conn= $conn")						
- 			robotDataSourceArduino("robotDataSourceArduino", owner,   conn )
+ 			robotDataSourceArduino("realsonar", owner,   conn )
 		}catch(  e : Exception) {
 			println("   	%%% mbotSupport |  ERROR ${e }"   );
 		}		

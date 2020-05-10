@@ -25,6 +25,21 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					action { //it:State
 						println("basicrobot | START")
 						unibo.robot.robotSupport.create(myself ,"basicrobotConfig.json" )
+						println("basicrobot | attempts to activate the sonar pipe")
+						  //For real robots
+						 			var realsonar = context!!.hasActor("realsonar") //sysUtil.getActor("realsonar")
+						 			if( realsonar != null ){ 
+						 				println("basicrobot | WORKING IN A REAL ENV") 
+						 				//ACTIVATE THE DATA SOURCE realsonar
+						 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+						 				//SET THE PIPE
+						 				realsonar.
+						 				subscribeLocalActor("datacleaner").
+						 				subscribeLocalActor("distancefilter").
+						 				subscribeLocalActor("basicrobot")		//in order to perceive obstacle
+						 			}else{
+						 				println("basicrobot | WARNING: realsonar NOT FOUND")
+						 			}
 						unibo.robot.robotSupport.move( "l"  )
 						unibo.robot.robotSupport.move( "r"  )
 						updateResourceRep( "stopped"  
@@ -48,7 +63,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								updateResourceRep( "collision"  
 								)
-								emit("collision", "collision(obstacle)" ) 
+								emit("obstacle", "obstacle(payloadArg(0))" ) 
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
@@ -113,7 +128,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep( "stepFail($Duration)"  
 						)
 						println("basicrobot | stepFail after $Duration ")
-						emit("collision", "collision(obstacle)" ) 
+						emit("obstacle", "obstacle(unknown)" ) 
 						answer("step", "stepfail", "stepfail($Duration,obstacle)"   )  
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

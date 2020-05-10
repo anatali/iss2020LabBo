@@ -16,6 +16,7 @@ import it.unibo.kactor.ActorBasic
 import it.unibo.kactor.ActorBasicFsm
 import org.json.JSONObject
 import java.io.File
+import it.unibo.kactor.MsgUtil
  
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,10 +38,18 @@ object robotSupport{
 		when( robotKind ){
 			"mockrobot"  ->  { robotMock.mockrobotSupport.create(  ) }
 			"virtual"    ->  { robotVirtual.virtualRobotSupportQak.initClientConn( owner, "localhost", robotPort) }
-			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) } //port="/dev/ttyUSB0"   "COM6"
- 			"realnano"   ->  { robotNano.motorscSupport.create( owner ) }
-			else -> println( "		--- robotSupport | robot $robotKind unknown" )
-		}
+			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) //robotPort="/dev/ttyUSB0"   "COM6"
+				//create an actor named realsonar			
+			} 
+ 			"realnano"   ->  { robotNano.motorscSupport.create( owner )
+ 				val realsonar = robotNano.sonarHCSR04SupportActor("realsonar")
+				//Context injection  
+				owner.context!!.addInternalActor(realsonar)  
+  				println("		--- robotSupport | has created the realsonar")
+			}	
+ 							 }
+//			else -> println( "		--- robotSupport | robot $robotKind unknown" )
+//		}
 	}
 	
 	fun subscribe( obj : ActorBasic ) : ActorBasic {

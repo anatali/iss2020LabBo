@@ -12,10 +12,9 @@ import java.io.OutputStreamWriter
 object motorscSupport {
 	lateinit var writer : OutputStreamWriter
 
-	fun create( actor : ActorBasic ){
+	fun create( owner : ActorBasic ){		
 		val p = Runtime.getRuntime().exec("sudo ./Motors")		 	
-		//println("motorscSupport | CREATED  $p  ")
-		writer = OutputStreamWriter(  p.getOutputStream()  )
+ 		writer = OutputStreamWriter(  p.getOutputStream()  )
 		println("motorscSupport | CREATED with writer=$writer")
  	}
 

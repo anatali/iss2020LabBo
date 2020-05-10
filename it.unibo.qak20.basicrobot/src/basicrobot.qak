@@ -7,26 +7,24 @@ System -msglog basicrobot
   
 //mqttBroker "broker.hivemq.com" : 1883
  
-Dispatch cmd       : cmd(MOVE)    
-Dispatch end       : end(ARG) 
+Dispatch cmd       	: cmd(MOVE)    
+Dispatch end       	: end(ARG) 
+//Dispatch sonarstart	: sonarstart(V)  
   
 Request step       : step( TIME )	
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
 Dispatch  collision  : collision( TARGET )
-Event     collision  : collision( ARG ) 
+Event     obstacle   : obstacle( ARG ) 
 //Event virtualobstacle  : virtualobstacle( OBJNAME )  //(for remove)
  
-Event  endall	 : endall( ARG ) 
+Event  endall	     : endall( ARG ) 
  
 Context ctxbasicrobot ip [host="localhost" port=8020]  
-/*  
- * CodedQActor that 'transforms' a cmd:cmd(X) into 
- * a command to the concrete robot specified in basicrobotConfig.json
- */
-//CodedQActor robotadapter context ctxBasicrobot  className "unibo.robot.robotAdapterQa"	     
- 
+
+CodedQActor datacleaner    context ctxbasicrobot className "rx.dataCleaner"
+CodedQActor distancefilter context ctxbasicrobot className "rx.distanceFilter"
  
 QActor basicrobot context ctxbasicrobot{
 [#
@@ -37,7 +35,24 @@ QActor basicrobot context ctxbasicrobot{
  	State s0 initial { 	 
  		println("basicrobot | START")	
  		qrun unibo.robot.robotSupport.create(myself,"basicrobotConfig.json")	
-		run unibo.robot.robotSupport.move( "l" )
+// 		delay 1000  //give to the realsonar (if any) the time to start
+ 		println("basicrobot | attempts to activate the sonar pipe")	
+ 		[#  //For real robots
+ 			var realsonar = context!!.hasActor("realsonar") //sysUtil.getActor("realsonar")
+ 			if( realsonar != null ){ 
+ 				println("basicrobot | WORKING IN A REAL ENV") 
+ 				//ACTIVATE THE DATA SOURCE realsonar
+ 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+ 				//SET THE PIPE
+ 				realsonar.
+ 				subscribeLocalActor("datacleaner").
+ 				subscribeLocalActor("distancefilter").
+ 				subscribeLocalActor("basicrobot")		//in order to perceive obstacle
+ 			}else{
+ 				println("basicrobot | WARNING: realsonar NOT FOUND")
+ 			}
+ 		#]
+  		run unibo.robot.robotSupport.move( "l" )
 		run unibo.robot.robotSupport.move( "r" )
  		updateResource [# "stopped" #]
  		discardMsg Off  //WE want receive any msg
@@ -56,7 +71,7 @@ QActor basicrobot context ctxbasicrobot{
 		println("basicrobot | handleCollision")	
 		onMsg( collision  : collision( TARGET ) ){
 			updateResource [# "collision" #]
-			emit collision : collision(obstacle)
+			emit obstacle : obstacle(payloadArg(0))
 		}
 	}
 	Goto work 
@@ -111,7 +126,7 @@ QActor basicrobot context ctxbasicrobot{
 		setDuration Duration from StartTime
  		updateResource [# "stepFail($Duration)" #]
 		println("basicrobot | stepFail after $Duration ")
-		emit collision : collision(obstacle)
+		emit obstacle : obstacle(unknown)
  		replyTo step with stepfail : stepfail($Duration, obstacle)
     }
 	Goto work 

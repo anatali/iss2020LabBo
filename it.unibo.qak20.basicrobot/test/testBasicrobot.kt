@@ -30,7 +30,7 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	@Before
-	fun systemSetUp() {
+	fun systemSetUp() { 
 		
    		kotlin.concurrent.thread(start = true) {
 			it.unibo.ctxbasicrobot.main() // MainCtxBasicrobot()
