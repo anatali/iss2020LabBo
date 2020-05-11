@@ -1,0 +1,63 @@
+System nanodemo
+
+Dispatch cmd      : cmd(X)
+Event  obstacle   : obstacle( ARG ) 
+
+Context ctxnanodemo ip [ host= "localhost" port= 8012 ]
+CodedQActor datacleaner    context ctxnanodemo className "rx.dataCleaner"
+CodedQActor distancefilter context ctxnanodemo className "rx.distanceFilter"
+
+QActor nanorobot context ctxnanodemo{ 
+	State s0 initial{ 
+		println("nanorobot | START")	
+		qrun robotNano.nanoSupport.create (myself)
+//		forward nanorobot -m cmd : cmd(r)
+  		run robotNano.nanoSupport.move( "z" )
+  		delay 1000
+		run robotNano.nanoSupport.move( "x" )
+ 		updateResource [# "stopped" #]
+ 		[#  //For real robots
+ 			var realsonar = context!!.hasActor("realsonar")  
+ 			if( realsonar != null ){ 
+ 				println("nanorobot | WORKING IN A REAL ENV") 
+ 				//ACTIVATE THE DATA SOURCE realsonar
+ 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+ 				//SET THE PIPE
+ 				realsonar.
+ 				subscribeLocalActor("datacleaner").
+ 				subscribeLocalActor("distancefilter").
+ 				subscribeLocalActor("nanorobot")		//in order to perceive obstacle
+ 			}else{
+ 				println("nanorobot | WARNING: realsonar NOT FOUND")
+ 			}
+ 		#]
+ 		discardMsg Off  //WE want receive any msg
+	}
+	Goto work
+	
+	State work{ 
+	} 
+	Transition t1   whenMsg   cmd      -> execcmd
+					whenEvent obstacle -> handleObstacle
+	
+	State execcmd{
+		//printCurrentMessage
+		onMsg( cmd : cmd(MOVE) ){
+			updateResource [# "move(${payloadArg(0)})" #]
+  			//activate the motors 
+			run robotNano.nanoSupport.move( payloadArg(0 ) )
+		}
+	 }
+	 Goto work  
+	
+	State handleObstacle{
+		//printCurrentMessage
+		println("basicrobot | handleObstacle")	
+		run robotNano.nanoSupport.move( "h" )
+		onMsg( obstacle  : obstacle( TARGET ) ){
+			updateResource [# "obstacle" #]
+ 		}
+	}
+	Goto work 
+	
+ }  
