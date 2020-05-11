@@ -1,18 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
  
-<style type="text/css">
+<style type="text/css"> 
 body
 {
     margin-left:  30px;
     margin-right: 30px;
-	font-size: 100%;
 };
 
 P
 {
     font-family: Tahoma;
-    font-size: 12pt;
+    font-size: 10pt;
 };
 
 a, a:visited, a:active, a:link, a:hover {
@@ -37,32 +36,17 @@ h1, h2, h3 {
     color: #242424;
     clear: left;
     font: 100% Tahoma, Helvetica, Arial, sans-serif;
-    margin: 10;
-    margin-right: 15px;
     margin-bottom: 0.5em;
     padding-top: 0.5em;
-    border-bottom: 1px solid #242424;
+	border-radius: 10px;
+	padding: 5px;
 }
 
-h1 {
-    font-size: 150%;
-    background-color: #b2c0ff;
+top {
+	width: 100%;
 }
 
-h2 {
-    background-color: #d9fbff;
-    font-size: 110%;
-}
 
-h3 {
-	background-color: #e6ccff;
-    font-size: 80%;
-}
-h4 {
-    background-color: #99ffcc;
-    font-size: 100%;
-	width: 750px;
-}
 #i {
     color: #ff1010;
 }
@@ -76,8 +60,8 @@ em{
     font-size: 80%;
 	font-weight: bold;
 	border-style:solid;
-	border-color: #ccffff;
-    color: #0033cc;
+	border-color: #abe876;
+    color: #1632cc;
 }
 bc{
 	font-family: "Arial";
@@ -85,12 +69,6 @@ bc{
 	font-weight: bold;
     color: #990000;
 	background-color: #fcf8c7;
-}
-k{
-	font-family: "Arial";
-	font-weight: bold;
-    color: #990000;
-	 
 }
 ks{
 	font-family: "Arial";
@@ -105,10 +83,11 @@ kc{
 	 
 }
 pre{
-	font-family: "Helvetica";
-	font-size: 90%;
-	background-color: #fcf8c7;
-	border: 1px solid blue;
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
 }
 m{
 	font-family: "Helvetica";
@@ -116,7 +95,39 @@ m{
  	font-size: 75%;
 }
 div.body{
-	width: 800px
+	width: 700px;
+    font-size: 15px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px; 
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 130%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #C0F0E0;
+    font-size: 100%;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+	
 }    
 div.req{
 	background-color: #d9ffb3;
@@ -127,15 +138,48 @@ div.req{
     margin: 10px;
 }       
 div.remark{
-	background-color: #FFFC33;     
-    border: 3px solid green;
+	background-color: #ffffff;	
+    border: 1.5px solid #d5f2ed;
     padding: 15px;
     margin: 10px;
+	border-radius: 25px;
 }  
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
-}         
+} 
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}     
+
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+	
+}
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}   
 </style>
     
 <head>
@@ -144,7 +188,7 @@ table, th, td {
     
 <body>
 <div id="body">
-<h1>Mbot2020 | The reference ddr robot<font size="5"></font> </h1>
+<h1>Mbot2020 | The reference ddr robot</h1>
 
 <h2>Hardware</h2>
 
@@ -197,9 +241,9 @@ male-male / male-female / female-female</a>
 </li>    
 </ol>
 
-<h2>Arduino layer</h2>
+<h2><a href="https://en.wikipedia.org/wiki/Edge_computing" target="web">Edge</a> : the Arduino layer</h2>
 
-<a href="../resources/arduino/uniboControl/uniboControl.ino" target="code">uniboControl.ino</a>  (baurate <bc>115200</bc>).
+<a href="../resources/arduino/uniboControl/uniboControl.ino" target="code">uniboControl.ino</a>  (baudrate <bc>115200</bc>).
 
 <br/> <br/>
 The <em>Robot</em> is able to execute a set of <i>movement-commands</i>:
@@ -215,7 +259,7 @@ The <em>Robot</em> is able to execute a set of <i>movement-commands</i>:
 <li> <k>h</k>: stop the robot movement</li>
 </ul>
 
-<h2>Arduino connected a <a href="../../it.unibo.raspIntro2020/userDocs/LabRaspiIntro.html" target="lab">RaspberryPi</a> (i.e. on Linux)</h2>
+<h3>Arduino connected a <a href="../../it.unibo.raspIntro2020/userDocs/LabRaspiIntro.html" target="lab">RaspberryPi</a> (i.e. on Linux)</h3>
 
 A Python program that allows us to send commands to Arduino using the serial line:
  <a href="../resources/python/testSerial.py" target="code">testSerial.py</a> 
@@ -228,6 +272,73 @@ A NodeJs program that allows us to send commands to Arduino using the serial lin
 npm install serialport		//just once ...
 node testSerial
 </pre>
+
+<h3>A robot-usage utility</h3>
+The Kotlin object <a href="../resources/robotMbot/mbotSupport.kt" target="code">mbotSupport.kt</a>
+provides an  utility that allows application designers to
+send commands the robot actuators without knowing any detail of their low-level configuration.
+<br/>
+Moreover, this utility creates (if required) a data-source 
+(the actor <a href="../resources/robotMbot/robotDataSourceArduino.kt" target="code">robotDataSourceArduino.kt</a>)
+that works as a <a href="../../it.unibo.qakactor/userDocs/LabQakIntro2020.html#actorasstream " target="lab">event stream</a> source
+with respect to the data generated by the robot sonar on Arduino.
+<br/><br/>
+Since a sonar usually emits data with a quite high frequency and since these data are sometimes not reliable, the application
+designer could conveniently create a pipe including a data-cleaner and some filter.<br/>
+
+<img src="./img/sonarPipe.png" alt="sonarPipe.png" width="50%"  />
+ 
+
+<ul>
+<li><a href="../resources/rx/dataCleaner.kt" target="code">dataCleaner.kt</a>: eliminates data outside a prefixed interval of values</li>
+<li><a href="../resources/rx/distanceFilter.kt" target="code">distanceFilter.kt</a>: emits an <m><ks>obstacle : obstacle( D )</ks></m> event
+when the sonar distance is less than a prefixed limit</li>
+</ul>
+
+ 
+<h2>High-level demo</h2>
+ 
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:40%" >
+
+<a href="../src/mbotdemo.qak" target="code">mbotdemo.qak</a>
+<m>
+ 
+</m>
+</td>
+
+<td><m>
+This application creates the pipe described above and handles robot-move commands sent via TCP, MQTT or Coap.
+<br/>
+ 
+
+</m>
+</td>
+</tr>
+
+<tr>
+<td><img src="./img/consoleCoap.png" alt="consoleCoap.png" width="60%"  /></td>
+<td>
+An utility to send commands is defined in:
+<ul>
+<li><a href="../resources/consolegui/consoleGuiTcp.kt" target="code">consoleGuiTcp.kt</a></li>
+<li><a href="../resources/consolegui/consoleGuiMqtt.kt" target="code">consoleGuiMqtt.kt</a></li>
+<li><a href="../resources/consolegui/consoleGuiCoap.kt" target="code">consoleGuiCoap.kt</a></li>
+</ul>
+All these utilities inherit from
+<li><a href="../resources/consolegui/consoleGuiSimple.kt" target="code">consoleGuiSimple.kt</a></li>
+
+and make reference to the configuration object:
+<a href="../resources/consolegui/sysConnKb.kt" target="code">sysConnKb.kt</a>
+</td>
+</tr>
+
+</tbody>
+</table>
+
  <h2>Remote control</h2>
  <center>
 <table style="width:85%">
@@ -260,6 +371,9 @@ Usage:
  </tbody>
 </table>
 </center>
+
+
+<br/><br/>
 
 <!--
 <br/><br/>

@@ -1,0 +1,62 @@
+System mbotdemo
+
+Dispatch cmd      : cmd(X)
+Event  obstacle   : obstacle( ARG ) 
+
+Context ctxmbotdemo ip [ host= "localhost" port= 8012 ]
+CodedQActor datacleaner    context ctxmbotdemo className "rx.dataCleaner"
+CodedQActor distancefilter context ctxmbotdemo className "rx.distanceFilter"
+ 
+QActor mbotrobot context ctxmbotdemo{ 
+	State s0 initial{ 
+		println("mbotrobot | START")	
+		qrun robotMbot.mbotSupport.create (myself, "/dev/ttyUSB0")
+  		delay 1000
+  		run robotMbot.mbotSupport.move( "z" )
+  		delay 1000
+		run robotMbot.mbotSupport.move( "x" )
+ 		updateResource [# "stopped" #]
+// 		[#  var realsonar = context!!.hasActor("realsonar")  
+// 			if( realsonar != null ){ 
+// 				println("mbotrobot | WORKING IN A REAL ENV") 
+// 				//ACTIVATE THE DATA SOURCE realsonar
+// 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+// 				//SET THE PIPE
+// 				realsonar.
+// 				subscribeLocalActor("datacleaner").
+// 				subscribeLocalActor("distancefilter").
+// 				subscribeLocalActor("mbotrobot")		//in order to perceive obstacle
+// 			}else{
+// 				println("nanorobot | WARNING: realsonar NOT FOUND")
+// 			}
+// 		#]
+ 		discardMsg Off  //WE want receive any msg
+	}
+	Goto work
+	
+	State work{ 
+	} 
+	Transition t1   whenMsg   cmd      -> execcmd
+					whenEvent obstacle -> handleObstacle
+	
+	State execcmd{
+		printCurrentMessage
+		onMsg( cmd : cmd(MOVE) ){
+			updateResource [# "move(${payloadArg(0)})" #]
+  			//activate the motors 
+			run robotMbot.mbotSupport.move( payloadArg(0 ) )
+		}
+	 }
+	 Goto work  
+	
+	State handleObstacle{
+		//printCurrentMessage
+		println("mbotrobot | handleObstacle")	
+		run robotMbot.mbotSupport.move( "h" )
+		onMsg( obstacle  : obstacle( TARGET ) ){
+			updateResource [# "obstacle" #]
+ 		}
+	}
+	Goto work 
+	
+ }  

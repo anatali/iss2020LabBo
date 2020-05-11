@@ -1,18 +1,18 @@
 /*
 ================================================================================
-build_ctxDummy.gradle
+build_ctxmbotdemo.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxDummy.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxDummy.gradle distZip
-	gradle  -b build_ctxDummy.gradle -q tasks --all
-	gradle  -b build_ctxDummy.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxmbotdemo.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxmbotdemo.gradle distZip
+	gradle  -b build_ctxmbotdemo.gradle -q tasks --all
+	gradle  -b build_ctxmbotdemo.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
     id 'java'
     id 'eclipse'
-    //id 'application'
+    id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.3.71'
 }
 
@@ -88,8 +88,8 @@ sourceSets {
     main.java.srcDirs += 'resources'
     test.java.srcDirs += 'test'		//test is specific
 }
-/*
-mainClassName = 'it.unibo.TODOKt'
+ 
+mainClassName = 'it.unibo.ctxmbotdemo.MainCtxmbotdemoKt'
 
 jar {
     println("executing jar")
@@ -98,4 +98,4 @@ jar {
         attributes 'Main-Class': "$mainClassName"
     }
 }
-*/
+ 

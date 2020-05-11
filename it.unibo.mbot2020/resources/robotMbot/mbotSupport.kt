@@ -2,7 +2,7 @@ package robotMbot
 /*
  -------------------------------------------------------------------------------------------------
  A factory that creates the support for the mbot
- "/dev/ttyUSB0"
+ 
  -------------------------------------------------------------------------------------------------
  */
 
@@ -18,20 +18,27 @@ object mbotSupport{
  	lateinit var conn    : SerialPortConnSupport
 	var dataSonar        : Int = 0 ; //Double = 0.0
  			
-	fun create( owner: ActorBasic, port : String ="/dev/ttyUSB0"  ){
+	fun create( owner: ActorBasic, port : String, withSonar : Boolean = true    ){
 		this.owner = owner	//
-		initConn( port   )
+		initConn( port, withSonar   )
+		
 	}
 	
-	private fun initConn( port : String ){ 
+	private fun initConn( port : String, withSonar : Boolean  ){ 
 		try {
 			//println("   	%%% mbotSupport | initConn starts port=$port")
 			val serialConn = JSSCSerialComm()
 			conn = serialConn.connect(port)	//returns a SerialPortConnSupport
-			println("   	%%% mbotSupport |  initConn port=$port conn= $conn")						
- 			robotDataSourceArduino("realsonar", owner,   conn )
+			println("   	--- mbotSupport |  initConn port=$port conn= $conn")
+			move( "z" )				//to see if it works						
+			if( withSonar ) {
+		 		val realsonar = robotDataSourceArduino("realsonar", owner,   conn)
+				//Context injection  
+				owner.context!!.addInternalActor(realsonar)  
+		  		println("		--- mbotSupport | has created the realsonar")
+			}
 		}catch(  e : Exception) {
-			println("   	%%% mbotSupport |  ERROR ${e }"   );
+			println("   	--- mbotSupport |  ERROR ${e }"   );
 		}		
 	}
 	
@@ -41,16 +48,16 @@ object mbotSupport{
  	  by the Python application robotCmdExec that exploits GY521
     */
 	fun  move( cmd : String ){
-		//println("  	%%% mbotSupport | move cmd=$cmd ")
+		println("  	%%% mbotSupport | move cmd=$cmd ")
 		when( cmd ){
 			"msg(w)", "w" -> conn.sendALine("w")
 			"msg(s)", "s" -> conn.sendALine("s")
 			"msg(a)", "a" -> conn.sendALine("a")
 			"msg(d)", "d" -> conn.sendALine("d")
-			"msg(l)", "l" -> conn.sendALine("l")  
-			"msg(r)", "r" -> conn.sendALine("r")  
-			"msg(z)", "z" -> conn.sendALine("z")  
-			"msg(x)", "x" -> conn.sendALine("x")  
+			"msg(l)", "l" -> conn.sendALine("l") //sendToPython("l")	//
+			"msg(r)", "r" -> conn.sendALine("r") //sendToPython("r")	//
+			"msg(z)", "z" -> conn.sendALine("z") //sendToPython("z")
+			"msg(x)", "x" -> conn.sendALine("x") //sendToPython("x")	//
 			"msg(h)", "h" -> conn.sendALine("h")
 			else -> println("   	%%% mbotSupport | command $cmd unknown")
 		}

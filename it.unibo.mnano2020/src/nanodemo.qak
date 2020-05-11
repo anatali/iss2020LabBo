@@ -52,7 +52,7 @@ QActor nanorobot context ctxnanodemo{
 	
 	State handleObstacle{
 		//printCurrentMessage
-		println("basicrobot | handleObstacle")	
+		println("nanorobot | handleObstacle")	
 		run robotNano.nanoSupport.move( "h" )
 		onMsg( obstacle  : obstacle( TARGET ) ){
 			updateResource [# "obstacle" #]

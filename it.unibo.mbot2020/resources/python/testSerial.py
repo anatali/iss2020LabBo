@@ -1,8 +1,9 @@
 import serial
 import  time
+#### sudo apt-get install python3-serial or ??? pip install serial
 
-##ser = serial.Serial('/dev/ttyUSB0', 115200) 
-ser = serial.Serial('COM20', 115200) 
+ser = serial.Serial('/dev/ttyUSB0', 115200) 
+##ser = serial.Serial('COM20', 115200) 
 
 if ser.isOpen():
     try:

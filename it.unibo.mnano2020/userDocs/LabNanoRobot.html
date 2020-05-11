@@ -5,7 +5,6 @@
 <script type="text/javascript" src="../css/issStyle.js"></script>
 -->
 <style type="text/css">
-<!--
 body
 {
     margin-left:  30px;
@@ -40,32 +39,17 @@ h1, h2, h3 {
     color: #242424;
     clear: left;
     font: 100% Tahoma, Helvetica, Arial, sans-serif;
-    margin: 10;
-    margin-right: 15px;
     margin-bottom: 0.5em;
     padding-top: 0.5em;
-    border-bottom: 1px solid #242424;
+	border-radius: 10px;
+	padding: 5px;
 }
 
-h1 {
-    font-size: 150%;
-    background-color: #b2c0ff;
+top {
+	width: 100%;
 }
 
-h2 {
-    background-color: #d9fbff;
-    font-size: 110%;
-}
 
-h3 {
-	background-color: #e6ccff;
-    font-size: 80%;
-}
-h4 {
-    background-color: #99ffcc;
-    font-size: 100%;
-	width: 750px;
-}
 #i {
     color: #ff1010;
 }
@@ -79,8 +63,8 @@ em{
     font-size: 80%;
 	font-weight: bold;
 	border-style:solid;
-	border-color: #ccffff;
-    color: #0033cc;
+	border-color: #abe876;
+    color: #1632cc;
 }
 bc{
 	font-family: "Arial";
@@ -88,12 +72,6 @@ bc{
 	font-weight: bold;
     color: #990000;
 	background-color: #fcf8c7;
-}
-k{
-	font-family: "Arial";
-	font-weight: bold;
-    color: #990000;
-	 
 }
 ks{
 	font-family: "Arial";
@@ -108,10 +86,11 @@ kc{
 	 
 }
 pre{
-	font-family: "Helvetica";
-	font-size: 90%;
-	background-color: #fcf8c7;
-	border: 1px solid blue;
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
 }
 m{
 	font-family: "Helvetica";
@@ -119,8 +98,39 @@ m{
  	font-size: 75%;
 }
 div.body{
-	width: 800px;
-    font-size: 18px;
+	width: 700px;
+    font-size: 15px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px; 
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 130%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #C0F0E0;
+    font-size: 100%;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+	
 }    
 div.req{
 	background-color: #d9ffb3;
@@ -131,22 +141,53 @@ div.req{
     margin: 10px;
 }       
 div.remark{
-	background-color: #FFFC33;     
-    border: 3px solid green;
+	background-color: #ffffff;	
+    border: 1.5px solid #d5f2ed;
     padding: 15px;
     margin: 10px;
+	border-radius: 25px;
 }  
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
-}         
-    
-  -->
+} 
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}     
+
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+	
+}
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}
 </style>
     
 <head>
    
-<title>Lab3_2020</title></head>
+<title>LabNanoRobot</title></head>
     
 <body>
 <div id="top">
@@ -297,7 +338,10 @@ An utility to send commands is defined in:
 <li><a href="../resources/consolegui/consoleGuiMqtt.kt" target="code">consoleGuiMqtt.kt</a></li>
 <li><a href="../resources/consolegui/consoleGuiCoap.kt" target="code">consoleGuiCoap.kt</a></li>
 </ul>
-These utilities make reference to the configuration object:
+All these utilities inherit from
+<li><a href="../resources/consolegui/consoleGuiSimple.kt" target="code">consoleGuiSimple.kt</a></li>
+
+and make reference to the configuration object:
 <a href="../resources/consolegui/sysConnKb.kt" target="code">sysConnKb.kt</a>
 </td>
 </tr>

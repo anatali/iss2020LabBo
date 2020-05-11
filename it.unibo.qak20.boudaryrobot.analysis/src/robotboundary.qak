@@ -20,7 +20,7 @@ QActor robotboundary context ctxrobotboundary  {
 	State s0 initial { 	
 		println("boundaryrobot | START")	
 		discardMsg On
-	}	
+	}	 
 	Goto waitcmd
 	
 	State waitcmd{
