@@ -16,17 +16,32 @@ class Mbotrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		 var curSonarDistance = ""  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("mbotrobot | START")
+						discardMessages = false
 						robotMbot.mbotSupport.create(myself ,"/dev/ttyUSB0" )
 						delay(1000) 
-						robotMbot.mbotSupport.move( "z"  )
+						robotMbot.mbotSupport.move( "l"  )
 						delay(1000) 
-						robotMbot.mbotSupport.move( "x"  )
+						robotMbot.mbotSupport.move( "r"  )
 						updateResourceRep( "stopped"  
 						)
+						  var realsonar = context!!.hasActor("realsonar")  
+						 			if( realsonar != null ){ 
+						 				println("mbotrobot | WORKING IN A REAL ENV") 
+						 				//ACTIVATE THE DATA SOURCE realsonar
+						 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+						 				//SET THE PIPE
+						 				realsonar.
+						 				subscribeLocalActor("datacleaner").
+						 				subscribeLocalActor("distancefilter").
+						 				subscribeLocalActor("mbotrobot")		//in order to perceive obstacle
+						 			}else{
+						 				println("nanorobot | WARNING: realsonar NOT FOUND")
+						 			}
 						discardMessages = false
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
@@ -36,10 +51,10 @@ class Mbotrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					}
 					 transition(edgeName="t10",targetState="execcmd",cond=whenDispatch("cmd"))
 					transition(edgeName="t11",targetState="handleObstacle",cond=whenEvent("obstacle"))
+					transition(edgeName="t12",targetState="handleSonar",cond=whenEvent("sonar"))
 				}	 
 				state("execcmd") { //this:State
 					action { //it:State
-						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("cmd(X)"), Term.createTerm("cmd(MOVE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								updateResourceRep( "move(${payloadArg(0)})"  
@@ -53,11 +68,20 @@ class Mbotrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("mbotrobot | handleObstacle")
 						robotMbot.mbotSupport.move( "h"  )
-						if( checkMsgContent( Term.createTerm("obstacle(ARG)"), Term.createTerm("obstacle(TARGET)"), 
+						robotMbot.mbotSupport.move( "s"  )
+						delay(400) 
+						robotMbot.mbotSupport.move( "h"  )
+						if( checkMsgContent( Term.createTerm("obstacle(D)"), Term.createTerm("obstacle(TARGET)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								updateResourceRep( "obstacle"  
 								)
 						}
+					}
+					 transition( edgeName="goto",targetState="work", cond=doswitch() )
+				}	 
+				state("handleSonar") { //this:State
+					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 

@@ -6,36 +6,45 @@ import it.unibo.kactor.ActorBasic
 import it.unibo.kactor.ApplMessage
 import alice.tuprolog.Term
 import alice.tuprolog.Struct
+import robotMbot.robotDataSourceArduino
 
  
 class distanceFilter (name : String ) : ActorBasic( name ) {
-val LimitDistance = 10
+val LimitDistance       = 10
+var obstacleFound       = false	
+var curSonarDistance	= 0
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg: ApplMessage) {
-		if( msg.msgSender() == name) return //AVOID to handle the event emitted by itself
+		//println("$tt $name |  $msg")
+		if( msg.msgId() != robotDataSourceArduino.eventId ) return //AVOID to handle other events
   		elabData( msg )
  	}
 
  	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	  suspend fun elabData( msg: ApplMessage ){ //OPTIMISTIC		 
+	  suspend fun elabData( msg: ApplMessage ){  	    
  		val data  = (Term.createTerm( msg.msgContent() ) as Struct).getArg(0).toString()
-//  		println("$tt $name |  data = $data ")
+   		//println("$tt $name |  data = $data ")
 		val Distance = Integer.parseInt( data ) 
 /*
- * Emit a sonarRobot event to test the behavior with MQTT
+ * Emit a sonarRobot event (to test the behavior with MQTT)
  * We should avoid this pattern
 */	
-//	 	val m0 = MsgUtil.buildEvent(name, "sonarRobot", "sonar($data)")
-//	 	emit( m0 )
- 		if( Distance < LimitDistance ){
-	 		val m1 = MsgUtil.buildEvent(name, "obstacle", "obstacle($data)")
-			//println("$tt $name |  emit m1= $m1")
+ 		if( Distance < LimitDistance && ! obstacleFound ){ //avoid to emit a stream of obstacle events
+	 		val m1 = MsgUtil.buildEvent(name, "obstacle", "obstacle($Distance)")
+			println("$tt $name |  $m1")
+			obstacleFound = true 
 			emitLocalStreamEvent( m1 ) //propagate event obstacle
      	}else{
-			//println("$tt $name | DISCARDS $Distance ")
- 		}				
- 	}
+			if( Distance > LimitDistance ) obstacleFound = false
+	 		if( curSonarDistance != Distance){
+				//println("$tt $name |  $Distance")
+				curSonarDistance = Distance
+		 	 	val m0 = MsgUtil.buildEvent(name, "sonar", "sonar($Distance)")
+		 	 	emit( m0 )			
+			}
+  		}
+   	}
 }

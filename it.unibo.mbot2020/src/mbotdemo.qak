@@ -1,46 +1,52 @@
 System mbotdemo
 
 Dispatch cmd      : cmd(X)
-Event  obstacle   : obstacle( ARG ) 
+Event  obstacle   : obstacle( D ) 
+Event  sonar      : sonar( D ) 
 
 Context ctxmbotdemo ip [ host= "localhost" port= 8012 ]
 CodedQActor datacleaner    context ctxmbotdemo className "rx.dataCleaner"
 CodedQActor distancefilter context ctxmbotdemo className "rx.distanceFilter"
  
 QActor mbotrobot context ctxmbotdemo{ 
+
+[# var curSonarDistance = "" #]	
+	
 	State s0 initial{ 
 		println("mbotrobot | START")	
+		discardMsg Off
 		qrun robotMbot.mbotSupport.create (myself, "/dev/ttyUSB0")
   		delay 1000
-  		run robotMbot.mbotSupport.move( "z" )
+  		run robotMbot.mbotSupport.move( "l" ) 
   		delay 1000
-		run robotMbot.mbotSupport.move( "x" )
+		run robotMbot.mbotSupport.move( "r" )
  		updateResource [# "stopped" #]
-// 		[#  var realsonar = context!!.hasActor("realsonar")  
-// 			if( realsonar != null ){ 
-// 				println("mbotrobot | WORKING IN A REAL ENV") 
-// 				//ACTIVATE THE DATA SOURCE realsonar
-// 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
-// 				//SET THE PIPE
-// 				realsonar.
-// 				subscribeLocalActor("datacleaner").
-// 				subscribeLocalActor("distancefilter").
-// 				subscribeLocalActor("mbotrobot")		//in order to perceive obstacle
-// 			}else{
-// 				println("nanorobot | WARNING: realsonar NOT FOUND")
-// 			}
-// 		#]
+ 		[#  var realsonar = context!!.hasActor("realsonar")  
+ 			if( realsonar != null ){ 
+ 				println("mbotrobot | WORKING IN A REAL ENV") 
+ 				//ACTIVATE THE DATA SOURCE realsonar
+ 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+ 				//SET THE PIPE
+ 				realsonar.
+ 				subscribeLocalActor("datacleaner").
+ 				subscribeLocalActor("distancefilter").
+ 				subscribeLocalActor("mbotrobot")		//in order to perceive obstacle
+ 			}else{
+ 				println("nanorobot | WARNING: realsonar NOT FOUND")
+ 			}
+ 		#]
  		discardMsg Off  //WE want receive any msg
 	}
 	Goto work
 	
 	State work{ 
 	} 
-	Transition t1   whenMsg   cmd      -> execcmd
-					whenEvent obstacle -> handleObstacle
+	Transition t1   whenMsg   cmd        -> execcmd
+					whenEvent obstacle   -> handleObstacle
+ 					whenEvent sonar      -> handleSonar
 	
 	State execcmd{
-		printCurrentMessage
+		//printCurrentMessage
 		onMsg( cmd : cmd(MOVE) ){
 			updateResource [# "move(${payloadArg(0)})" #]
   			//activate the motors 
@@ -53,10 +59,22 @@ QActor mbotrobot context ctxmbotdemo{
 		//printCurrentMessage
 		println("mbotrobot | handleObstacle")	
 		run robotMbot.mbotSupport.move( "h" )
+		//back to avoid obstacle again
+		run robotMbot.mbotSupport.move( "s" )
+		delay 400
+		run robotMbot.mbotSupport.move( "h" )
 		onMsg( obstacle  : obstacle( TARGET ) ){
 			updateResource [# "obstacle" #]
  		}
 	}
 	Goto work 
+	
+	State handleSonar{
+		printCurrentMessage
+	}
+	Goto work
+//	Transition t1   whenTime 500 -> work     //avoid too frequent handling of sonar events ...
+//					whenMsg  cmd -> execcmd
+					 
 	
  }  
