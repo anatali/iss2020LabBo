@@ -16,12 +16,10 @@ class Mbotrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var curSonarDistance = ""  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("mbotrobot | START")
-						discardMessages = false
 						robotMbot.mbotSupport.create(myself ,"/dev/ttyUSB0" )
 						delay(1000) 
 						robotMbot.mbotSupport.move( "l"  )

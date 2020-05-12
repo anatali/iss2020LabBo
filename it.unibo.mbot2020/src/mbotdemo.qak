@@ -1,8 +1,8 @@
 System mbotdemo
 
-Dispatch cmd      : cmd(X)
-Event  obstacle   : obstacle( D ) 
-Event  sonar      : sonar( D ) 
+Dispatch cmd      : cmd(X)				//cmd to move the robot
+Event  obstacle   : obstacle( D ) 		//
+Event  sonar      : sonar( D ) 			//emitted by the sonar on board
 
 Context ctxmbotdemo ip [ host= "localhost" port= 8012 ]
 CodedQActor datacleaner    context ctxmbotdemo className "rx.dataCleaner"
@@ -10,11 +10,10 @@ CodedQActor distancefilter context ctxmbotdemo className "rx.distanceFilter"
  
 QActor mbotrobot context ctxmbotdemo{ 
 
-[# var curSonarDistance = "" #]	
+//[# var curSonarDistance = "" #]	
 	
 	State s0 initial{ 
 		println("mbotrobot | START")	
-		discardMsg Off
 		qrun robotMbot.mbotSupport.create (myself, "/dev/ttyUSB0")
   		delay 1000
   		run robotMbot.mbotSupport.move( "l" ) 
