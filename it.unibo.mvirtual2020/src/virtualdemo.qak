@@ -1,0 +1,89 @@
+System virtualdemo
+
+Dispatch cmd      : cmd(X)				//cmd to move the robot
+Event  obstacle   : obstacle( D ) 		//
+Event  sonar      : sonar( D ) 			//emitted by the sonar on board
+
+Context ctxvirtualdemo ip [ host= "localhost" port= 8014 ]
+CodedQActor datacleaner    context ctxvirtualdemo className "rx.dataCleaner"
+CodedQActor distancefilter context ctxvirtualdemo className "rx.distanceFilter"
+ 
+QActor virtualrobot context ctxvirtualdemo{ 
+
+//[# var curSonarDistance = "" #]	
+	
+	State s0 initial{  
+		println("virtualrobot | START")	
+		qrun robotVirtual.virtualrobotSupport.create( myself, "192.168.1.22", "8999") //, true to trace
+  		delay 500
+  		run robotVirtual.virtualrobotSupport.move( "l" ) 
+  		delay 500
+		run robotVirtual.virtualrobotSupport.move( "r" ) 
+ 		updateResource [# "stopped" #] 
+ 		[#  
+ 			var robotsonar = context!!.hasActor("robotsonar")  
+ 			if( robotsonar != null ){ 
+  				//ACTIVATE THE DATA SOURCE realsonar
+ 				forward("sonarstart", "sonarstart(1)" ,"robotsonar" ) 	 			
+ 				//SET THE PIPE
+ 				robotsonar.
+ 				subscribeLocalActor("datacleaner").
+ 				subscribeLocalActor("distancefilter").
+ 				subscribeLocalActor("virtualrobot")		//in order to perceive obstacle
+ 			}else{
+ 				println("virtualrobot | WARNING: robotsonar NOT FOUND")
+ 			}
+ 		#]
+ 		discardMsg Off  //WE want receive any msg
+	}
+	Goto work
+	
+	State work{ 
+	} 
+	Transition t1   whenMsg   cmd        -> execcmd
+					whenEvent obstacle   -> handleObstacle
+ 					whenEvent sonar      -> handleSonar
+	
+	State execcmd{
+		//printCurrentMessage
+		onMsg( cmd : cmd(MOVE) ){
+			updateResource [# "move(${payloadArg(0)})" #]
+  			//activate the motors 
+			run robotVirtual.virtualrobotSupport.move( payloadArg(0 ) )
+		}
+	 }
+	 Goto work  
+	
+	State handleObstacle{
+		//printCurrentMessage
+		println("virtualrobot | handleObstacle (todo: look at direction)")	
+		run robotVirtual.virtualrobotSupport.move( "h" )
+		//WARNING: virtual has a sonar also on back
+		//back to avoid obstacle again
+		run robotVirtual.virtualrobotSupport.move( "l" ) 
+		//delay 100
+		run robotVirtual.virtualrobotSupport.move( "l" )
+		//delay 100
+		run robotVirtual.virtualrobotSupport.move( "w" )   
+		delay 100
+		run robotVirtual.virtualrobotSupport.move( "h" )
+		run robotVirtual.virtualrobotSupport.move( "l" )  
+		//delay 100
+		run robotVirtual.virtualrobotSupport.move( "l" )
+		
+//		run robotVirtual.virtualrobotSupport.move( "s" )  //WARNING: virtual has a sonar also on back
+//		delay 200
+//		run robotVirtual.virtualrobotSupport.move( "h" )
+		onMsg( obstacle  : obstacle( TARGET ) ){
+			updateResource [# "obstacle" #]
+ 		}
+	}
+	Goto work 
+	
+	State handleSonar{
+		printCurrentMessage
+	}
+	Goto work
+ 					 
+	
+ }  
