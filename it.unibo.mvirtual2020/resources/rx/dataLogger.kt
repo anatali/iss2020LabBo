@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream
 import java.io.FileOutputStream
 import it.unibo.kactor.ActorBasic
 import java.io.File
+import robotVirtual.virtualrobotSonarSupportActor
 
 class dataLogger(name : String) : ActorBasic(name){
 	var pw : PrintWriter
@@ -21,6 +22,7 @@ class dataLogger(name : String) : ActorBasic(name){
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	override suspend fun actorBody(msg: ApplMessage) {
+		if( msg.msgId() != virtualrobotSonarSupportActor.eventId ) return //AVOID to handle other events
   		elabData( msg )
 		emitLocalStreamEvent(msg)	//propagate ... 
 	}

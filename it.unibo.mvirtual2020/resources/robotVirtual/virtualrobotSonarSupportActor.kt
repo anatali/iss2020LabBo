@@ -20,7 +20,10 @@ import it.unibo.kactor.ApplMessage
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class virtualrobotSonarSupportActor( name : String, val clientSocket : Socket ) : ActorBasic( name ) {
 private var sensorObserver : Job? = null
-	init{
+companion object {
+	val eventId = "sonarRobot"
+}
+		init{
 		println("$tt $name | CREATING")		
 	}
 
@@ -55,12 +58,12 @@ private var sensorObserver : Job? = null
                                 val jsonArg   = jsonObject.getJSONObject("arg")
                                 val sonarName = jsonArg.getString("sonarName")
                                 val distance  = jsonArg.getInt("distance")							 
-								val m1 = "sonar( $sonarName, $distance )"
-								emitLocalStreamEvent("sonar",m1)
+								val m1 = "sonar( $distance, $sonarName )"
+								emit("sonar",m1)
                             }
                             "collision" -> {
-                                val jsonArg    = jsonObject.getJSONObject("arg")
-                                val objectName = jsonArg.getString("objectName")
+                                //val jsonArg    = jsonObject.getJSONObject("arg")
+                                //val objectName = jsonArg.getString("objectName")
  								val m1 = "sonar( 8 )"
                                 val event = MsgUtil.buildEvent( name,"sonarRobot",m1)
                                 emitLocalStreamEvent( event )		//not propagated to remote actors

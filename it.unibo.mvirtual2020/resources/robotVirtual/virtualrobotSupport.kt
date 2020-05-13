@@ -35,17 +35,10 @@ object virtualrobotSupport {
 	}
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	fun create( owner: ActorBasic, host: String, port: String, trace : Boolean = false  ){
+	fun create( owner: ActorBasic, hostNameStr: String, portStr: String, trace : Boolean = false  ){
  		this.owner   = owner	 
  		this.traceOn = trace
- 		initClientConn(  host, port)
-	}
-	
-	fun trace( msg: String ){
-		if( traceOn )  println("			*** virtualrobotSupport | $msg")
-	}
-
-	fun initClientConn(  hostNameStr: String = hostName, portStr: String = "$port"  ) {
+ 		//initClientConn
             hostName         = hostNameStr
             port             = Integer.parseInt(portStr)
              try {
@@ -58,8 +51,28 @@ object virtualrobotSupport {
 			  	println("		--- virtualrobotSupport | has created the robotsonar")	
              }catch( e:Exception ){
                  println("			*** virtualrobotSupport | ERROR $e")
-             }
+             }	
 	}
+	
+	fun trace( msg: String ){
+		if( traceOn )  println("			*** virtualrobotSupport | $msg")
+	}
+
+//	fun initClientConn(  hostNameStr: String = hostName, portStr: String = "$port"  ) {
+//            hostName         = hostNameStr
+//            port             = Integer.parseInt(portStr)
+//             try {
+//                val clientSocket = Socket(hostName, port)
+//                trace("CONNECTION DONE with $port")
+//                outToServer  = PrintWriter(clientSocket.getOutputStream())
+//				//ACTIVATE the robotsonar as the beginning of a pipe
+//				val robotsonar = virtualrobotSonarSupportActor("robotsonar", clientSocket)
+//				owner.context!!.addInternalActor(robotsonar)  
+//			  	println("		--- virtualrobotSupport | has created the robotsonar")	
+//             }catch( e:Exception ){
+//                 println("			*** virtualrobotSupport | ERROR $e")
+//             }
+//	}
 
     fun move(cmd: String) {	//cmd is written in application-language
 			halt()	//defensive ...

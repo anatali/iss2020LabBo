@@ -13,6 +13,9 @@ import it.unibo.kactor.ApplMessage
  Emits the event sonarRobot : sonar( V )
  */
 class sonarHCSR04SupportActor ( name : String ) : ActorBasic( name ) {
+companion object {
+	val eventId = "sonarRobot"
+}		
 	lateinit var reader : BufferedReader
 	 
 	init{
@@ -47,7 +50,7 @@ class sonarHCSR04SupportActor ( name : String ) : ActorBasic( name ) {
 						val v = data.toInt()
 						if( v <= 150 ){	//A first filter ...
 							val m1 = "sonar( $v )"
-							val event = MsgUtil.buildEvent( name,"sonarRobot",m1)
+							val event = MsgUtil.buildEvent( name,eventId,m1)
 							//emit( event )
 							emitLocalStreamEvent( event )		//not propagated to remote actors
 							println("$tt $name |  ${counter++}: $event "   )

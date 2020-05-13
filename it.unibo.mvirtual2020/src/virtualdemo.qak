@@ -1,9 +1,12 @@
 System virtualdemo
 
 Dispatch cmd      : cmd(X)				//cmd to move the robot
-Event  obstacle   : obstacle( D ) 		//
-Event  sonar      : sonar( D ) 			//emitted by the sonar on board
+Dispatch end      : end(X)				//cmd to terminate the behavior of the robot
 
+Event  obstacle   : obstacle( D ) 		//
+Event  sonarRobot : sonar( D   )        //emitted by the sonar on board
+Event  sonar      : sonar( D, NAME  )   //emitted by a sonar in the ENV
+ 
 Context ctxvirtualdemo ip [ host= "localhost" port= 8014 ]
 CodedQActor datacleaner    context ctxvirtualdemo className "rx.dataCleaner"
 CodedQActor distancefilter context ctxvirtualdemo className "rx.distanceFilter"
@@ -14,7 +17,7 @@ QActor virtualrobot context ctxvirtualdemo{
 	
 	State s0 initial{  
 		println("virtualrobot | START")	
-		qrun robotVirtual.virtualrobotSupport.create( myself, "192.168.1.22", "8999") //, true to trace
+		qrun robotVirtual.virtualrobotSupport.create( myself, "192.168.1.68", "8999") //, true to trace
   		delay 500
   		run robotVirtual.virtualrobotSupport.move( "l" ) 
   		delay 500
@@ -41,6 +44,7 @@ QActor virtualrobot context ctxvirtualdemo{
 	State work{ 
 	} 
 	Transition t1   whenMsg   cmd        -> execcmd
+					whenMsg   end        -> endThejob
 					whenEvent obstacle   -> handleObstacle
  					whenEvent sonar      -> handleSonar
 	
@@ -76,14 +80,19 @@ QActor virtualrobot context ctxvirtualdemo{
 //		run robotVirtual.virtualrobotSupport.move( "h" )
 		onMsg( obstacle  : obstacle( TARGET ) ){
 			updateResource [# "obstacle" #]
- 		}
-	}
+ 		} 
+	}  
 	Goto work 
 	
 	State handleSonar{
 		printCurrentMessage
-	}
+	} 
 	Goto work
- 					 
+ 				
+ 				
+    State endThejob{
+    	updateResource [# "move(end)" #]
+    	terminate 0
+    } 					 
 	
  }  

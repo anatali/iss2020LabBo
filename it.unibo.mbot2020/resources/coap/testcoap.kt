@@ -48,7 +48,7 @@ lateinit var host   : String
 }
 
 fun main() = runBlocking{
-val resourceName = "ctxnanodemo/nanorobot"
+val resourceName = "ctxmbotdemo/mbotrobot"
 	testcoap.connect("coap://localhost:8012")
   	testcoap.readResource(resourceName)
   	testcoap.updateResource(resourceName, "r")

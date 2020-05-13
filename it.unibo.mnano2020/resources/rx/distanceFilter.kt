@@ -6,6 +6,7 @@ import it.unibo.kactor.ActorBasic
 import it.unibo.kactor.ApplMessage
 import alice.tuprolog.Term
 import alice.tuprolog.Struct
+import robotNano.sonarHCSR04SupportActor
 
  
 class distanceFilter (name : String ) : ActorBasic( name ) {
@@ -13,7 +14,8 @@ val LimitDistance = 10
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg: ApplMessage) {
-		if( msg.msgSender() == name) return //AVOID to handle the event emitted by itself
+		if( msg.msgId() != sonarHCSR04SupportActor.eventId ) return //AVOID to handle other events
+//		if( msg.msgSender() == name) return //AVOID to handle the event emitted by itself
   		elabData( msg )
  	}
 

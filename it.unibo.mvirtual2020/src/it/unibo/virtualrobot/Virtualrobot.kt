@@ -20,7 +20,7 @@ class Virtualrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("s0") { //this:State
 					action { //it:State
 						println("virtualrobot | START")
-						robotVirtual.virtualrobotSupport.create(myself ,"192.168.1.22", "8999" )
+						robotVirtual.virtualrobotSupport.create(myself ,"192.168.1.68", "8999" )
 						delay(500) 
 						robotVirtual.virtualrobotSupport.move( "l"  )
 						delay(500) 
@@ -48,8 +48,9 @@ class Virtualrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 					}
 					 transition(edgeName="t10",targetState="execcmd",cond=whenDispatch("cmd"))
-					transition(edgeName="t11",targetState="handleObstacle",cond=whenEvent("obstacle"))
-					transition(edgeName="t12",targetState="handleSonar",cond=whenEvent("sonar"))
+					transition(edgeName="t11",targetState="endThejob",cond=whenDispatch("end"))
+					transition(edgeName="t12",targetState="handleObstacle",cond=whenEvent("obstacle"))
+					transition(edgeName="t13",targetState="handleSonar",cond=whenEvent("sonar"))
 				}	 
 				state("execcmd") { //this:State
 					action { //it:State
@@ -86,6 +87,13 @@ class Virtualrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
+				}	 
+				state("endThejob") { //this:State
+					action { //it:State
+						updateResourceRep( "move(end)"  
+						)
+						terminate(0)
+					}
 				}	 
 			}
 		}

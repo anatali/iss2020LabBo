@@ -7,6 +7,7 @@ import it.unibo.kactor.ActorBasic
 import it.unibo.kactor.ApplMessage
 import alice.tuprolog.Term
 import alice.tuprolog.Struct
+import robotNano.sonarHCSR04SupportActor
 
  
 class dataCleaner (name : String ) : ActorBasic( name ) {
@@ -15,7 +16,8 @@ val LimitHigh = 150
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
     override suspend fun actorBody(msg: ApplMessage) {
-  		elabData( msg )
+ 		if( msg.msgId() != sonarHCSR04SupportActor.eventId ) return //AVOID to handle other events
+ 		elabData( msg )
  	}
 
  	
