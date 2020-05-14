@@ -1,0 +1,14 @@
+Colgo l’occasione per segnalare che ho risolto quel bug su Mac OS relativo a Java awt 
+(si aprivano le finestre ma senza i pulsanti).
+Le riporto la soluzione così che possa tornare utile agli altri ragazzi che usano Mac:
+
+- (come già aveva segnalato Piano) rimuovere il flag 
+-XstartOnFirstthread nel tab Arguments delle Run Configurations 
+per tutti i main che usano awt
+- a questo punto la finestra si apre ma senza pulsanti, basta cambiare 
+due tre volte la dimensione della finestra e i pulsanti appaiono "per magia"
+
+E, a questo punto, ho verificato sul mio mbot sia il funzionamento di ctxmbotdemo 
+con le varie GUI, sia tramite node via HTTP dal browser.
+
+-----------------------------------------------------------------------------
