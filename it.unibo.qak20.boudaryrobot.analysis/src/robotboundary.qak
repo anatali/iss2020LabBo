@@ -7,79 +7,44 @@ System boundaryrobot
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)
 Dispatch resume  : resume(ARG) 
-
-Event simulateobstacle    : simulateobstacle(ARG)
-Event collision           : collision(TARGET,AVATAR)
  
-Context ctxrobotboundary ip [host="localhost" port=8018]    
-//CodedQActor obstaclesimulator context ctxrobotboundary  className "actors.simulator"	     
-
+Context ctxrobotboundary ip [host="localhost" port=8078]    
+ 
 QActor robotboundary context ctxrobotboundary  {   
-[# var NumStep=0 #]
-
-	State s0 initial { 	
-		println("boundaryrobot | START")	
+ 
+ 	State s0 initial { 	
 		discardMsg On
 	}	 
 	Goto waitcmd
 	
 	State waitcmd{
-		println("boundaryrobot | waitcmd")	 
+		println("boundaryrobot | REQUIREMENT: init")	 
 	}
-	Transition t0 whenMsg start -> work 
+	Transition t0 whenMsg start -> walk 
  	   
-	State work{
-		println("boundaryrobot | working ${NumStep}")
-		//TODO: Activate the motors to go ahead
-		updateResource [# "moving" #] 
-		
-		//TOREMOVE: Generate collision event
-		emit simulateobstacle : simulateobstacle(0)   
+	State walk{
+		println("boundaryrobot |  REQUIREMENT: walk")
+		//TODO: walking strategy
+		updateResource [# "walk" #] 
  	}
-	Transition t0 whenMsg  stop       -> stopped 
-				  whenEvent collision -> wall
- 	
-	State wall{
-		[# NumStep++ #]
-		println("boundaryrobot | handleCollision ${NumStep}")
-		//TODO: Activate the motors to rotate
-		updateResource [# "rotating"  #]
-	}
-	Goto work if [# NumStep<4 #] else endWork 
-   	
+	Transition t0 
+			whenTime 2000  -> endWork
+			whenMsg  stop  -> stopped 
+  	
+    	
 	State stopped{
-		println("boundaryrobot | stopped")	
-		updateResource [# "stopped" #]
+		println("boundaryrobot | REQUIREMENT: stopped")	
+		updateResource [# "stopped" #] 
 	}
-	Transition t0 whenMsg resume  -> work
+	Transition t0 whenMsg resume  -> walk
  
 	 
  	State endWork{
-		println("boundaryrobot | ends")
-		updateResource [# "terminated" #]
+		println("boundaryrobot | REQUIREMENT: homeagain")
+		updateResource [# "homeagain" #]
 		terminate 0
  	}
  
 }
 
-/* 
-QActor obstaclesimulator  context ctxrobotboundary{
-	State s0 initial { 	
-		println("obstaclesimulator | STARTS ")	
-		discardMsg On
-	}	
-	Goto work 
-	
-	State work{		
-	}
-	Transition t0 whenEvent simulateobstacle -> simulate
-
-	State simulate{
-		delay 800
-		println("obstaclesimulator | EMITS  ... ")	
-		emit collision : collision(obstacle,false)
-	}
-	Goto work
-	
-}
-*/
+ 

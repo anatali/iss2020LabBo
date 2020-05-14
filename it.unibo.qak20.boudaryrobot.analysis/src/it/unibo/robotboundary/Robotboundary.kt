@@ -16,55 +16,42 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var NumStep=0  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("boundaryrobot | START")
 						discardMessages = true
 					}
 					 transition( edgeName="goto",targetState="waitcmd", cond=doswitch() )
 				}	 
 				state("waitcmd") { //this:State
 					action { //it:State
-						println("boundaryrobot | waitcmd")
+						println("boundaryrobot | REQUIREMENT: init")
 					}
-					 transition(edgeName="t00",targetState="work",cond=whenDispatch("start"))
+					 transition(edgeName="t00",targetState="walk",cond=whenDispatch("start"))
 				}	 
-				state("work") { //this:State
+				state("walk") { //this:State
 					action { //it:State
-						println("boundaryrobot | working ${NumStep}")
-						updateResourceRep( "moving"  
+						println("boundaryrobot |  REQUIREMENT: walk")
+						updateResourceRep( "walk"  
 						)
-						emit("simulateobstacle", "simulateobstacle(0)" ) 
+						stateTimer = TimerActor("timer_walk", 
+							scope, context!!, "local_tout_robotboundary_walk", 2000.toLong() )
 					}
-					 transition(edgeName="t01",targetState="stopped",cond=whenDispatch("stop"))
-					transition(edgeName="t02",targetState="wall",cond=whenEvent("collision"))
-				}	 
-				state("wall") { //this:State
-					action { //it:State
-						 NumStep++  
-						println("boundaryrobot | handleCollision ${NumStep}")
-						updateResourceRep( "rotating"   
-						)
-					}
-					 transition( edgeName="goto",targetState="work", cond=doswitchGuarded({ NumStep<4  
-					}) )
-					transition( edgeName="goto",targetState="endWork", cond=doswitchGuarded({! ( NumStep<4  
-					) }) )
+					 transition(edgeName="t01",targetState="endWork",cond=whenTimeout("local_tout_robotboundary_walk"))   
+					transition(edgeName="t02",targetState="stopped",cond=whenDispatch("stop"))
 				}	 
 				state("stopped") { //this:State
 					action { //it:State
-						println("boundaryrobot | stopped")
+						println("boundaryrobot | REQUIREMENT: stopped")
 						updateResourceRep( "stopped"  
 						)
 					}
-					 transition(edgeName="t03",targetState="work",cond=whenDispatch("resume"))
+					 transition(edgeName="t03",targetState="walk",cond=whenDispatch("resume"))
 				}	 
 				state("endWork") { //this:State
 					action { //it:State
-						println("boundaryrobot | ends")
-						updateResourceRep( "terminated"  
+						println("boundaryrobot | REQUIREMENT: homeagain")
+						updateResourceRep( "homeagain"  
 						)
 						terminate(0)
 					}

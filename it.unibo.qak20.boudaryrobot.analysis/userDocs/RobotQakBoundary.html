@@ -193,32 +193,193 @@ div.imagedesc{
     
 <body>
 <div id="top">
-<h1>Qak20Robotboundary | The robotboundary using QAkactors<font size="5"></font> </h1>
+<h1>Qak20Robotboundary | The robotboundary problem<font size="5"></font> </h1>
 </div>  
 
 <div class="body"> 
 
 <ol>
 <li><a href="#req">Requirements</a></li>
-<li><a href="#reqAnalysis">Requirement analysis</a></li>
+<li><a href="#reqAnalysis">Requirement analysis: UML and beyond</a></li>
+<!--
 <li><a href="#problemAnalysis">Problem analysis</a></li>
 <li><a href="#logicalarch">The logical architecture</a></li>
 <li><a href="#devops">Towards DevOps</a></li>
 <li><a href="#project">Project</a></li>
-
+-->
 </ol>
  
  
 <h2 id="req">Requirements</h2>
 
-The detailed requirements of our <a href="#problem">problem</a> are those introduced in  
+<!-- The detailed requirements of our <a href="#problem">problem</a> are those introduced in  
  <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html#req" target="web"> 	
-RobotActorBoundary | requirements</a>
+RobotActorBoundary | requirements</a>.<br/>-->
+
  
 
-<h2 id="reqAnalysis">Requirement analysis</h2>
-In this phase we are able to define a model of the 'robotboundary' actor and a first TestPlan:
+
+We want to build a (ddr) robot able to <i>walk along the boundary</i> of a rectangular room.  More specifically:
+<div class="req">
+<ol>
+<li><bc>init</bc>: the <em>robot</em> initially waits in its <em>home</em> location for a command <em>start</em> sent by a
+human <em>operator</em>;</li>
+<li><bc>walk</bc>: after receiving  <em>start</em>, the <em>robot</em> begins to <em>walk</em>, by moving along the <em>room</em> boundary, 
+until it reaches the <em>home</em> again;
+<center><img src="./img/boundary.png" alt="boundary" width="20%" ></center><br/> 
+
+</li>
+<li><bc>stop</bc>: while doing its <em>walk</em> activity, the  <em>robot</em> must be able to react to the command <em>stop</em>
+sent by the <em>operator</em>, by 'immediately' stopping its <em>walk</em>;
+<li><bc>resume</bc>: while stopped, the <em>robot</em> waits for a command <em>resume</em> sent by the <em>operator</em>,
+to continue its <em>walk</em> from the point reached before stopping.
+</ol>
+</div>
+
+We have already introduced this problem in 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.boundaryRobot/userDocs/RobotActorBoundary.html#req" target="web"> 	
+RobotActorBoundary | requirements</a>.
+<br/>
+Note that now we have introduced a 'tag' for each requirement.
+
+<h2 id="reqAnalysis">Requirement analysis: UML and beyond</h2>
+
+<ul>
+<li>
+In UML, requirements are typically captured in <a href="https://en.wikipedia.org/wiki/Use_case" target="web">Use Cases (<bc>UC</bc>)</a>
+represented in UML by <a href="https://en.wikipedia.org/wiki/Use_case_diagram" target="web">Use case diagram</a>.
+</li>
+<li>
+Use cases constitute a powerful, user-centric tool for the software requirements specification process.
+A use case shows the interaction of  <a href="https://en.wikipedia.org/wiki/Actor_(UML)" target="web"><bc>external actors</bc></a>
+with the system and can be usually be captured in one sentence.
+A use case yields an <bc>observable result</bc> that is of some value to those actors
+</li>
+<li>A use-case diagram helps to grasp the 'big picture'; it serves as a<bc> map</bc>, helping the reader to navigate the requirement model. 
+<div class="remark"> 
+<center>Take your time to understand the <bc>meaning</bc> behind the elements you use. <br/>
+<m>Whether a line is solid or dashed can make a huge difference in semantics.
+See <a href="https://www.uml-diagrams.org/use-case-include.html" target="web">UML Use Case Include</a>.</m>
+</center>
+</div>
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%"><h3>Correct?</h3>
+<center><img src="./img/wrongUc.png" alt="wrongUc" width="100%" ></center>
  
+ </td>
+<td><h3>Better?</h3>
+<center><img src="./img/betterUc.png" alt="betterUc" width="60%" ></center> <br/>
+Are <em>stop</em> and <em>resume</em> completerly unrelated with the other use cases? 
+</td>
+</tr>
+</tr>
+</table>
+
+</li>
+<li>
+Each symbol in the diagram provides a lot of additional information 
+that often has no representation in the picture. 
+The following table shows some of the information that may be part of the model as well:
+
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:25%"><ks>UC-ID</ks></td>
+<td><bc>walk</bc></td>
+</tr>
+
+<tr>
+<td><ks>Actors</ks></td>
+<td>The (logged-in) human <em>operator</em></td>
+</tr>
+
+<tr>
+<td><ks>Description</ks> (<a href="https://en.wikipedia.org/wiki/User_story" target="web"><bc>User story</bc></a>)</td>
+<td>As a <em>operator</em>, I want that the robot performs the  <em>action</em> in autonomous way.</td>
+</tr>
+
+<tr>
+<td><ks>Preconditions</ks></td>
+<td>the <em>robot</em> is at <em>home</em> and the <em>operator</em> (is logged into the system and) has sent the command <em>start</em></td>
+</tr>
+
+<tr>
+<td><ks>Activity</ks></td>
+<td>  
+after receiving the command <em>start</em>, the <em>robot</em> begins to <em>walk</em>, by moving along the <em>room</em> boundary, 
+until it reaches the <em>home</em> again</td>
+</tr>
+
+<tr>
+<td><ks>Postconditions</ks></td>
+<td>If <tt>plength</tt> is the value of the perimeter of the <em>room</em> and <tt>rdim</tt> is the dimension of a circle that
+circumscribes the <em>robot</em> , the robot has covered a distance not less than <tt>plength-rdim*4</tt> 
+and has reached the <em>home</em> again.</td>
+</tr>
+
+
+</table>
+</li>
+
+<li>
+Large chunks of the model are again informal.
+The preconditions and postconditions of the use case, for instance, are formulated in plain text. 
+<br/>
+However, a model provided by a <bc>class</bc> as a description of the <bc>domain</bc>. could hold attributes, operations, constraints and much more.
+Classes are much more precise than a <bc>glossary</bc>, showing well-defined relationships between classes.
+<li>
+
+ 
+ In a textual specification, the context of the requirements can be hard to grasp. 
+ In a model, however, the context is clearly defined. 
+ 
+
+
+</li>
+<li>A Qak model can help us in capturing the requirements in a more fruitful way.
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%"><h3>Messages</h3>
+<pre>
+Dispatch start   : start(ARG)
+Dispatch stop    : stop(ARG)
+Dispatch resume  : resume(ARG) 
+</pre> </td>
+<td><h3>Components</h3>
+<center><img src="./img/robotboundary.png" alt="robotboundary" width="50%" ></center>
+<div class="remark">
+We do not need any concrete robot in order to reason about requirements and on the logical behavior of the system.
+</div>
+</td>
+</tr>
+</tr>
+</table>
+
+
+
+</li>
+</ul>
+
+
+In this phase we are able to define a model of the system and a first TestPlan:
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%"><h3>Model</h3>
+<a href="../src/robotboundary.qak" target="code">robotboundary.qak</a>
+</td>
+<td><h3>Test plan</h3>
+<a href="../test/testRobotboundary.kt" target="code">testRobotboundary.kt</a>
+ </td>
+</tr>
+</tr>
+</table>
+
+<br/><br/>
+ 
+ <!--
 <center><table style="width:100%">
 <tbody>	
  
