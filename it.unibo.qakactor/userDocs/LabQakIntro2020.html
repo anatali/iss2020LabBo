@@ -948,6 +948,36 @@ For a complete example, see:
 </td>
 </tr>
 
+<!--
+<tr>
+<td><h3 id="codedqa">InternalQActors</h3>
+A <bc>InternalQActor</bc> is an actor completely written in Kotlin that can be included in a qak-model by specifying its class name. For example:
+<pre>
+System  ...
+Context  <ks>ctxabc</ks>
+
+<k>CodedQActor</k> qacodedname <k>context</k> <ks>ctxabc</ks> 
+                                     <k>className</k> "unibo.classname"
+</pre>
+Its presence is included in the description of the system. 
+<br/><br/>
+The <tt>QA-infrastructure</tt> handles a <tt>CodedQActor</tt> as a usual; in particular, it will <bc>'inject'</bc> into it the context
+specified by the model. 
+</td>
+<td>
+A <tt>CodedQActor</tt> is usually introduced as a specilization of <a href="#ActorBasic">ActorBasic</a>:
+<pre>
+class qacoded (name : String ) : <k>ActorBasic</k>( name ) {
+    <k>override</k> suspend fun actorBody(msg: ApplMessage) {
+  		<kc>//TODO</bc>
+ 	}
+}
+</pre>
+For a complete example, see:
+<a href="../../it.unibo.demoqak20/userdocs/LabQakExamples2020.html#qastreams" target="web"" target="code">LabQakExamples2020.html#qastreams</a>
+</td>
+</tr>
+-->
  </tbody>
 </table>
 </center>

@@ -11,13 +11,13 @@ Context ctxvirtualdemo ip [ host= "localhost" port= 8014 ]
 CodedQActor datacleaner    context ctxvirtualdemo className "rx.dataCleaner"
 CodedQActor distancefilter context ctxvirtualdemo className "rx.distanceFilter"
  
-QActor virtualrobot context ctxvirtualdemo{ 
+QActor virtualrobot context ctxvirtualdemo{    
 
 //[# var curSonarDistance = "" #]	
 	
 	State s0 initial{  
 		println("virtualrobot | START")	
-		qrun robotVirtual.virtualrobotSupport.create( myself, "192.168.1.68", "8999") //, true to trace
+		qrun robotVirtual.virtualrobotSupport.create( myself, "192.168.1.22", "8999") //, true to trace
   		delay 500
   		run robotVirtual.virtualrobotSupport.move( "l" ) 
   		delay 500
@@ -58,7 +58,7 @@ QActor virtualrobot context ctxvirtualdemo{
 	 }
 	 Goto work  
 	
-	State handleObstacle{
+	State handleObstacle{ //
 		//printCurrentMessage
 		println("virtualrobot | handleObstacle (todo: look at direction)")	
 		run robotVirtual.virtualrobotSupport.move( "h" )
@@ -81,7 +81,7 @@ QActor virtualrobot context ctxvirtualdemo{
 		onMsg( obstacle  : obstacle( TARGET ) ){
 			updateResource [# "obstacle" #]
  		} 
-	}  
+	}   
 	Goto work 
 	
 	State handleSonar{

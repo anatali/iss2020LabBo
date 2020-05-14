@@ -64,7 +64,7 @@ companion object {
                             "collision" -> {
                                 //val jsonArg    = jsonObject.getJSONObject("arg")
                                 //val objectName = jsonArg.getString("objectName")
- 								val m1 = "sonar( 8 )"
+ 								val m1 = "sonar( 5 )"
                                 val event = MsgUtil.buildEvent( name,"sonarRobot",m1)
                                 emitLocalStreamEvent( event )		//not propagated to remote actors
                               }

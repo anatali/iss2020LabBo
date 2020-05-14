@@ -20,7 +20,7 @@ class Virtualrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("s0") { //this:State
 					action { //it:State
 						println("virtualrobot | START")
-						robotVirtual.virtualrobotSupport.create(myself ,"192.168.1.68", "8999" )
+						robotVirtual.virtualrobotSupport.create(myself ,"192.168.1.22", "8999" )
 						delay(500) 
 						robotVirtual.virtualrobotSupport.move( "l"  )
 						delay(500) 

@@ -39,19 +39,18 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	@Before
-	fun systemSetUp() { 
-		
+	fun systemSetUp() { 		
    		kotlin.concurrent.thread(start = true) {
 			client.uri = uriStr
 			it.unibo.ctxvirtualdemo.main() // MainCtxvirtualdemo
 			println("testVirtualrobot systemSetUp done")
-    		if( useMqttInTest ){
-				 while( ! mqttTest.connectDone() ){
-					  println( "	attempting MQTT-conn to ${mqttbrokerAddr}  for the test unit ... " )
-					  Thread.sleep(1000)
-					  mqttTest.connect("test_nat", mqttbrokerAddr )					 
-				 }
- 			}	
+//    		if( useMqttInTest ){
+//				 while( ! mqttTest.connectDone() ){
+//					  println( "	attempting MQTT-conn to ${mqttbrokerAddr}  for the test unit ... " )
+//					  Thread.sleep(1000)
+//					  mqttTest.connect("test_nat", mqttbrokerAddr )					 
+//				 }
+// 			}	
  	} 
 }	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -103,22 +102,13 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 			delay(500)
 			checkResource("move(w)")
 			forwardToRobot( "cmd", "cmd(s)" ) //ASSUMPTION: no obstacle
-			delay(500)
+			delay(300)
 			checkResource("move(s)")
 			forwardToRobot( "cmd", "cmd(h)" )
 			delay(500)
 			checkResource("move(h)")
 	}
-//@kotlinx.coroutines.ObsoleteCoroutinesApi
-//@kotlinx.coroutines.ExperimentalCoroutinesApi
-//	suspend fun testReqStep(){ //ASSUMPTION: no obstacle
-//		println(" ===========  testReqStep =========== ")
-//			requestToRobot("step","step(350)")
-//			delay(200)
-//			checkResource("step(350)") 
-//			delay(700)  //there is also stepPerhapsDone
-//			checkResource("stepDone")
-//	}
+
 		
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -142,15 +132,15 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 			delay( 1000 )
 //			checkResource("stopped") 
 			testReqCmd()
-			delay( 1000 )
-//			testReqStep()						//not (yet) implemented
 //			delay( 1000 )
-			testReqSensor()
-			
-			forwardToRobot( "end", "end(0)" )	//not (yet) implemented
-			delay( 500 )
- 			checkResource("move(end)")
-			if( robot != null ) robot!!.waitTermination()
+////			testReqStep()						//not (yet) implemented
+////			delay( 1000 )
+//			testReqSensor()
+//			
+//			forwardToRobot( "end", "end(0)" )	//not (yet) implemented
+//			delay( 500 )
+// 			checkResource("move(end)")
+//			if( robot != null ) robot!!.waitTermination()
 		}
 	 	println("testVirtualRobot BYE  ")  
 	}

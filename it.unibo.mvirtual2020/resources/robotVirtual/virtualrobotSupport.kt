@@ -58,21 +58,7 @@ object virtualrobotSupport {
 		if( traceOn )  println("			*** virtualrobotSupport | $msg")
 	}
 
-//	fun initClientConn(  hostNameStr: String = hostName, portStr: String = "$port"  ) {
-//            hostName         = hostNameStr
-//            port             = Integer.parseInt(portStr)
-//             try {
-//                val clientSocket = Socket(hostName, port)
-//                trace("CONNECTION DONE with $port")
-//                outToServer  = PrintWriter(clientSocket.getOutputStream())
-//				//ACTIVATE the robotsonar as the beginning of a pipe
-//				val robotsonar = virtualrobotSonarSupportActor("robotsonar", clientSocket)
-//				owner.context!!.addInternalActor(robotsonar)  
-//			  	println("		--- virtualrobotSupport | has created the robotsonar")	
-//             }catch( e:Exception ){
-//                 println("			*** virtualrobotSupport | ERROR $e")
-//             }
-//	}
+
 
     fun move(cmd: String) {	//cmd is written in application-language
 			halt()	//defensive ...
