@@ -1,0 +1,983 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ 
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+top {
+	width: 100%;
+}
+
+
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #abe876;
+    color: #1632cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 700px;
+    font-size: 15px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px; 
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 130%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #C0F0E0;
+    font-size: 100%;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+	
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #E3F2FD;	
+    border: 1.5px solid #d5f2ed;
+    padding: 15px;
+    margin: 10px;
+	border-radius: 25px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+} 
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}     
+
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+	
+}
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}
+</style>
+    
+<head>
+   
+<title>LabRobotWeb</title></head>
+    
+<body>
+<div id="body">
+<h1>LabRobotWeb | </h1>
+IO operations can be orders of magnitude slower than data processing. 
+ Reading just one kilobyte of data would take 1.4 microseconds (read speed of 200-730 MB/s), 
+ but during this time a CPU clocked at 2GHz could have performed 28000 of instruction-processing cycles.
+
+<h2>Reactive programming</h2>
+
+<!-- The term, <bc>reactive</bc>, refers to programming models that are built around reacting to changes. -->
+Reactive programming is about non-blocking applications that are asynchronous and event-driven and 
+require a small number of threads to scale vertically (i.e. within the JVM) rather than horizontally (i.e. through clustering)
+<br/><br/>
+In this style of programming, we make a request for resource and start performing other things. 
+When the data is available, we get the notification along with data in form of a <bc>call back</bc> function. 
+<br/><br/>
+Reactive web programming is great for applications that have streaming data, and clients that consume it and stream it to their users. 
+It is not great for developing traditional CRUD applications. 
+<br/><br/>
+For a longer introductio, see
+<a href="https://spring.io/blog/2016/06/07/notes-on-reactive-programming-part-i-the-reactive-landscape" traget="web">The Reactive Landscape</a> by  DAVE SYER.
+
+<h4>Back pressure</h4>
+A key aspect of reactive applications is the concept of <bc>backpressure</bc>, which is a mechanism to ensure producers don't overwhelm consumers. 
+
+
+<h3>Reactive programming in Java</h3>
+<ol>
+<li>Reactive programming in Java has gradually been progressing ever since the introduction of ‘<bc>Futures</bc>’ in Java 1.5 – 
+(Futures are akin to <bc>Promises</bc> in the Javascript world).</li>
+<li>Java 1.8 brought us ‘<bc>CompletableFutures</bc>’ where futures could be chained together (amongst other things)</li>
+<li>Next came Netflix’s RxJava which offered the ‘Observable’ type – facilitating producer ‘push’ based values 
+(rather than consumer pull based)  as well as a the Flowable type – which allows ‘Back Pressure’ mechanisms 
+to be implemented i.e. where consumers can express how many items are they ready to process, thus keeping memory usage more controllable and stable.
+</li>
+<li>Eventually a collaboration between engineers from Kaazing, Netflix, Pivotal, Red Hat, Twitter, Typesafe to name a few, 
+defined us all a <bc>common API</bc> (<a href="https://www.reactive-streams.org/" traget="web">Reactive Streams</a>) for <i>Reactive Programming in Java</i>. 
+It has since been implemented in Akka, Ratpack, Vert.x and Spring where it was named 
+<a href="https://projectreactor.io/docs/core/release/reference/" traget="web"><bc>Reactor</bc></a> (that runs on Java 8 and above).  
+It was finally incorporated into the JDK in Java 9.</li>
+<li>
+</ol>
+
+<h2>Spring and Spring Boot</h2>
+<a href="https://en.wikipedia.org/wiki/Spring_Framework" target="web">Spring</a> is a framework provides comprehensive infrastructure support for developing Java applications.
+<br/><br/>
+<a href="https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm" target="web">Spring Boot</a> 
+is basically an extension of the Spring framework which eliminated the boilerplate configurations required for setting up a Spring application.
+<br/>
+It takes an <em>opinionated view</em> (<i>strong assumptions</i> about best practices for application architecture) 
+of the Spring platform which paved the way for a faster and more efficient development eco-system.
+
+<h3>WebFlux</h3>
+Spring Framework 5  and <a href="https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm" target="web">Spring Boot</a>  
+include the <a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html" target="web">WebFlux framework</a>, 
+that contains support for reactive HTTP and WebSocket clients as well as for reactive server web applications including REST, HTML browser, 
+and WebSocket style interactions.
+<br/><br/>
+WebFlux brings reactive programming support to Java web applications in Spring.
+
+<h4>Synchronous request processing</h4>
+ <table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:100%" >
+
+In traditional <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">Model–view–controller (MVC)</a> applications, 
+when a request come to server, 
+<ol>
+<li>a servlet thread is created</li>
+<li>the servlet thread delegates the request to worker threads for <bc>I/O operations</bc> such as database access etc.</li>
+<li>when worker threads are busy, servlet thread (request thread) remain in waiting status and thus it is blocked</li>
+</ol>
+ 
+
+<m></m>
+<img src="./img/imgBlocking-request-processing.png" alt="imgBlocking-request-processing.png" width="100%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+
+<h4>Asynchronous request processing</h4>
+ <table style="width:98%">
+<tbody>	
+
+<tr>
+<td>
+
+<div class ="remark">
+In asynchronous request processing, no thread is in waiting state.
+</div>
+There is <bc>only one request thread</bc> receiving the request.
+
+<ol>
+<li>Incoming requests come with a <em>HandlerFunction</em> and <em>call back</em> information</li>
+<li>The request thread delegates the incoming requests to a thread pool</li>
+<li>The handler function precesses the request given to it </li> 
+<li>The request thread immediately start processing other incoming requests from request thread</li>
+<li>When the handler function is complete, one of thread from pool collect the response and pass it to the <em>call back</em> function</li>
+<!--
+<li>If the servlet reaches a potentially blocking operation when processing a request, 
+it can assign the operation to an asynchronous execution context and return the thread associated with the request 
+immediately to the container without generating a response</li>
+
+<li>The request thread delegates the incoming requests to a thread pool </li>
+<li>delegate the request to it’s handler function</li>
+-->
+
+ 
+</ol>
+ 
+
+<img src="./img/Non-blocking-request-processing.png" alt="Non-blocking-request-processing.png" width="100%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+
+
+<br/><br/>
+Since WebFlux uses <a href="https://projectreactor.io/docs/core/release/reference/" traget="web">Reactor</a>  
+under the hood, it allows us to build non blocking web applications  which enable things like:
+<ul>
+<li>subscribing to a stream of server data from a non-blocking http endpoint – for example subscribe to a constant feed of updating stock quotes</li>
+<li>subscribing with a ‘back pressure’ value – e.g. telling the server that we only want to receive streaming data with ‘X’ 
+records in each response or that we only want the response once every ‘Y’ seconds</li>
+</li>
+</ul>
+
+The same @Controller programming model and the same annotations used in Spring MVC are also supported in WebFlux. 
+The main difference is that the underlying core, framework contracts — i.e. HandlerMapping, HandlerAdapter, 
+are non-blocking and operate on the reactive ServerHttpRequest and ServerHttpResponse rather than on the HttpServletRequest and HttpServletResponse.
+
+<!-- http://192.168.1.244/debug/clip.html -->
+
+<h2>Start-up</h2>
+ 
+<ol>
+<li>Connect to <a href="https://start.spring.io/">https://start.spring.io/</a> </li>
+<li>Select <tt>Gradle Project, Java</tt>, <tt><ks>Group</ks>=it.unibo</tt>, <tt><ks>Artifact</ks>=it.unibo.qak.robotwebspring</tt>
+(<tt><ks>Options</ks>:Packaging=Jar, Java=8</tt>),
+<tt><ks>Dependencies</ks>=Spring Web</tt> 
+ </li>
+<li>Click on <k>Generate</k></li>
+<li>Unzip the generated file <tt>it.unibo.useSpringboot.zip</tt> into an empty dir (e.g. <tt>C:/xxx</tt>)</li>
+<li>Open Eclipse and, in the workspace <tt>C:/xxx</tt>, do: <tt>File->Import -> Gradle -> <k>Existing Gradle Project</k> it.unibo.useSpringboot</tt><br/>
+<img src="./img/springboot0.png" alt="springboot0.png" width="50%"  />
+<li>Run <ks>Application.java</ks></li>
+<li>Open a browser on <tt>localhost:8080</tt><br/>
+<img src="./img/springboot1.png" alt="springboot1.png" width="30%"  />
+</li>
+<li>Change the application code as follws:
+<pre>
+@SpringBootApplication
+<ks>@RestController</ks> 		
+public class Application {
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+<ks>
+    @GetMapping("/")   <kc>//REST API just return data in form of JSON or XML  because most of the REST clients are programs</kc>
+    public String entry( ) {
+    	return "Hello world from Application";
+    }</ks>
+}
+</pre>
+</li>
+<li>Run <ks>Application.java</ks> <br/>
+<img src="./img/springboot2.png" alt="springboot2.png" width="30%"  />
+</li>
+</ol>
+
+We have built in avery short time a 'microservice' that can be used by programs. For example:
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<pre>
+curl http://localhost:8080
+
+<kc>//OUTPUT</kc>
+Hello world from Application
+</pre> 
+
+</td>
+<td>
+<pre><m>
+public class AClient {
+	public static void main(String[] args) {
+        try {
+            String strUrl     = "http://localhost:8080/";
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpGet request   = new HttpGet(strUrl);
+            HttpResponse response = client.execute(request);
+            String answer     = IOUtils.toString(response.getEntity().getContent(), "UTf-8");
+            System.out.println( "RESPONSE=" + answer );
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+}</m>
+<kc>//OUTPUT</kc>
+RESPONSE=Hello world from Application
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<h3>@Controller</h3>
+Annotation used for 'classic' Spring controllers and has been part of the framework for a very long time:
+<ul>
+<li>It is  a specialization of the @Component class and allows implementation classes to be autodetected through the classpath scanning.</li>
+<li>It is typically used in combination with a @RequestMapping annotation used on request handling methods.</li>
+</ul>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<pre>
+@Controller
+@RequestMapping("books")
+public class SimpleBookController {
+ 
+    @GetMapping("/{id}", produces = "application/json")
+    public @ResponseBody Book getBook(@PathVariable int id) {
+        return findBookById(id);
+    }
+ 
+    private Book findBookById(int id) {
+        // ...
+    }
+}
+</pre>
+</td>
+<td>The request handling method is annotated with @ResponseBody. This annotation enables automatic serialization of the return object into the HttpResponse.
+</td>
+</tr>
+ </tbody>
+</table>
+
+
+
+<h3>@RestController</h3>
+A convenience annotation that combines @Controller and @ResponseBody – which eliminates the need to annotate every request handling method 
+of the controller class with the @ResponseBody annotation.
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<pre>
+@RestController
+@RequestMapping("books-rest")
+public class SimpleBookRestController {
+     
+    @GetMapping("/{id}", produces = "application/json")
+    public Book getBook(@PathVariable int id) {
+        return findBookById(id);
+    }
+ 
+    private Book findBookById(int id) {
+        // ...
+    }
+}
+</pre>
+</td>
+<td>The controller is annotated with the @RestController annotation, therefore the @ResponseBody isn't required.
+<br/>
+Every request handling method of the controller class automatically serializes return objects into HttpResponse.
+</td>
+</tr>
+ </tbody>
+</table>
+
+<h3>A critical view</h3>
+Now we could have some problems:
+
+<ul>
+<li>Do we understand the solution?</li>
+<li>Are we able to fully understand the role of Java annotations in the code?</li>
+<li>Are we able to improve the solution (for example, by showing a <tt>html</tt> file with a nice output)?</li>
+<li>Are we able to understand the project behind this code? Is it perhaps based on a 
+<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">MVC pattern</a>? And where are the basic components?</li>
+</ul>
+
+The fact is that we have code written in Java but there is something that cannot be 'reduced' to Java.
+
+<h2>About Java Annotations</h2>
+
+<a href="https://en.wikipedia.org/wiki/Java_annotation"  target="web">Java Annotations</a> (introduced in Java release 5 - <tt>Tiger</tt>) 
+are a means to define metadata (<ks>"data about data"</ks>) where the language does not have explicit support for such metadata.
+However, Java annotations   as are not really metadata; rather, they are data about 
+classes, methods, instance and static variables etc.
+<br/><br/>
+Before <tt>Tiger</tt>, the nedd metadata was mainly solved by using
+<a href="Marker interface pattern"  target="web">Marker Interfaces</a> that are interfaces that may not contain any methods, 
+but defined to denote a particular concept or entity within an application.
+For example, the the <tt>java.io.Serializable interface</tt> is a marker interface in that it does not require any methods to be implemented 
+but indicates that a class is capable of being serialized via the <tt>Java Serialization</tt> mechanism.
+
+<br/><br/>
+<a href="https://en.wikipedia.org/wiki/Java_annotation"  target="web">Java Annotations</a> provide three basic facilities
+(see also <a href="https://www.javastaff.com/2009/06/23/java-annotations-cosa-sono-come-utilizzarle-come-crearle/"  target="web">
+Java Annotation: cosa sono, come utilizzarle, come crearle</a>):
+<ul>
+<li>The provision of <k>additional semantics</k> for various class elements. 
+This additional semantic information can help developers to understand the intent behind some feature or implementation detail.</li>
+<li>The execution of <k>additional compile time checks</k> that ensure various constraints are met.</li>
+<li>The support of <k>additional code analysis</k> by annotation-aware tools.</li>
+</ul>
+We can create our own annotations by defining a new annotation type. 
+This is done using a new piece of language syntax, the <k>@interface</k> key word. 
+<br/><br/>
+Note that, if the code relating to an annotation changes, then the associated annotation may also need modification. 
+ 
+
+<!-- You can’t subclass annotations.<br/> -->
+
+ 
+
+ 
+ <h2>Spring annotations</h2>
+The Spring Framework started using annotations from the 2.5 release. 
+Prior to annotations, the behavior of the Spring Framework was largely controlled through (huge) <tt>XML</tt> configuration. 
+
+<br/><br/> 
+The use of annotations provide us tremendous capabilities in how we configure the behaviors of the 
+<a href="https://spring.io/projects/spring-boot" target="web">Spring Boot Framework</a>.
+ 
+The problem is that they introduce radical  extensions (with respect to Java) to the conceptual space available to the software designer.
+<br/><br/>
+By looking  to the set of the available extensions 
+(for an explanation, see <a href=" https://dzone.com/articles/a-guide-to-spring-framework-annotations" target="web">Core Spring Framework Annotations</a>)
+we could ask ourdelves wether we still 'work in Java': 
+
+ 
+
+
+ <m>
+ <table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:25%" ><h3>Core Spring Framework Annotations</h3>
+<ul>
+<li>@Required</li>
+<li>@Autowired</li>
+<li>@Qualifier</li>
+<li>@Configuration</li>
+<li>@ComponentScan</li>
+<li>@Bean</li>
+<li>@Lazy</li>
+<li>@Value</li>
+</ul>
+</td>
+ <td style="width:25%" > <h3>Spring Framework Stereotype Annotations</h3>
+ <ul>
+<li>@omponent</li>
+<li>@Controller</li>
+<li>@Service</li>
+<li>@Repository</li>
+</ul>
+</td>
+<td style="width:25%" ><h3>Spring Boot Annotations</h3>
+<ul>
+<li>@EnableAutoConfiguration</li>
+<li>@SpringBootApplication</li>
+<li>@Service</li>
+<li>@Repository</li>
+</ul>
+</td>
+<td> <h3>Spring MVC and REST Annotations</h3>
+<ul>
+<li>@Controller</li>
+<li>@RequestMapping</li>
+<li>@CookieValue</li>
+<li>@CrossOrigin</li>
+</ul>
+</td> 
+</tr>
+
+
+<tr>
+<td>
+ <h3>Spring MVC and Spring WebFlux</h3>
+<ul>
+<li>@GetMapping</li>
+<li>@PostMapping</li>
+<li>@PutMapping</li>
+<li>@PatchMapping</li>
+<li>@DeleteMapping</li>
+<li>@ExceptionHandler</li>
+<li>@InitBinder</li>
+<li>@Mappings and @Mapping</li>
+<li>@MatrixVariable</li>
+<li>@PathVariable</li>
+<li>@RequestAttribute</li>
+<li>@RequestBody</li>
+<li>@RequestHeader</li>
+<li>@RequestParam</li>
+<li>@RequestPart</li>
+<li>@ResponseBody</li>
+<li>@ResponseStatus</li>
+<li>@ControllerAdvice</li>
+<li>@RestController</li>
+<li>@RestControllerAdvice</li>
+<li>@SessionAttribute</li>
+<li>@SessionAttributes</li>
+</ul>
+
+</td>
+ <td> <h3>Spring Cloud Annotations</h3>
+<ul>
+<li>@EnableConfigServer</li>
+<li>@EnableEurekaServer</li>
+<li>@EnableDiscoveryClient</li>
+<li>@EnableCircuitBreaker</li>
+<li>@HystrixCommand</li>
+ <li></li>
+ 
+</ul>
+</td>
+<td> <h3>Spring Framework DataAccess Annotations</h3>
+<ul>
+<li>@Transactional</li>
+</ul>
+</td>
+<td> <h3>Cache-Based Annotations</h3>
+<ul>
+<li>@Cacheable</li>
+<li>@CachePut</li>
+ <li>@CachePut</li>
+ <li>@CacheEvict</li>
+ <li>@CacheConfig</li>
+</ul>
+</td> 
+</tr>
+
+
+
+<tr>
+<td> <h3>Task Execution and Scheduling Annotations</h3>
+<ul>
+<li>@Scheduled</li>
+<li>@Async</li>
+</ul>
+</td>
+<td>
+ <h3>Spring Framework Testing Annotations</h3>
+<ul>
+<li>@BootstrapWith</li>
+<li>@ContextConfiguration</li>
+<li>@WebAppConfiguration</li> 
+<li>@Timed</li> 
+<li>@Repeat</li> 
+<li>@Commit</li> 
+<li>@RollBack</li> 
+<li>@DirtiesContext</li> 
+<li>@BeforeTransaction</li> 
+<li>@AfterTransaction</li> 
+<li>@Sql</li> 
+<li>@SqlConfig</li> 
+<li>@SqlGroup</li> 
+<li>@SpringBootTest</li> 
+<li>@DataJpaTest</li> 
+<li>@DataMongoTest</li> 
+<li>@WebMVCTest</li> 
+<li>@AutoConfigureMockMVC</li> 
+<li>@MockBean</li> 
+<li>@JsonTest</li> 
+<li>@TestPropertySource</li> 
+<li>@WebMVCTest</li> 
+</ul>
+</td>
+<td></td>
+<td></td>
+</tr>
+
+
+ 
+
+ </tbody>
+</table>
+</m>
+
+<br/>
+Tools like a  <a href="spring-annotations-cheat-sheet.pdf" target="web">spring-annotations-cheat-sheet</a> could be useful, but
+they does not seem the right approach to face the problem of the definition of a proper conceptual space for frameworks that
+(like  the <a href="https://spring.io/projects/spring-boot" target="web">Spring Boot Framework</a>) could become one of our reference tools
+for the development of distributed applications based on the idea of 
+<a href="https://en.wikipedia.org/wiki/Microservices" target="web">microservice</a>.
+
+<h2>Towards a conceptual space (MVC-based)</h2>
+During initial release of Spring, all beans are used to be declared in an <tt>XML</tt> file. 
+For a large project, this quickly becomes a massive task. 
+In later versions, Spring guys provide annotation-based dependency injection and Java-based configuration. 
+From Spring 2.5 annotation-based dependency injection was introduced, which <i>automatically scans</i> and register classes as 
+Spring bean which is annotated using <tt>@Component</tt> annotation. Moreover:
+ <br/><br/>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+ <ul>
+<li><ks>@Component</ks> is a generic stereotype for any Spring-managed component or bean.</li>
+<li><ks>@Controller</ks> is a stereotype for the presentation layer (<tt>Spring MVC</tt>).</li>
+<li><ks>@Service</ks> is a stereotype for the service layer.</li>
+<li><ks>@Repository</ks> is a stereotype for the persistence layer.</li>
+
+</ul>
+
+</td>
+<td><img src="./img/Components.png" alt="Components.png" width="90%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+ 
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+The annotation definitions are:
+<pre><m>@Component
+public @interface Service {
+….
+}
+@Component
+public @interface Repository {
+….
+}
+@Component
+public @interface Controller {
+…
+}</m>
+</pre>
+</td>
+<td>Instead of using <tt>@Component</tt> on a controller class in <tt>Spring MVC</tt>, we use <tt>@Controller</tt>, which is more readable and appropriate.
+By using that annotation we:
+<ol>
+<li>declare that this class is a <tt>Spring bean</tt> and should be created and maintained by <tt>Spring ApplicationContext</tt>;</li>
+<li>indicate that its a controller in <tt>MVC</tt> setup. This property is used by web-specific tools and functionalities.
+For example, <tt>DispatcherServlet</tt> will look for <tt>@RequestMapping</tt>  on classes which are annotated using 
+<tt>@Controller</tt>  but not with <tt>@Component</tt> .
+
+
+
+</td>
+</tr>
+ </tbody>
+</table>
+
+<h3>The service layer</h3>
+On the network we read that "There has been ambiguity about the use of Service layer in Spring". The concept of service layer
+<img src="./img/serviceLayer.png" alt="serviceLayer.png" width="80%"  />
+<br/>
+
+has been introduced for several reasons:<br/><br/>
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:30%" >Provides separation of concern.
+</td>
+<td>Service layer improves code modularity by specifying business logic and rules.
+It makes use of a DAO that is the only responsible for interacting with DB.
+</td>
+</tr>
+
+<tr>
+<td>Improves Security.
+</td>
+<td>If you provide a service layer that has no relation to the DB, then it is more difficult to gain access to the DB 
+from the client except through the service. 
+</td>
+</tr>
+
+<tr>
+<td>Provide Loose Coupling.
+</td>
+<td>Service layer can also be used to serve loose coupling in the application.
+</td>
+</tr>
+
+ </tbody>
+</table>
+ <br/><br/>
+ 
+
+</li>
+</ol>
+<h2>A closer look</h2>
+Let us introduce the following terms:
+<ul>
+<li><kc>Annotation</kc>: (noun)  a note added by way of comment or explanation often furnishing summaries of relevant decisions.</li>
+<li><kc>Stereotype</kc>: (noun) something conforming to a fixed or general <k>pattern</k>; especially : 
+a standardized <ks>mental picture</ks> that is held in common by members of a group and that represents 
+an oversimplified opinion, prejudiced attitude, or uncritical judgment.</li>
+</ul>
+
+ 
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:27%" >
+<k>@SpringBootApplication</k>
+</td>
+<td>A convenient annotation for: <tt>@Configuration</tt>, <tt>@EnableAutoConfiguration</tt>, <tt>@ComponentScan</tt>.<br/>
+<m>The class that is annotated with the <tt>@SpringBootApplication</tt>  must be kept in the base package, 
+and the component scan is made only its sub-packages.</m>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@Configuration</k>
+</td>
+<td>This annotation is used on classes that define <a href="https://www.baeldung.com/spring-bean" target="web">Spring Beans</a>.<br/>
+A bean is an object that is instantiated, assembled, and otherwise managed by a Spring <ks>IoC</ks> container.<br/>
+<m><a href="https://en.wikipedia.org/wiki/Inversion_of_control" target="web">Inversion of Control</a> (<k>IoC</k>) 
+is a process in which an object defines its dependencies without creating them. 
+This object delegates the job of constructing such dependencies to an <tt>IoC container</tt>.</m>
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@EnableAutoConfiguration</k>
+</td>
+<td>Tells Spring Boot to start adding beans based on classpath settings, other beans, and various property settings.
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@ComponentScan</k>
+</td>
+<td>Used to allow Spring to know the packages to scan for annotated components.
+</td>
+</tr>
+
+<tr>
+<td>
+<k>@Component</k>
+</td>
+<td>Indicates that an annotated class is a "component". It is generic <kc>stereotype annotation</kc> for any Spring-managed component.
+The other stereotypes (<ks>Controller, Service, Repository</ks>) are simply specializations of the <tt>@Component</tt> class.<br/>
+<m>You no longer need to add <tt>@ResponseBody</tt> to all the <tt>RequestMapping</tt> methods and
+you no long use view-resolvers or send HTML in response. 
+You just send a <tt>domain object</tt> as an <tt>HTTP</tt> response in the format that is understood by the consumers, like <tt>JSON</tt>.</m>
+</td>
+</tr>
+
+<tr>
+<td ><k>@RestController </k>
+</td>
+<td>A convenience annotation that is itself annotated with <tt>@Controller</tt> and <tt>@ResponseBody</tt>.
+<pre>
+ @Target(value=TYPE)
+ @Retention(value=RUNTIME)
+ @Documented
+ @Controller
+ @ResponseBody
+public @interface RestController
+</pre>
+It marks a class as a controller where every method returns a <ks>domain object</ks> instead of a <ks>view</ks>.
+</td>
+</tr>
+
+<!-- https://www.java67.com/2019/04/top-10-spring-mvc-and-rest-annotations-examples-java.html -->
+<tr>
+<td ><k>@Controller</k>
+</td>
+<td>Indicates that an annotated class is a "Controller" 
+</td>
+</tr>
+
+<tr>
+<td ><k>@ResponseBody</k>
+</td>
+<td>This annotation (similar to <tt>@RequestBody</tt>) is used to annotate request handler methods.
+It indicates that the result type should be written straight in the response body in whatever format you specify like JSON or XML. 
+Spring converts the returned object into a response body by using the 
+<a href="https://dzone.com/articles/spring-mvc-http-message-converter"  target="web">HttpMessageConverter</a>.
+</td>
+</tr>
+
+<tr>
+<td ><k>@RequestBody</k>
+</td>
+<td>This annotation is used to annotate request handler methods arguments.
+It indicates that indicates that a method parameter should be bound to the value of the HTTP request body. 
+The <a href="https://dzone.com/articles/spring-mvc-http-message-converter"  target="web">HttpMessageConverter</a>
+ is responsible for converting from the HTTP request message to object..
+</td>
+</tr>
+
+  
+
+ </tbody>
+</table>
+<br/>
+ 
+
+
+
+
+
+
+ 
+<h2>From components to services</h2>
+
+<table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:20%" >
+<k>@Service</k> 
+</td>
+<td>Indicates that an annotated class is a <ks>Service</ks>, originally defined by by Evans in
+<a href="https://en.wikipedia.org/wiki/Domain-driven_design"  target="web">Domain-driven design</a>
+as "an operation offered as an interface that stands alone in the model, with no encapsulated state."
+</td>
+
+</tr>
+
+<tr>
+<td ><k>@Repository</k>
+</td>
+<td>Indicates that an annotated class is a <ks>Repository</ks>, originally defined by Evans in
+<a href="https://en.wikipedia.org/wiki/Domain-driven_design"  target="web">Domain-driven design</a>as 
+"a mechanism for encapsulating storage, retrieval, and search behavior which emulates a collection of objects".
+</td>
+</tr>
+
+ </tbody>
+</table>
+
+
+<h2>The client site</h2>
+For a long time, Spring has been offering
+<a href="https://howtodoinjava.com/spring-boot2/resttemplate/spring-restful-client-resttemplate-example/" target="web">RestTemplate</a> 
+as a web client abstraction. 
+Under the hood, RestTemplate uses the Java Servlet API, which is based on the thread-per-request model.
+<br/><br/>
+Now, Spring docs recommend to use the non-blocking, reactive WebClient which offers efficient support for both sync, async and streaming scenarios. 
+RestTemplate will be deprecated in a future version.
+<br/><br/>
+In fact, WebClient (part of the Spring WebFlux library) uses an asynchronous, non-blocking solution provided by the Spring Reactive framework. 
+<br/><br/>
+While RestTemplate uses the caller thread for each event (HTTP call), WebClient will create something like a “task” for each event. 
+Behind the scenes, the Reactive framework will queue those 'tasks' and execute them only when the appropriate response is available.
+<br/><br/>
+By default, WebClient uses Reactor Netty as the HTTP client library. But others can be plugged in through a custom ClientHttpConnector.
+https://www.slideshare.net/Trayan_Iliev/spring-5-webflux-advances-in-java-2018
+
+https://github.com/tzolov/coap
+
+https://github.com/tzolov/coap-shell
+ 
+ 
+ 
+
+ <br/><br/>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+</div>  
+
+ 
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+
+</body>
+</html>
+
+
+ 
