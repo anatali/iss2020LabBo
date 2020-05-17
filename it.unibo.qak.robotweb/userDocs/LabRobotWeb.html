@@ -188,10 +188,185 @@ div.imagedesc{
     
 <body>
 <div id="body">
-<h1>LabRobotWeb | </h1>
+<h1>LabRobotWeb | From MVC to Hexagonal architectures</h1>
+
+<h2>The pattern <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">MVC</a></h3>
+The <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">Model-VIew-Controller (MVC)</a>
+is a design pattern that whose original responsibility is to  splits the user interface interaction into three distinct roles moved.
+However over the years, it evolved from a micro to a macro pattern. The important thing to remember is that:
+
+<div class="remark">
+<center>
+
+An <bc>application controller</bc> is a very different beast then an MVC controller - <i>Martin Fowler</i> 
+<br/>
+The <bc>domain model</bc> we need to solve use cases is  <ks>different</ks> then the <bc>view model</bc> we need to provide an user-interface (UI)
+with appropriate data to build views for the user. 
+<br/>
+Be aware of the <a href="https://www.tripled.io/25/08/2016/The-anemic-domain-model/" target="web">The anemic domain model</a>
+</center>
+</div>
+
+
+
+
+ <table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<h3>From  <a href="https://www.tripled.io/08/11/2017/mvc-architecture/" target="web">MODEL, VIEW, CONTROLLER… BUT WHICH MODEL?</a> </h3>
+When MVC is seen as an implementation of the classic three tier architecture then the <i>model</i> represents the data, 
+the <i>controllers</i> contain the business logic, and all view related responsibilities belong in the <i>view</i>. <br/> 
+This then often gives rise to the <a href="https://www.tripled.io/25/08/2016/The-anemic-domain-model/" target="web">The anemic domain model</a>
+(why are domain models so often anemic? Simple answer: They start with databases ...) .
+<br/><br/>
+
+<img src="./img/mvc-architecture.png" alt="mvc-architecture.png" width="80%"  /> 
+<ul>
+<li>The MVC pattern should not depend on the <bc>domain model</bc> directly.</li>
+<li>The<b> model from MVC is its own model</b> created for the specific views.</li>
+<li>Do not connect your presentation directly to the domain model. The domain model should not concern itself with presentation details.</li>
+<li>The MVC patterns belong in the <bc>front end</bc> infrastructure.</li>
+</ul>
+See also <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel" target="web">Model–view–viewmodel</a></li>
+ 
+
+  </td>
+<td>
+<div class="remark">
+The use cases could be implemented using a domain model completely independent from any UI implementation details.
+</div>
+
+
+<img src="./img/mvc-frontend.png" alt="mvc-frontend.png" width="60%"  /> 
+</td>
+</tr>
+ </tbody>
+</table>
+
+ <br/> 
+ 
+ <table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<h3>From <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" target="web">The Clean Architecture</a> </h3>
+<img src="./img/CleanArchitecture.jpg" alt="CleanArchitecture.jpg" width="100%"  /> 
+
+  </td>
+<td>
+<h3>Hexagonal architectures</h3>
+<img src="./img/hexarch1.jpg" alt="hexarch1.jpg" width="100%"  /> 
+</td>
+</tr>
+ </tbody>
+</table>
+ 
+ 
+ 
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+
+
+
+<h3>MVC in Web applications</h3>
+In Web applications, MVC provides a framework for high level interoperability between data sources, control elements, and UI elements.
+ 
+ <ul>
+<li>Some web MVC frameworks take a <a href="https://en.wikipedia.org/wiki/Thin_client"  target="web">thin client</a> approach that places almost the entire model, view and controller logic on the server.</li>
+ 
+<li>Other frameworks such as   <a href=" https://en.wikipedia.org/wiki/AngularJS"  target="web">AngularJS</a>, 
+allow the MVC components to execute partly on the client. </li>
+ </ul>
+ 
+<h3>MVC in IOT</h3>
+ In IoT applications, MVC provides a framework for the structured division of responsibility between people 
+ and software.
+
+<ul>
+<li>The <bc>Model</bc> is a representation or an abstraction of the physical things and their attributes, which informs a Controller. </li>
+<li>The <bc>Controller</bc> is  software which makes actuation decisions based on the information, and sends actuation commands 
+to the thing using it’s modeled affordances.
+ </li> 
+<li><div class="remark">Software goal: to maintain a desired state of the thing through it’s model.</div></li>
+</ul>
+ </td>
+
+<td>
+<img src="./img/mvc.png" alt="mvc.png" width="80%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+
+
+
+<h2>Request processing</h2>
 IO operations can be orders of magnitude slower than data processing. 
  Reading just one kilobyte of data would take 1.4 microseconds (read speed of 200-730 MB/s), 
  but during this time a CPU clocked at 2GHz could have performed 28000 of instruction-processing cycles.
+
+
+<h4>Synchronous request processing</h4>
+ <table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:40%" >
+
+In traditional <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">Model–view–controller (MVC)</a> applications, 
+when a request come to server, 
+<ol>
+<li>a servlet thread is created</li>
+<li>the servlet thread delegates the request to worker threads for <bc>I/O operations</bc> such as database access etc.</li>
+<li>when worker threads are busy, servlet thread (request thread) remain in waiting status and thus it is blocked</li>
+</ol>
+ </td>
+<td>
+<m></m>
+<img src="./img/imgBlocking-request-processing.png" alt="imgBlocking-request-processing.png" width="100%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+
+<h4>Asynchronous request processing</h4>
+ <table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:40%">
+
+<div class ="remark">
+<center>No thread is in waiting state.</center>
+</div>
+There is <bc>only one request thread</bc> receiving the request.
+
+<ol>
+<li>Incoming requests come with a <em>HandlerFunction</em> and <em>call back</em> information</li>
+<li>The request thread delegates the incoming requests to a thread pool</li>
+<li>The request thread immediately start processing other incoming requests from request thread</li>
+<li>The handler function precesses the request given to it; it could reach a potentially (I/O) blocking operation.</li> 
+<li>When the handler function is complete, one of thread from pool collect the response and pass it to the <em>call back</em> function</li>
+<!--
+<li>If the servlet reaches a potentially blocking operation when processing a request, 
+it can assign the operation to an asynchronous execution context and return the thread associated with the request 
+immediately to the container without generating a response</li>
+
+<li>The request thread delegates the incoming requests to a thread pool </li>
+<li>delegate the request to it’s handler function</li>
+-->
+
+ 
+</ol>
+</td> 
+<td>
+<img src="./img/Non-blocking-request-processing.png" alt="Non-blocking-request-processing.png" width="100%"  />
+</td>
+</tr>
+ </tbody>
+</table>
 
 <h2>Reactive programming</h2>
 
@@ -246,64 +421,6 @@ and WebSocket style interactions.
 <br/><br/>
 WebFlux brings reactive programming support to Java web applications in Spring.
 
-<h4>Synchronous request processing</h4>
- <table style="width:98%">
-<tbody>	
-<tr>
-<td style="width:100%" >
-
-In traditional <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">Model–view–controller (MVC)</a> applications, 
-when a request come to server, 
-<ol>
-<li>a servlet thread is created</li>
-<li>the servlet thread delegates the request to worker threads for <bc>I/O operations</bc> such as database access etc.</li>
-<li>when worker threads are busy, servlet thread (request thread) remain in waiting status and thus it is blocked</li>
-</ol>
- 
-
-<m></m>
-<img src="./img/imgBlocking-request-processing.png" alt="imgBlocking-request-processing.png" width="100%"  />
-</td>
-</tr>
- </tbody>
-</table>
-
-<h4>Asynchronous request processing</h4>
- <table style="width:98%">
-<tbody>	
-
-<tr>
-<td>
-
-<div class ="remark">
-In asynchronous request processing, no thread is in waiting state.
-</div>
-There is <bc>only one request thread</bc> receiving the request.
-
-<ol>
-<li>Incoming requests come with a <em>HandlerFunction</em> and <em>call back</em> information</li>
-<li>The request thread delegates the incoming requests to a thread pool</li>
-<li>The handler function precesses the request given to it </li> 
-<li>The request thread immediately start processing other incoming requests from request thread</li>
-<li>When the handler function is complete, one of thread from pool collect the response and pass it to the <em>call back</em> function</li>
-<!--
-<li>If the servlet reaches a potentially blocking operation when processing a request, 
-it can assign the operation to an asynchronous execution context and return the thread associated with the request 
-immediately to the container without generating a response</li>
-
-<li>The request thread delegates the incoming requests to a thread pool </li>
-<li>delegate the request to it’s handler function</li>
--->
-
- 
-</ol>
- 
-
-<img src="./img/Non-blocking-request-processing.png" alt="Non-blocking-request-processing.png" width="100%"  />
-</td>
-</tr>
- </tbody>
-</table>
 
 
 <br/><br/>

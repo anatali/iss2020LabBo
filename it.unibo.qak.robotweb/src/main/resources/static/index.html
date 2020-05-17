@@ -1,0 +1,86 @@
+<!--
+ * See https://www.baeldung.com/spring-boot-change-port
+ * https://howtodoinjava.com/spring-webflux/spring-webflux-tutorial/
+ * https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html
+ * BAD REQUEST ( enctype="text/plain") https://www.ionos.it/digitalguide/hosting/tecniche-hosting/messaggio-di-errore-http-400-alla-ricerca-delle-cause/
+
+Content type 'application/x-www-form-urlencoded' not supported
+when we use application/x-www-form-urlencoded, Spring doesn't understand it as a RequestBody
+-->
+
+<!DOCTYPE html >
+<html>
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>HTPPGUI</title>
+      
+<style>
+		table, th, td {
+		  border: 1px solid black;
+		  border-collapse: collapse;
+		}    
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 5px px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+</style>      
+
+ </head>
+<body>
+<h2>Command the basicrobot (static/index.html)</h2>
+
+<form action="/cmd21" method="post" >  <!-- enctype="text/plain" -->
+  <label for="move">Move (w|r|):</label>
+  <input type="text" id="move" name="move"><br><br>
+  <input type="submit" value="Move">
+</form>
+
+<h2>Old</h2>
+
+	<table style="width:50%">
+	<tbody>
+	<tr>
+	<td><form action="/w" method="post"><button type="submit"/>w</form></td>
+	<td><form action="/s" method="post"><button type="submit"/>s</form></td>
+	</tr>
+
+ 
+	<tr>
+	<td><form action="/r" method="post"><button type="submit"/>r</form></td>
+	<td><form action="/l" method="post"><button type="submit"/>l</form></td>
+
+	</tr>
+
+	<tr>
+	
+	<td><form action="/cmd21" method="post" enctype='text/plain'><input type="submit" style="font-size:20px;"  value="x"  ></form></td>
+	<!-- <td><form action="/x" method="post"><button type="submit"/>x</form></td> -->
+	<td><form action="/cmd21" method="post" enctype='text/plain'><button type="submit" value="z"/>z</form></td>
+	</tr>  
+
+
+	<tr>
+	<td><form action="/cmd21" method="post"><input name="move" id="move" value="p" style="font-size:20px;" ><button>pp</button></form></td>
+	<!-- <td><form action="/p" method="post"><button type="submit"/>p</form></td> -->
+	<td><form action="/h" method="post"><button type="submit"/>h</form></td>
+	</tr>
+	
+	</table>
+
+ 
+<div id="led" align="left"></div>
+
+
+ 
+   	
+</body>
+</html>

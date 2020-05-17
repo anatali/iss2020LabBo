@@ -1,0 +1,44 @@
+api:
+
+  common:
+    version: 1.0.0
+    title: Sample API
+    description: Description of the API...
+    termsOfServiceUrl: MINE TERMS OF SERVICE URL
+    license: License
+    licenseUrl: MY LICENSE URL
+
+    contact:
+      name: Antonio Natali
+      url: https://www.unibo.it/sitoweb/antonio.natali
+      email: antonio.natali@unibo.it
+
+  robot-control:
+
+    get-robot-state:
+      description: Returns a composite view of the specified product id
+      notes: |
+        # Normal response
+        If the requested product id is found the method will return information regarding:
+        1. Base product information
+        1. Reviews
+        1. Recommendations
+        1. Service Addresses\n(technical information regarding the addresses of the microservices that created the response)
+
+  
+server.port: 7001
+
+app:
+  robot-control:
+    host: localhost
+    port: 7001
+ 
+logging:
+  level:
+    root: INFO
+ 
+---
+spring.profiles: docker
+server.port: 8080
+
+ 

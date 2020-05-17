@@ -37,9 +37,10 @@ sourceCompatibility = 1.8
  
 repositories {
     mavenCentral()
-    flatDir {  
-       dirs '/C:/Didattica2018Work/iss2020LabBo/it.unibo.issLabStart/resources'	//full path
-   }
+	flatDir {   dirs '../unibolibs'	 }
+//    flatDir {  
+//       dirs '/C:/Didattica2018Work/iss2020LabBo/it.unibo.issLabStart/resources'	//full path
+//    }
 }
  
 dependencies {

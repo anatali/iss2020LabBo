@@ -1,0 +1,124 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id 'eclipse'		//ADDED	
+	id 'application'    //ADDED to enable distZip - requires to define mainClassName
+ }
+
+group = 'it.unibo.iss'
+version = '0.0.1'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+    jcenter()
+//	maven { url "https://repo.spring.io/snapshot" }
+//	maven { url "https://repo.spring.io/milestone" }
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+    maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+    flatDir {  
+        dirs '../unibolibs'	 
+   }
+ }
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-webflux')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('io.projectreactor:reactor-test')
+
+
+	//implementation 'org.springframework.boot:spring-boot-starter-web'
+	//implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+
+
+	//implementation('org.springframework.boot:spring-boot-starter-actuator')
+    //implementation 'org.springframework.boot:spring-boot-starter-webflux:2.2.4.RELEASE'
+	//implementation('org.springframework.boot:spring-boot-starter-webflux')
+    
+	
+//	testImplementation('org.springframework.boot:spring-boot-starter-test')
+//	testImplementation('io.projectreactor:reactor-test')
+
+//SWAGGER
+/*
+ 	implementation('io.springfox:springfox-swagger2:3.0.0-SNAPSHOT')
+ 	implementation('io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT')
+ 	implementation('io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT')
+*/
+// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+//compile group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
+// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+//compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+// https://mvnrepository.com/artifact/io.springfox/springfox-spring-webflux
+//compile group: 'io.springfox', name: 'springfox-spring-webflux', version: 'pom'
+
+// https://mvnrepository.com/artifact/io.springfox/springfox-spring-web
+//compile group: 'io.springfox', name: 'springfox-spring-web', version: '2.0.1'
+
+
+
+//JSON
+    // https://mvnrepository.com/artifact/org.json/json
+    compile group: 'org.json', name: 'json', version: '20160810'
+
+
+//ARDUINO
+    // https://mvnrepository.com/artifact/org.scream3r/jssc
+    compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+
+//COAP
+	// https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
+	compile group: 'org.eclipse.californium', name: 'californium-core', version: '2.0.0-M12'
+	// https://mvnrepository.com/artifact/org.eclipse.californium/californium-proxy
+	compile group: 'org.eclipse.californium', name: 'californium-proxy', version: '2.0.0-M12'
+
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+
+// https://mvnrepository.com/artifact/commons-io/commons-io
+compile group: 'commons-io', name: 'commons-io', version: '2.6'
+
+// https://mvnrepository.com/artifact/org.json/json
+compile group: 'org.json', name: 'json', version: '20090211'
+
+ 
+	
+//CUSTOM
+    compile name: 'uniboInterfaces'
+    compile name: 'unibonoawtsupports'
+    compile name: 'it.unibo.robotPojo-1.0'
+	//compile name: 'springfox-swagger2-3.0.0-20190803.175454-30.jar'	
+}
+
+ 
+/*
+test {
+	useJUnitPlatform()
+}
+*/
+
+test {
+  testLogging {
+    exceptionFormat = 'full'
+    events = ["passed", "failed", "skipped"]
+    showStandardStreams = true
+  }
+} 
+
+//ADDED
+mainClassName = 'it.unibo.iss.it.unibo.springbootIntro.Application'
+/*
+jar {
+    println("buildig the jar")
+    from sourceSets.main.allSource
+    manifest {
+        attributes 'Main-Class': "$mainClassName"
+    }
+}
+*/
+ 
