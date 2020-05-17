@@ -188,185 +188,7 @@ div.imagedesc{
     
 <body>
 <div id="body">
-<h1>LabRobotWeb | From MVC to Hexagonal architectures</h1>
-
-<h2>The pattern <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">MVC</a></h3>
-The <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">Model-VIew-Controller (MVC)</a>
-is a design pattern that whose original responsibility is to  splits the user interface interaction into three distinct roles moved.
-However over the years, it evolved from a micro to a macro pattern. The important thing to remember is that:
-
-<div class="remark">
-<center>
-
-An <bc>application controller</bc> is a very different beast then an MVC controller - <i>Martin Fowler</i> 
-<br/>
-The <bc>domain model</bc> we need to solve use cases is  <ks>different</ks> then the <bc>view model</bc> we need to provide an user-interface (UI)
-with appropriate data to build views for the user. 
-<br/>
-Be aware of the <a href="https://www.tripled.io/25/08/2016/The-anemic-domain-model/" target="web">The anemic domain model</a>
-</center>
-</div>
-
-
-
-
- <table style="width:98%">
-<tbody>	
-<tr>
-<td style="width:50%" >
-<h3>From  <a href="https://www.tripled.io/08/11/2017/mvc-architecture/" target="web">MODEL, VIEW, CONTROLLER… BUT WHICH MODEL?</a> </h3>
-When MVC is seen as an implementation of the classic three tier architecture then the <i>model</i> represents the data, 
-the <i>controllers</i> contain the business logic, and all view related responsibilities belong in the <i>view</i>. <br/> 
-This then often gives rise to the <a href="https://www.tripled.io/25/08/2016/The-anemic-domain-model/" target="web">The anemic domain model</a>
-(why are domain models so often anemic? Simple answer: They start with databases ...) .
-<br/><br/>
-
-<img src="./img/mvc-architecture.png" alt="mvc-architecture.png" width="80%"  /> 
-<ul>
-<li>The MVC pattern should not depend on the <bc>domain model</bc> directly.</li>
-<li>The<b> model from MVC is its own model</b> created for the specific views.</li>
-<li>Do not connect your presentation directly to the domain model. The domain model should not concern itself with presentation details.</li>
-<li>The MVC patterns belong in the <bc>front end</bc> infrastructure.</li>
-</ul>
-See also <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel" target="web">Model–view–viewmodel</a></li>
- 
-
-  </td>
-<td>
-<div class="remark">
-The use cases could be implemented using a domain model completely independent from any UI implementation details.
-</div>
-
-
-<img src="./img/mvc-frontend.png" alt="mvc-frontend.png" width="60%"  /> 
-</td>
-</tr>
- </tbody>
-</table>
-
- <br/> 
- 
- <table style="width:98%">
-<tbody>	
-<tr>
-<td style="width:50%" >
-<h3>From <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" target="web">The Clean Architecture</a> </h3>
-<img src="./img/CleanArchitecture.jpg" alt="CleanArchitecture.jpg" width="100%"  /> 
-
-  </td>
-<td>
-<h3>Hexagonal architectures</h3>
-<img src="./img/hexarch1.jpg" alt="hexarch1.jpg" width="100%"  /> 
-</td>
-</tr>
- </tbody>
-</table>
- 
- 
- 
-<table style="width:98%">
-<tbody>	
-<tr>
-<td style="width:50%" >
-
-
-
-<h3>MVC in Web applications</h3>
-In Web applications, MVC provides a framework for high level interoperability between data sources, control elements, and UI elements.
- 
- <ul>
-<li>Some web MVC frameworks take a <a href="https://en.wikipedia.org/wiki/Thin_client"  target="web">thin client</a> approach that places almost the entire model, view and controller logic on the server.</li>
- 
-<li>Other frameworks such as   <a href=" https://en.wikipedia.org/wiki/AngularJS"  target="web">AngularJS</a>, 
-allow the MVC components to execute partly on the client. </li>
- </ul>
- 
-<h3>MVC in IOT</h3>
- In IoT applications, MVC provides a framework for the structured division of responsibility between people 
- and software.
-
-<ul>
-<li>The <bc>Model</bc> is a representation or an abstraction of the physical things and their attributes, which informs a Controller. </li>
-<li>The <bc>Controller</bc> is  software which makes actuation decisions based on the information, and sends actuation commands 
-to the thing using it’s modeled affordances.
- </li> 
-<li><div class="remark">Software goal: to maintain a desired state of the thing through it’s model.</div></li>
-</ul>
- </td>
-
-<td>
-<img src="./img/mvc.png" alt="mvc.png" width="80%"  />
-</td>
-</tr>
- </tbody>
-</table>
-
-
-
-<h2>Request processing</h2>
-IO operations can be orders of magnitude slower than data processing. 
- Reading just one kilobyte of data would take 1.4 microseconds (read speed of 200-730 MB/s), 
- but during this time a CPU clocked at 2GHz could have performed 28000 of instruction-processing cycles.
-
-
-<h4>Synchronous request processing</h4>
- <table style="width:98%">
-<tbody>	
-<tr>
-<td style="width:40%" >
-
-In traditional <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">Model–view–controller (MVC)</a> applications, 
-when a request come to server, 
-<ol>
-<li>a servlet thread is created</li>
-<li>the servlet thread delegates the request to worker threads for <bc>I/O operations</bc> such as database access etc.</li>
-<li>when worker threads are busy, servlet thread (request thread) remain in waiting status and thus it is blocked</li>
-</ol>
- </td>
-<td>
-<m></m>
-<img src="./img/imgBlocking-request-processing.png" alt="imgBlocking-request-processing.png" width="100%"  />
-</td>
-</tr>
- </tbody>
-</table>
-
-<h4>Asynchronous request processing</h4>
- <table style="width:98%">
-<tbody>	
-
-<tr>
-<td style="width:40%">
-
-<div class ="remark">
-<center>No thread is in waiting state.</center>
-</div>
-There is <bc>only one request thread</bc> receiving the request.
-
-<ol>
-<li>Incoming requests come with a <em>HandlerFunction</em> and <em>call back</em> information</li>
-<li>The request thread delegates the incoming requests to a thread pool</li>
-<li>The request thread immediately start processing other incoming requests from request thread</li>
-<li>The handler function precesses the request given to it; it could reach a potentially (I/O) blocking operation.</li> 
-<li>When the handler function is complete, one of thread from pool collect the response and pass it to the <em>call back</em> function</li>
-<!--
-<li>If the servlet reaches a potentially blocking operation when processing a request, 
-it can assign the operation to an asynchronous execution context and return the thread associated with the request 
-immediately to the container without generating a response</li>
-
-<li>The request thread delegates the incoming requests to a thread pool </li>
-<li>delegate the request to it’s handler function</li>
--->
-
- 
-</ol>
-</td> 
-<td>
-<img src="./img/Non-blocking-request-processing.png" alt="Non-blocking-request-processing.png" width="100%"  />
-</td>
-</tr>
- </tbody>
-</table>
+<h1>LabRobotWeb | A front-end for robot applications</h1>
 
 <h2>Reactive programming</h2>
 
@@ -383,8 +205,56 @@ It is not great for developing traditional CRUD applications.
 For a longer introductio, see
 <a href="https://spring.io/blog/2016/06/07/notes-on-reactive-programming-part-i-the-reactive-landscape" traget="web">The Reactive Landscape</a> by  DAVE SYER.
 
+<h3>Overview</h3>
+<ul>
+<li>
+A <em>stream</em> is a sequence of data elements made available over time. 
+See also <a href="https://en.wikipedia.org/wiki/Coinduction#Codata" target="web">Coinduction and codata</a>.
+</li>
+<li>
+Streams are processed differently from batch data: normal functions cannot operate on streams as a whole.<br/>
+<em>Stream processing</em> is a computer programming paradigm, equivalent to 
+<a href="https://en.wikipedia.org/wiki/Dataflow_programming" target="web">dataflow programming</a>
+, 
+<a href="https://en.wikipedia.org/wiki/Event_stream_processing" target="web">event stream processing</a>
+, and 
+<a href="https://en.wikipedia.org/wiki/Reactive_programming" target="web">reactive programming.</a>.
+Stream processing allows some applications to more easily exploit a limited form of parallel processing.
+Given a  stream, a series of functions (usually <em>pipelined</em>) is applied to each element in the stream. 
+
+</li>
+<li>Functions that operate on a stream, producing another stream, are known as <em>filters</em>, and can be connected in pipelines, 
+analogously to function composition.
+Filters may operate on one item of a stream at a time, or may base an item of output on multiple items of input, 
+such as a moving average.</li>
+
+<li><a href="https://en.wikipedia.org/wiki/Reactive_extensions" target="web">Reactive Extensions</a>
+((also known as <em>ReactiveX</em>)) is an <tt>API</tt> for <bc>asynchronous programming with observable streams</bc>.
+<tt>ReactiveX</tt> is a combination of ideas from the <em>observer</em> and the <em>iterator</em> patterns and from <em>functional programming</em>
+and  provides a set of tools allowing imperative programming languages to operate on sequences of data regardless 
+of whether the data is synchronous or asynchronous.
+<br/><br/>
+<ul>
+<li><bc>Asynchronous programming</bc> allows programmers to call functions and then have the functions "callback" when they are done, 
+usually by giving the function the address of another function to execute when it is done. 
+Programs designed in this way often avoid the overhead of having many threads constantly starting and stopping.
+</li>
+<li>
+<bc>Observable streams</bc> in the context of Reactive Extensions are like 'event emitters' 
+that emit 3 'events': <em>next</em>, <em>error</em>, and <em>complete</em>. 
+An observable emits <tt>next</tt> events until it either emits an <tt>error</tt> event or a <tt>complete</tt> event. 
+However, at that point it will not emit any more events, unless it is subscribed to again.
+
+</li>
+
+</ul>
+
+</li>
+</ul>
+
 <h4>Back pressure</h4>
 A key aspect of reactive applications is the concept of <bc>backpressure</bc>, which is a mechanism to ensure producers don't overwhelm consumers. 
+
 
 
 <h3>Reactive programming in Java</h3>
@@ -403,6 +273,11 @@ It has since been implemented in Akka, Ratpack, Vert.x and Spring where it was n
 It was finally incorporated into the JDK in Java 9.</li>
 <li>
 </ol>
+
+
+ 
+<h2 id="rxexamples">Examples</h2> 
+ 
 
 <h2>Spring and Spring Boot</h2>
 <a href="https://en.wikipedia.org/wiki/Spring_Framework" target="web">Spring</a> is a framework provides comprehensive infrastructure support for developing Java applications.
