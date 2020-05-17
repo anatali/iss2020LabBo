@@ -190,6 +190,95 @@ div.imagedesc{
 <div id="body">
 <h1>LabRobotWeb | A front-end for robot applications</h1>
 
+<h2>Request processing</h2>
+IO operations can be orders of magnitude slower than data processing. 
+ Reading just one kilobyte of data would take 1.4 microseconds (read speed of 200-730 MB/s), 
+ but during this time a CPU clocked at 2GHz could have performed 28000 of instruction-processing cycles.
+
+
+<h4>Synchronous request processing</h4>
+ <table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:40%" >
+
+In traditional <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="web">Model–view–controller (MVC)</a> applications, 
+when a request come to server, 
+<ol>
+<li>a servlet thread is created</li>
+<li>the servlet thread delegates the request to worker threads for <bc>I/O operations</bc> such as database access etc.</li>
+<li>when worker threads are busy, servlet thread (request thread) remain in waiting status and thus it is blocked</li>
+</ol>
+ </td>
+<td>
+<m></m>
+<img src="./img/imgBlocking-request-processing.png" alt="imgBlocking-request-processing.png" width="100%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+
+<h4>Asynchronous request processing</h4>
+ <table style="width:98%">
+<tbody>	
+
+<tr>
+<td style="width:40%">
+
+<div class ="remark">
+<center>No thread is in waiting state.</center>
+</div>
+There is <bc>only one request thread</bc> receiving the request.
+
+<ol>
+<li>Incoming requests come with a <em>HandlerFunction</em> and <em>call back</em> information</li>
+<li>The request thread delegates the incoming requests to a thread pool</li>
+<li>The request thread immediately start processing other incoming requests from request thread</li>
+<li>The handler function precesses the request given to it; it could reach a potentially (I/O) blocking operation.</li> 
+<li>When the handler function is complete, one of thread from pool collect the response and pass it to the <em>call back</em> function</li>
+<!--
+<li>If the servlet reaches a potentially blocking operation when processing a request, 
+it can assign the operation to an asynchronous execution context and return the thread associated with the request 
+immediately to the container without generating a response</li>
+
+<li>The request thread delegates the incoming requests to a thread pool </li>
+<li>delegate the request to it’s handler function</li>
+-->
+
+ 
+</ol>
+</td> 
+<td>
+<img src="./img/Non-blocking-request-processing.png" alt="Non-blocking-request-processing.png" width="100%"  />
+</td>
+</tr>
+ </tbody>
+</table>
+
+<h2>Beyond request-response</h2>
+<!-- See https://www.confluent.io/blog/microservices-apache-kafka-domain-driven-design/ -->
+When we consider microservice communication, the approach that most people start with is REST, 
+i.e., communication with synchronous HTTP(S) calls. This works well for many use cases. 
+However, the request-response pattern creates point-to-point connections that couple both sender to receiver and receiver to sender, 
+making it hard to change one component without impacting others.
+<br/><br/>
+Due to this, many architects use <bc>middleware as a backbone</bc> for microservice communication to create decoupled, scalable, 
+and highly available systems. Middleware can be anything—some custom glue code or framework, a messaging system like  
+<a href="https://en.wikipedia.org/wiki/RabbitMQ" target="web">RabbitMQ</a>, 
+an <k>ETL</k> (Extract, Transform and Load) tool like Talend, an <k>ESB</k> (Enterprose Service Bus) like WSO2, or an event streaming platform like 
+<a href="https://en.wikipedia.org/wiki/Apache_Kafka"  target="web">Apache Kafka</a>.
+
+
+<h3 id="kafka"><a href="https://en.wikipedia.org/wiki/Apache_Kafka"  target="web">Apache Kafka</a></h3>
+Apache Kafka is going to became a de facto standard for microservices is its combination of three powerful concepts:<br/><br/>
+<ul>
+<li>Publish and subscribe to streams of events, similar to a message queue or enterprise messaging system.</li>
+<li>Store streams of events in a fault-tolerant way.</li>
+<li>Process streams of events in real time, as they occur.</li>
+</ul>
+
+<!-- See https://www.confluent.io/blog/apache-kafka-vs-enterprise-service-bus-esb-friends-enemies-or-frenemies/ -->
+
 
 
 <h2>Spring and Spring Boot</h2>

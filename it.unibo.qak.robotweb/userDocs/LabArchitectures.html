@@ -504,41 +504,7 @@ Apache Kafka is going to became a de facto standard for microservices is its com
 
 
 
-<h2>Reactive programming</h2>
 
-<!-- The term, <bc>reactive</bc>, refers to programming models that are built around reacting to changes. -->
-Reactive programming is about non-blocking applications that are asynchronous and event-driven and 
-require a small number of threads to scale vertically (i.e. within the JVM) rather than horizontally (i.e. through clustering)
-<br/><br/>
-In this style of programming, we make a request for resource and start performing other things. 
-When the data is available, we get the notification along with data in form of a <bc>call back</bc> function. 
-<br/><br/>
-Reactive web programming is great for applications that have streaming data, and clients that consume it and stream it to their users. 
-It is not great for developing traditional CRUD applications. 
-<br/><br/>
-For a longer introductio, see
-<a href="https://spring.io/blog/2016/06/07/notes-on-reactive-programming-part-i-the-reactive-landscape" traget="web">The Reactive Landscape</a> by  DAVE SYER.
-
-<h4>Back pressure</h4>
-A key aspect of reactive applications is the concept of <bc>backpressure</bc>, which is a mechanism to ensure producers don't overwhelm consumers. 
-
-
-<h3>Reactive programming in Java</h3>
-<ol>
-<li>Reactive programming in Java has gradually been progressing ever since the introduction of ‘<bc>Futures</bc>’ in Java 1.5 – 
-(Futures are akin to <bc>Promises</bc> in the Javascript world).</li>
-<li>Java 1.8 brought us ‘<bc>CompletableFutures</bc>’ where futures could be chained together (amongst other things)</li>
-<li>Next came Netflix’s RxJava which offered the ‘Observable’ type – facilitating producer ‘push’ based values 
-(rather than consumer pull based)  as well as a the Flowable type – which allows ‘Back Pressure’ mechanisms 
-to be implemented i.e. where consumers can express how many items are they ready to process, thus keeping memory usage more controllable and stable.
-</li>
-<li>Eventually a collaboration between engineers from Kaazing, Netflix, Pivotal, Red Hat, Twitter, Typesafe to name a few, 
-defined us all a <bc>common API</bc> (<a href="https://www.reactive-streams.org/" traget="web">Reactive Streams</a>) for <i>Reactive Programming in Java</i>. 
-It has since been implemented in Akka, Ratpack, Vert.x and Spring where it was named 
-<a href="https://projectreactor.io/docs/core/release/reference/" traget="web"><bc>Reactor</bc></a> (that runs on Java 8 and above).  
-It was finally incorporated into the JDK in Java 9.</li>
-<li>
-</ol>
 
  
  <br/><br/>
