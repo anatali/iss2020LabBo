@@ -110,8 +110,14 @@ test {
   }
 } 
 
+sourceSets {
+    main.java.srcDirs += 'src/main/java'
+    main.java.srcDirs += 'src/main/resources'
+    test.java.srcDirs += 'src/main/test'		//test is specific
+}
+
 //ADDED
-mainClassName = 'it.unibo.iss.it.unibo.springbootIntro.Application'
+mainClassName = ''
 /*
 jar {
     println("buildig the jar")

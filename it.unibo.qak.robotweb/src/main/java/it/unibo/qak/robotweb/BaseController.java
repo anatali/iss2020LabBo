@@ -70,10 +70,7 @@ public class BaseController {
 	            return Mono.just("cmd21 done "+ formDataResponse.getFirst("move")  + " " + formDataResponse.get("move")); //cmd21 done r [r]
 	        });
 	}
-  
-  
-  
-  
+   
   
   @GetMapping("/test1")
     @ResponseBody
