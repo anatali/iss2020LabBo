@@ -39,18 +39,19 @@ when we use application/x-www-form-urlencoded, Spring doesn't understand it as a
 <h1><span th:text="${arg}">Our Arg</span></h1>
 
 
-<p>I am <i>webspring.intro - templates/gui.html</i></p>
+<p>I am <i>webspring.intro - templates/guiMoves.html</i></p>
 
 
-<form action="/movegui" method="post" enctype='text/plain'>
-	<input type="submit" style="font-size:20px;" value="open the move gui">
+<form action="/move" method="post" >  <!-- enctype="text/plain" -->
+  <label for="move">Move (w|s|r|l|h|z|x):</label>
+  <input type="text" id="move" name="move"> <input type="submit" value="move">
 </form>
+
 <br/><br/>
-<form action="/w" method="post">
-	<input name="move" id="move" value="move ahead" style="font-size:20px;" >
-	<button>w</button>
-</form>
 
+<form action="/home" method="post" enctype='text/plain'>
+	<input type="submit" style="font-size:20px;" value="back to home">
+</form>
  
 <div id="led" align="left"></div>
 
