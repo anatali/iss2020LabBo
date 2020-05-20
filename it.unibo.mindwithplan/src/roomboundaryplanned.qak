@@ -1,0 +1,116 @@
+/*
+ * Builds a map of the room by using the planner
+ */
+System roomboundaryplanned
+mqttBroker "localhost" : 1883 eventTopic ""
+
+Dispatch modelChange  : modelChange( TARGET, VALUE )   
+Dispatch modelUpdate  : modelUpdate( TARGET, VALUE )
+
+Dispatch cmd       : cmd(MOVE)
+
+Request step       : step( TIME )	   
+Reply   stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)
+
+
+Context ctxBoundaryPlanned    ip [host="localhost" port=8068]                 
+Context ctxBasicrobot         ip [host="127.0.0.1" port=8020] 
+//Context ctxDummyForMind       ip [host="otherresourcelocalhost" port=8035]    
+
+//ExternalQActor resourcemodel context ctxDummyForMind
+//ExternalQActor onestepahead  context ctxDummyForMind
+
+ExternalQActor basicrobot context ctxBasicrobot 
+
+QActor roomboudaryexplorer context ctxBoundaryPlanned{      
+[#
+var mapEmpty    = false
+val mapname     = "roomMbot3"  //"roomBoundary"		// 
+var Tback       = 0
+var NumStep     = 0
+ 
+//REAL ROBOT
+//var StepTime   = 1000	 
+//var PauseTime  = 500 
+
+//VIRTUAL ROBOT
+var StepTime   = 330	 
+var PauseTime  = 250
+
+//var PauseTimeL  = PauseTime.toLong()
+#]
+	State s0 initial {	 
+ 		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.moveUtils.showCurrentRobotState()
+ 	}
+    Goto detectBoundary  
+    
+    State detectBoundary{  
+    	[# NumStep++ #]
+      	//NO GOAL : JUST ONE STEP ahead
+  		run itunibo.planner.plannerUtil.showMap()  
+     }
+    Goto doAheadMove if [# (NumStep<5) #] else boundaryFound
+
+ 	State doAheadMove{
+ 		printCurrentMessage
+   		//qrun itunibo.planner.moveUtils.attemptTomoveAhead(myself, StepTime)
+   		request basicrobot -m step : step( $StepTime  )
+	}
+	Transition t0  whenReply stepdone -> stepDone
+				   whenReply stepfail -> stepFail
+ 
+	 
+ 	State stepDone{  
+ 		qrun itunibo.planner.moveUtils.updateMapAfterAheadOk(myself)
+		delay 500
+ 	}
+	Goto doAheadMove
+
+	//onestepahead has found an obstacle
+	State stepFail{  
+		println("&&&  FOUND WALL") 
+[#
+val MapStr =  itunibo.planner.plannerUtil.getMapOneLine() 
+var Dt = 0L 
+//println( MapStr ) 
+#]		
+// 		forward resourcemodel -m modelUpdate : modelUpdate(roomMap,$MapStr)   	//TODO NEXT
+		
+ 		
+		//printCurrentMessage		        
+ 		onMsg( stepfail : stepfail(Time, Obs) ) { 
+ 			[# 
+ 			   Dt = payloadArg(0).toLong()  
+ 			#] //back just a little ..
+ 			println("stepFailed ${payloadArg(1).toString()}")
+ 		}
+  		//Return in cell
+  	 	//IMPORTANT: the virtual robot could not work without a back step 	
+  	 	//NOW INCLUDED in robotDataSource for robotVirtual
+// 		qrun itunibo.planner.moveUtils.backToCompensate(myself, Tback, Tback)    
+			if [# Dt < 3*StepTime/4.0  #] {    
+				forward basicrobot -m cmd : cmd( s )
+				delayVar Dt 
+				forward basicrobot -m cmd : cmd( h )
+			}	
+  
+ //--------------------------------------------------
+ 		run itunibo.planner.plannerUtil.wallFound()
+//--------------------------------------------------
+//		qrun itunibo.planner.moveUtils.rotateLeft90( myself )
+		forward basicrobot -m cmd : cmd( l )
+//		[# println("		PLEASE TUNE THE ROTATION LEFT" ); readLine() #]
+	}   
+    Goto detectBoundary
+ 
+ 	State boundaryFound{
+		run itunibo.planner.plannerUtil.saveMap(mapname)
+		println("FINAL MAP")   
+ 		run itunibo.planner.moveUtils.showCurrentRobotState()
+  	}
+ 	      
+}	
+
+ 

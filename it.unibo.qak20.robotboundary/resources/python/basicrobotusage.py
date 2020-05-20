@@ -16,7 +16,7 @@ turnRightMsg  = "msg(cmd,dispatch,python,basicrobot,cmd(d),1)"
 haltMsg       = "msg(cmd,dispatch,python,basicrobot,cmd(h),1)"
 
 def connect(port) :
-    server_address = ('127.0.0.1', port)
+    server_address = ('localhost', port)
     sock.connect(server_address)    
     print("CONNECTED ... WITH basicrobot" , server_address)
 
@@ -43,5 +43,5 @@ def terminate() :
 ###########################################    
 connect(basicRobotPort)
 work()
-read()
+##read()
 terminate()  

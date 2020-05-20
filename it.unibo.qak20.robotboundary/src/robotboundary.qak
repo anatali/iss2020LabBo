@@ -36,7 +36,7 @@ var Workduration = 0L
 		println("-----------------")
 		run mapRoomKotlin.mapUtil.showMap()  //initial map empty  
 		delay 2000  //just to look at the reference map and the current map
-// 		forward robotboundary -m start : start(auto) 
+ 		forward robotboundary -m start : start(auto) 
 		updateResource [# "initial" #]
 	}	
 	Transition t0 whenMsg start -> startWork 

@@ -37,7 +37,7 @@ object robotSupport{
 
 		when( robotKind ){
 			"mockrobot"  ->  { robotMock.mockrobotSupport.create(  ) }
-			"virtual"    ->  { robotVirtual.virtualRobotSupportQak.initClientConn( owner, "localhost", robotPort) }
+			"virtual"    ->  { robotVirtual.virtualrobotSupport.create( owner, "localhost", robotPort) }
 			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) //robotPort="/dev/ttyUSB0"   "COM6"
 				//create an actor named realsonar			
 			} 
@@ -63,7 +63,7 @@ object robotSupport{
 //		println("robotSupport move cmd=$cmd robotKind=$robotKind" )
 		when( robotKind ){
 			"mockrobot"  -> { robotMock.mockrobotSupport.move( cmd ) 					  }
-			"virtual"    -> { robotVirtual.virtualRobotSupportQak.doApplMove(  cmd ) 	  }	
+			"virtual"    -> { robotVirtual.virtualrobotSupport.move(  cmd ) 	  }	
 			"realmbot"   -> { robotMbot.mbotSupport.move( cmd ) 	}
  			"realnano"   -> { robotNano.motorscSupport.move( cmd)	}
 			else         -> println( "		--- robotSupport | robot unknown")
@@ -73,7 +73,7 @@ object robotSupport{
 	fun terminate(){
 		when( robotKind ){
 			"mockrobot"  -> {  					                  }
-			"virtual"    -> { robotVirtual.virtualRobotSupportQak.terminatevr(  ) 	  }	
+			"virtual"    -> { robotVirtual.virtualrobotSupport.terminate(  ) 	  }	
  			"realmbot"   -> { /* robotMbot.mbotSupport.terminate(  ) */	}
  			"realnano"   -> {robotNano.motorscSupport.terminate( )	}
 			else         -> println( "		--- robotSupport | robot unknown")

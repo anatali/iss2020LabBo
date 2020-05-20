@@ -4,10 +4,10 @@ object sysConnKb{
 	
 	val mqtthostAddr    = "broker.hivemq.com"
 	val mqttport		= "1883" 
-	val hostAddr 		= "192.168.1.22"
-	val port     		= "8014"
-	val qakdestination 	= "virtualrobot"
-	val ctxqadest       = "ctxvirtualdemo"
+	val hostAddr 		= "192.168.1.68"
+	val port     		= "8020"
+	val qakdestination 	= "bascirobot"
+	val ctxqadest       = "ctxbasicrobot"
 	
 	
 	//val qakdestination 	= "nanorobot"

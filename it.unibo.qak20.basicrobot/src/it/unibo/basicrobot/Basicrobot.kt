@@ -27,13 +27,13 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						unibo.robot.robotSupport.create(myself ,"basicrobotConfig.json" )
 						println("basicrobot | attempts to activate the sonar pipe")
 						  //For real robots
-						 			var realsonar = context!!.hasActor("realsonar") //sysUtil.getActor("realsonar")
-						 			if( realsonar != null ){ 
-						 				println("basicrobot | WORKING IN A REAL ENV") 
+						 			var robotsonar = context!!.hasActor("robotsonar")  
+						 			if( robotsonar != null ){ 
+						 				println("basicrobot | WORKING WITH SONARS") 
 						 				//ACTIVATE THE DATA SOURCE realsonar
-						 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+						 				forward("sonarstart", "sonarstart(1)" ,"robotsonar" ) 				
 						 				//SET THE PIPE
-						 				realsonar.
+						 				robotsonar.
 						 				subscribeLocalActor("datacleaner").
 						 				subscribeLocalActor("distancefilter").
 						 				subscribeLocalActor("basicrobot")		//in order to perceive obstacle
@@ -51,22 +51,9 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("work") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t10",targetState="handleCollision",cond=whenDispatch("collision"))
-					transition(edgeName="t11",targetState="execcmd",cond=whenDispatch("cmd"))
-					transition(edgeName="t12",targetState="doStep",cond=whenRequest("step"))
-					transition(edgeName="t13",targetState="endwork",cond=whenDispatch("end"))
-				}	 
-				state("handleCollision") { //this:State
-					action { //it:State
-						println("basicrobot | handleCollision")
-						if( checkMsgContent( Term.createTerm("collision(TARGET)"), Term.createTerm("collision(TARGET)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								updateResourceRep( "collision"  
-								)
-								emit("obstacle", "obstacle(payloadArg(0))" ) 
-						}
-					}
-					 transition( edgeName="goto",targetState="work", cond=doswitch() )
+					 transition(edgeName="t10",targetState="execcmd",cond=whenDispatch("cmd"))
+					transition(edgeName="t11",targetState="doStep",cond=whenRequest("step"))
+					transition(edgeName="t12",targetState="endwork",cond=whenDispatch("end"))
 				}	 
 				state("execcmd") { //this:State
 					action { //it:State
@@ -93,8 +80,8 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						stateTimer = TimerActor("timer_doStep", 
 							scope, context!!, "local_tout_basicrobot_doStep", StepTime )
 					}
-					 transition(edgeName="t04",targetState="stepPerhapsDone",cond=whenTimeout("local_tout_basicrobot_doStep"))   
-					transition(edgeName="t05",targetState="stepFail",cond=whenDispatch("collision"))
+					 transition(edgeName="t03",targetState="stepPerhapsDone",cond=whenTimeout("local_tout_basicrobot_doStep"))   
+					transition(edgeName="t04",targetState="stepFail",cond=whenEvent("obstacle"))
 				}	 
 				state("stepPerhapsDone") { //this:State
 					action { //it:State
@@ -102,8 +89,8 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						stateTimer = TimerActor("timer_stepPerhapsDone", 
 							scope, context!!, "local_tout_basicrobot_stepPerhapsDone", StepTime )
 					}
-					 transition(edgeName="t06",targetState="stepDone",cond=whenTimeout("local_tout_basicrobot_stepPerhapsDone"))   
-					transition(edgeName="t07",targetState="stepFailDetected",cond=whenDispatch("collision"))
+					 transition(edgeName="t05",targetState="stepDone",cond=whenTimeout("local_tout_basicrobot_stepPerhapsDone"))   
+					transition(edgeName="t06",targetState="stepFailDetected",cond=whenEvent("obstacle"))
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State

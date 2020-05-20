@@ -4,9 +4,9 @@ import java.util.Observable
 import it.unibo.kactor.ApplMessage
 import connQak.connQakCoap
  
-//enum class ConnectionType {
-//    TCP, MQTT, COAP, HTTP
-//}
+enum class ConnectionType {
+    TCP, MQTT, COAP, HTTP
+}
 
 //@file:JvmName("ConnUtils")
 abstract class connQakBase(val hostIP : String,   val port : String,   val destName : String) {
@@ -17,17 +17,19 @@ lateinit var currQakConn  : connQakBase
 			   destName : String) : connQakBase{
 		  showSystemInfo()
 		  when( connType ){
-				 ConnectionType.MQTT -> 
-				 	{return connQakMqtt(hostIP, port, destName)}  
-				 ConnectionType.TCP ->
-				 	{return connQakTcp(hostIP, port, destName)}  
 				 ConnectionType.COAP ->
 				 	{return connQakCoap(hostIP, port, destName)}  
-  				 ConnectionType.HTTP ->  
- 				 	{return connQakHttp(hostIP, port, destName)} 
-//   				 else -> //println("WARNING: protocol unknown")
+//				 ConnectionType.MQTT -> 
+//				 	{return connQakMqtt(hostIP, port, destName)}  
+//  				 ConnectionType.HTTP ->  
+// 				 	{return connQakHttp(hostIP, port, destName)} 
+//				 ConnectionType.TCP ->
+//				 	{return connQakTcp(hostIP, port, destName)}  
+   				 else -> { println("WARNING: protocol unknown");
+					 return connQakCoap(hostIP, port, destName)} 
  		  }		
 	}
+		
 	fun showSystemInfo(){
 		println(
 			"connQakBase  | COMPUTER memory="+ Runtime.getRuntime().totalMemory() +
@@ -36,6 +38,9 @@ lateinit var currQakConn  : connQakBase
 			"connQakBase  | NUM of threads="+ Thread.activeCount() +
 					" currentThread=" + Thread.currentThread() );
 	}
+	fun println(msg : String){
+		System.out.println(msg)
+	}
 	}//object
 
 	
@@ -43,6 +48,10 @@ lateinit var currQakConn  : connQakBase
       abstract fun forward( msg : ApplMessage )
       abstract fun request( msg : ApplMessage )
       abstract fun emit( msg : ApplMessage )
+	
+	fun println(msg : String){
+		System.out.println(msg)
+	}
 	
 }
 

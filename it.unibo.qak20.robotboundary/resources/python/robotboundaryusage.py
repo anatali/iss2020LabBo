@@ -53,5 +53,5 @@ def terminate() :
 ###########################################    
 connect(robotboundaryPort)
 work()
-read()
+##read()
 terminate()  

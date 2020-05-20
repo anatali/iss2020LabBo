@@ -30,6 +30,7 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						println("-----------------")
 						mapRoomKotlin.mapUtil.showMap(  )
 						delay(2000) 
+						forward("start", "start(auto)" ,"robotboundary" ) 
 						updateResourceRep( "initial"  
 						)
 					}

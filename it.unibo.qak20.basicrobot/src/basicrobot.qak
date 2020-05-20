@@ -15,7 +15,7 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
-Dispatch  collision  : collision( TARGET )
+//Dispatch  collision  : collision( TARGET )
 Event     obstacle   : obstacle( ARG ) 
 //Event virtualobstacle  : virtualobstacle( OBJNAME )  //(for remove)
  
@@ -38,13 +38,13 @@ QActor basicrobot context ctxbasicrobot{
 // 		delay 1000  //give to the realsonar (if any) the time to start
  		println("basicrobot | attempts to activate the sonar pipe")	
  		[#  //For real robots
- 			var realsonar = context!!.hasActor("realsonar") //sysUtil.getActor("realsonar")
- 			if( realsonar != null ){ 
- 				println("basicrobot | WORKING IN A REAL ENV") 
+ 			var robotsonar = context!!.hasActor("robotsonar")  
+ 			if( robotsonar != null ){ 
+ 				println("basicrobot | WORKING WITH SONARS") 
  				//ACTIVATE THE DATA SOURCE realsonar
- 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
+ 				forward("sonarstart", "sonarstart(1)" ,"robotsonar" ) 				
  				//SET THE PIPE
- 				realsonar.
+ 				robotsonar.
  				subscribeLocalActor("datacleaner").
  				subscribeLocalActor("distancefilter").
  				subscribeLocalActor("basicrobot")		//in order to perceive obstacle
@@ -61,20 +61,21 @@ QActor basicrobot context ctxbasicrobot{
 	
 	State work{ 
 	} 
-	Transition t1   whenMsg   collision   -> handleCollision
+	Transition t1   //whenMsg   collision   -> handleCollision
+					//whenEvent obstacle -> handleCollision
 					whenMsg     cmd       -> execcmd
 					whenRequest step      -> doStep
 				  	whenMsg     end       -> endwork			  
 	
-	State handleCollision{
-		//printCurrentMessage
-		println("basicrobot | handleCollision")	
-		onMsg( collision  : collision( TARGET ) ){
-			updateResource [# "collision" #]
-			emit obstacle : obstacle(payloadArg(0))
-		}
-	}
-	Goto work 
+//	State handleCollision{
+//		//printCurrentMessage
+//		println("basicrobot | handleCollision")	
+//		onMsg( obstacle  : obstacle( TARGET ) ){
+//			updateResource [# "collision" #]
+//			emit obstacle : obstacle(payloadArg(0))
+//		}
+//	}
+//	Goto work 
 
 	State execcmd{
 		//printCurrentMessage
@@ -93,20 +94,19 @@ QActor basicrobot context ctxbasicrobot{
 			updateResource [# "step(${StepTime})" #]
 			println("basicrobot | doStep StepTime =$StepTime ")
  			run unibo.robot.robotSupport.move( "w" )
- 			memoCurrentTime StartTime
+ 			memoCurrentTime StartTime  
 		}  
 	}  
 	Transition t0 
 		whenTimeVar StepTime      -> stepPerhapsDone	
-		whenMsg  collision        -> stepFail		//Event??
-//  	    whenEvent virtualobstacle -> stepFail	//Virtual : see smartrobot (subsumption)
- 	
+		whenEvent  obstacle       -> stepFail		 
+  	
  	State stepPerhapsDone{
  		run unibo.robot.robotSupport.move( "h" )  //stop the robot
   		//println("basicrobot | stepPerhapsDone ")
  	}
  	Transition t0 whenTimeVar StepTime    -> stepDone  //StepTime is the worst case
- 				  whenMsg collision       -> stepFailDetected
+ 				  whenEvent obstacle      -> stepFailDetected
 	
 	State stepDone{   
  		run unibo.robot.robotSupport.move( "h" )  //stop the robot
