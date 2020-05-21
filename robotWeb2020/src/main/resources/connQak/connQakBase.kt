@@ -5,7 +5,7 @@ import it.unibo.kactor.ApplMessage
 import connQak.connQakCoap
  
 enum class ConnectionType {
-    TCP, MQTT, COAP, HTTP
+    TCP, MQTT, COAP, HTTP  
 }
 
 //@file:JvmName("ConnUtils")
@@ -23,7 +23,7 @@ lateinit var currQakConn  : connQakBase
 //				 	{return connQakMqtt(hostIP, port, destName)}  
 //  				 ConnectionType.HTTP ->  
 // 				 	{return connQakHttp(hostIP, port, destName)} 
-//				 ConnectionType.TCP ->
+//				 ConnectionType.TCP -> 
 //				 	{return connQakTcp(hostIP, port, destName)}  
    				 else -> { println("WARNING: protocol unknown");
 					 return connQakCoap(hostIP, port, destName)} 

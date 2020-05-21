@@ -9,17 +9,13 @@ System -msglog basicrobot
  
 Dispatch cmd       	: cmd(MOVE)    
 Dispatch end       	: end(ARG) 
-//Dispatch sonarstart	: sonarstart(V)  
-  
+ 
 Request step       : step( TIME )	
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
-//Dispatch  collision  : collision( TARGET )
-Event     obstacle   : obstacle( ARG ) 
-//Event virtualobstacle  : virtualobstacle( OBJNAME )  //(for remove)
- 
-Event  endall	     : endall( ARG ) 
+Event   obstacle   : obstacle( ARG ) 
+Event  endall	   : endall( ARG )  
  
 Context ctxbasicrobot ip [host="localhost" port=8020]  
 
@@ -67,16 +63,6 @@ QActor basicrobot context ctxbasicrobot{
 					whenRequest step      -> doStep
 				  	whenMsg     end       -> endwork			  
 	
-//	State handleCollision{
-//		//printCurrentMessage
-//		println("basicrobot | handleCollision")	
-//		onMsg( obstacle  : obstacle( TARGET ) ){
-//			updateResource [# "collision" #]
-//			emit obstacle : obstacle(payloadArg(0))
-//		}
-//	}
-//	Goto work 
-
 	State execcmd{
 		//printCurrentMessage
 		onMsg( cmd : cmd(MOVE) ){
@@ -92,7 +78,7 @@ QActor basicrobot context ctxbasicrobot{
 		onMsg( step : step( T ) ){  
 			[#	StepTime = payloadArg(0).toLong() 	#]  
 			updateResource [# "step(${StepTime})" #]
-			println("basicrobot | doStep StepTime =$StepTime ")
+			//println("basicrobot | doStep StepTime =$StepTime ")
  			run unibo.robot.robotSupport.move( "w" )
  			memoCurrentTime StartTime  
 		}  
@@ -110,7 +96,7 @@ QActor basicrobot context ctxbasicrobot{
 	
 	State stepDone{   
  		run unibo.robot.robotSupport.move( "h" )  //stop the robot
-		println("basicrobot | stepDone ")
+		//println("basicrobot | stepDone ")
 		updateResource [# "stepDone" #]
    		replyTo step with stepdone : stepdone(ok)
   	}
@@ -125,7 +111,7 @@ QActor basicrobot context ctxbasicrobot{
 	State stepFail{ //REQUIREMENT req-onestep-time, req-onestep-info
 		setDuration Duration from StartTime
  		updateResource [# "stepFail($Duration)" #]
-		println("basicrobot | stepFail after $Duration ")
+		//println("basicrobot | stepFail after $Duration ")
 		emit obstacle : obstacle(unknown)
  		replyTo step with stepfail : stepfail($Duration, obstacle)
     }
@@ -143,11 +129,4 @@ QActor basicrobot context ctxbasicrobot{
 	   
 }
 
-
- /*
-QActor user context ctxbasicrobot{
-	State s0 initial { 	
-		run consolegui.consoleGui.create("basicrobot","tcp://broker.hivemq.com") //first char of class must be low
- 	}
-} 
-*/ 
+ 

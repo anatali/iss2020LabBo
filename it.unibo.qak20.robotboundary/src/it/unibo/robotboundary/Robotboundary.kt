@@ -18,7 +18,7 @@ class Robotboundary ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
 		var NumStep      = 0
-		val StepTime     = 350
+		val StepTime     = 340
 		var StartTime    = 0L
 		var Workduration = 0L 
 		return { //this:ActionBasciFsm

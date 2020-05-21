@@ -14,7 +14,6 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
  
-Event collision    : collision( ARG )   
  
 Context ctxrobotboundary ip [host="localhost" port=8018]  
 Context ctxBasicrobot    ip [host="127.0.0.1" port=8020] 
@@ -24,7 +23,7 @@ ExternalQActor basicrobot context ctxBasicrobot
 QActor robotboundary context ctxrobotboundary  {   
 [#
 var NumStep      = 0
-val StepTime     = 350
+val StepTime     = 340
 var StartTime    = 0L
 var Workduration = 0L 
 #] 
@@ -71,7 +70,7 @@ var Workduration = 0L
 	    //println("robotboundary | stepFail  ")
 		printCurrentMessage
 		//change the map
-		run mapRoomKotlin.mapUtil.doMove("h")
+		run mapRoomKotlin.mapUtil.doMove("h") 
 		[#
 			NumStep++
 			var Dt = 0L 			
@@ -117,14 +116,14 @@ var Workduration = 0L
  
 }
 
-QActor sensorobserver context ctxrobotboundary  {    
-	State s0 initial { 	  
-		println("sensorobserver | working")	
-	}
-	Transition t0 whenEvent collision -> showCollision
-	
-	State showCollision{
-		printCurrentMessage
-	}
-	Goto s0
-}
+//QActor sensorobserver context ctxrobotboundary  {    
+//	State s0 initial { 	  
+//		println("sensorobserver | working")	
+//	}
+//	Transition t0 whenEvent collision -> showCollision
+//	
+//	State showCollision{
+//		printCurrentMessage
+//	}
+//	Goto s0
+//}

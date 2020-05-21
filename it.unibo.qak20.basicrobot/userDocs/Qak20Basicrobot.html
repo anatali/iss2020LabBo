@@ -187,7 +187,7 @@ basicrobot | A reusable FSM actor</a>, let us introduce a more precise set of re
  <bc>request</bc> with <m><tt>msgId=step</tt></m>. It must send the answer <m><tt>stepDone</tt></m> or <m><tt>stepFail</tt></m> in case
  of success or failure, respectively;</li>
  <li><ks>reqSensor</ks>: the 'basicrobot' must emits events related to information gather from its sensors. In particular,
- it must emit the event <m><tt>collision</tt></m> when a collision with some obstacle is detected;</li>
+ it must emit the event <m><tt>obstacle</tt></m> when a obstacle with some obstacle is detected;</li>
  <li><ks>reqEnd</ks>: the 'basicrobot' must terminate its work when it receives a  <bc>dispatch</bc> with <m><tt>msgId=end</tt></m> </li> 
  </ol>
  
@@ -197,7 +197,7 @@ Let us immediately introduce a formalized specification of theses messages and e
 Dispatch cmd	: cmd(MOVE)			<kc>//MOVE=w|s|r|l|h</kc>
 Dispatch end	: end(ARG)
 
-Event  collision    : collision( ARG )
+Event  obstacle    : obstacle( ARG )
  
 Request  step		: step( TIME )				<kc>//TIME: an INT > 0 </kc>
 Reply   stepdone	: stepdone(ARG)  
@@ -301,7 +301,7 @@ Thus, our TestPlan can be based on the assumption that the actor 'basicrobot' up
 <ul>
 <li><bc>"move(MOVE)"</bc> when it executes the command <tt>cmd	: cmd(<bc>MOVE</bc>)</tt>;</li>
 <li><bc>"step(TIME)"</bc> when it executes the command <tt>step	: step(<bc>TIME</bc>)</tt>;</li>
-<li><bc>"collision"</bc> when it hits an obstacle</li>
+<li><bc>"obstacle"</bc> when it hits an obstacle</li>
 </ul>  
 For example, the testReqStep can be planned as follows:
 <pre>
@@ -380,7 +380,7 @@ and a <bc>request</bc> (for the command <tt>step</tt>);<br/><br/></li>
 working as an adapter for devices described in the configuration file
 <a href="../basicrobotConfig.json" target="code">basicrobotConfig.json</a>
 ;<br/><br/>   </li>
-<li>is a source of <bc>collision events</bc>, that are generated after receiving a <bc>collision message</bc> by the low-level robot support
+<li>is a source of <bc>obstacle events</bc>, that are generated after receiving a <bc>obstacle message</bc> by the low-level robot support
 <a href="../../it.unibo.qak20.basicrobot/resources/robotvirtual/robotSupport.kt" target="code">resourcesrobotvirtual/virtualRobotSupportQak.kt</a> 
 </li>
 </ul> 

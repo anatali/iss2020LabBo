@@ -73,7 +73,6 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 									StepTime = payloadArg(0).toLong() 	 
 								updateResourceRep( "step(${StepTime})"  
 								)
-								println("basicrobot | doStep StepTime =$StepTime ")
 								unibo.robot.robotSupport.move( "w"  )
 								StartTime = getCurrentTime()
 						}
@@ -95,7 +94,6 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("stepDone") { //this:State
 					action { //it:State
 						unibo.robot.robotSupport.move( "h"  )
-						println("basicrobot | stepDone ")
 						updateResourceRep( "stepDone"  
 						)
 						answer("step", "stepdone", "stepdone(ok)"   )  
@@ -114,7 +112,6 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						Duration = getDuration(StartTime)
 						updateResourceRep( "stepFail($Duration)"  
 						)
-						println("basicrobot | stepFail after $Duration ")
 						emit("obstacle", "obstacle(unknown)" ) 
 						answer("step", "stepfail", "stepfail($Duration,obstacle)"   )  
 					}

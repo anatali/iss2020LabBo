@@ -112,7 +112,7 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 		println(" ===========  testReqSensor =========== ")
 			forwardToRobot( "cmd", "cmd(w)" )
 			delay(3000)
-			checkResource("collision") 
+			//checkResource("obstacle")   //TODO
  	}
  
 	

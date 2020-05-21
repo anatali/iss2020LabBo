@@ -13,9 +13,8 @@ CodedQActor distancefilter context ctxvirtualdemo className "rx.distanceFilter"
  
 QActor virtualrobot context ctxvirtualdemo{    
 
-//[# var curSonarDistance = "" #]	
 	
-	State s0 initial{  
+	State s0 initial{   
 		println("virtualrobot | START")	
 		qrun robotVirtual.virtualrobotSupport.create( myself, "localhost", "8999") //, true to trace
   		delay 500
