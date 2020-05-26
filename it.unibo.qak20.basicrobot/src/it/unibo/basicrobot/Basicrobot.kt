@@ -30,7 +30,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						 			var robotsonar = context!!.hasActor("robotsonar")  
 						 			if( robotsonar != null ){ 
 						 				println("basicrobot | WORKING WITH SONARS") 
-						 				//ACTIVATE THE DATA SOURCE realsonar
+						 				//ACTIVATE THE DATA SOURCE robotsonar
 						 				forward("sonarstart", "sonarstart(1)" ,"robotsonar" ) 				
 						 				//SET THE PIPE
 						 				robotsonar.
@@ -38,7 +38,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						 				subscribeLocalActor("distancefilter").
 						 				subscribeLocalActor("basicrobot")		//in order to perceive obstacle
 						 			}else{
-						 				println("basicrobot | WARNING: realsonar NOT FOUND")
+						 				println("basicrobot | WARNING: robotsonar NOT FOUND")
 						 			}
 						unibo.robot.robotSupport.move( "l"  )
 						unibo.robot.robotSupport.move( "r"  )
@@ -57,11 +57,12 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("execcmd") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("cmd(MOVE)"), Term.createTerm("cmd(MOVE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								updateResourceRep( "move(${payloadArg(0)})"  
-								)
 								unibo.robot.robotSupport.move( payloadArg(0)  )
+								updateResourceRep( "movedone(${payloadArg(0)})"  
+								)
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
@@ -94,7 +95,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("stepDone") { //this:State
 					action { //it:State
 						unibo.robot.robotSupport.move( "h"  )
-						updateResourceRep( "stepDone"  
+						updateResourceRep( "stepDone($StepTime)"  
 						)
 						answer("step", "stepdone", "stepdone(ok)"   )  
 					}

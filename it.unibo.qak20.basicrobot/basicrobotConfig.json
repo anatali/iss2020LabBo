@@ -1,4 +1,5 @@
-{"type":"virtual", "port":"8999"}
-{"_comment": "type":"mockrobot", "port":""}
-{"_comment": "type":"realmbot", "port":"COM6"}
-{"_comment": "type":"realnano", "port":""}
+{"type":"virtual", "port":"8999", "ip":"localhost"}
+{"_comment": "", "type":"mockrobot", "port":"", "ip":"localhost"}
+{"_comment": "", "type":"realmbot", "port":"COM6", "ip":"localhost"}
+{"_comment": "", "type":"realmbot", "port":"/dev/ttyUSB0", "ip":"localhost"}
+{"_comment": "", "type":"realnano", "port":"", "ip":"localhost"}

@@ -32,12 +32,13 @@ object robotSupport{
 		//println( "		--- robotSupport | config=$config" )
 		val jsonObject   = JSONObject( config )
 		robotKind        = jsonObject.getString("type") 
-		val robotPort    = jsonObject.getString("port") 
+		val robotPort    = jsonObject.getString("port")
+		val robotIp      = jsonObject.getString("ip")
 		println( "		--- robotSupport | CREATED for $robotKind port=$robotPort" )
 
 		when( robotKind ){
 			"mockrobot"  ->  { robotMock.mockrobotSupport.create(  ) }
-			"virtual"    ->  { robotVirtual.virtualrobotSupport.create( owner, "localhost", robotPort) }
+			"virtual"    ->  { robotVirtual.virtualrobotSupport.create( owner, robotIp, robotPort) }
 			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) //robotPort="/dev/ttyUSB0"   "COM6"
 				//create an actor named realsonar			
 			} 

@@ -31,8 +31,8 @@ lateinit var client   : CoapClient
 	
 	override fun request( msg: ApplMessage ){
  		val respPut = client.put(msg.toString(), MediaTypeRegistry.TEXT_PLAIN)
-  		println("connQakCoap | answer= ${respPut.getResponseText()}")		
-		
+		if( respPut != null )
+  		System.out.println("connQakCoap | answer= ${respPut.getResponseText()}")				
 	}
 	
 	override fun emit( msg: ApplMessage){

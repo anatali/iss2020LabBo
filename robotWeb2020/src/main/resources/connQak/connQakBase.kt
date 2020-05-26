@@ -5,7 +5,7 @@ import it.unibo.kactor.ApplMessage
 import connQak.connQakCoap
  
 enum class ConnectionType {
-    TCP, MQTT, COAP, HTTP  
+    TCP, MQTT, COAP, HTTP   
 }
 
 //@file:JvmName("ConnUtils")
@@ -48,6 +48,7 @@ lateinit var currQakConn  : connQakBase
       abstract fun forward( msg : ApplMessage )
       abstract fun request( msg : ApplMessage )
       abstract fun emit( msg : ApplMessage )
+      abstract fun readRep(   ) : String
 	
 	fun println(msg : String){
 		System.out.println(msg)

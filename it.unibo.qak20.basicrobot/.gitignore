@@ -4,9 +4,6 @@ bin/default
 .classpath
 .project
 build
-logs
-
-log4jInfo.log
 
 #node
 nodeCode/*/node_modules/

@@ -4,9 +4,9 @@ object sysConnKb{
 	
 	val mqtthostAddr    = "broker.hivemq.com"
 	val mqttport		= "1883" 
-	val hostAddr 		= "192.168.1.68"
+	val hostAddr 		= "192.168.1.175"		//Raspberry
 	val port     		= "8020"
-	val qakdestination 	= "bascirobot"
+	val qakdestination 	= "basicrobot"
 	val ctxqadest       = "ctxbasicrobot"
 	
 	

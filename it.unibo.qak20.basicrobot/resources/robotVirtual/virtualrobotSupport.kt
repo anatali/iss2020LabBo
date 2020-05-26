@@ -87,8 +87,8 @@ object virtualrobotSupport {
 				"msg(d)", "d" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1  }"
 				"msg(l)", "l" -> jsonMsg = "{ 'type': 'turnLeft',  'arg': 300 }"
 				"msg(r)", "r" -> jsonMsg = "{ 'type': 'turnRight', 'arg': 300 }"
-				"msg(z)", "z" -> jsonMsg = "{ 'type': 'turnLeft',  'arg': -1  }"
-				"msg(x)", "x" -> jsonMsg = "{ 'type': 'turnRight', 'arg': -1  }"
+				"msg(z)", "z" -> jsonMsg = "{ 'type': 'turnLeft',  'arg': 100  }"
+				"msg(x)", "x" -> jsonMsg = "{ 'type': 'turnRight', 'arg': 100  }"
 				"msg(h)", "h" -> jsonMsg = "{ 'type': 'alarm',     'arg': 100 }"
 				else -> println("virtualrobotSupport command $cmd unknown")
 			}
