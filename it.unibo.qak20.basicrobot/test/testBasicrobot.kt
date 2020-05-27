@@ -69,21 +69,7 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
 		}
 }
 
-//@kotlinx.coroutines.ObsoleteCoroutinesApi
-//@kotlinx.coroutines.ExperimentalCoroutinesApi
-//	fun testObstacleRemote(){
-//		println(" --- testObstacleRemote ---")
-// 		runBlocking{
-//			delay(initDelayTime)  //time for robot to connect to mqttTest broker
-//			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "cmd(w)", robot!!.name, mqttTest   )
-// 			delay(1500)
-//			//AFTER obstacle
-//  			//assertTrue( basicrobot.rstate == basicrobotstate.obstacle)			
-//			if( robot != null ) MsgUtil.sendMsg( "test", "end", "end", robot!!.name, mqttTest   )
-//			println("testObstacleRemote END with robot in  ") //${basicrobot.rstate}
-//			if( robot != null ) robot!!.waitTermination()
-//		}
-//}
+
 				
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -116,35 +102,6 @@ val mqttbrokerAddr    = "tcp://broker.hivemq.com"
  		}
 	}
 		
-//@kotlinx.coroutines.ObsoleteCoroutinesApi
-//@kotlinx.coroutines.ExperimentalCoroutinesApi
-//	fun testMovesRemote(){
-//		println(" --- testMovesRemote ---")
-// 		runBlocking{
-//			delay(initDelayTime)  //time for robot to connect to mqttTest broker
-//			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "r", robot!!.name, mqttTest  )
-//			delay(500)
-//			//assertTrue( basicrobot.rstate == basicrobotstate.rright)
-//			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "l", robot!!.name, mqttTest  )
-//			delay(500)
-//			//assertTrue( basicrobot.rstate == basicrobotstate.rleft)
-//			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "w", robot!!.name, mqttTest  )
-//			delay(600)
-// 			//assertTrue( basicrobot.rstate == basicrobotstate.forward)
-//			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "h", robot!!.name, mqttTest  )
-// 			delay(1000)
-// 			//assertTrue( basicrobot.rstate == basicrobotstate.stop)
-//			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "s", robot!!.name, mqttTest  )
-//			delay(600)
-//			//assertTrue( basicrobot.rstate == basicrobotstate.backward)
-// 			if( robot != null )  MsgUtil.sendMsg( "test","cmd", "h", robot!!.name, mqttTest  )
-//			delay(100)
-// 			//assertTrue( basicrobot.rstate == basicrobotstate.stop)
-// 			if( robot != null )  MsgUtil.sendMsg( "test","end", "end", robot!!   )
-//			println("testLocal END with robot in  ") //${basicrobot.rstate}
-//			if( robot != null ) robot!!.waitTermination()			
-//		}
-//	}
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	@Test

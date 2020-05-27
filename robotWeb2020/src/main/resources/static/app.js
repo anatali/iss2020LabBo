@@ -1,6 +1,7 @@
 var stompClient = null;
 var hostAddr = "http://localhost:8080/move";
 
+//SIMULA UNA FORM che invia comandi POST
 function sendRequestData( params, method) {
     method = method || "post"; // il metodo POST è usato di default
     //console.log(" sendRequestData  params=" + params + " method=" + method);

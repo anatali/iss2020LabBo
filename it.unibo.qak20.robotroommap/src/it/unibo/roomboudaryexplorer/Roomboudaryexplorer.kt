@@ -35,7 +35,7 @@ class Roomboudaryexplorer ( name: String, scope: CoroutineScope  ) : ActorBasicF
 						forward("cmd", "cmd(r)" ,"basicrobot" ) 
 						delay(300) 
 					}
-					 transition(edgeName="t00",targetState="work",cond=whenDispatch("cmd"))
+					 transition( edgeName="goto",targetState="detectBoundary", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
@@ -60,8 +60,8 @@ class Roomboudaryexplorer ( name: String, scope: CoroutineScope  ) : ActorBasicF
 						updateResourceRep( "doAheadMove"  
 						)
 					}
-					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
-					transition(edgeName="t02",targetState="stepFailed",cond=whenReply("stepfail"))
+					 transition(edgeName="t00",targetState="stepDone",cond=whenReply("stepdone"))
+					transition(edgeName="t01",targetState="stepFailed",cond=whenReply("stepfail"))
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State

@@ -40,8 +40,9 @@ public class RobotController {
     String robotHost = ConnConfig.hostAddr;		
     String robotPort = ConnConfig.port;
      
-    //String htmlPage  = "robotGuiSocket";
-    String htmlPage  = "robotGuiPostBoundary"; 
+    //String htmlPage  = "robotGuiPost"; 
+    String htmlPage  = "robotGuiSocket";
+    //String htmlPage  = "robotGuiPostBoundary"; 
     
     Set<String> robotMoves = new HashSet<String>(); 
     
@@ -80,6 +81,7 @@ public class RobotController {
 			viewmodel.addAttribute("arg", "Sorry: move unknown - Current Robot State:"+viewModelRep );
 		}		
 		return htmlPage;
+		//return "robotGuiSocket";  //ESPERIMENTO
 	}	
 	 
 	
@@ -119,12 +121,12 @@ public class RobotController {
    Message-handling Controller
   ----------------------------------------------------------
  */
-	@MessageMapping("/hello")
-	@SendTo("/topic/display")
-	public ResourceRep greeting(RequestMessageOnSock message) throws Exception {
-		Thread.sleep(1000); // simulated delay
-		return new ResourceRep("Hello by AN, " + HtmlUtils.htmlEscape(message.getName()) + "!");
-	}
+//	@MessageMapping("/hello")
+//	@SendTo("/topic/display")
+//	public ResourceRep greeting(RequestMessageOnSock message) throws Exception {
+//		Thread.sleep(1000); // simulated delay
+//		return new ResourceRep("Hello by AN, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+//	}
 	
 	@MessageMapping("/move")
  	@SendTo("/topic/display")

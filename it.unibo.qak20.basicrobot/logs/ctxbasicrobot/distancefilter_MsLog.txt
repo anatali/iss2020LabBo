@@ -1,0 +1,7 @@
+item(distancefilter,nostate,msg(sonar,event,robotsonar,none,sonar(26,sonar1),14)).
+item(distancefilter,nostate,msg(local_tout_basicrobot_doStep,event,timer_doStep,none,local_tout_basicrobot_doStep,15)).
+item(distancefilter,nostate,msg(local_tout_basicrobot_stepPerhapsDone,event,timer_stepPerhapsDone,none,local_tout_basicrobot_stepPerhapsDone,18)).
+item(distancefilter,nostate,msg(local_tout_basicrobot_doStep,event,timer_doStep,none,local_tout_basicrobot_doStep,24)).
+item(distancefilter,nostate,msg(local_tout_basicrobot_stepPerhapsDone,event,timer_stepPerhapsDone,none,local_tout_basicrobot_stepPerhapsDone,27)).
+item(distancefilter,nostate,msg(sonar,event,robotsonar,none,sonar(26,sonar1),29)).
+item(distancefilter,nostate,msg(sonarRobot,event,robotsonar,none,sonar(5),30)).
