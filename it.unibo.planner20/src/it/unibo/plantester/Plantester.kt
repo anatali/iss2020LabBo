@@ -18,7 +18,7 @@ class Plantester ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		  var stepCounter        = 0
 			var CurrentPlannedMove = ""
-			var atHome             = true
+			var atHome             = true 
 			val maxNumSteps        = 1	
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State

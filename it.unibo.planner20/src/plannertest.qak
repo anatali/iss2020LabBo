@@ -5,9 +5,9 @@ Context ctxplannertest  ip [host="localhost" port=8038]
 QActor plantester context ctxplannertest{     
 [#  var stepCounter        = 0
 	var CurrentPlannedMove = ""
-	var atHome             = true
+	var atHome             = true 
 	val maxNumSteps        = 1	
-#]	 
+#]	  
 	State s0 initial {	     
 		println("&&&  plantester STARTED")
 		run itunibo.planner.plannerUtil.initAI()
