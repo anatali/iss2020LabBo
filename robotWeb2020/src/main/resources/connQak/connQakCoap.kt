@@ -19,9 +19,9 @@ lateinit var client   : CoapClient
  			//initialCmd: to make console more reactive at the first user cmd
  		    val respGet  = client.get( ) //CoapResponse
 			if( respGet != null )
-				println("connQakCoap | createConnection doing  get | CODE=  ${respGet.code}")
+				System.out.println("connQakCoap | createConnection doing  get | CODE=  ${respGet.code}")
 			else
-				println("connQakCoap | url=  ${url} FAILURE")
+				System.out.println("connQakCoap | url=  ${url} FAILURE")
 	}
 	
 	 fun forward( msg: ApplMessage ){		

@@ -542,7 +542,6 @@ KNOWLEDGE BASE
         sysUtil.traceprintln("$logo | handlePUT arg=$arg")
         try{
             val msg    = ApplMessage( arg )
-            //updateResourceRep("$msg redirected")
             fromPutToMsg( msg, exchange )   
         }catch( e : Exception){
             updateResourceRep("error on msg $arg")

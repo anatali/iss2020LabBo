@@ -51,9 +51,20 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("work") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t10",targetState="execcmd",cond=whenDispatch("cmd"))
-					transition(edgeName="t11",targetState="doStep",cond=whenRequest("step"))
-					transition(edgeName="t12",targetState="endwork",cond=whenDispatch("end"))
+					 transition(edgeName="t10",targetState="handleEnvSonar",cond=whenEvent("local_sonar"))
+					transition(edgeName="t11",targetState="execcmd",cond=whenDispatch("cmd"))
+					transition(edgeName="t12",targetState="doStep",cond=whenRequest("step"))
+					transition(edgeName="t13",targetState="endwork",cond=whenDispatch("end"))
+				}	 
+				state("handleEnvSonar") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("sonar(DISTANCE,NAME)"), Term.createTerm("sonar(D,T)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("basicrobot | emit polar(${payloadArg(0)}, 180) ")
+								emit("polar", "polar(${payloadArg(0)},180)" ) 
+						}
+					}
+					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("execcmd") { //this:State
 					action { //it:State
@@ -80,17 +91,23 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						stateTimer = TimerActor("timer_doStep", 
 							scope, context!!, "local_tout_basicrobot_doStep", StepTime )
 					}
-					 transition(edgeName="t03",targetState="stepPerhapsDone",cond=whenTimeout("local_tout_basicrobot_doStep"))   
-					transition(edgeName="t04",targetState="stepFail",cond=whenEvent("obstacle"))
+					 transition(edgeName="t04",targetState="stepPerhapsDone",cond=whenTimeout("local_tout_basicrobot_doStep"))   
+					transition(edgeName="t05",targetState="stepPerhapsDone",cond=whenEvent("local_sonar"))
+					transition(edgeName="t06",targetState="stepFail",cond=whenEvent("obstacle"))
 				}	 
 				state("stepPerhapsDone") { //this:State
 					action { //it:State
 						unibo.robot.robotSupport.move( "h"  )
+						if( checkMsgContent( Term.createTerm("sonar(DISTANCE,NAME)"), Term.createTerm("sonar(D,T)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("basicrobot | after a step emit polar(${payloadArg(0)}, 180) ")
+								emit("polar", "polar(${payloadArg(0)},180)" ) 
+						}
 						stateTimer = TimerActor("timer_stepPerhapsDone", 
 							scope, context!!, "local_tout_basicrobot_stepPerhapsDone", StepTime )
 					}
-					 transition(edgeName="t05",targetState="stepDone",cond=whenTimeout("local_tout_basicrobot_stepPerhapsDone"))   
-					transition(edgeName="t06",targetState="stepFailDetected",cond=whenEvent("obstacle"))
+					 transition(edgeName="t07",targetState="stepDone",cond=whenTimeout("local_tout_basicrobot_stepPerhapsDone"))   
+					transition(edgeName="t08",targetState="stepFailDetected",cond=whenEvent("obstacle"))
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State
@@ -114,6 +131,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep( "stepFail($Duration)"  
 						)
 						emit("obstacle", "obstacle(unknown)" ) 
+						emit("polar", "polar(10,90)" ) 
 						answer("step", "stepfail", "stepfail($Duration,obstacle)"   )  
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

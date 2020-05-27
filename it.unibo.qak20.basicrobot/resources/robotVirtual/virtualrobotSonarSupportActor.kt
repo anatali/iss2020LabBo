@@ -59,11 +59,10 @@ companion object {
                                 val sonarName = jsonArg.getString("sonarName")
                                 val distance  = jsonArg.getInt("distance")							 
 								val m1 = "sonar( $distance, $sonarName )"
-								emit("sonar",m1)
+								println( "sensorObserver emit local_sonar"   )
+								emit("local_sonar",m1)
                             }
                             "collision" -> {
-                                //val jsonArg    = jsonObject.getJSONObject("arg")
-                                //val objectName = jsonArg.getString("objectName")
  								val m1 = "sonar( 5 )"
                                 val event = MsgUtil.buildEvent( name,"sonarRobot",m1)
                                 emitLocalStreamEvent( event )		//not propagated to remote actors

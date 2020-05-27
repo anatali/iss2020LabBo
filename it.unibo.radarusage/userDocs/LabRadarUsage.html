@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+	width: 750px;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>LabRadarUsage</title></head>
+    
+<body>
+<div id="body">
+<h1>LabRadarUsage | Using the RadarGUI service<font size="5"></font> </h1>
+
+ 
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:55%">
+
+<pre>
+System /* -trace */ radarusage 
+
+<k>mqttBroker</k> "localhost" : 1883
+<m>
+Event    sonar : sonar(D)
+Request  polar : polar(D,A)
+Reply    fromRadarGui : fromRadarGui(X) 
+Dispatch polar : polar(D,A)
+</m>
+Context <ks>ctxRadar</ks>      ip [ host= "192.168.1.8"   port= 8038 ] <k>+mqtt</k>
+Context <ks>ctxRadarUsage</ks> ip [ host= "localhost"     port= 8044 ] 
+	//+mqtt  <kc>//required for achieving responses</kc>
+
+<k>ExternalQActor</k> <ks>radargui</ks> context ctxRadar
+
+</pre>
+
+
+ </td>
+<td>
+<m>This component uses the <em>radarGui</em> defined in 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.qak.radar2020/userDocs/LabRadarGui.html" target="lab">
+LabRadarGui | Radar GUI as a service</a>.
+<br/>
+
+The full code is in <a href="../src/radarusage.qak" target="code">radarusage.qak</a> 
+</m>
+</td>
+</tr>
+</tbody>
+</table>
+<br/>
+
+ 
+
+  
+<!--
+<img src="./img/robotAsDataSourceConceptual.png" alt="robotAsDataSourceConceptual" width="100%"  />
+<h3>Producers of sonar data</h3>
+<a href="../src/kotlincode/sonarOnPcSimulate.kt" target="code">sonarOnPcSimulate.kt</a>: provides a simulator
+of sonar data that might be useful during software development in absence of a RaspberryPi. <br/>
+<m>
+This class implements a process that:
+<ol>
+<li>generates a sonar value <tt>V</tt> by reading an input value from the user-console;</li>
+<li>creates an event <tt>EV</tt> as an instance of <tt>ApplMessage</tt>. For example:
+<pre>
+msg(sonar,event,sonaronpcsimulated,none,sonar(2,57),2)
+</pre>
+<li>updates the CoAP resource
+ <a href="../src/javacode/ResourceSonar.java" target="code">ResourceSonar.java</a>
+ using the operation <tt>updateTheResource(String msg)</tt> defined in
+ <a href="../src/javacode/CoapSupport.java" target="code">CoapSupport.java</a>
+ </li>
+</ol>
+</m>
+-->
+
+<br/><br/>
+</div>  
+
+ 
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+
+</body>
+</html>

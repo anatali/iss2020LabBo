@@ -1,0 +1,79 @@
+/*
+ * =======================================================
+ * A PROJECT model for the robot/radar system
+ * =======================================================
+ */
+System /* -trace */ radarusage 
+
+mqttBroker "broker.hivemq.com" : 1883 eventTopic "unibo/polar"  	//used by sonars
+
+Request  polar : polar(D,A)
+Reply    fromRadarGui : fromRadarGui(X) 
+
+//Event    sonar   : sonar(D)			//from a sonar device ...
+Dispatch polar   : polar(D,A)
+Event    polar   : polar(D,A)
+
+Context ctxradargui    ip [ host= "localhost"   port= 8038 ]  
+Context ctxradarursage ip [ host= "127.0.0.1"   port= 8044 ]   
+
+ExternalQActor radargui context ctxradargui
+  
+QActor radarusage context ctxradarursage{
+[# val ResultMap =   hashMapOf( "key1" to "item1" ) #]  //init a map to store the results of run	
+	State s0 initial{
+		println("demousage start")
+	}
+	Goto workUsingDispatch
+	
+	State workUsingDispatch{
+		forward radargui -m polar : polar( 0,90 )
+		delay 500
+		forward radargui -m polar : polar( 45,90 ) 
+		delay 500
+		forward radargui -m polar : polar( 90,90 )
+		delay 500
+		forward radargui -m polar : polar( 120,90 )
+	}
+	//Goto workUsingRequest
+ 	Goto workUsingEvents
+
+	State workUsingRequest {
+		println("radarusage  workUsingRequest") 
+ 		run utils.sonarDataSimulator.sonarValFromUser( ResultMap, "sonarVal" )
+ 		[# val Result = ResultMap.remove("sonarVal") #]
+ 		//println("Dtat from sonar: $Result")
+ 		request radargui -m polar : polar( $Result,20 ) 		
+	}  
+	Transition t0 
+		whenTime 1000          -> handleAnwerTimeout
+ 		whenReply fromRadarGui -> handleRadarReply   //Blocks until answer
+	
+	State handleAnwerTimeout{
+		println("radarusage WARNING: the radar does not send the answer ... ")
+	}
+	Goto workUsingRequest
+	
+	State handleRadarReply{
+		printCurrentMessage 
+	}
+	Goto workUsingRequest
+
+/*
+ * 
+ */	
+	State workUsingEvents{
+		println("radarusage  workUsingEvents") 
+ 	}  
+	Transition t0 
+ 		whenEvent polar        -> handlePolarEvent
+  	
+	State handlePolarEvent{
+		onMsg( polar : polar(D,A) ){
+			println("radarusage handlePolarEvent (${payloadArg(0)},${payloadArg(1)})")
+			forward radargui -m polar : polar( $payloadArg(0), $payloadArg(1) ) 
+		}
+	}
+	Goto workUsingEvents
+	
+}

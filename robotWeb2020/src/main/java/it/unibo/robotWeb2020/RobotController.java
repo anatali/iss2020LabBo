@@ -46,7 +46,7 @@ public class RobotController {
     
     Set<String> robotMoves = new HashSet<String>(); 
     
-    connQakCoap connQakSupport ;  
+    connQakCoap connQakSupport ;   
     
     public RobotController() {
         robotMoves.addAll( Arrays.asList(new String[] {"w","s","h","r","l","z","x","p"}) );       

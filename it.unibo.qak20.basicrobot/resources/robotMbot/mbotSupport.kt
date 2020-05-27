@@ -14,10 +14,9 @@ import it.unibo.kactor.MsgUtil
 
 
 object mbotSupport{
-	lateinit var owner      : ActorBasic
-	lateinit var robotsonar	: ActorBasic
- 	lateinit var conn       : SerialPortConnSupport
-	var dataSonar           : Int = 0 ; //Double = 0.0
+	lateinit var owner   : ActorBasic
+ 	lateinit var conn    : SerialPortConnSupport
+	var dataSonar        : Int = 0 ; //Double = 0.0
  			
 	fun create( owner: ActorBasic, port : String ="/dev/ttyUSB0"  ){
 		this.owner = owner	//
@@ -29,16 +28,8 @@ object mbotSupport{
 			//println("   	%%% mbotSupport | initConn starts port=$port")
 			val serialConn = JSSCSerialComm()
 			conn = serialConn.connect(port)	//returns a SerialPortConnSupport
-			println("   	%%% mbotSupport |  initConn port=$port conn= $conn")
-											
- 			robotsonar = robotDataSourceArduino("robotsonar", owner,   conn )
-			owner.context!!.addInternalActor(robotsonar)  
-			println("   	%%% mbotSupport | has created the robotsonar")	
-
-			//Attempt to activate the WebCam
-			owner.machineExec("bash webcam.sh")
-			println("   	%%% mbotSupport | has activated the webcam")	
-
+			println("   	%%% mbotSupport |  initConn port=$port conn= $conn")						
+ 			robotDataSourceArduino("realsonar", owner,   conn )
 		}catch(  e : Exception) {
 			println("   	%%% mbotSupport |  ERROR ${e }"   );
 		}		

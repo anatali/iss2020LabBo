@@ -20,7 +20,7 @@ open class QakContext(name: String, val hostAddr: String, val portNum: Int, var 
  	lateinit var ctxLogfileName : String
 	
     companion object {
-        val workTime = 600000L		 
+        val workTime = 1000L * 6000 //100 min	 
         enum class CtxMsg { attach, remove }
 
         fun getActor( actorName : String ) : ActorBasic? {

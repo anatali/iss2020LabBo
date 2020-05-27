@@ -16,7 +16,7 @@ class QakContextServer(val ctx: QakContext, scope: CoroutineScope,
     //val connMap : MutableMap<Int, IConnInteraction> = mutableMapOf<Int, IConnInteraction>() //Oct2019
 
     init {
-        System.setProperty("inputTimeOut", QakContext.workTime.toString() )  //10 minuti
+        System.setProperty("inputTimeOut", QakContext.workTime.toString() )  //100 min	
         factoryProtocol = MsgUtil.getFactoryProtocol(protocol)
         scope.launch(Dispatchers.IO) {
             autoMsg( "start", "startQakContextServer" )
