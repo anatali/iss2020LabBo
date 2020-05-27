@@ -64,7 +64,7 @@ public class RoomMap implements Serializable{
 	public boolean isNotExplored(int x, int y) {
 		try {
 			Box box = roomMap.get(y).get(x);
-			//System.out.println(" ... RoomMap  isNotExplored " + box.isDirty() );
+			System.out.println(" ... RoomMap  isNotExplored " + box.isDirty() );
 			return  box.isDirty()   ;
 		} catch (IndexOutOfBoundsException e) {
 			return false;
@@ -74,7 +74,7 @@ public class RoomMap implements Serializable{
 	public boolean isObstacle(int x, int y) {
 		try {
 			Box box = roomMap.get(y).get(x);
-			//System.out.println(" ... RoomMap  isObstacle " + box.isObstacle());
+			System.out.println(" ... RoomMap  isObstacle " + box.isObstacle());
 			if  (box == null)
 				return false;
 			if (box.isObstacle())

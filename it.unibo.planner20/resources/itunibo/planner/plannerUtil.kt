@@ -54,7 +54,8 @@ object plannerUtil {
 	
     fun resetGoal( x: Int, y: Int) {
         try {
-             println("resetGoal $x,$y while robot in cell: ${getPosX()},${getPosY()} direction=${getDirection()} ") //canMove=$canMove
+//			var canMove = RoomMap.getRoomMap().canMove( x,y-1, initialState!!.direction  );
+            println("resetGoal $x,$y while robot in cell: ${getPosX()},${getPosY()} direction=${getDirection()} ") //canMove=$canMove
             
 			if( RoomMap.getRoomMap().isObstacle(x,y) ) {
 				println("ATTEMPT TO GO INTO AN OBSTACLE ")
@@ -251,7 +252,7 @@ object plannerUtil {
 		try{
 			targetCell = RoomMap.getRoomMap().isNotExplored(vx,vy)
 						 || RoomMap.getRoomMap().isObstacle(vx,vy)
-			//println("planForGoal targetCell=$targetCell")				  
+			println("planForGoal targetCell=$targetCell")				  
 		}catch( e : Exception ){
 			println("WARNING: target cell is unknown")
 		}
@@ -311,7 +312,7 @@ object plannerUtil {
  		}
   	}
 	
-	fun wallFound(){
+		fun wallFound(){
  		 val dimMapx = RoomMap.getRoomMap().getDimX()
 		 val dimMapy = RoomMap.getRoomMap().getDimY()
 		 val dir = initialState!!.getDirection()

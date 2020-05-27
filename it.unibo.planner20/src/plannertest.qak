@@ -1,0 +1,67 @@
+System plannertest
+
+Context ctxplannertest  ip [host="localhost" port=8038]    
+
+QActor plantester context ctxplannertest{     
+[#  var stepCounter        = 0
+	var CurrentPlannedMove = ""
+	var atHome             = true
+	val maxNumSteps        = 1	
+#]	 
+	State s0 initial {	     
+		println("&&&  plantester STARTED")
+		run itunibo.planner.plannerUtil.initAI()
+		println("INITIAL MAP") 
+ 		run itunibo.planner.moveUtils.showMap() 
+		run itunibo.planner.plannerUtil.startTimer()  
+ 	} 
+	Goto  exploreStep  
+	
+	State exploreStep{
+		[# stepCounter = stepCounter + 1 #]
+		run itunibo.planner.plannerUtil.planForGoal("$stepCounter","$stepCounter")
+//		run itunibo.planner.plannerUtil.setGoal("$stepCounter","$stepCounter")
+//		run itunibo.planner.plannerUtil.doPlan() 
+ 	} 
+	Goto execPlannedMoves  
+
+	State execPlannedMoves{ 
+ 		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 	}
+ 	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
+ 
+ 	State wMove {  
+ 		run itunibo.planner.plannerUtil.updateMap( "w" )
+ 	}
+    Goto execPlannedMoves  if [# CurrentPlannedMove.length > 0 #] else testIfAtHome
+ 	
+ 	State otherPlannedMove{
+  		if [# CurrentPlannedMove == "l" || CurrentPlannedMove == "r"  #]{
+ 			run itunibo.planner.plannerUtil.updateMap( "$CurrentPlannedMove" )
+  		} 
+ 	}   
+ 	Goto execPlannedMoves  if [# CurrentPlannedMove.length > 0 #] else testIfAtHome 
+ 	
+	State backToHome{
+//		println("MAP AFTER EXPLORE STEP")
+//		run itunibo.planner.moveUtils.showMap()		
+// 		run itunibo.planner.plannerUtil.setGoal(0,0)
+// 		run itunibo.planner.plannerUtil.doPlan() 
+		run itunibo.planner.plannerUtil.planForGoal("0","0")
+	} 
+	Goto  execPlannedMoves
+	
+	State testIfAtHome{}
+ 	Goto backToHome if[# ! itunibo.planner.plannerUtil.atHome()  #] else continueJob 
+ 	
+	State continueJob{
+		println("MAP AFTER BACK TO HOME $stepCounter")
+		run itunibo.planner.moveUtils.showMap()				
+	}
+ 	Goto exploreStep if[# stepCounter < maxNumSteps #] else endOfJob 
+ 	
+	State endOfJob{
+		run itunibo.planner.plannerUtil.getDuration()
+	}
+ 	
+}    

@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxrobotmapper.gradle
+build_ctxplannertest.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxrobotmapper.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxrobotmapper.gradle distZip
-	gradle  -b build_ctxrobotmapper.gradle -q tasks --all
-	gradle  -b build_ctxrobotmapper.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxplannertest.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxplannertest.gradle distZip
+	gradle  -b build_ctxplannertest.gradle -q tasks --all
+	gradle  -b build_ctxplannertest.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

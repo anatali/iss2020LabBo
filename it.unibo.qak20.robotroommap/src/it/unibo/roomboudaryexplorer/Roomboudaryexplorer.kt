@@ -21,7 +21,7 @@ class Roomboudaryexplorer ( name: String, scope: CoroutineScope  ) : ActorBasicF
 		var NumStep     = 0
 		 
 		//REAL ROBOT
-		//var StepTime   = 1000	 
+		//var StepTime   = 600	 
 		 
 		//VIRTUAL ROBOT
 		 var StepTime   = 350	 
