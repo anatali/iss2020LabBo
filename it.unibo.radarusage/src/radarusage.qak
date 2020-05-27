@@ -11,7 +11,7 @@ Request  polar : polar(D,A)
 Reply    fromRadarGui : fromRadarGui(X) 
 
 //Event    sonar   : sonar(D)			//from a sonar device ...
-Dispatch polar   : polar(D,A)
+Dispatch polar   : polar(D,A)  
 Event    polar   : polar(D,A)
 
 Context ctxradargui    ip [ host= "localhost"   port= 8038 ]  
@@ -66,7 +66,7 @@ QActor radarusage context ctxradarursage{
 		println("radarusage  workUsingEvents") 
  	}  
 	Transition t0 
- 		whenEvent polar        -> handlePolarEvent
+ 		whenEvent polar  -> handlePolarEvent
   	
 	State handlePolarEvent{
 		onMsg( polar : polar(D,A) ){

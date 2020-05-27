@@ -8,7 +8,7 @@ mqttBroker "broker.hivemq.com" : 1883  eventTopic "unibo/radar"
 Request  polar        : polar(D,A) 
 Reply    fromRadarGui : fromRadarGui(X)     
 
-Dispatch polar        : polar(D,A) 
+Dispatch polar        : polar(D,A)   
 Event    polar        : polar(D,A) 
  
 Context ctxradargui ip [ host= "localhost"   port= 8038 ]  

@@ -1,3 +1,3 @@
-item(caoproute9,nostate,msg(local_tout_basicrobot_doStep,event,timer_doStep,none,local_tout_basicrobot_doStep,106)).
-item(caoproute9,nostate,msg(local_tout_basicrobot_stepPerhapsDone,event,timer_stepPerhapsDone,none,local_tout_basicrobot_stepPerhapsDone,109)).
-item(caoproute9,nostate,msg(stepdone,reply,basicrobot,caoproute9,stepdone(ok),110)).
+item(caoproute9,nostate,msg(local_tout_basicrobot_doStep,event,timer_doStep,none,local_tout_basicrobot_doStep,110)).
+item(caoproute9,nostate,msg(local_tout_basicrobot_stepPerhapsDone,event,timer_stepPerhapsDone,none,local_tout_basicrobot_stepPerhapsDone,113)).
+item(caoproute9,nostate,msg(stepdone,reply,basicrobot,caoproute9,stepdone(ok),114)).
