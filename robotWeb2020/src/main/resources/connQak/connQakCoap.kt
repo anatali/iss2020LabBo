@@ -12,8 +12,8 @@ class connQakCoap( )  {
 lateinit var client   : CoapClient
 	
 	 fun createConnection(  ){
- 			System.out.println("connQakCoap | createConnection hostIP=${ConnConfig.hostAddr} port=${ConnConfig.port}")
-			val url = "coap://${ConnConfig.hostAddr}:${ConnConfig.port}/${ConnConfig.ctxqadest}/${ConnConfig.qakdestination}"
+ 			System.out.println("connQakCoap | createConnection hostIP=${configurator.hostAddr} port=${configurator.port}")
+			val url = "coap://${configurator.hostAddr}:${configurator.port}/${configurator.ctxqadest}/${configurator.qakdest}"
 			client = CoapClient( url )
 			client.setTimeout( 1000L )
  			//initialCmd: to make console more reactive at the first user cmd

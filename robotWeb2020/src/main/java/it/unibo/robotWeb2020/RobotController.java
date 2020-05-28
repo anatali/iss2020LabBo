@@ -5,7 +5,6 @@ package it.unibo.robotWeb2020;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Value; 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,18 +26,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
-import connQak.ConnConfig;
+import connQak.configurator;
 import connQak.connQakCoap;
 import it.unibo.kactor.ApplMessage;
 import it.unibo.kactor.MsgUtil;
- 
+
 
 @Controller 
 public class RobotController { 
     String appName     ="robotGui";
     String viewModelRep="startup";
-    String robotHost = ConnConfig.hostAddr;		
-    String robotPort = ConnConfig.port;
+    String robotHost = ""; //ConnConfig.hostAddr;		
+    String robotPort = ""; //ConnConfig.port;
      
     //String htmlPage  = "robotGuiPost"; 
     String htmlPage  = "robotGuiSocket";
@@ -49,15 +48,22 @@ public class RobotController {
     connQakCoap connQakSupport ;   
     
     public RobotController() {
+        connQak.configurator.configure();
+        htmlPage  = connQak.configurator.getPageTemplate();
+        robotHost =	connQak.configurator.getHostAddr();	
+        robotPort = connQak.configurator.getPort();
+
         robotMoves.addAll( Arrays.asList(new String[] {"w","s","h","r","l","z","x","p"}) );       
         connQakSupport = new connQakCoap(  );  
         connQakSupport.createConnection();
+          
      }
 
-
-   @GetMapping("/") 		 
+    
+ 
+  @GetMapping("/") 		 
   public String entry(Model viewmodel) {
- 	  viewmodel.addAttribute("arg", getWebPageRep().getContent());
+ 	 viewmodel.addAttribute("arg", "Entry page loaded. Please use the buttons ");
  	 return htmlPage;
   } 
    
@@ -91,11 +97,11 @@ public class RobotController {
 	protected void doBusinessJob( String moveName, Model viewmodel) {
 		try {
 			if( moveName.equals("p")) {
-				ApplMessage msg = MsgUtil.buildRequest("web", "step", "step("+ConnConfig.stepSize+")", ConnConfig.qakdestination );
+				ApplMessage msg = MsgUtil.buildRequest("web", "step", "step("+configurator.getStepsize()+")", configurator.getQakdest() );
 				connQakSupport.request( msg );				
 			}
 			else {
-				ApplMessage msg = MsgUtil.buildDispatch("web", "cmd", "cmd("+moveName+")", ConnConfig.qakdestination );
+				ApplMessage msg = MsgUtil.buildDispatch("web", "cmd", "cmd("+moveName+")", configurator.getQakdest() );
 				connQakSupport.forward( msg );
 			}		
 			//WAIT for command completion ...

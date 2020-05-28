@@ -14,9 +14,9 @@ object actorQakCoapClient {
 
     private val client = CoapClient()
 	
-	private val context     = "ctxbasicrobot"
+	private val context     = "ctxboundaryplanned"
 	private val sendactor   = "senderkt"
-	private val destactor   = "basicrobot"
+	private val destactor   = "roomboundaryexplorer"
 	private val msgId       = "cmd"
 
 	fun init(){

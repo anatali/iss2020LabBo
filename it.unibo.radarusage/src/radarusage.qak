@@ -1,11 +1,13 @@
-/*
- * =======================================================
- * A PROJECT model for the robot/radar system
- * =======================================================
- */
-System /* -trace */ radarusage 
-
-mqttBroker "broker.hivemq.com" : 1883 eventTopic "unibo/polar"  	//used by sonars
+/* 
+ * ================================================================================
+ * radarusage.qak
+ * VERSION May 28, 2020
+ * From an event polar : polar( D,A ) to a polar dispatch/request to ctxradargui
+ * ================================================================================
+ */ 
+System -trace radarusage 
+//mqttBroker "broker.hivemq.com" : 1883 eventTopic "unibo/polar"  	 
+mqttBroker "localhost" : 1883   eventTopic "unibo/polar"  	
 
 Request  polar : polar(D,A)
 Reply    fromRadarGui : fromRadarGui(X) 
@@ -14,13 +16,14 @@ Reply    fromRadarGui : fromRadarGui(X)
 Dispatch polar   : polar(D,A)  
 Event    polar   : polar(D,A)
 
-Context ctxradargui    ip [ host= "localhost"   port= 8038 ]  
-Context ctxradarursage ip [ host= "127.0.0.1"   port= 8044 ]   
+Context ctxradarursage ip [ host= "localhost"      port= 8044 ]   
+Context ctxradargui    ip [ host= "127.0.0.1"      port= 8038 ]  
+Context ctxbasicrobot  ip [ host= "dontcare"       port= 8020 ]
 
 ExternalQActor radargui context ctxradargui
   
 QActor radarusage context ctxradarursage{
-[# val ResultMap =   hashMapOf( "key1" to "item1" ) #]  //init a map to store the results of run	
+[# val ResultMap =   hashMapOf( "key1" to "item1" ) #]  //init a map to store the results of sonarValFromUser	
 	State s0 initial{
 		println("demousage start")
 	}
@@ -74,6 +77,5 @@ QActor radarusage context ctxradarursage{
 			forward radargui -m polar : polar( $payloadArg(0), $payloadArg(1) ) 
 		}
 	}
-	Goto workUsingEvents
-	
+	Goto workUsingEvents	
 }

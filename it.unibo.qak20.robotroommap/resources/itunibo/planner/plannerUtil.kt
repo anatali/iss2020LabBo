@@ -45,7 +45,7 @@ object plannerUtil {
     @Throws(Exception::class)
     fun initAI() {
          initialState = RobotState(0, 0, RobotState.Direction.DOWN)
-        search       = BreadthFirstSearch(GraphSearch())
+         search       = BreadthFirstSearch(GraphSearch())
        println("plannerUtil initAI done")
     }
 
@@ -139,7 +139,7 @@ object plannerUtil {
 		println("RobotPos=(${curPos.first}, ${curPos.second})  direction=$direction") //in map($MaxX,$MaxY)
 		println("===================================================")
 	}
-	
+ 	
 
 /*
  */
@@ -349,26 +349,5 @@ object plannerUtil {
 	}
 
 
-/*
- * Direction
 
-    fun rotateDirection() {
-        //println("before rotateDirection: " + initialState.getDirection() );
-        initialState = Functions().result(initialState!!, RobotAction(RobotAction.TURNLEFT)) as RobotState
-        initialState = Functions().result(initialState!!, RobotAction(RobotAction.TURNLEFT)) as RobotState
-        //println("after  rotateDirection: " + initialState.getDirection() );
-        //update the kb
-        val x = initialState!!.x
-        val y = initialState!!.y
-        val newdir = initialState!!.direction.toString().toLowerCase() + "Dir"
-    }
-	
- 
-    fun setObstacles(   ){
-		RoomMap.getRoomMap().setObstacles()
- 	}
-	
-	
-	
-  */
 }

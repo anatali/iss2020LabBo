@@ -69,7 +69,7 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         stompClient.subscribe('/topic/display', function (msg) {
-            showMsg(JSON.parse(msg.body).content);
+             showMsg(JSON.parse(msg.body).content);
         });
     });
 }
@@ -95,11 +95,12 @@ function sendTheMove(move){
 
 function sendUpdateRequest(){
 	console.log(" sendUpdateRequest "  );
-    stompClient.send("/app/update", {}, JSON.stringify({'name': 'todo' }));
+    stompClient.send("/app/update", {}, JSON.stringify({'name': 'update' }));
 }
 
 function showMsg(message) {
-    $("#applmsgs").html(""+ message);
+console.log(message );
+    $("#applmsgs").html( "<pre>"+message.replace(/\n/g,"<br/>")+"</pre>" );
     //$("#applmsgintable").append("<tr><td>" + message + "</td></tr>");
 }
 

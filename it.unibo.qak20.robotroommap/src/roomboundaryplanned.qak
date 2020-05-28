@@ -2,24 +2,23 @@
  * Builds a map of the room by using the planner
  */   
 System roomboundaryplanned
-//mqttBroker "localhost" : 1883 eventTopic "qa/roomboundaryplanned"
+mqttBroker "localhost" : 1883 eventTopic "unibo/roomboundaryplanned"
 
-Dispatch modelChange  : modelChange( TARGET, VALUE )   
-Dispatch modelUpdate  : modelUpdate( TARGET, VALUE )  
+//Dispatch modelChange  : modelChange( TARGET, VALUE )   
+//Dispatch modelUpdate  : modelUpdate( TARGET, VALUE )  
 
 Dispatch cmd       : cmd(MOVE)
  
-
 Request step       : step( TIME )	
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
  
 Context ctxboundaryplanned    ip [host="localhost"      port=8068]                
-Context ctxbasicrobot    ip [host="192.168.1.22"   port=8020]   
+Context ctxbasicrobot         ip [host="192.168.1.22"   port=8020]    
 
 ExternalQActor basicrobot    context ctxbasicrobot
 
-QActor roomboudaryexplorer context ctxboundaryplanned{      
+QActor roomboundaryexplorer context ctxboundaryplanned{       
 [#
 val mapname     = "roomBoundary"  		 
 var NumStep     = 0
@@ -31,35 +30,38 @@ var NumStep     = 0
  var StepTime   = 350	 
 #]
 	State s0 initial {	 
- 		run itunibo.planner.plannerUtil.initAI()
-		delay 500 
+  		delay 500 
 		forward basicrobot -m cmd : cmd(l)
 		delay 300
 		forward basicrobot -m cmd : cmd(r)    
 		delay 300
   	}
-  	Goto detectBoundary
-//  	Transition t0 whenMsg cmd -> work
+//  	Goto detectBoundary
+ 	  	Transition t0 whenMsg cmd -> work	//since we want to repeat ... See boundaryFound
+
+
   	State work{  		
+   		[# NumStep = 0   #] 
+    	run itunibo.planner.plannerUtil.initAI()
   	}
     Goto detectBoundary  
      
     State detectBoundary{     
     	[# NumStep++ #]
+    	println("roomboundaryexplorer detectBoundary $NumStep")
     	run itunibo.planner.plannerUtil.showCurrentRobotState()
-    	updateResource [# "detectBoundary $NumStep" #]
+    	updateResource [# "detectBoundary step=$NumStep" #]
      } 
     Goto doAheadMove if [# (NumStep<5) #] else boundaryFound
  
  	State doAheadMove{ 
    		request basicrobot -m step : step( $StepTime  )
-   		updateResource [# "doAheadMove" #]
 	}
 	Transition t0   whenReply stepdone   -> stepDone   
 					whenReply stepfail   -> stepFailed 
 	 
  	State stepDone{  
- 		updateResource [# itunibo.planner.moveUtils.getMapOneLine() #]
+ 		updateResource [# itunibo.planner.model.RoomMap.getRoomMap().toString() #]
  		run itunibo.planner.plannerUtil.updateMap(  "w" )
   	}
 	Goto doAheadMove
@@ -90,13 +92,11 @@ var NumStep     = 0
  	State boundaryFound{
 		run itunibo.planner.moveUtils.saveRoomMap(mapname)
 		println("robotmapper | FINAL MAP")   
- 		run itunibo.planner.plannerUtil.showCurrentRobotState()
- 		updateResource [# itunibo.planner.moveUtils.getMapOneLine() #]
-  		//updateResource [# "FINAL MAP" #]
-  		[# println(itunibo.planner.moveUtils.getMapOneLine()) #]
- 		terminate 0
+ 		run itunibo.planner.plannerUtil.showCurrentRobotState()	
+ 		updateResource [#  itunibo.planner.model.RoomMap.getRoomMap().toString() #]
+   		[# println(itunibo.planner.moveUtils.showMap()) #]
   	}
-     
+    Transition t0 whenMsg cmd -> work
   	      
 }	
 

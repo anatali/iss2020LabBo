@@ -1,3 +1,2 @@
-item(caoproute4,nostate,msg(local_sonar,event,robotsonar,none,sonar(26,sonar1),54)).
-item(caoproute4,nostate,msg(local_tout_basicrobot_stepPerhapsDone,event,timer_stepPerhapsDone,none,local_tout_basicrobot_stepPerhapsDone,58)).
-item(caoproute4,nostate,msg(stepdone,reply,basicrobot,caoproute4,stepdone(ok),59)).
+item(caoproute4,nostate,msg(local_sonar,event,robotsonar,none,sonar(26,sonar2),73)).
+item(caoproute4,nostate,msg(stepfail,reply,basicrobot,caoproute4,stepfail(268,obstacle),79)).

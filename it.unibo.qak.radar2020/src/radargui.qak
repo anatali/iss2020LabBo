@@ -1,9 +1,16 @@
+/* 
+ * ================================================================================
+ * radarusage.qak
+ * VERSION May 28, 2020
+ * Handles the event polar : polar( D,A ) 
+ * ================================================================================
+ */ 
 System /*-trace*/ robotradar2020
-
-mqttBroker "broker.hivemq.com" : 1883  eventTopic "unibo/radar"
+//mqttBroker "broker.hivemq.com" : 1883  eventTopic "unibo/radar"
+mqttBroker "localhost" : 1883 eventTopic "unibo/radar"
 
 /*
- * NOTE THAT the msg polar:polar(D,A) can be sent as a dispatch, as a request or as an event
+ *polar:polar(D,A) can be perceived as a dispatch, as a request or as an event
  */
 Request  polar        : polar(D,A) 
 Reply    fromRadarGui : fromRadarGui(X)     

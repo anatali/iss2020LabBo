@@ -20,8 +20,6 @@ QActor plantester context ctxplannertest{
 	State exploreStep{
 		[# stepCounter = stepCounter + 1 #]
 		run itunibo.planner.plannerUtil.planForGoal("$stepCounter","$stepCounter")
-//		run itunibo.planner.plannerUtil.setGoal("$stepCounter","$stepCounter")
-//		run itunibo.planner.plannerUtil.doPlan() 
  	} 
 	Goto execPlannedMoves  
 
@@ -43,10 +41,6 @@ QActor plantester context ctxplannertest{
  	Goto execPlannedMoves  if [# CurrentPlannedMove.length > 0 #] else testIfAtHome 
  	
 	State backToHome{
-//		println("MAP AFTER EXPLORE STEP")
-//		run itunibo.planner.moveUtils.showMap()		
-// 		run itunibo.planner.plannerUtil.setGoal(0,0)
-// 		run itunibo.planner.plannerUtil.doPlan() 
 		run itunibo.planner.plannerUtil.planForGoal("0","0")
 	} 
 	Goto  execPlannedMoves

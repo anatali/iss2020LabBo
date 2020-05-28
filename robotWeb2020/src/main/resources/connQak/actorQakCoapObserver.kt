@@ -3,20 +3,15 @@ package connQak
 import org.eclipse.californium.core.CoapClient
 import org.eclipse.californium.core.CoapResponse
 import org.eclipse.californium.core.coap.MediaTypeRegistry
-//import kotlinx.coroutines.runBlocking
-//import kotlinx.coroutines.delay
-//import it.unibo.kactor.MsgUtil
-//import it.unibo.kactor.ApplMessage
-//import java.util.Scanner
 import org.eclipse.californium.core.CoapHandler 
  
 object actorQakCoapObserver {
 
     private val client = CoapClient()
 	
-	private val ipaddr      = "${ConnConfig.hostAddr}:${ConnConfig.port}"		//5683 default
-	private val context     = ConnConfig.ctxqadest
- 	private val destactor   = ConnConfig.qakdestination
+	private val ipaddr      = "${configurator.hostAddr}:${configurator.port}"		//5683 default
+	private val context     = configurator.ctxqadest
+ 	private val destactor   = configurator.qakdest
 //	private val msgId       = "cmd"
 
 	fun init(){
