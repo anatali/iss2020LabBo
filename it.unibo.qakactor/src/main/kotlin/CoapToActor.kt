@@ -29,9 +29,8 @@ var answer = "noanswer"
 // 			request( extmsg.msgId(), extmsg.msgContent(), owner)
 //		} 
         if( msg.isReply() ){
-  	        sysUtil.traceprintln("$tt $name | PUT response: $msg exchange=${exchange.getSourceAddress()}"  )
+  	        //sysUtil.traceprintln("$tt $name | PUT response: $msg exchange=${exchange.getSourceAddress()}"  )
  			answer = msg.toString().replace(name,owner.name)
-			owner.updateResourceRep( answer )
  			exchange.respond( answer ) //DOES NOT WORK
             context!!.removeInternalActor( this )
          }

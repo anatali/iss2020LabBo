@@ -12,13 +12,12 @@ mqttBroker "localhost" : 1883   eventTopic "unibo/polar"
 Request  polar : polar(D,A)
 Reply    fromRadarGui : fromRadarGui(X) 
 
-//Event    sonar   : sonar(D)			//from a sonar device ...
 Dispatch polar   : polar(D,A)  
 Event    polar   : polar(D,A)
 
 Context ctxradarursage ip [ host= "localhost"      port= 8044 ]   
 Context ctxradargui    ip [ host= "127.0.0.1"      port= 8038 ]  
-Context ctxbasicrobot  ip [ host= "dontcare"       port= 8020 ]
+//Context ctxbasicrobot  ip [ host= "dontcare"       port= 8020 ]
 
 ExternalQActor radargui context ctxradargui
   

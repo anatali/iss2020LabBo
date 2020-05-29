@@ -5,8 +5,8 @@ Context ctxplannertest  ip [host="localhost" port=8038]
 QActor plantester context ctxplannertest{     
 [#  var stepCounter        = 0
 	var CurrentPlannedMove = ""
-	var atHome             = true 
-	val maxNumSteps        = 1	
+	val mapname            = "roomMap"
+	val maxNumSteps        = 4	 
 #]	  
 	State s0 initial {	     
 		println("&&&  plantester STARTED")
@@ -50,9 +50,12 @@ QActor plantester context ctxplannertest{
  	
 	State continueJob{
 		println("MAP AFTER BACK TO HOME $stepCounter")
-		run itunibo.planner.moveUtils.showMap()				
+		run itunibo.planner.moveUtils.showMap()		
+		run itunibo.planner.moveUtils.saveRoomMap(mapname)		
 	}
  	Goto exploreStep if[# stepCounter < maxNumSteps #] else endOfJob 
+ 	
+ 
  	
 	State endOfJob{
 		run itunibo.planner.plannerUtil.getDuration()

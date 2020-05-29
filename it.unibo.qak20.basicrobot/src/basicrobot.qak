@@ -159,4 +159,15 @@ QActor envsonarhandler context ctxbasicrobot{
 	
 }
 
+
+QActor perceiver context ctxbasicrobot{
+ 	State s0 initial { 	 
+ 		println("perceiver | START")	 		
+	}	
+	Transition t1   whenEvent polar-> handlePolar
  
+  State handlePolar{
+  	printCurrentMessage
+  }
+  Goto s0
+}

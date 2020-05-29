@@ -298,7 +298,18 @@ Messaging
 	            destActor.actor.send(event)
 			}
         }
-    } 
+    }
+
+//ADDED MAY2020	
+@kotlinx.coroutines.ObsoleteCoroutinesApi
+@kotlinx.coroutines.ExperimentalCoroutinesApi
+    suspend fun emitWithDelay(  evId: String, evContent: String, dt : Long = 0L ) {
+		scope.launch{
+			delay( dt )
+			val event = MsgUtil.buildEvent(name, evId,evContent)
+			emit( event, avatar=true )			
+		}
+	}
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi

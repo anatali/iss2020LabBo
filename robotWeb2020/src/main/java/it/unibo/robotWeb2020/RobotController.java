@@ -5,6 +5,10 @@ package it.unibo.robotWeb2020;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.eclipse.californium.core.CoapHandler;
+import org.eclipse.californium.core.CoapResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value; 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -59,11 +63,17 @@ public class RobotController {
           
      }
 
-    
- 
+    /*
+     * Update the page vie socket.io when the application-resource changes.
+     * Thanks to Eugenio Cerulo
+     */
+    	@Autowired
+    	SimpMessagingTemplate simpMessagingTemplate;
+
   @GetMapping("/") 		 
   public String entry(Model viewmodel) {
  	 viewmodel.addAttribute("arg", "Entry page loaded. Please use the buttons ");
+ 	 peparePageUpdating();
  	 return htmlPage;
   } 
    
@@ -89,7 +99,23 @@ public class RobotController {
 		return htmlPage;
 		//return "robotGuiSocket";  //ESPERIMENTO
 	}	
-	 
+	
+ 
+	private void peparePageUpdating() {
+    	connQakSupport.getClient().observe(new CoapHandler() {
+			@Override
+			public void onLoad(CoapResponse response) {
+				System.out.println("RobotController --> CoapClient changed ->" + response.getResponseText());
+				simpMessagingTemplate.convertAndSend(WebSocketConfig.topicForClient, 
+						new ResourceRep("" + HtmlUtils.htmlEscape(response.getResponseText())  ));
+			}
+
+			@Override
+			public void onError() {
+				System.out.println("RobotController --> CoapClient error!");
+			}
+		});
+	}
 	
 	/*
 	 * INTERACTION WITH THE BUSINESS LOGIC			

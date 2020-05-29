@@ -4,9 +4,6 @@
 System roomboundaryplanned
 mqttBroker "localhost" : 1883 eventTopic "unibo/roomboundaryplanned"
 
-//Dispatch modelChange  : modelChange( TARGET, VALUE )   
-//Dispatch modelUpdate  : modelUpdate( TARGET, VALUE )  
-
 Dispatch cmd       : cmd(MOVE)
  
 Request step       : step( TIME )	
@@ -97,6 +94,8 @@ var NumStep     = 0
    		[# println(itunibo.planner.moveUtils.showMap()) #]
   	}
     Transition t0 whenMsg cmd -> work
+    
+    
   	      
 }	
 

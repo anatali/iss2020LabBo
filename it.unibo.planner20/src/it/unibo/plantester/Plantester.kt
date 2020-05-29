@@ -18,8 +18,8 @@ class Plantester ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		  var stepCounter        = 0
 			var CurrentPlannedMove = ""
-			var atHome             = true 
-			val maxNumSteps        = 1	
+			val mapname            = "roomMap"
+			val maxNumSteps        = 4	 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -85,6 +85,7 @@ class Plantester ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					action { //it:State
 						println("MAP AFTER BACK TO HOME $stepCounter")
 						itunibo.planner.moveUtils.showMap(  )
+						itunibo.planner.moveUtils.saveRoomMap( mapname  )
 					}
 					 transition( edgeName="goto",targetState="exploreStep", cond=doswitchGuarded({ stepCounter < maxNumSteps  
 					}) )

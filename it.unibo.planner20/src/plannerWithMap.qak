@@ -1,0 +1,176 @@
+System plannerwithmap
+
+Event    alarm      : alarm(V)
+Dispatch doMove     : doMove(V)
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+
+Context ctxplannerwithmap  ip [host="localhost" port=8038]    
+
+QActor plannerwithmap context ctxplannerwithmap{     
+[#  var CurrentPlannedMove = ""
+	val mapname                    = "roomMap"
+	var storedPos  : Pair<Int,Int> = Pair(0,0)
+	var planInterrupted            = false
+	var StepTime                   = 500L
+	val TargetPos                  = Pair(4,4)
+#]	  
+	State s0 initial {	     
+		println("&&&  plannerwithmap STARTED")
+		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.moveUtils.loadRoomMap( mapname )
+		println("INITIAL MAP") 
+ 		run itunibo.planner.moveUtils.showMap() 
+		[# 
+			emitWithDelay("alarm", "alarm(fire)",1000L)
+		#]
+ 	} 
+	Goto  moveToTargetPoint  
+	
+	State moveToTargetPoint{
+		run itunibo.planner.plannerUtil.planForGoal("${TargetPos.first}","${TargetPos.second}")
+	}
+	Goto  execPlannedMoves
+ 
+	State execPlannedMoves{ 
+ 		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 		if [# CurrentPlannedMove.length > 0 # ]{
+ 			forward plannerwithmap -m doMove : doMove($CurrentPlannedMove)
+ 		}else{
+ 			println("&&&  plannerwithmap POINT ${TargetPos.first},${TargetPos.second} REACHED")  
+ 			run itunibo.planner.plannerUtil.showCurrentRobotState()
+ 		}
+ 	}
+ 	Transition t0 whenEvent alarm -> handleAlarm
+ 				  whenMsg doMove  -> execTheMove
+  	
+ 	State handleAlarm {
+ 		printCurrentMessage 		
+ 		[# planInterrupted = true
+ 			storedPos = itunibo.planner.plannerUtil.get_curPos() 
+ 			itunibo.planner.plannerUtil.memoCurentPlan()
+ 		#]
+ 		run itunibo.planner.plannerUtil.showCurrentRobotState() 
+ 		request walker -m movetoCell : movetoCell(0,0)
+ 	}
+ 	Transition t0 whenReply atcell -> backToHome
+ 	
+	State backToHome{
+		println("plannerwithmap backToHome")
+		if [# planInterrupted #]{
+			[# val XOLD = storedPos.first
+			   val YOLD = storedPos.second	
+			#]
+			request walker -m movetoCell : movetoCell($XOLD,$YOLD)
+		}		
+	} 
+	Transition t0 whenReply atcell -> resumeOldPlan
+	
+  	State execTheMove{
+  		//printCurrentMessage
+  		onMsg( doMove : doMove(M) ){ 			
+   			delayVar StepTime //simulate some real movement ...
+  			[# val move = payloadArg(0)
+  			   itunibo.planner.plannerUtil.updateMap(move,"plannerwithmap: exec $move") 			   
+  			#]
+  		}
+  	} 
+     Goto execPlannedMoves  
+  
+/*
+ * We could:
+ * 1) replan from here to the target
+ * 2) continue the 'interrupted' (stored) plan as it were a 'TASK' to complete
+ */  	
+  	State resumeOldPlan{  		
+  		println("-------------------------------------------------------------------")
+  		println("plannerwithmap resumeOldPlan to reach POINT ${TargetPos.first},${TargetPos.second}")
+   		println("-------------------------------------------------------------------")
+  		run itunibo.planner.plannerUtil.showCurrentRobotState() 
+  		run itunibo.planner.plannerUtil.restorePlan()							//RESUME THE 'interrupted' 'TASK'
+  		//run itunibo.planner.plannerUtil.planForGoal("${TargetPos.first}","${TargetPos.second}")  //REPLAN
+  		[# readLine() #]
+		[# 
+			emitWithDelay("alarm", "alarm(fire)",2000L)
+		#]
+  	}		
+ 	Transition t0 whenTime 50     -> execPlannedMoves 
+ 				  whenMsg doMove  -> execTheOldMove		//execTheOldMove if RESUME , discardOldMoveTodo if REPLAN 
+
+  	State execTheOldMove{
+  		//printCurrentMessage
+  		onMsg( doMove : doMove(M) ){ 			
+   			delayVar StepTime //simulate some real movement ...
+  			[# val move = payloadArg(0)
+  			   itunibo.planner.plannerUtil.updateMap(move,"plannerwithmap: OLD MOVE $move")
+  			#]
+  		}
+  	} 
+ 	Transition t0 whenTime 50     -> execPlannedMoves  
+ 				  whenMsg doMove  -> execTheOldMove		 
+
+ 	State execOldPlannedMove{
+ 		println("plannerwithmap execOldPlannedMove")
+  		[# readLine() #]
+ 	}
+ 	Transition t0 whenTime 50     -> execPlannedMoves
+ 				  whenMsg doMove  -> execOldPlannedMove
+
+ 	
+ 	State discardOldMoveTodo{
+ 		println("plannerwithmap discardOldMovesTodo")
+ 	}
+ 	Transition t0 whenTime 50     -> execPlannedMoves
+ 				  whenMsg doMove  -> discardOldMoveTodo
+ 	
+}    
+/*
+ * excutes a plan without 'interruption'
+ */
+QActor walker context ctxplannerwithmap{  
+[#
+	var XT = "0"
+	var YT = "0"
+	var CurrentPlannedMove = ""
+	var StepTime    	   = 100L
+#]
+	State s0 initial {	     
+		//println("&&&  walker STARTED")
+	}	
+	Transition t0 whenRequest movetoCell -> walk
+	
+	State walk{
+		onMsg( movetoCell : movetoCell(X,Y) ){
+			[# XT = payloadArg(0)
+			   YT = payloadArg(1)			  
+			 #]
+			println("&&&  walker  MOVING to ($XT,$YT)")
+			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
+		}
+	}
+	Goto execPlannedMoves
+	
+	
+	State execPlannedMoves{ 
+ 		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 		if [# CurrentPlannedMove.length > 0 # ]{
+ 			forward walker -m doMove : doMove($CurrentPlannedMove)
+ 		}else{
+	     	println("&&&  walker POINT ($XT,$YT) REACHED")
+	     	replyTo movetoCell with atcell : atcell($XT,$YT) 			
+ 		}
+ 	}
+ 	Transition t0 whenMsg doMove  -> execTheMove
+ 				  whenRequest movetoCell and [# CurrentPlannedMove.length == 0 #]-> walk
+ 				  
+ 	State execTheMove{ 
+  		onMsg( doMove : doMove(M) ){ 			
+   			delayVar StepTime //simulate some real movement ...
+  			[# val move = payloadArg(0)
+  			   itunibo.planner.plannerUtil.updateMap(move,"plannerwithmap: OLD MOVE $move")
+  			#]
+  		}	 			
+ 	 } 
+     Goto execPlannedMoves    
+     
+ }

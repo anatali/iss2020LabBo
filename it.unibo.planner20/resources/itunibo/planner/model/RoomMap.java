@@ -13,6 +13,7 @@ public class RoomMap implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private static RoomMap singletonRoomMap;
+	
 	public static RoomMap getRoomMap() {
 		if (singletonRoomMap == null)
 			singletonRoomMap = new RoomMap();
@@ -21,6 +22,7 @@ public class RoomMap implements Serializable{
 	public static void setRoomMap( RoomMap map ) { 
 		singletonRoomMap = map;
  	}
+	
 	
 	private List<ArrayList<Box>> roomMap = new ArrayList<ArrayList<Box>>();
 	
@@ -35,11 +37,6 @@ public class RoomMap implements Serializable{
 		this.put(0, 0, new Box(false, false, true));
 	}
 	
-//	public Map<Coordinate, Box> getMapClone() {
-//		return new HashMap<>(this.roomMap);
-//	}
-
-
 	public void put(int x, int y, Box box) {
 		try {
 			roomMap.get(y);
@@ -64,7 +61,7 @@ public class RoomMap implements Serializable{
 	public boolean isNotExplored(int x, int y) {
 		try {
 			Box box = roomMap.get(y).get(x);
-			System.out.println(" ... RoomMap  isNotExplored " + box.isDirty() );
+			//System.out.println(" ... RoomMap  isNotExplored " + box.isDirty() );
 			return  box.isDirty()   ;
 		} catch (IndexOutOfBoundsException e) {
 			return false;
@@ -74,7 +71,7 @@ public class RoomMap implements Serializable{
 	public boolean isObstacle(int x, int y) {
 		try {
 			Box box = roomMap.get(y).get(x);
-			System.out.println(" ... RoomMap  isObstacle " + box.isObstacle());
+			//System.out.println(" ... RoomMap  isObstacle " + box.isObstacle());
 			if  (box == null)
 				return false;
 			if (box.isObstacle())

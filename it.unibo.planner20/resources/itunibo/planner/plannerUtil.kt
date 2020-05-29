@@ -19,6 +19,7 @@ import itunibo.planner.model.RobotState.Direction
 import itunibo.planner.model.RobotAction
 import itunibo.planner.model.RoomMap
 import itunibo.planner.model.Box
+import kotlinx.coroutines.delay
 
 object plannerUtil { 
     private var initialState: RobotState? = null
@@ -28,34 +29,34 @@ object plannerUtil {
 	
     private var curPos    : Pair<Int,Int> = Pair(0,0)
 	private var curGoal   : Pair<Int,Int> = Pair(0,0)
-	private var direction = "downDir"
+	private var curDir    : RobotState.Direction  = RobotState.Direction.DOWN
 	
+	private var direction  = "downDir"
+	private	var currentGoalApplicable = true;
+
 	private var actionSequence : Iterator<Action>? = null
 
+	private var storedactionSequence : Iterator<Action>? = null
+    private var storedPos  : Pair<Int,Int> = Pair(0,0)
 
-/*
+    private var search: BreadthFirstSearch? = null
+    var goalTest: GoalTest = Functions()		//init
+    private var timeStart: Long = 0
+/* 
  * ------------------------------------------------
  * PLANNING
  * ------------------------------------------------
  */
-    private var search: BreadthFirstSearch? = null
-    var goalTest: GoalTest = Functions()		//init
-    private var timeStart: Long = 0
-
     @Throws(Exception::class)
     fun initAI() {
          initialState = RobotState(0, 0, RobotState.Direction.DOWN)
-        search       = BreadthFirstSearch(GraphSearch())
+         search       = BreadthFirstSearch(GraphSearch())
        println("plannerUtil initAI done")
     }
 
-	
-	var currentGoalApplicable = true;
-	
-    fun resetGoal( x: Int, y: Int) {
+    fun setGoal( x: Int, y: Int) {
         try {
-//			var canMove = RoomMap.getRoomMap().canMove( x,y-1, initialState!!.direction  );
-            println("resetGoal $x,$y while robot in cell: ${getPosX()},${getPosY()} direction=${getDirection()} ") //canMove=$canMove
+             println("setGoal $x,$y while robot in cell: ${getPosX()},${getPosY()} direction=${getDirection()} ") //canMove=$canMove
             
 			if( RoomMap.getRoomMap().isObstacle(x,y) ) {
 				println("ATTEMPT TO GO INTO AN OBSTACLE ")
@@ -74,19 +75,6 @@ object plannerUtil {
          } catch (e: Exception) {
              //e.printStackTrace()
         }
-    }
-	
-	fun resetActions(){
-		actions = listOf<Action>()
-	}
-	fun existActions() : Boolean{
-		//println("existActions ${actions!!.size}")
-		return actions!!.size>0   
-	}
-	
-	
-    fun getActions() : List<Action>{
-        return actions!!
     }
  
     @Throws(Exception::class)
@@ -125,25 +113,43 @@ object plannerUtil {
         return actions
     }
 	
-/*
- ABOUT THE ROBOT POSITION
-*/		
-	
-	fun atHome() : Boolean{
-		return curPos.first == 0 && curPos.second == 0
-	}
-	
-	fun showCurrentRobotState(){
-		println("===================================================")
-		moveUtils.showMap()
-		direction = plannerUtil.getDirection()
-		println("RobotPos=(${curPos.first}, ${curPos.second})  direction=$direction") //in map($MaxX,$MaxY)
-		println("===================================================")
-	}
-	
 
+	fun memoCurentPlan(){
+		storedPos            = curPos
+		storedactionSequence = actionSequence;
+	}
+	
+	fun restorePlan(){
+		//Goto storedcurPos
+		actionSequence = storedactionSequence;
+	}
+		
+	fun planForGoal( x: String, y: String) {
+		val vx = Integer.parseInt(x)
+		val vy = Integer.parseInt(y)
+		setGoal(vx,vy)		
+		doPlan()   
+ 	}	
+  	
+	fun planForNextDirty() {
+		val rmap = RoomMap.getRoomMap()
+		for( i in 0..moveUtils.getMapDimX( )-1 ){
+			for( j in 0..moveUtils.getMapDimY( )-1 ){
+				//println( ""+ i + "," + j + " -> " + rmap.isDirty(i,j)   );
+				if( rmap.isDirty(i,j)  ){
+					setGoal( i,j )
+					doPlan() 
+					return
+				}
+			}
+		}
+ 	}
+	
 /*
- */
+ * ------------------------------------------------
+ * ACTIONS
+ * ------------------------------------------------
+*/	
 	fun setActionMoveSequence(){
 		if( actions != null ) {
 			 actionSequence = actions!!.iterator()
@@ -156,17 +162,71 @@ object plannerUtil {
 				else return ""
 	}
 
+	fun getActions() : List<Action>{
+        return actions!!
+    }
+	fun existActions() : Boolean{
+		//println("existActions ${actions!!.size}")
+		return actions!!.size>0   
+	}
+	fun resetActions(){
+		actions = listOf<Action>()
+	}
+	
+	fun get_actionSequence() : Iterator<Action>?{
+		return actionSequence
+	}
+ 	
+/*
+ * ------------------------------------------------
+ * POSITION
+ * ------------------------------------------------
+*/		
+	fun get_curPos() : Pair<Int,Int>{
+		return curPos
+	}
+	
+	fun atHome() : Boolean{
+		return curPos.first == 0 && curPos.second == 0
+	}
+	
+	fun showCurrentRobotState(){
+		println("===================================================")
+		moveUtils.showMap()
+		direction = plannerUtil.getDirection()
+		println("RobotPos=(${curPos.first}, ${curPos.second})  direction=$direction") //in map($MaxX,$MaxY)
+		println("===================================================")
+	}
+
+/*
+* ------------------------------------------------
+* ACCESSORS
+* ------------------------------------------------
+*/	
+    fun getPosX() : Int{ return initialState!!.x }
+    fun getPosY() : Int{ return initialState!!.y }
+	fun getDir()  : RobotState.Direction{ return initialState!!.getDirection() }
+
+	fun getDirection() : String{
+ 		val direction = getDir()
+		when( direction ){
+			Direction.UP    -> return "upDir"
+			Direction.RIGHT -> return "rightDir"
+			Direction.LEFT  -> return "leftDir"
+			Direction.DOWN  -> return "downDir"
+			else            -> return "unknownDir"
+ 		}
+  	}
+     
 /*
 * ------------------------------------------------
 * MAP UPDATE
 * ------------------------------------------------
 */	
-    fun getPosX() : Int{ return initialState!!.x }
-    fun getPosY() : Int{ return initialState!!.y }
-     
- 	fun updateMap( move: String ){
+ 	fun updateMap( move: String, msg: String="" ){
 		doMove( move )
 		setPosition( )
+		if( msg.length > 0 ) println(msg) 
  	}
 	
 	fun updateMapObstacleOnCurrentDirection(   ){
@@ -180,11 +240,10 @@ object plannerUtil {
 		val posy      =  getPosY()
 		curPos        = Pair( posx,posy )
 	}
-	
-	
+ 	
     fun doMove(move: String) {
-        val x = initialState!!.x 
-        val y = initialState!!.y
+        val x = getPosX() //initialState!!.x 
+        val y = getPosY() //initialState!!.y
        // println("plannerUtil: doMove move=$move  dir=$dir x=$x y=$y dimMapX=$dimMapx dimMapY=$dimMapy")
        try {
             when (move) {
@@ -233,63 +292,7 @@ object plannerUtil {
      
 	
 	
-/*
- * ---------------------------------------------------------
- * ---------------------------------------------------------
- */
-    fun setGoalInit() {
-        goalTest = Functions()
-    }
-
-	fun setGoal( x: String, y: String) {
-		setGoal( Integer.parseInt(x), Integer.parseInt(y))
-	}	
-	fun planForGoal( x: String, y: String) {
-		//look at the cell x,y
-		var targetCell = false
-		val vx = Integer.parseInt(x)
-		val vy = Integer.parseInt(y)
-		try{
-			targetCell = RoomMap.getRoomMap().isNotExplored(vx,vy)
-						 || RoomMap.getRoomMap().isObstacle(vx,vy)
-			println("planForGoal targetCell=$targetCell")				  
-		}catch( e : Exception ){
-			println("WARNING: target cell is unknown")
-		}
-		resetGoal(vx,vy)		
-		doPlan()   
- 	}	
  
-	
-	fun setPlanForNextDirty() {
-		val rmap = RoomMap.getRoomMap()
-		for( i in 0..moveUtils.getMapDimX( )-1 ){
-			for( j in 0..moveUtils.getMapDimY( )-1 ){
-				//System.out.println( ""+ i + "," + j + " -> " + rmap.isDirty(i,j)   );
-				if( rmap.isDirty(i,j)  ){
-					resetGoal( i,j )
-					doPlan() 
-					return
-				}
-			}
-		}
- 	}
-	
-	
-	//Box(boolean isObstacle, boolean isDirty, boolean isRobot)
-    fun setGoal( x: Int, y: Int, cleanGoalCell : Boolean = true) {
-        try {
-            println("setGoal $x,$y while robot in cell: ${getPosX()},${getPosY()} direction=${getDirection()}")	
-            if( cleanGoalCell ) RoomMap.getRoomMap().put(x, y, Box(false, true, false))
-			//initialState = RobotState(getPosX(), getPosY(), initialState!!.direction ) 
-            goalTest = GoalTest { state  : Any ->
-                val robotState = state as RobotState
-				(robotState.x == x && robotState.y == y)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     fun startTimer() {
         timeStart = System.currentTimeMillis()
@@ -301,18 +304,8 @@ object plannerUtil {
 		return duration
     }
 	
-	fun getDirection() : String{
- 		val direction = initialState!!.direction 
-		when( direction ){
-			Direction.UP    -> return "upDir"
-			Direction.RIGHT -> return "rightDir"
-			Direction.LEFT  -> return "leftDir"
-			Direction.DOWN  -> return "downDir"
-			else            -> return "unknownDir"
- 		}
-  	}
 	
-		fun wallFound(){
+	fun wallFound(){
  		 val dimMapx = RoomMap.getRoomMap().getDimX()
 		 val dimMapy = RoomMap.getRoomMap().getDimY()
 		 val dir = initialState!!.getDirection()
@@ -350,26 +343,5 @@ object plannerUtil {
 	}
 
 
-/*
- * Direction
 
-    fun rotateDirection() {
-        //println("before rotateDirection: " + initialState.getDirection() );
-        initialState = Functions().result(initialState!!, RobotAction(RobotAction.TURNLEFT)) as RobotState
-        initialState = Functions().result(initialState!!, RobotAction(RobotAction.TURNLEFT)) as RobotState
-        //println("after  rotateDirection: " + initialState.getDirection() );
-        //update the kb
-        val x = initialState!!.x
-        val y = initialState!!.y
-        val newdir = initialState!!.direction.toString().toLowerCase() + "Dir"
-    }
-	
- 
-    fun setObstacles(   ){
-		RoomMap.getRoomMap().setObstacles()
- 	}
-	
-	
-	
-  */
 }
