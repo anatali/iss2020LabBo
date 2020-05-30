@@ -15,14 +15,14 @@ Context ctxbasicrobot         ip [host="192.168.1.22"   port=8020]
 
 ExternalQActor basicrobot    context ctxbasicrobot
 
-QActor roomboundaryexplorer context ctxboundaryplanned{       
+QActor roomboundaryexplorer context ctxboundaryplanned{         
 [#
 val mapname     = "roomBoundary"  		 
 var NumStep     = 0
  
 //REAL ROBOT
 //var StepTime   = 600	 
- 
+    
 //VIRTUAL ROBOT
  var StepTime   = 350	 
 #]
@@ -33,11 +33,11 @@ var NumStep     = 0
 		forward basicrobot -m cmd : cmd(r)    
 		delay 300
   	}
-//  	Goto detectBoundary
- 	  	Transition t0 whenMsg cmd -> work	//since we want to repeat ... See boundaryFound
+   	Goto work
+// 	  	Transition t0 whenMsg cmd -> work	//since we want to repeat ... See boundaryFound
 
 
-  	State work{  		
+  	State work{  		 
    		[# NumStep = 0   #] 
     	run itunibo.planner.plannerUtil.initAI()
   	}
@@ -58,7 +58,7 @@ var NumStep     = 0
 					whenReply stepfail   -> stepFailed 
 	 
  	State stepDone{  
- 		updateResource [# itunibo.planner.model.RoomMap.getRoomMap().toString() #]
+ 		updateResource [# itunibo.planner.plannerUtil.getMap() #]
  		run itunibo.planner.plannerUtil.updateMap(  "w" )
   	}
 	Goto doAheadMove
@@ -76,22 +76,22 @@ var NumStep     = 0
 			}	
  	 		if [# ! itunibo.planner.plannerUtil.atHome() #]{
 	 			run itunibo.planner.plannerUtil.wallFound()
+		 		updateResource [# "found a wall" #]
+		 		forward basicrobot -m cmd : cmd(l) 
+				delay 500 
+				run itunibo.planner.plannerUtil.updateMap(  "l" )
+				run itunibo.planner.plannerUtil.showCurrentRobotState()
  	 		}
-		}	    
-		updateResource [# "found a wall" #]
- 		forward basicrobot -m cmd : cmd(l)
-		delay 500 
-		run itunibo.planner.plannerUtil.updateMap(  "l" )
-		run itunibo.planner.plannerUtil.showCurrentRobotState()
+		}	      
  	}   
-    Goto detectBoundary 
+    Goto detectBoundary  
  
  	State boundaryFound{
-		run itunibo.planner.moveUtils.saveRoomMap(mapname)
+		run itunibo.planner.plannerUtil.saveRoomMap(mapname)
 		println("robotmapper | FINAL MAP")   
  		run itunibo.planner.plannerUtil.showCurrentRobotState()	
- 		updateResource [#  itunibo.planner.model.RoomMap.getRoomMap().toString() #]
-   		[# println(itunibo.planner.moveUtils.showMap()) #]
+ 		updateResource [#  itunibo.planner.plannerUtil.getMap() #]
+   		[# println(itunibo.planner.plannerUtil.showMap()) #]
   	}
     Transition t0 whenMsg cmd -> work
     

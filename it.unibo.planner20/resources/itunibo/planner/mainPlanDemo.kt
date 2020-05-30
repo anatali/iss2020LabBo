@@ -2,7 +2,6 @@ package itunibo.planner
 
 import aima.core.agent.Action
 
-
 object mainPlanDemo {
     fun demo() {
         println("===== demo")
@@ -13,16 +12,16 @@ object mainPlanDemo {
 			plannerUtil.initAI()
             //plannerUtil.cleanQa()
             println("===== initial map")
-            moveUtils.showMap()
+            plannerUtil.showMap()
             doSomeMOve()
             println("===== map after some move")
-            moveUtils.showMap()
+            plannerUtil.showMap()
             val actions = plannerUtil.doPlan()
             println("===== plan actions: " + actions!!)
 			
             executeMoves( )			
             println("===== map after plan")
-            moveUtils.showMap()
+            plannerUtil.showMap()
  
 
             //plannerUtil.cell0DirtyForHome()
@@ -30,7 +29,7 @@ object mainPlanDemo {
 			plannerUtil.doPlan()
             executeMoves( )
             println("===== map after plan for home")
-            moveUtils.showMap()
+            plannerUtil.showMap()
 
 			plannerUtil.getDuration()
 		
@@ -51,7 +50,7 @@ object mainPlanDemo {
         plannerUtil.doMove("a")
         plannerUtil.doMove("obstacleOnRight")
     }
-
+ 
 
     @Throws(Exception::class)
     internal fun executeMoves( ) {

@@ -159,13 +159,16 @@ LabISS-lectures site</a></font>
  In many ddr-robot applications, there is the need to discovery the topology of the floor and to define test plans to check
  that the robot covers all the free-areas of the floor.
  
- In these applications, the robot control software could logically operate in two phases (<em>plan-first/schedule later</em>, 
- sez. <tt>11.1</tt> of <a href="#AIBook">AIBook</a>):
+ In these applications, the robot control software could logically operate in two phases:
+ <div class="remark">
+<center><bc>plan-first - schedule later</bc>, 
+ sez. <tt>11.1</tt> of <a href="#AIBook">AIBook</a></center>
+ </div>
  <ol>
  <li>first, the robot <ks>detects</ks> (by using a planner) a proper sequence of moves according its current position 
- and the current state of the world  (the room in which it is working. This phase col</li>
- <li>next, the robot <ks>actuates</ks> the move sequence, with the caution the the execution of a <em>basicStep</em> 
- can works also as a <i>'discovery action'</i> that could lead to the interruption of the sequence for the presence of a (fixed or mobile) obstacle.</li>
+ and the current state of the world  (the room in which it is working. </li>
+ <li>next, the robot <ks>actuates</ks> the move sequence, with the caution the the execution of a <em>basicStep</em> in the forward directio
+should work also as a <bc>'discovery action'</bc> that could lead to the interruption of the sequence for the presence of a (fixed or mobile) <b>obstacle</b>.</li>
 </ol>
 
 To promote the development of plan-based applications, it is wise to encapsulate the planning activity into a specialized component, 
@@ -192,161 +195,150 @@ library:
  	Java implementation of algorithms from: <br/>
 	<h4 id="AIBook">AIBook</h4>
 	Russell and Norvig: Artificial Intelligence - A Modern Approach 3rd Edition.
-	<center><img src="AIBookRusselNorvig.png" alt="AIBookRusselNorvig" width="45%" height="45%"/></center><br/>  
+	<center><img src="./img/AIBookRusselNorvig.png" alt="AIBookRusselNorvig" width="45%" height="45%"/></center><br/>  
  	</td>
 	</tr>
  	</table>
 	</center> 	 
 	
- <h2>The application supports for planning</h2>
-In the project <bc>it.unibo.planner20</bc>, we introduce two main supports for planning the actions of a robot
-working in logical space (a <kc>map</kc>) composed of a set of square cells, each large as the robot:<br/><br/>	
+ <h2>The support for planning</h2>
+In the project <bc>it.unibo.planner20</bc>, we introduce a support 
+(the Kotlin object <a href="../resources/itunibo/planner/plannerUtil.kt" target="code">plannerUtil.kt</a>) for planning the actions of a robot
+working in logical space (a <bc>map</bc>) composed of a set of square cells, each large as the robot:<br/><br/>	
 	
   	<center><table style="width:98%">
 	<tbody>	
 	<tr>
- 	<td style="width:25%">
+ 	<td style="width:35%">
 	<h3>The logical move-space</h3>
 	<m>The robot is supposed to be a square device, large as a cell.</m>
- 	</td> 
-	
+ 	</td> 	
 	<td>
-    <center><img src="./plant0.png" alt="plant0" width="25%" height="32%"/></center>
+    <center><img src="./img/plant0.png" alt="plant0" width="25%" height="32%"/></center>
 	<m>
     </m>
  	</td>
 	</tr>
+	
 	<tr>
  	<td>
-    <a href="../resources/itunibo/planner/plannerUtil.kt" target="code">plannerUtil.kt</a><br/>
-	<m>Example:<a href="../src/mindwithplan.qak" target="code">mindwithplan.qak</a><br/>
-	
-	<center><img src="./spiralmove0.png" alt="spiralmove0" width="45%" height="32%"/></center>
-	<pre>setGoal 2,2
-plannerUtil doPlan actions=[a, w, w, a, w, w]
-MAP AFTER EXPLORE STEP
-| 1, 1, 
-| 1, 1, 
-| 1, 1, r, 
-</pre>
-
-Example:<a href="../src/roomboundaryplanned.qak" target="code">roomboundaryplanned.qak</a><br/> 
-<center><img src="./butlermove0.png" alt="butlermove0.png" width="45%" height="32%"/></center><br/>
-
-	</m>
-	</td> 
-	<td><m>
-	The example:<a href="../src/mindwithplan.qak" target="code">mindwithplan.qak</a> works without any robot.
-	</m>
- 	<h3>plannerUtil (<a href="../resources/itunibo/planner/plannerUtil.kt" target="code">plannerUtil.kt</a>)</h3>
-	<m>
-	The singleton object named <k>plannerUtil</k> provides a set of static methods, including:
+	<h3 id="plannerUtil">The utility <a href="../resources/itunibo/planner/plannerUtil.kt" target="code">plannerUtil.kt</a></h3>
+	<m>Provides operations for:
 	<ul>
-	<li><ks>initAI( )</ks>: initializes the planner with a <i>BreadthFirstSearch</i> algorithm, assuming a robot in position
-	<k>cell(0,0,1)</k>, <kc>direction=sud</kc> (see the picture above). 
-	The possible robot directions are: <kc>sud | east | north | west</kc>. <br/><br/>
-	</li>
-	<li><ks>doMove( move : String)</ks>: modifies the state of the <kc>map</kc> according to the given move.<br/><br/></li>
-	<li><ks>showMap(( )</ks>: prints the current state of the <kc>map</kc><br/><br/></li>
-	<li>...<br/><br/></li>
-	<li><ks>setGoal( x: String, y: String )</ks>: sets <k>cell(x,y,_)</k> as the goal to reach.<br/><br/></li>
-	<li><ks>doPlan(): List<Action>?</ks>: returns the list of actions to reach the goal-cell. 
-	The possible robot directions are: <kc>w | a | s | d</kc> (however, <kc>s</kc> is never selected by the planner).
-	<br/><br/></li>
-	</ul>
-		The example:<a href="../src/roomboundaryplanned.qak" target="code">roomboundaryplanned.qak</a> works with a robot:
-		the robot attempts to delimit its working area bay finding the (position of the) walls.
-
-    </m>
- 	</td>
-	</tr>
-	<tr>
- 	<td>
-    <a href="../resources/itunibo/planner/moveUtils.kt" target="code">moveUtils.kt</a>.
-	<br/><m>
-	<!--
-	Example:<a href="../src/mindexplore.qak" target="code">mindexplore.qak</a> (the same strategy of the example above)<br/><br/>
-	Example:<a href="../src/mindbutler.qak" target="code">mindbutler.qak</a><br/> 
-	<center><img src="./butlermove0.png" alt="butlermove0.png" width="45%" height="32%"/></center><br/>
-	The robot attempts to delimit its working area bay finding the (position of the) walls.
-	--> 
-	</m>
-	</td> 
+	<li>Creating plans</li>
+	<li>Managing plans as action sequences</li>
+	<li>Inspecting robot position and direction</li>
+	<li>Managing the room-map</li>
+	</ul></m>
+ 	</td> 	
 	<td>
- 	<h3>moveUtils (<a href="../resources/itunibo/planner/moveUtils.kt" target="code">moveUtils.kt</a>)</h3>
+ 	In particular:
+	<ul>
+	<li>The operation  <tt><k>initAI</k>( )</tt>: initializes the planner with a <i>BreadthFirstSearch</i> algorithm, assuming a robot in
+<bc>home position</bc> (<m><ks>(0,0)</k>,  direction='down'</ks></m> - see the picture above). <br/>
+	The possible robot directions are: <m><kc>down | right | up | left</kc></m>. <br/><br/>
+	</li>	
+	
+	<li>The operation <tt>fun <k>setGoal</k>( x: Int, y: Int)</tt> sets the current goal, i.e. a <m><ks><i>target position</i></ks></m> 
+	in the room to be reached.<br/><br/>
+	
+	<li>The operation <tt>fun <k>doPlan()</k>: List<Action>?</tt>
+	creates a plan as a list of actions (<m><ks><i>robot moves</i></ks></m><<tt>w | s | r | l | h | ...</tt>) to move the robot form its current position 
+	to the current <m><ks><i>target position</i></ks></m>.<br/><br/>
+	</li>
+	<li>The operation <tt>fun <k>doMove</k>(move: String)</tt> performs a <m><ks><i>robot move</i></ks></m> by changing the robot position
+	in the map and the robot direction.
+	</li>
+	</ul>
+	 
+   <center></center>
 	<m>
-	The singleton object named <k>moveUtils</k> acts as an adapter for a ActorBasic actor, by providing a set of static methods, including:
-  	<ul>
-	<li><ks>doPlan(actor : ActorBasic )</ks>:  calls <kc>plannerUtil.doPlan()</kc> and stores the resulting moves in the kb of the
-	given actor in the form <k>move( M )</k> with <kc>M = a | w | d</kc>. <br/><br/>
-	</li>
-	
-	<li><ks>setPosition(actor : ActorBasic)</ks>:   
-	sets in the kb of the given actor its current position in the form <k>curPos(X,Y )</k>.<br/><br/>
-	</li>
- 
-	<li><ks>setDirection(actor : ActorBasic)</ks>:   
-	sets in the kb of the given actor its current directiuon in the form <k>direction( D )</k><br/><br/>
-	</li>
-	
-	<li><ks>doPlannedMove(actor : ActorBasic, move: String)</ks>:  calls <kc>plannerUtil.doMove( move )</kc> and 
-	sets in the kb of the given actor its current direction in the form <k>direction( D )</k>.<br/><br/>
-	</li>
-
-  </m>
+    </m>
  	</td>
 	</tr>
 	 </table>
 	</center> 	
+	
+<h2>Examples (without any robot)</h2>	
+  	<center><table style="width:98%">
+	<tbody>	
+	<tr>
+ 	<td style="width:45%">
+    <h3>Spiral walker</h3>
+	 	<center><img src="./img/spiralmove0.png" alt="spiralmove0" width="45%" height="32%"/></center>
+	<pre> </pre>
+	</td>
+	<td>
+	In the example <a href="../src/spiralwalker.qak" target="code">spiralwalker.qak</a>:
+	<ul>
+	<li>we assume that the robot will move in an empty, rectangular room with unlimited surface;<br/><br/></li>
+	<li>the robot starts at its <bc>home position</bc> and performs a sequence of <m><ks>n, n=1..4</ks></m> tours. At each tour <m><ks>n</ks></m>, 
+	it creates a plan 	to reach the cell <m><ks>(n,n)</ks></m> and executes it; <br/><br/>
+	<li>when the target cell <m><ks>(n,n)</ks></m> is reached, the robot executes a plan to return to its home; 
+	afterwards it attempt to reach the cell <m><ks>(n+1,n+1)</ks></m>.</li>
+	<li>at the end, the robot stores the current map in a binary file named <bc>roomMap.bin</bc>.</li>
+	</ul>
+ 
+	</td>
+	</tr>
+ 
+ <tr>
+ <td>
+ <h3>Resumable walker</h3>
+ 
+<center><img src="./img/butlermove0.png" alt="butlermove0.png" width="45%" height="32%"/></center><br/>
 
-<h3>An example</h3>
-The application designer usually works by exploiting the utility 
-<a href="../resources/itunibo/planner/moveUtils.kt" target="code">moveUtils.kt</a>. For example:
+	</m>
+	</td> 
+	<td>In the example <a href="../src/resumablewalker.qak" target="code">resumablewalker.qak</a>:
+ 	<ol>
+	<li>we assume that the robot will move in an empty, rectangular room of limited surface and that map of the room is 
+	already available in a binary file named <bc>roomMap.bin</bc>;<br/><br/></li>
+	<li>the robot starts at its <bc>home position</bc> and creates a plan to reach a <bc>target cell</bc> cell (e.g. <m><ks> (4,4)</ks></m>);<br/><br/>
+	</li>
+	<li>while executing the plan, the robot reacts to an <bc>alarm</bc> event. Before handling the alarm, the robot
+	saves its current position and the sequence of planned moves not yet done; afterwards, it handles the alarm by creating a plan to return to its home; <br/><br/>
+	</li>
+	<li>the robot executes the plan to return to its home  without sensing any event;<br/><br/></li>
+	<li>when the robot is returned to home, it creates a plan to return to the saved position and then executes this plan without sensing any event;<br/><br/
+	</li>
+	<li>when the robot has reached its old position, it continues to execute the saved sequence of moves, being prepared to handle some other alarm.
+	</li>
+	</ol>
+	Another strategy could be to save just the current position at <tt>point 3</tt>, when an <bc>alarm</bc> is perceived  and to <i>create a new plan</i> at 
+	 <tt>point 6</tt>, 	to reach the  <bc>target cell</bc>.
+	
+	</td>
+	</tr>
+ 	 </table>
+	</center> 	
 
-
+<h2>Examples with a robot</h2>	
+ 
    	<center><table style="width:98%">
 	 
 	<tr>
  	<td style="width:70%">	 
-	<center><img src="./explan0_1.png" alt="explan0_1" width="100%" height="32%"/></center>
+	<!-- <center><img src="./explan0_1.png" alt="explan0_1" width="100%" height="32%"/></center> -->
+	We assume that the robot will move in an empty, rectangular room  limited by four walls.
+Moreover, we assume that near each side of the room there is a rectangular area free of obstacles large as the robot.
  	</td> 
 	<td>
-	Model: <a href="../src/plannertest.qak" target="code">plannertest.qak</a><br/><br/>
-	<m>This model can be executed without any robot</m>
-	
-	<pre>
-setGoal 2,2
-plannerUtil doPlan actions=[w, w, a, w, w]
-	</pre
-	
+	 <a href="../../it.unibo.qak20.robotroommap/src/roomboundaryplanned.qak" target="code">roomboundaryplanned.qak</a><br/><br/>
+ 	
+ 
 	</td>
 	</tr> 
 	<tr> 
 	<td>
-	<center><img src="./explan0_2.png" alt="explan0_2" width="100%" height="32%"/></center>
+		We assume that the robot will move in an empty, rectangular room with free borders like in the example above, and
+		that a map of the room is already available.
+ 
+	<!-- <center><img src="./explan0_2.png" alt="explan0_2" width="100%" height="32%"/></center> -->
 	</td>
  	<td>
-	<pre>
-MAP after step 0
-|1, 
-|1, 
-|1, 1, r, 
-	</pre>	
-<h3>Going to (1,1) from (2,2)</h3>
-	<pre>
-setGoal 1,1
-plannerUtil doPlan actions=[a, w, a, w]
-MAP after step 1
-|1, 
-|1, r, 1, 
-|1, 1, 1, 
+	 <a href="../../it.unibo.qak20.robotroommap/src/robotmapper.qak" target="code">robotmapper.qak</a><br/><br/>
 
-FINAL MAP
-|1, 
-|1, r, 1, 
-|1, 1, 1, 
-	
-	</pre>
 	</td>
 	</tr>
 	</table>

@@ -22,7 +22,7 @@ class Roomboundaryexplorer ( name: String, scope: CoroutineScope  ) : ActorBasic
 		 
 		//REAL ROBOT
 		//var StepTime   = 600	 
-		 
+		    
 		//VIRTUAL ROBOT
 		 var StepTime   = 350	 
 		return { //this:ActionBasciFsm
@@ -34,7 +34,7 @@ class Roomboundaryexplorer ( name: String, scope: CoroutineScope  ) : ActorBasic
 						forward("cmd", "cmd(r)" ,"basicrobot" ) 
 						delay(300) 
 					}
-					 transition(edgeName="t00",targetState="work",cond=whenDispatch("cmd"))
+					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
@@ -60,12 +60,12 @@ class Roomboundaryexplorer ( name: String, scope: CoroutineScope  ) : ActorBasic
 					action { //it:State
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
-					transition(edgeName="t02",targetState="stepFailed",cond=whenReply("stepfail"))
+					 transition(edgeName="t00",targetState="stepDone",cond=whenReply("stepdone"))
+					transition(edgeName="t01",targetState="stepFailed",cond=whenReply("stepfail"))
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State
-						updateResourceRep( itunibo.planner.model.RoomMap.getRoomMap().toString()  
+						updateResourceRep( itunibo.planner.plannerUtil.getMap()  
 						)
 						itunibo.planner.plannerUtil.updateMap( "w"  )
 					}
@@ -85,27 +85,27 @@ class Roomboundaryexplorer ( name: String, scope: CoroutineScope  ) : ActorBasic
 								}
 								if(  ! itunibo.planner.plannerUtil.atHome()  
 								 ){itunibo.planner.plannerUtil.wallFound(  )
+								updateResourceRep( "found a wall"  
+								)
+								forward("cmd", "cmd(l)" ,"basicrobot" ) 
+								delay(500) 
+								itunibo.planner.plannerUtil.updateMap( "l"  )
+								itunibo.planner.plannerUtil.showCurrentRobotState(  )
 								}
 						}
-						updateResourceRep( "found a wall"  
-						)
-						forward("cmd", "cmd(l)" ,"basicrobot" ) 
-						delay(500) 
-						itunibo.planner.plannerUtil.updateMap( "l"  )
-						itunibo.planner.plannerUtil.showCurrentRobotState(  )
 					}
 					 transition( edgeName="goto",targetState="detectBoundary", cond=doswitch() )
 				}	 
 				state("boundaryFound") { //this:State
 					action { //it:State
-						itunibo.planner.moveUtils.saveRoomMap( mapname  )
+						itunibo.planner.plannerUtil.saveRoomMap( mapname  )
 						println("robotmapper | FINAL MAP")
 						itunibo.planner.plannerUtil.showCurrentRobotState(  )
-						updateResourceRep(  itunibo.planner.model.RoomMap.getRoomMap().toString()  
+						updateResourceRep(  itunibo.planner.plannerUtil.getMap()  
 						)
-						 println(itunibo.planner.moveUtils.showMap())  
+						 println(itunibo.planner.plannerUtil.showMap())  
 					}
-					 transition(edgeName="t03",targetState="work",cond=whenDispatch("cmd"))
+					 transition(edgeName="t02",targetState="work",cond=whenDispatch("cmd"))
 				}	 
 			}
 		}

@@ -37,6 +37,10 @@ public class RoomMap implements Serializable{
 		this.put(0, 0, new Box(false, false, true));
 	}
 	
+	public void cleanCell(int x, int y) {
+		put(x, y, new Box(false, false, false));
+	}
+	
 	public void put(int x, int y, Box box) {
 		try {
 			roomMap.get(y);
@@ -68,6 +72,9 @@ public class RoomMap implements Serializable{
 		}
     }
 	
+	public boolean isObstacle(String xs, String ys) {
+		return isObstacle(Integer.parseInt(xs), Integer.parseInt(ys));
+	}
 	public boolean isObstacle(int x, int y) {
 		try {
 			Box box = roomMap.get(y).get(x);

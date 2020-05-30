@@ -1,20 +1,25 @@
-System explorewawelike
+System explorewavelike
 
 Dispatch cmd       : cmd(MOVE)
  
-
 Request step       : step( TIME )	
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+Reply	 walkbreak  : walkbreak(X,Y) 
 
 Context ctxexplorewawelike   ip [host="localhost" port=8038]    
-Context ctxbasicrobot        ip [host="192.168.1.22"   port=8020]   
+Context ctxbasicrobot        ip [host="127.0.0.1"   port=8020]   
+//Context ctxoptimisticwalker        ip [host="192.168.1.22"   port=8043]  
 
-ExternalQActor basicrobot    context ctxbasicrobot
+ExternalQActor basicrobot          context ctxbasicrobot
+//ExternalQActor optimisticwalker    context ctxoptimisticwalker
+ 
 
-QActor explorewawelike context ctxexplorewawelike{     
-[#  var stepCounter        = 0
+QActor explorewavelike context ctxexplorewawelike{     
+[#  var StepCounter        = 0
 	var CurrentPlannedMove = ""
 	var atHome             = true
 	val maxNumSteps        = 4
@@ -36,22 +41,156 @@ QActor explorewawelike context ctxexplorewawelike{
 		forward basicrobot -m cmd : cmd(r)    
 		delay 300
 		println("INITIAL MAP") 
- 		run itunibo.planner.moveUtils.showMap() 
+ 		run itunibo.planner.plannerUtil.showMap() 
 		run itunibo.planner.plannerUtil.startTimer()  
  	} 
 	Goto  exploreStep  
 	
 	State exploreStep{
-		[# stepCounter = stepCounter + 1 
-		   //obstacleFound      = false
-			
-		#]
-		run itunibo.planner.plannerUtil.planForGoal("$stepCounter","$stepCounter")
+		[# StepCounter = StepCounter + 1 
+		   //obstacleFound      = false			
+		#]		
  	} 
-	Goto execPlannedMoves  
+ 	Goto doCurrentStep
+ 	
+ 	State doCurrentStep{
+ 		request optimisticwalker -m movetoCell : movetoCell($StepCounter,$StepCounter) 
+ 	}
+ 	Transition t0 whenReply atcell    -> exploreStep
+ 	              whenReply walkbreak -> backToHome
+	 
+	State backToHome{
+ 		println("explorewawelike |  going backToHome")
+ 		request optimisticwalker -m movetoCell : movetoCell(0,0) 
+	} 
+  	Transition t0 whenReply atcell    -> tuneAndContinue
+ 	              whenReply walkbreak -> obstacleWhileBackHome
+	
+	State testIfAtHome{}
+ 	Goto backToHome if[# ! itunibo.planner.plannerUtil.atHome()  #] else atHomeAgain 
+ 	
+	State atHomeAgain{
+		println("explorewawelike | atHomeAgain $StepCounter")
+		run itunibo.planner.plannerUtil.showCurrentRobotState() 			
+	}
+	Goto tuneAndContinue
+	
+	State tuneAndContinue{
+		[# val Direction = itunibo.planner.plannerUtil.getDirection() 
+		   obstacleFound = true
+		#] 
+ 		println("explorewawelike | tuneAndContinue $Direction")
+  		
+		if[# obstacleFound && Direction == "upDir"  #]{
+// 			forward basicrobot -m cmd : cmd(w)
+//  			run itunibo.planner.plannerUtil.updateMap(  "w" )
+//  			delay 250 
+ 			
+			forward basicrobot -m cmd : cmd(l)
+			run itunibo.planner.plannerUtil.updateMap(  "l" )  
+			delay 250 
+			
+//			forward basicrobot -m cmd : cmd(w)
+// 			run itunibo.planner.plannerUtil.updateMap(  "w" )
+//			delay 250 
 
-	State execPlannedMoves{ 
+			forward basicrobot -m cmd : cmd(l)
+			run itunibo.planner.plannerUtil.updateMap(  "l" )
+		}
+		if[# obstacleFound &&  Direction == "leftDir"  #]{
+//			forward basicrobot -m cmd : cmd(w)
+//			run itunibo.planner.plannerUtil.updateMap(  "w" )
+//  			delay 250 
+
+			forward basicrobot -m cmd : cmd(l)	 
+			run itunibo.planner.plannerUtil.updateMap(  "l" )
+  			delay 250 
+
+//			forward basicrobot -m cmd : cmd(w) 
+//			run itunibo.planner.plannerUtil.updateMap(  "w" )
+//  			delay 250 
+ 
+// 			forward basicrobot -m cmd : cmd(r)
+//			run itunibo.planner.plannerUtil.updateMap(  "r" )
+//  			delay 250 
+//
+//			forward basicrobot -m cmd : cmd(r)	//down
+//			run itunibo.planner.plannerUtil.updateMap(  "r" )
+		}  
+		run itunibo.planner.plannerUtil.showCurrentRobotState()
+ 		[# readLine() #]
+	}
+	Goto replanforthesamegoal if [# obstacleFound #] else continueToexplore
+ 	
+ 	
+ 	State continueToexplore{
+ 		println("explorewawelike | continueToexplore")
+ 		[# obstacleFound = false #]
+ 		//[# readLine() #]
+ 	}
+   	Goto exploreStep if[# StepCounter < maxNumSteps #] else endOfJob 
+ 	
+ 	State replanforthesamegoal{
+ 			if[# itunibo.planner.model.RoomMap.getRoomMap().isObstacle(StepCounter,StepCounter) #]{
+ 				 println("explorewawelike | OBSTACLE IN THE GOAL CELL ")
+ 				 [# StepCounter = StepCounter + 1 #]
+ 			}else{
+ 				println("explorewawelike | replanforthesamegoal ($StepCounter,$StepCounter) ")
+ 		}		
+ 		[# obstacleFound = false   
+ 		   //readLine() 
+ 		#] 
+ 	}
+  	Goto doCurrentStep  
+ 	
+ 	State obstacleWhileBackHome{
+		println("explorewawelike | obstacleWhileBackHome SORRY - Fatal error ")		
+ 	}
+ 	
+	State endOfJob{
+		println("explorewawelike | endOfJob ")
+		run itunibo.planner.plannerUtil.getDuration()
+	}
+ 	
+}    
+
+/*
+ * 
+ */
+
+QActor optimisticwalker context ctxexplorewawelike{  
+[#
+	var XT = "0"
+	var YT = "0"
+	var CurrentPlannedMove = ""
+	var StepTime    	   = 350L
+	var obstacleFound      = false  
+#]
+	State waitCmd initial {	     
+		println("&&&  optimisticwalker waits for a command 'movetoCell'")
+	}	
+	Transition t0 whenRequest movetoCell -> walk
+ 	
+	State walk{
+		onMsg( movetoCell : movetoCell(X,Y) ){
+			[# XT = payloadArg(0)
+			   YT = payloadArg(1)			  
+			 #]
+			println("&&&  optimisticwalker  MOVING to ($XT,$YT)")
+			if[# itunibo.planner.model.RoomMap.getRoomMap().isObstacle(XT,YT) #]{
+ 				replyTo movetoCell with walkbreak : walkbreak( $XT, $YT ) 
+ 			}
+			else{ run itunibo.planner.plannerUtil.planForGoal("$XT","$YT") }
+		}
+	}
+	Goto execPlannedMoves
+
+/*
+ * Execute the plan
+ */					  
+ 	State execPlannedMoves{ 
  		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 		//println("optimisticwalker executes: $CurrentPlannedMove")
  	}
  	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
  
@@ -62,14 +201,14 @@ QActor explorewawelike context ctxexplorewawelike{
 					whenReply stepfail   -> stepFailed 
 	 
  	State stepDone{  
- 		updateResource [# itunibo.planner.moveUtils.getMapOneLine() #]
+ 		//updateResource [# itunibo.planner.plannerUtil.getMapOneLine() #]
  		run itunibo.planner.plannerUtil.updateMap(  "w" )
   	}
-	Goto execPlannedMoves if [# CurrentPlannedMove.length > 0 #] else testIfAtHome
-	
+	Goto execPlannedMoves if [# CurrentPlannedMove.length > 0 #] else sendSuccessAnswer
+		
 	State stepFailed{  //has found an obstacle 
 	    [# obstacleFound = true #]
- 		println("explorewawelike | stepFailed")
+ 		println("it.unibo.ctxexplorewawelike | stepFailed")
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
 			[# var Dt = payloadArg(0).toLong() / 4  #] 
 			//println("explorewawelike | stepFail after: $Dt vs ${3*StepTime/4.0}")
@@ -78,88 +217,43 @@ QActor explorewawelike context ctxexplorewawelike{
 				delayVar Dt
 				forward basicrobot -m cmd : cmd( h )
 			}	
- 		}	    
- 		run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
- 		run itunibo.planner.plannerUtil.showCurrentRobotState()
+ 		}
+	    run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection() 			    
  	}   
-    //Goto replanforthesamegoal  //going out of synch ...
- 	Goto backToHome
- 	
- 	
+	Goto sendFailureAnswer
+	
  	State otherPlannedMove{
+ 		println("explorewawelike | otherPlannedMove $CurrentPlannedMove")
+ 		//if [# CurrentPlannedMove == "NoOp"  #]{}
   		if [# CurrentPlannedMove == "l" || CurrentPlannedMove == "r"  #]{
   			forward basicrobot -m cmd : cmd($CurrentPlannedMove)
  			run itunibo.planner.plannerUtil.updateMap( "$CurrentPlannedMove" )
+ 			delay 500
   		} 
  	}   
- 	Goto execPlannedMoves  if [# CurrentPlannedMove.length > 0 #] else testIfAtHome 
- 	
-	State backToHome{
- 		println("explorewawelike |  going backToHome")
- 		run itunibo.planner.moveUtils.showMap()		
-		run itunibo.planner.plannerUtil.planForGoal("0","0")
-	} 
-	Goto  execPlannedMoves
-	
-	State testIfAtHome{}
- 	Goto backToHome if[# ! itunibo.planner.plannerUtil.atHome()  #] else atHomeAgain 
- 	
-	State atHomeAgain{
-		println("explorewawelike | atHomeAgain $stepCounter")
-		run itunibo.planner.plannerUtil.showCurrentRobotState() 			
+ 	Goto execPlannedMoves  if [# CurrentPlannedMove.length > 0 #] else  sendSuccessAnswer
+ 
+/*
+ * Sending Answers
+ */  
+ 	State sendSuccessAnswer{
+// 		if[# itunibo.planner.model.RoomMap.getRoomMap().isObstacle(XT,YT) #]{
+// 			replyTo movetoCell with walkbreak : walkbreak( $XT, $YT ) 
+// 		}else{
+	     	println("&&&  optimisticwalker POINT ($XT,$YT) REACHED")
+	     	replyTo movetoCell with atcell : atcell($XT,$YT) 	
+//	    }			
 	}
-	Goto tuneAndContinue
-	
-	State tuneAndContinue{
-		[# val direction = itunibo.planner.plannerUtil.getDirection() 
-		   println("tuneAndContinue direction=$direction")
-		#]
-		
-		if[# obstacleFound && direction == "upDir"  #]{
-//			forward basicrobot -m cmd : cmd(w)
-//			run itunibo.planner.plannerUtil.updateMap(  "w" )
-			forward basicrobot -m cmd : cmd(l)
-			run itunibo.planner.plannerUtil.updateMap(  "l" )
-//			forward basicrobot -m cmd : cmd(w)
-//			run itunibo.planner.plannerUtil.updateMap(  "w" )
-			forward basicrobot -m cmd : cmd(l)
-			run itunibo.planner.plannerUtil.updateMap(  "l" )
-		}
-		if[# obstacleFound &&  direction == "leftDir"  #]{
-			forward basicrobot -m cmd : cmd(w)
-//			run itunibo.planner.plannerUtil.updateMap(  "w" )
-//			forward basicrobot -m cmd : cmd(r)	//up
-			run itunibo.planner.plannerUtil.updateMap(  "r" )
-			forward basicrobot -m cmd : cmd(w) 
-//			run itunibo.planner.plannerUtil.updateMap(  "w" )
-//			forward basicrobot -m cmd : cmd(r)
-			run itunibo.planner.plannerUtil.updateMap(  "r" )
-			forward basicrobot -m cmd : cmd(r)	//down
-			run itunibo.planner.plannerUtil.updateMap(  "r" )
-		}
-		[# readLine() #]
+	Goto waitCmd
+  
+	State sendFailureAnswer{
+	    println("&&&  optimisticwalker FAILS")
+	    [# val Curx = itunibo.planner.plannerUtil.getPosX()
+	       val Cury = itunibo.planner.plannerUtil.getPosY()	
+	    #]
+  		run itunibo.planner.plannerUtil.showCurrentRobotState()
+	    replyTo movetoCell with walkbreak : walkbreak( $Curx, $Cury ) 					
 	}
-	Goto replanforthesamegoal if [# obstacleFound #] else continueToexplore
- 	
- 	
- 	State continueToexplore{
- 		println("explorewawelike | continueToexplore")
- 		//[# readLine() #]
- 	}
-   	Goto exploreStep if[# stepCounter < maxNumSteps #] else endOfJob 
- 	
- 	State replanforthesamegoal{
- 		println("explorewawelike | replanforthesamegoal ($stepCounter,$stepCounter) ")
- 		run itunibo.planner.plannerUtil.planForGoal("$stepCounter","$stepCounter")
- 		[# obstacleFound = false
- 		   //readLine() 
- 		#] 
- 	}
-  	Goto execPlannedMoves  
- 	
-	State endOfJob{
-		println("explorewawelike | endOfJob ")
-		run itunibo.planner.plannerUtil.getDuration()
-	}
- 	
-}    
+	Goto waitCmd
+       
+ }

@@ -1,0 +1,111 @@
+System optimisticwalker
+
+Dispatch doMove     : doMove(V)
+
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+Reply	 walkbreak  : walkbreak(X,Y) 
+
+Dispatch cmd       : cmd(MOVE)
+Request step       : step( TIME )	
+Reply   stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)
+
+Context ctxoptimisticwalker   ip [host="localhost" port=8043]    
+Context ctxbasicrobot     ip [host="192.168.1.22"   port=8020]   
+
+ExternalQActor basicrobot    context ctxbasicrobot
+/*
+ * excutes a plan without 'interruption'
+ */
+ 
+QActor optimisticwalker context ctxoptimisticwalker{  
+[#
+	var XT = "0"
+	var YT = "0"
+	var CurrentPlannedMove = ""
+	var StepTime    	   = 100L
+	var obstacleFound      = false  
+#]
+	State waitCmd initial {	     
+		println("&&&  optimisticwalker waits for a command 'movetoCell'")
+	}	
+	Transition t0 whenRequest movetoCell -> walk
+ 	
+	State walk{
+		onMsg( movetoCell : movetoCell(X,Y) ){
+			[# XT = payloadArg(0)
+			   YT = payloadArg(1)			  
+			 #]
+			println("&&&  optimisticwalker  MOVING to ($XT,$YT)")
+			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
+		}
+	}
+	Goto execPlannedMoves
+
+/*
+ * Execute the plan
+ */					  
+ 	State execPlannedMoves{ 
+ 		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 	}
+ 	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
+ 
+ 	State wMove {  
+		request basicrobot -m step : step( $StepTime  )
+ 	} 	
+ 	Transition t0   whenReply stepdone   -> stepDone   
+					whenReply stepfail   -> stepFailed 
+	 
+ 	State stepDone{  
+ 		updateResource [# itunibo.planner.plannerUtil.getMapOneLine() #]
+ 		run itunibo.planner.plannerUtil.updateMap(  "w" )
+  	}
+	Goto execPlannedMoves if [# CurrentPlannedMove.length > 0 #] else sendSuccessAnswer
+		
+	State stepFailed{  //has found an obstacle 
+	    [# obstacleFound = true #]
+ 		println("it.unibo.ctxexplorewawelike | stepFailed")
+		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
+			[# var Dt = payloadArg(0).toLong() / 4  #] 
+			//println("explorewawelike | stepFail after: $Dt vs ${3*StepTime/4.0}")
+			if [# Dt < 3*StepTime/4.0  #] {     
+				forward basicrobot -m cmd : cmd( s )
+				delayVar Dt
+				forward basicrobot -m cmd : cmd( h )
+			}	
+ 		}
+	    run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection() 			    
+ 	}   
+	Goto sendFailureAnswer
+	
+ 	State otherPlannedMove{
+  		if [# CurrentPlannedMove == "l" || CurrentPlannedMove == "r"  #]{
+  			forward basicrobot -m cmd : cmd($CurrentPlannedMove)
+ 			run itunibo.planner.plannerUtil.updateMap( "$CurrentPlannedMove" )
+  		} 
+ 	}   
+ 	Goto execPlannedMoves   
+ 
+/*
+ * Answers
+ */ 
+ 	State sendSuccessAnswer{
+	     	println("&&&  optimisticwalker POINT ($XT,$YT) REACHED")
+	     	replyTo movetoCell with atcell : atcell($XT,$YT) 					
+	}
+	Goto waitCmd
+
+	State sendFailureAnswer{
+	    println("&&&  optimisticwalker FAILS")
+	    [# val Curx = itunibo.planner.plannerUtil.getPosX()
+	       val Cury = itunibo.planner.plannerUtil.getPosY()	
+	    #]
+  		run itunibo.planner.plannerUtil.showCurrentRobotState()
+	     	replyTo movetoCell with walkbreak : walkbreak( $Curx, $Cury ) 					
+	}
+	Goto waitCmd
+       
+ }
+ 
+ 

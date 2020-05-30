@@ -9,8 +9,14 @@ public class RobotAction implements Action {
 	public static final int BACKWARD  = 2;
 	public static final int TURNLEFT  = 3;
 	
-	private int action;
 	
+	public static final RobotAction wAction = new RobotAction(FORWARD)   ;
+	public static final RobotAction sAction = new RobotAction(BACKWARD)  ;
+	public static final RobotAction lAction = new RobotAction(TURNLEFT)  ;
+	public static final RobotAction rAction = new RobotAction(TURNRIGHT) ;
+	
+	private int action;
+
 	public RobotAction(int action) {
 		if (action < FORWARD || action > TURNLEFT)
 			throw new IllegalArgumentException();

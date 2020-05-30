@@ -1,6 +1,5 @@
 /*
  * robotmapper.qak
- * ANALYSIS MODEL
  */
 System robotmapper 
 

@@ -39,7 +39,7 @@ class Explorewawelike ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						forward("cmd", "cmd(r)" ,"basicrobot" ) 
 						delay(300) 
 						println("INITIAL MAP")
-						itunibo.planner.moveUtils.showMap(  )
+						itunibo.planner.plannerUtil.showMap(  )
 						itunibo.planner.plannerUtil.startTimer(  )
 					}
 					 transition( edgeName="goto",targetState="exploreStep", cond=doswitch() )
@@ -47,11 +47,9 @@ class Explorewawelike ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("exploreStep") { //this:State
 					action { //it:State
 						 stepCounter = stepCounter + 1 
-								   //obstacleFound      = false
-									
+								   //obstacleFound      = false			
 						itunibo.planner.plannerUtil.planForGoal( "$stepCounter", "$stepCounter"  )
 					}
-					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitch() )
 				}	 
 				state("execPlannedMoves") { //this:State
 					action { //it:State
@@ -71,7 +69,7 @@ class Explorewawelike ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State
-						updateResourceRep( itunibo.planner.moveUtils.getMapOneLine()  
+						updateResourceRep( itunibo.planner.plannerUtil.getMapOneLine()  
 						)
 						itunibo.planner.plannerUtil.updateMap( "w"  )
 					}
@@ -113,7 +111,6 @@ class Explorewawelike ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("backToHome") { //this:State
 					action { //it:State
 						println("explorewawelike |  going backToHome")
-						itunibo.planner.moveUtils.showMap(  )
 						itunibo.planner.plannerUtil.planForGoal( "0", "0"  )
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitch() )
@@ -135,11 +132,19 @@ class Explorewawelike ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				}	 
 				state("tuneAndContinue") { //this:State
 					action { //it:State
+						println("tuneAndContinue ")
 						 val direction = itunibo.planner.plannerUtil.getDirection() 
-								   println("tuneAndContinue direction=$direction")
+								   readLine() 
 						if(  obstacleFound && direction == "upDir"   
-						 ){forward("cmd", "cmd(l)" ,"basicrobot" ) 
+						 ){forward("cmd", "cmd(w)" ,"basicrobot" ) 
+						itunibo.planner.plannerUtil.updateMap( "w"  )
+						delay(250) 
+						forward("cmd", "cmd(l)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "l"  )
+						delay(250) 
+						forward("cmd", "cmd(w)" ,"basicrobot" ) 
+						itunibo.planner.plannerUtil.updateMap( "w"  )
+						delay(250) 
 						forward("cmd", "cmd(l)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "l"  )
 						}
@@ -147,10 +152,12 @@ class Explorewawelike ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						 ){forward("cmd", "cmd(w)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "r"  )
 						forward("cmd", "cmd(w)" ,"basicrobot" ) 
+						forward("cmd", "cmd(r)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "r"  )
 						forward("cmd", "cmd(r)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "r"  )
 						}
+						itunibo.planner.plannerUtil.showCurrentRobotState(  )
 						 readLine()  
 					}
 					 transition( edgeName="goto",targetState="replanforthesamegoal", cond=doswitchGuarded({ obstacleFound  
@@ -161,6 +168,7 @@ class Explorewawelike ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("continueToexplore") { //this:State
 					action { //it:State
 						println("explorewawelike | continueToexplore")
+						 obstacleFound = false  
 					}
 					 transition( edgeName="goto",targetState="exploreStep", cond=doswitchGuarded({ stepCounter < maxNumSteps  
 					}) )
