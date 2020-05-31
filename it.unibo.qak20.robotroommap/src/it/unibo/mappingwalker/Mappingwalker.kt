@@ -39,7 +39,6 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						itunibo.planner.plannerUtil.showCurrentRobotState(  )
 						updateResourceRep( "initial"  
 						)
-						forward("start", "start(go)" ,"mappingwalker" ) 
 					}
 					 transition(edgeName="t00",targetState="exploreDirties",cond=whenDispatch("start"))
 				}	 

@@ -1,7 +1,7 @@
 /*  
  * mappingwalker.qak 
  */    
-System mappingwalker  
+System -trace mappingwalker  
 mqttBroker "localhost" : 1883 eventTopic "unibo/polar"  
 
 Dispatch start   : start(ARG)
@@ -16,7 +16,7 @@ Reply   stepdone   : stepdone(V)
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
 Context ctxmappingwalker   ip [host="localhost" port=8030]  
-Context ctxbasicrobot    ip [host="192.168.1.68" port=8020]  
+Context ctxbasicrobot    ip [host="dontcare" port=8020]  
    
 ExternalQActor basicrobot context ctxbasicrobot 
  
@@ -47,7 +47,7 @@ val outmapname   = "mapRoomExplored"
 		run itunibo.planner.plannerUtil.loadRoomMap( inmapname )
 		run itunibo.planner.plannerUtil.showCurrentRobotState()
 		updateResource [# "initial" #]
-		forward mappingwalker -m start : start(go)  //automsg
+		//forward mappingwalker -m start : start(go)  //automsg
 	}	
  	//Goto exploreDirties  
  	Transition t0 whenMsg start -> exploreDirties
