@@ -20,7 +20,7 @@ class Optimisticwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 			var XT = "0"
 			var YT = "0"
 			var CurrentPlannedMove = ""
-			var StepTime    	   = 100L
+			var StepTime    	   = 350L
 			var obstacleFound      = false  
 		return { //this:ActionBasciFsm
 				state("waitCmd") { //this:State

@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxrobotmapper.gradle
+build_ctxmappingwalker.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxrobotmapper.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxrobotmapper.gradle distZip
-	gradle  -b build_ctxrobotmapper.gradle -q tasks --all
-	gradle  -b build_ctxrobotmapper.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxmappingwalker.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxmappingwalker.gradle distZip
+	gradle  -b build_ctxmappingwalker.gradle -q tasks --all
+	gradle  -b build_ctxmappingwalker.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

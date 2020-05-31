@@ -1,7 +1,7 @@
 /*
  * Builds a map of the room by using the planner
  */   
-System roomboundaryplanned
+System boundarywalker
 mqttBroker "localhost" : 1883 eventTopic "unibo/roomboundaryplanned"
 
 Dispatch cmd       : cmd(MOVE)
@@ -10,12 +10,12 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
  
-Context ctxboundaryplanned    ip [host="localhost"      port=8068]                
+Context ctxboundarywalker    ip [host="localhost"      port=8068]                
 Context ctxbasicrobot         ip [host="192.168.1.22"   port=8020]    
 
 ExternalQActor basicrobot    context ctxbasicrobot
 
-QActor roomboundaryexplorer context ctxboundaryplanned{         
+QActor boundarywalker context ctxboundarywalker{         
 [#
 val mapname     = "roomBoundary"  		 
 var NumStep     = 0

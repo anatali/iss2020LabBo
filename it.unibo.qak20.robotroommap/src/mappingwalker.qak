@@ -1,7 +1,7 @@
 /*  
  * robotmapper.qak 
  */    
-System robotmapper    
+System mappingwalker  
 
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)
@@ -9,16 +9,16 @@ Dispatch resume  : resume(ARG)
 Dispatch cmd     : cmd(MOVE)
 Dispatch end     : end(ARG)
  
-Request step       : step( TIME )	
+Request step       : step( TIME )	 
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
-Context ctxrobotmapper   ip [host="localhost" port=8030]  
+Context ctxmappingwalker   ip [host="localhost" port=8030]  
 Context ctxbasicrobot    ip [host="192.168.1.22" port=8020]  
    
 ExternalQActor basicrobot context ctxbasicrobot 
  
-QActor robotmapper context ctxrobotmapper  {   
+QActor mappingwalker context ctxmappingwalker  {   
   	
 [# 
 var NumStep      = 0  

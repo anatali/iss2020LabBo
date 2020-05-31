@@ -1,8 +1,7 @@
 %====================================================================================
-% roomboundaryplanned description   
+% mappingwalker description   
 %====================================================================================
-mqttBroker("localhost", "1883", "unibo/roomboundaryplanned").
-context(ctxboundaryplanned, "localhost",  "TCP", "8068").
+context(ctxmappingwalker, "localhost",  "TCP", "8030").
 context(ctxbasicrobot, "192.168.1.22",  "TCP", "8020").
  qactor( basicrobot, ctxbasicrobot, "external").
-  qactor( roomboundaryexplorer, ctxboundaryplanned, "it.unibo.roomboundaryexplorer.Roomboundaryexplorer").
+  qactor( mappingwalker, ctxmappingwalker, "it.unibo.mappingwalker.Mappingwalker").

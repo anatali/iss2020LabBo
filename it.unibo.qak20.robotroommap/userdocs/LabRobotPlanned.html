@@ -145,182 +145,26 @@ table, th, td {
     
 <head>
    
-<title>LabPlanner</title></head>
+<title>LabRobotPlanned</title></head>
     
 <body>
 
 <div class="body"> 
 
-<h1>LabPlanner | Exploiting Planning Tools</h1> 
+<h1>LabRobotPlanned | Moving a robot with plans</h1> 
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/LectureBologna1819.html" target="isslm">
 LabISS-lectures site</a></font> 
  
  <h2>Overview</h2>
- In many ddr-robot applications, there is the need to discovery the topology of the floor and to define test plans to check
- that the robot covers all the free-areas of the floor.
- 
- In these applications, the robot control software could logically operate in two phases:
- <div class="remark">
-<center><bc>plan-first - schedule later</bc>, 
- sez. <tt>11.1</tt> of <a href="#AIBook">AIBook</a></center>
- </div>
- <ol>
- <li>first, the robot <ks>detects</ks> (by using a planner) a proper sequence of moves according its current position 
- and the current state of the world  (the room in which it is working. </li>
- <li>next, the robot <ks>actuates</ks> the move sequence, with the caution the the execution of a <em>basicStep</em> in the forward directio
-should work also as a <bc>'discovery action'</bc> that could lead to the interruption of the sequence for the presence of a (fixed or mobile) <b>obstacle</b>.</li>
-</ol>
-
-To promote the development of plan-based applications, it is wise to encapsulate the planning activity into a specialized component, 
-named, from now on, 'the <bc>planner</bc>'. At this level of analysis, the details of the behavior of the planner can be ignored. 
-In fact, we will exploit a set of available supports built upon the <a href="https://github.com/aimacode/aima-java" target="web">AIMA3e-Java</a>
-library:  	
-<br/><br/>
-
-  	<center><table style="width:98%">
- 
-	<tr>
-	<td style="width:40%">
-	<h3>AIMA library</h3>
-    <a href="https://github.com/aimacode/aima-java" target="web">AIMA3e-Java</a> <br/> <br/>
-	<m>
-	In particular, the Best-first search algorithm (sez. <tt>3.5.2</tt> of the book) as a support for search-based problem-solving agents:<br/>
-	<a href="https://github.com/aimacode/aima-java/blob/AIMA3e/aima-core/src/main/java/aima/core/search/informed/AStarSearch.java" 
-	target="web">AStarSearch</a><br/><br/>
-	The initial proposal for introducing a planner has been done by the student Federico Stella; see
-	<a href="./NotesStellaR-Map.pdf" target="code">NotesStellaR-Map.pdf</a>.
-	</m>
-	</td> 
-	<td>
- 	Java implementation of algorithms from: <br/>
-	<h4 id="AIBook">AIBook</h4>
-	Russell and Norvig: Artificial Intelligence - A Modern Approach 3rd Edition.
-	<center><img src="./img/AIBookRusselNorvig.png" alt="AIBookRusselNorvig" width="45%" height="45%"/></center><br/>  
- 	</td>
-	</tr>
- 	</table>
-	</center> 	 
-	
- <h2>The support for planning</h2>
-In the project <bc>it.unibo.planner20</bc>, we introduce a support 
-(the Kotlin object <a href="../resources/itunibo/planner/plannerUtil.kt" target="code">plannerUtil.kt</a>) for planning the actions of a robot
-working in logical space (a <bc>map</bc>) composed of a set of square cells, each large as the robot:<br/><br/>	
-	
-  	<center><table style="width:98%">
-	<tbody>	
-	<tr>
- 	<td style="width:35%">
-	<h3>The logical move-space</h3>
-	<m>The robot is supposed to be a square device, large as a cell.</m>
- 	</td> 	
-	<td>
-    <center><img src="./img/plant0.png" alt="plant0" width="25%" height="32%"/></center>
-	<m>
-    </m>
- 	</td>
-	</tr>
-	
-	<tr>
- 	<td>
-	<h3 id="plannerUtil">The utility <a href="../resources/itunibo/planner/plannerUtil.kt" target="code">plannerUtil.kt</a></h3>
-	<m>Provides operations for:
-	<ul>
-	<li>Creating plans</li>
-	<li>Managing plans as action sequences</li>
-	<li>Inspecting robot position and direction</li>
-	<li>Managing the room-map</li>
-	</ul></m>
- 	</td> 	
-	<td>
- 	In particular:
-	<ul>
-	<li>The operation  <tt><k>initAI</k>( )</tt>: initializes the planner with a <i>BreadthFirstSearch</i> algorithm, assuming a robot in
-<bc>home position</bc> (<m><ks>(0,0)</k>,  direction='down'</ks></m> - see the picture above). <br/>
-	The possible robot directions are: <m><kc>down | right | up | left</kc></m>. <br/><br/>
-	</li>	
-	
-	<li>The operation <tt>fun <k>setGoal</k>( x: Int, y: Int)</tt> sets the current goal, i.e. a <m><ks><i>target position</i></ks></m> 
-	in the room to be reached.<br/><br/>
-	
-	<li>The operation <tt>fun <k>doPlan()</k>: List<Action>?</tt>
-	creates a plan as a list of actions (<m><ks><i>robot moves</i></ks></m><<tt>w | s | r | l | h | ...</tt>) to move the robot form its current position 
-	to the current <m><ks><i>target position</i></ks></m>.<br/><br/>
-	</li>
-	<li>The operation <tt>fun <k>doMove</k>(move: String)</tt> performs a <m><ks><i>robot move</i></ks></m> by changing the robot position
-	in the map and the robot direction.
-	</li>
-	</ul>
-	 
-   <center></center>
-	<m>
-    </m>
- 	</td>
-	</tr>
-	 </table>
-	</center> 	
-	
-<h2>Examples (without any robot)</h2>	
-  	<center><table style="width:98%">
-	<tbody>	
-	<tr>
- 	<td style="width:45%">
-    <h3 id="spiralwalkernorobot">Spiral walker</h3>
-	 	<center><img src="./img/spiralmove0.png" alt="spiralmove0" width="45%" height="32%"/></center>
-	<pre> </pre>
-	</td>
-	<td>
-	In the example <a href="../src/spiralwalker.qak" target="code">spiralwalker.qak</a>:
-	<ul>
-	<li>we assume that the robot will move in an empty, rectangular room with unlimited surface;<br/><br/></li>
-	<li>the robot starts at its <bc>home position</bc> and performs a sequence of <m><ks>n, n=1..4</ks></m> tours. At each tour <m><ks>n</ks></m>, 
-	it creates a plan 	to reach the cell <m><ks>(n,n)</ks></m> and executes it; <br/><br/>
-	<li>when the target cell <m><ks>(n,n)</ks></m> is reached, the robot executes a plan to return to its home; 
-	afterwards it attempt to reach the cell <m><ks>(n+1,n+1)</ks></m>.</li>
-	<li>at the end, the robot stores the current map in a binary file named <bc>roomMap.bin</bc>.</li>
-	</ul>
- 
-	</td>
-	</tr>
- 
- <tr>
- <td>
- <h3 id="resumablewalkernorobot">Resumable walker</h3>
- 
-<center><img src="./img/butlermove0.png" alt="butlermove0.png" width="45%" height="32%"/></center><br/>
-
-	</m>
-	</td> 
-	<td>In the example <a href="../src/resumablewalker.qak" target="code">resumablewalker.qak</a>:
- 	<ol>
-	<li>we assume that the robot will move in an empty, rectangular room of limited surface and that map of the room is 
-	already available in a binary file named <bc>roomMap.bin</bc>;<br/><br/></li>
-	<li>the robot starts at its <bc>home position</bc> and creates a plan to reach a <bc>target cell</bc> cell (e.g. <m><ks> (4,4)</ks></m>);<br/><br/>
-	</li>
-	<li>while executing the plan, the robot reacts to an <bc>alarm</bc> event. Before handling the alarm, the robot
-	saves its current position and the sequence of planned moves not yet done; afterwards, it handles the alarm by creating a plan to return to its home; <br/><br/>
-	</li>
-	<li>the robot executes the plan to return to its home  without sensing any event;<br/><br/></li>
-	<li>when the robot is returned to home, it creates a plan to return to the saved position and then executes this plan without sensing any event;<br/><br/
-	</li>
-	<li>when the robot has reached its old position, it continues to execute the saved sequence of moves, being prepared to handle some other alarm.
-	</li>
-	</ol>
-	Another strategy could be to save just the current position at <tt>point 3</tt>, when an <bc>alarm</bc> is perceived  and to <i>create a new plan</i> at 
-	 <tt>point 6</tt>, 	to reach the  <bc>target cell</bc>.
-	
-	</td>
-	</tr>
- 	 </table>
-	</center> 	
-
-<h2>Examples with a robot <m>(project <a href="../../it.unibo.qak20.robotroommap/userdocs/LabRobotPlanned.html" target="code">it.unibo.qak20.robotroommap</a>)</m> </h2>	
+  
+<h2>Examples  </h2>	
 
  
    	<center><table style="width:98%">
 	 
 	<tr>
  	<td style="width:60%">	 
-	 <h3>Boundary walker (<a href="../../it.unibo.qak20.robotroommap/src/boundarywalker.qak" target="code">boundarywalker.qak</a>)</h3>
+	 <h3>Boundary walker (<a href="../src/boundarywalker.qak" target="code">boundarywalker.qak</a>)</h3>
 	<m>
 	We assume that:
 
@@ -330,17 +174,17 @@ working in logical space (a <bc>map</bc>) composed of a set of square cells, eac
 		</ul>  
 		
 		The robot walks along the room boundary and produces the following room map (stored in a binary file)  
-		whose representation is (see <a href="../../it.unibo.qak20.robotroommap/roomBoundary.txt" target="code">roomBoundary.txt</a>):<br/>
+		whose representation is (see <a href="../roomBoundary.txt" target="code">roomBoundary.txt</a>):<br/>
  	</m>
  	</td> 
 	<td>
-	  <center><img src="../../it.unibo.qak20.robotroommap/userdocs/img/roomborderfree.png" alt="roomborderfree" width="40%" /></center> <br/>
-	 <a href="../../it.unibo.qak20.robotroommap/src/boundarywalker.qak" target="code">boundarywalker.qak</a><br/> 
+	  <center><img src="../userdocs/img/roomborderfree.png" alt="roomborderfree" width="40%" /></center> <br/>
+	 <a href="../src/boundarywalker.qak" target="code">boundarywalker.qak</a><br/> 
 	 <m>
  	With the scene described in
-	<a href="../../it.unibo.qak20.robotroommap/userdocs/sceneBottlesWithSonarsConfig.js" target="code">sceneBottlesWithSonarsConfig.js</a>,
+	<a href="sceneBottlesWithSonarsConfig.js" target="code">sceneBottlesWithSonarsConfig.js</a>,
 	the virtual robot builds the map
-	 (see <a href="../../it.unibo.qak20.robotroommap/roomBoundary.txt" target="code">roomBoundary.txt</a>):
+	 (see <a href="../roomBoundary.txt" target="code">roomBoundary.txt</a>):
 		<pre>
 |r, 1, 1, 1, 1, 1, X, 
 |1, 0, 0, 0, 0, 1, X, 
@@ -354,7 +198,7 @@ working in logical space (a <bc>map</bc>) composed of a set of square cells, eac
 	</tr> 
 	<tr> 
 	<td>
-	 <h3>Mapping walker (<a href="../../it.unibo.qak20.robotroommap/src/mappingwalker.qak" target="code">mappingwalker.qak</a>)</h3>
+	 <h3>Mapping walker (<a href="../src/mappingwalker.qak" target="code">mappingwalker.qak</a>)</h3>
 	 <m>
 		We assume that 
 		<ul>
@@ -364,22 +208,21 @@ working in logical space (a <bc>map</bc>) composed of a set of square cells, eac
 		The robot:
 		<ol>
 		<li>loads the boundary-free-room map 
-		(e.g. <a href="../../it.unibo.qak20.robotroommap/roomBoundary.txt" target="code">roomBoundary.txt</a>);</li>
+		(e.g. <a href="../roomBoundary.txt" target="code">roomBoundary.txt</a>);</li>
 		<li>tries to reach each not-yet-explored cell of the room;</li>
 		<li>when finds an obstacle during its trip, it  attempts to reach another not-yet-explored cell;</li>
 		<li> when all the cells have been explored, it returns to its home.</li>
 		</ol>
- 
 	</m>
 	<!-- <center><img src="./explan0_2.png" alt="explan0_2" width="100%" height="32%"/></center> -->
 	</td>
  	<td>
-	 <a href="../../it.unibo.qak20.robotroommap/src/mappingwalker.qak" target="code">mappingwalker.qak</a><br/> <br/> 
+	 <a href="../src/mappingwalker.qak" target="code">mappingwalker.qak</a><br/> <br/> 
 	 <m>
 	With the scene described in
-	<a href="../../it.unibo.qak20.robotroommap/userdocs/sceneBottlesWithSonarsConfig.js" target="code">sceneBottlesWithSonarsConfig.js</a>,
+	<a href="../userdocs/sceneBottlesWithSonarsConfig.js" target="code">sceneBottlesWithSonarsConfig.js</a>,
 	the virtual robot builds the map
-	 (see <a href="../../it.unibo.qak20.robotroommap/mapRoomExplored.txt" target="code">mapRoomExplored.txt</a>):
+	 (see <a href="../mapRoomExplored.txt" target="code">mapRoomExplored.txt</a>):
 		<pre>
 |r, 1, 1, 1, 1, 1, X, 
 |1, 1, 1, X, 1, 1, X, 
@@ -393,10 +236,7 @@ working in logical space (a <bc>map</bc>) composed of a set of square cells, eac
 	</tr>
 	</table>
 	</center> 	
-	<br/><br/>
-Other examples are reported in 
- <a href="../../it.unibo.qak20.robotroommap/userdocs/LabRobotPlanned.html" target="code">LabRobotPlanned | Moving a robot with plans</a>.
- 	<br/><br/>
+
  <!--
  <h2>An approach for the butler project</h2>	
  

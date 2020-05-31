@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxboundaryplanned.gradle
+build_ctxboundarywalker.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxboundaryplanned.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxboundaryplanned.gradle distZip
-	gradle  -b build_ctxboundaryplanned.gradle -q tasks --all
-	gradle  -b build_ctxboundaryplanned.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxboundarywalker.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxboundarywalker.gradle distZip
+	gradle  -b build_ctxboundarywalker.gradle -q tasks --all
+	gradle  -b build_ctxboundarywalker.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

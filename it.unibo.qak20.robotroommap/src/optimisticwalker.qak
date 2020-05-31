@@ -1,6 +1,6 @@
 System optimisticwalker
 
-Dispatch doMove     : doMove(V)
+//Dispatch doMove     : doMove(V)
 
 Request  movetoCell : movetoCell(X,Y)
 Reply    atcell     : atcell(X,Y)
@@ -24,7 +24,7 @@ QActor optimisticwalker context ctxoptimisticwalker{
 	var XT = "0"
 	var YT = "0"
 	var CurrentPlannedMove = ""
-	var StepTime    	   = 100L
+	var StepTime    	   = 350L
 	var obstacleFound      = false  
 #]
 	State waitCmd initial {	     
@@ -106,6 +106,37 @@ QActor optimisticwalker context ctxoptimisticwalker{
 	}
 	Goto waitCmd
        
+ }
+ 
+ 
+ QActor walkerconsole context ctxoptimisticwalker{
+[#
+ 	val inmapname          = "mapRoomExplored"
+#] 	
+ 	State waitCmd initial {	  
+ 		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
+		run itunibo.planner.plannerUtil.showCurrentRobotState()
+  		run  consolegui.consoleGuiCoap.create( "localhost", "8043", "walkerconsole")
+ 	}
+ 	Transition t0 whenMsg cmd -> handleCmd
+ 	
+ 	State handleCmd{
+ 		printCurrentMessage
+ 		onMsg( cmd : cmd(M) ){
+ 			[#val move = payloadArg(0) #]
+ 			if [# move =="start" #]{
+ 				request optimisticwalker -m movetoCell : movetoCell( 5,3 )
+ 			}
+ 		}
+ 	}
+ 	Transition t0 whenReply atcell -> showAnswer
+ 		whenReply stepfail -> showAnswer
+ 	
+ 	State showAnswer{
+ 		printCurrentMessage
+ 	}
+ 	Goto waitCmd
  }
  
  

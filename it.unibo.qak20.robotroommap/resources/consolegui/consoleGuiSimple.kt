@@ -10,8 +10,8 @@ class consoleGuiSimple( val connType : ConnectionType, val hostIP : String,   va
 						val destName : String ) : IObserver {
 lateinit var connQakSupport : connQakBase
 	
-  		 val buttonLabels = arrayOf("e","w", "s", "l", "r", "z", "x", "b", "p", "h")
- 
+  		 //val buttonLabels = arrayOf("e","w", "s", "l", "r", "z", "x", "b", "p", "h")
+  		 val buttonLabels = arrayOf("alarm","start","p","h")
 	
 	init{
 		create( connType )
