@@ -1,20 +1,22 @@
 /*  
- * robotmapper.qak 
+ * mappingwalker.qak 
  */    
 System mappingwalker  
+mqttBroker "localhost" : 1883 eventTopic "unibo/polar"  
 
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)
 Dispatch resume  : resume(ARG) 
+
 Dispatch cmd     : cmd(MOVE)
-Dispatch end     : end(ARG)
+Dispatch end     : end(ARG) 
  
 Request step       : step( TIME )	 
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
 Context ctxmappingwalker   ip [host="localhost" port=8030]  
-Context ctxbasicrobot    ip [host="192.168.1.22" port=8020]  
+Context ctxbasicrobot    ip [host="192.168.1.68" port=8020]  
    
 ExternalQActor basicrobot context ctxbasicrobot 
  
@@ -32,7 +34,7 @@ val outmapname   = "mapRoomExplored"
 #] 
 
 	State s0 initial { 	  
-		println("robotmapper | START")	
+		println("mappingwalker | START")	
 		discardMsg Off  //WE MUST RECEIVE stop
  		run itunibo.planner.plannerUtil.initAI()
  		forward basicrobot -m cmd : cmd(l)
@@ -43,14 +45,19 @@ val outmapname   = "mapRoomExplored"
  * 1) Load the map of the empty-room
  */		
 		run itunibo.planner.plannerUtil.loadRoomMap( inmapname )
+		run itunibo.planner.plannerUtil.showCurrentRobotState()
 		updateResource [# "initial" #]
+		forward mappingwalker -m start : start(go)  //automsg
 	}	
- 	Goto exploreDirties  
+ 	//Goto exploreDirties  
+ 	Transition t0 whenMsg start -> exploreDirties
  	
- 	 
+ 	  
  	State exploreDirties{
+ 		printCurrentMessage
  		run itunibo.planner.plannerUtil.resetActions()
  		run itunibo.planner.plannerUtil.planForNextDirty()
+ 		delay 1000	
  		//[# readLine() #]
  	}
  	Goto execPlannedMoves if [# itunibo.planner.plannerUtil.existActions() #] else endOfJob 
@@ -115,7 +122,7 @@ val outmapname   = "mapRoomExplored"
 //	 		}
 	 		run itunibo.planner.plannerUtil.showCurrentRobotState()
 			updateResource [# "stepFail" #]
-			//delay 500	
+			delay 500	
 		}	    
   	}
   	Goto exploreDirties  

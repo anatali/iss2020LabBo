@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxoptimisticwalker.gradle
+build_ctxtrustingwalker.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxoptimisticwalker.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxoptimisticwalker.gradle distZip
-	gradle  -b build_ctxoptimisticwalker.gradle -q tasks --all
-	gradle  -b build_ctxoptimisticwalker.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxtrustingwalker.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxtrustingwalker.gradle distZip
+	gradle  -b build_ctxtrustingwalker.gradle -q tasks --all
+	gradle  -b build_ctxtrustingwalker.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

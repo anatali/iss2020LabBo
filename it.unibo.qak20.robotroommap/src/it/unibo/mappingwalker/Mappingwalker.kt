@@ -28,7 +28,7 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("robotmapper | START")
+						println("mappingwalker | START")
 						discardMessages = false
 						itunibo.planner.plannerUtil.initAI(  )
 						forward("cmd", "cmd(l)" ,"basicrobot" ) 
@@ -36,15 +36,19 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						forward("cmd", "cmd(r)" ,"basicrobot" ) 
 						delay(300) 
 						itunibo.planner.plannerUtil.loadRoomMap( inmapname  )
+						itunibo.planner.plannerUtil.showCurrentRobotState(  )
 						updateResourceRep( "initial"  
 						)
+						forward("start", "start(go)" ,"mappingwalker" ) 
 					}
-					 transition( edgeName="goto",targetState="exploreDirties", cond=doswitch() )
+					 transition(edgeName="t00",targetState="exploreDirties",cond=whenDispatch("start"))
 				}	 
 				state("exploreDirties") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						itunibo.planner.plannerUtil.resetActions(  )
 						itunibo.planner.plannerUtil.planForNextDirty(  )
+						delay(1000) 
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ itunibo.planner.plannerUtil.existActions()  
 					}) )
@@ -65,8 +69,8 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t00",targetState="stepDone",cond=whenReply("stepdone"))
-					transition(edgeName="t01",targetState="stepFail",cond=whenReply("stepfail"))
+					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
+					transition(edgeName="t02",targetState="stepFail",cond=whenReply("stepfail"))
 				}	 
 				state("otherPlannedMove") { //this:State
 					action { //it:State
@@ -121,6 +125,7 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								itunibo.planner.plannerUtil.showCurrentRobotState(  )
 								updateResourceRep( "stepFail"  
 								)
+								delay(500) 
 						}
 					}
 					 transition( edgeName="goto",targetState="exploreDirties", cond=doswitch() )

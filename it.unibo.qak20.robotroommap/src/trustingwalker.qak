@@ -1,6 +1,14 @@
-System optimisticwalker
-
-//Dispatch doMove     : doMove(V)
+/* 
+ * ================================================================================
+ * trustingwalker.qak
+ * VERSION June 1, 2020
+ * 
+ * External MQTT sites:
+ * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
+ * ================================================================================
+ */ 
+System trustingwalker
+mqttBroker "localhost" : 1883 eventTopic "unibo/polar" 
 
 Request  movetoCell : movetoCell(X,Y)
 Reply    atcell     : atcell(X,Y)
@@ -11,15 +19,15 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
-Context ctxoptimisticwalker   ip [host="localhost" port=8043]    
-Context ctxbasicrobot     ip [host="192.168.1.22"   port=8020]   
+Context ctxtrustingwalker   ip [host="localhost" port=8043]    
+Context ctxbasicrobot     ip [host="192.168.1.68"   port=8020]   
 
 ExternalQActor basicrobot    context ctxbasicrobot
 /*
  * excutes a plan without 'interruption'
- */
+ */  
  
-QActor optimisticwalker context ctxoptimisticwalker{  
+QActor trustingwalker context ctxtrustingwalker{  
 [#
 	var XT = "0"
 	var YT = "0"
@@ -28,7 +36,7 @@ QActor optimisticwalker context ctxoptimisticwalker{
 	var obstacleFound      = false  
 #]
 	State waitCmd initial {	     
-		println("&&&  optimisticwalker waits for a command 'movetoCell'")
+		println("&&&  trustingwalker waits for a command 'movetoCell'")
 	}	
 	Transition t0 whenRequest movetoCell -> walk
  	
@@ -37,7 +45,7 @@ QActor optimisticwalker context ctxoptimisticwalker{
 			[# XT = payloadArg(0)
 			   YT = payloadArg(1)			  
 			 #]
-			println("&&&  optimisticwalker  MOVING to ($XT,$YT)")
+			println("&&&  trustingwalker  MOVING to ($XT,$YT)")
 			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
 		}
 	}
@@ -48,6 +56,7 @@ QActor optimisticwalker context ctxoptimisticwalker{
  */					  
  	State execPlannedMoves{ 
  		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 		println("trustingwalker | doing move $CurrentPlannedMove")
  	}
  	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
  
@@ -65,7 +74,7 @@ QActor optimisticwalker context ctxoptimisticwalker{
 		
 	State stepFailed{  //has found an obstacle 
 	    [# obstacleFound = true #]
- 		println("it.unibo.ctxexplorewawelike | stepFailed")
+ 		println("trustingwalker | stepFailed")
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
 			[# var Dt = payloadArg(0).toLong() / 4  #] 
 			//println("explorewawelike | stepFail after: $Dt vs ${3*StepTime/4.0}")
@@ -85,53 +94,57 @@ QActor optimisticwalker context ctxoptimisticwalker{
  			run itunibo.planner.plannerUtil.updateMap( "$CurrentPlannedMove" )
   		} 
  	}   
- 	Goto execPlannedMoves   
+ 	Goto execPlannedMoves if [# CurrentPlannedMove.length > 0 #] else sendSuccessAnswer 
  
 /*
  * Answers
  */ 
  	State sendSuccessAnswer{
-	     	println("&&&  optimisticwalker POINT ($XT,$YT) REACHED")
+	     	println("&&&  trustingwalker POINT ($XT,$YT) REACHED")
+	     	run itunibo.planner.plannerUtil.showCurrentRobotState()
 	     	replyTo movetoCell with atcell : atcell($XT,$YT) 					
 	}
 	Goto waitCmd
 
 	State sendFailureAnswer{
-	    println("&&&  optimisticwalker FAILS")
+	    println("&&&  trustingwalker FAILS")
 	    [# val Curx = itunibo.planner.plannerUtil.getPosX()
 	       val Cury = itunibo.planner.plannerUtil.getPosY()	
 	    #]
   		run itunibo.planner.plannerUtil.showCurrentRobotState()
-	     	replyTo movetoCell with walkbreak : walkbreak( $Curx, $Cury ) 					
+	    replyTo movetoCell with walkbreak : walkbreak( $Curx, $Cury ) 					
 	}
 	Goto waitCmd
        
  }
  
- 
- QActor walkerconsole context ctxoptimisticwalker{
+  
+ QActor walkerconsole context ctxtrustingwalker{
 [#
- 	val inmapname          = "mapRoomExplored"
+ 	val inmapname  = "mapRoomExplored"
 #] 	
- 	State waitCmd initial {	  
+ 	State s0 initial {	  
  		run itunibo.planner.plannerUtil.initAI()
 		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
 		run itunibo.planner.plannerUtil.showCurrentRobotState()
   		run  consolegui.consoleGuiCoap.create( "localhost", "8043", "walkerconsole")
  	}
- 	Transition t0 whenMsg cmd -> handleCmd
+ 	Goto waitCmd
  	
+ 	State waitCmd{
+  	}
+ 	Transition t0 whenMsg cmd -> handleCmd
  	State handleCmd{
  		printCurrentMessage
  		onMsg( cmd : cmd(M) ){
  			[#val move = payloadArg(0) #]
  			if [# move =="start" #]{
- 				request optimisticwalker -m movetoCell : movetoCell( 5,3 )
+ 				request trustingwalker -m movetoCell : movetoCell( 5,3 )
  			}
  		}
  	}
  	Transition t0 whenReply atcell -> showAnswer
- 		whenReply stepfail -> showAnswer
+ 		whenReply walkbreak -> showAnswer
  	
  	State showAnswer{
  		printCurrentMessage

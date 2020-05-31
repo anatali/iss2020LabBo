@@ -11,20 +11,25 @@ import kotlinx.coroutines.runBlocking
 class Walkerconsole ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope ){
 
 	override fun getInitialState() : String{
-		return "waitCmd"
+		return "s0"
 	}
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-		 	val inmapname          = "mapRoomExplored"
+		 	val inmapname  = "mapRoomExplored"
 		return { //this:ActionBasciFsm
-				state("waitCmd") { //this:State
+				state("s0") { //this:State
 					action { //it:State
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( inmapname  )
 						itunibo.planner.plannerUtil.showCurrentRobotState(  )
 						consolegui.consoleGuiCoap.create( "localhost", "8043", "walkerconsole"  )
+					}
+					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
+				}	 
+				state("waitCmd") { //this:State
+					action { //it:State
 					}
 					 transition(edgeName="t03",targetState="handleCmd",cond=whenDispatch("cmd"))
 				}	 
@@ -35,12 +40,12 @@ class Walkerconsole ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								val move = payloadArg(0)  
 								if(  move =="start"  
-								 ){request("movetoCell", "movetoCell(5,3)" ,"optimisticwalker" )  
+								 ){request("movetoCell", "movetoCell(5,3)" ,"trustingwalker" )  
 								}
 						}
 					}
 					 transition(edgeName="t04",targetState="showAnswer",cond=whenReply("atcell"))
-					transition(edgeName="t05",targetState="showAnswer",cond=whenReply("stepfail"))
+					transition(edgeName="t05",targetState="showAnswer",cond=whenReply("walkbreak"))
 				}	 
 				state("showAnswer") { //this:State
 					action { //it:State

@@ -1,4 +1,4 @@
-System explorewavelike
+System wawewalker
 
 Dispatch cmd       : cmd(MOVE)
  
@@ -9,16 +9,16 @@ Reply   stepfail   : stepfail(DURATION, CAUSE)
 Request  movetoCell : movetoCell(X,Y)
 Reply    atcell     : atcell(X,Y)
 Reply	 walkbreak  : walkbreak(X,Y) 
-
-Context ctxexplorewawelike   ip [host="localhost" port=8038]    
+ 
+Context ctxwawewalker   ip [host="localhost" port=8038]    
 Context ctxbasicrobot        ip [host="127.0.0.1"   port=8020]   
 //Context ctxoptimisticwalker        ip [host="192.168.1.22"   port=8043]  
 
 ExternalQActor basicrobot          context ctxbasicrobot
-//ExternalQActor optimisticwalker    context ctxoptimisticwalker
+//ExternalQActor slavewalker    context ctxoptimisticwalker
  
 
-QActor explorewavelike context ctxexplorewawelike{     
+QActor wawewalker context ctxwawewalker{     
 [#  var StepCounter        = 0
 	var CurrentPlannedMove = ""
 	var atHome             = true
@@ -54,14 +54,14 @@ QActor explorewavelike context ctxexplorewawelike{
  	Goto doCurrentStep
  	
  	State doCurrentStep{
- 		request optimisticwalker -m movetoCell : movetoCell($StepCounter,$StepCounter) 
+ 		request slavewalker -m movetoCell : movetoCell($StepCounter,$StepCounter) 
  	}
  	Transition t0 whenReply atcell    -> exploreStep
  	              whenReply walkbreak -> backToHome
 	 
 	State backToHome{
  		println("explorewawelike |  going backToHome")
- 		request optimisticwalker -m movetoCell : movetoCell(0,0) 
+ 		request slavewalker -m movetoCell : movetoCell(0,0) 
 	} 
   	Transition t0 whenReply atcell    -> tuneAndContinue
  	              whenReply walkbreak -> obstacleWhileBackHome
@@ -158,7 +158,7 @@ QActor explorewavelike context ctxexplorewawelike{
  * 
  */
 
-QActor optimisticwalker context ctxexplorewawelike{  
+QActor slavewalker context ctxwawewalker{  
 [#
 	var XT = "0"
 	var YT = "0"
@@ -167,7 +167,7 @@ QActor optimisticwalker context ctxexplorewawelike{
 	var obstacleFound      = false  
 #]
 	State waitCmd initial {	     
-		println("&&&  optimisticwalker waits for a command 'movetoCell'")
+		println("&&&  slavewalker waits for a command 'movetoCell'")
 	}	
 	Transition t0 whenRequest movetoCell -> walk
  	
@@ -176,7 +176,7 @@ QActor optimisticwalker context ctxexplorewawelike{
 			[# XT = payloadArg(0)
 			   YT = payloadArg(1)			  
 			 #]
-			println("&&&  optimisticwalker  MOVING to ($XT,$YT)")
+			println("&&&  slavewalker  MOVING to ($XT,$YT)")
 			if[# itunibo.planner.model.RoomMap.getRoomMap().isObstacle(XT,YT) #]{
  				replyTo movetoCell with walkbreak : walkbreak( $XT, $YT ) 
  			}
@@ -190,7 +190,7 @@ QActor optimisticwalker context ctxexplorewawelike{
  */					  
  	State execPlannedMoves{ 
  		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
- 		//println("optimisticwalker executes: $CurrentPlannedMove")
+ 		//println("slavewalker executes: $CurrentPlannedMove")
  	}
  	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
  
@@ -240,14 +240,14 @@ QActor optimisticwalker context ctxexplorewawelike{
 // 		if[# itunibo.planner.model.RoomMap.getRoomMap().isObstacle(XT,YT) #]{
 // 			replyTo movetoCell with walkbreak : walkbreak( $XT, $YT ) 
 // 		}else{
-	     	println("&&&  optimisticwalker POINT ($XT,$YT) REACHED")
+	     	println("&&&  slavewalker POINT ($XT,$YT) REACHED")
 	     	replyTo movetoCell with atcell : atcell($XT,$YT) 	
 //	    }			
 	}
 	Goto waitCmd
   
 	State sendFailureAnswer{
-	    println("&&&  optimisticwalker FAILS")
+	    println("&&&  slavewalker FAILS")
 	    [# val Curx = itunibo.planner.plannerUtil.getPosX()
 	       val Cury = itunibo.planner.plannerUtil.getPosY()	
 	    #]
