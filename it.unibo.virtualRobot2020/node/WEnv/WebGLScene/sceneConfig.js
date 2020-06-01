@@ -38,13 +38,13 @@ const config = {
 		},
 */
         {
-            name: "table11",
+            name: "table12",
             centerPosition: { x: 0.64, y: 0.45 },
             size: { x: 0.05, y: 0.06      }
 		},
 		
         {
-            name: "table2",
+            name: "table1",
             centerPosition: { x: 0.33, y: 0.45},
             size: { x: 0.05, y: 0.06      }
 		},
