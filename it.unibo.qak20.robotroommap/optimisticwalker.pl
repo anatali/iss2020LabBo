@@ -1,8 +1,8 @@
 %====================================================================================
-% trustingwalker description   
+% optimisticwalker description   
 %====================================================================================
-mqttBroker("localhost", "1883", "unibo/polar").
-context(ctxtrustingwalker, "localhost",  "TCP", "8043").
+context(ctxoptimisticwalker, "localhost",  "TCP", "8043").
 context(ctxbasicrobot, "192.168.1.22",  "TCP", "8020").
  qactor( basicrobot, ctxbasicrobot, "external").
-  qactor( trustingwalker, ctxtrustingwalker, "it.unibo.trustingwalker.Trustingwalker").
+  qactor( optimisticwalker, ctxoptimisticwalker, "it.unibo.optimisticwalker.Optimisticwalker").
+  qactor( walkerconsole, ctxoptimisticwalker, "it.unibo.walkerconsole.Walkerconsole").

@@ -42,7 +42,7 @@ val outmapname   = "teaRoomExplored"
 		delay 300
 		forward basicrobot -m cmd : cmd(r)    
 		delay 300
-/*
+/* 
  * 1) Load the map of the empty-room
  */		
 		run itunibo.planner.plannerUtil.loadRoomMap( inmapname )
@@ -50,8 +50,8 @@ val outmapname   = "teaRoomExplored"
 		updateResource [# "initial" #]
 		//forward mappingwalker -m start : start(go)  //automsg
 	}	
- 	Goto exploreDirties  
- 	//Transition t0 whenMsg start -> exploreDirties
+ 	//Goto exploreDirties  
+ 	Transition t0 whenMsg start -> exploreDirties
  	
  	  
  	State exploreDirties{

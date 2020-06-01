@@ -11,12 +11,12 @@ const config = {
      sonars: [
         {
             name: "sonar1",
-            position: { x: 0.99, y: 0.24 },
+            position: { x: 1.0, y: 0.24 },
             senseAxis: { x: true, y: false }
         },
         {
             name: "sonar2",
-            position: { x: 0.94, y: 0.93},
+            position: { x: 1.0, y: 0.93},
             senseAxis: { x: true, y: false }
         } 
      ],
@@ -61,8 +61,8 @@ const config = {
         },
         {
             name: "wallDown",
-            centerPosition: { x: 0.51, y: 0.11},
-            size: { x: 0.57, y: 0.01}
+            centerPosition: { x: 0.56, y: 0.11},
+            size: { x: 0.64, y: 0.01}
         },
         {
             name: "wallLeft",
@@ -71,10 +71,10 @@ const config = {
         },
         {
             name: "wallRight",
-            centerPosition: { x: 0.97, y: 0.5},
+            centerPosition: { x: 0.99, y: 0.5},
             size: { x: 0.01, y: 0.99}
         }
     ]
 }
-
+ 
 export default config;

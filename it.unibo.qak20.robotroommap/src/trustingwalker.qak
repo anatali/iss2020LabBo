@@ -1,7 +1,7 @@
 /* 
  * ================================================================================
  * trustingwalker.qak
- * VERSION June 1, 2020
+ * VERSION June 1, 2020 
  * 
  * External MQTT sites:
  * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
@@ -24,7 +24,7 @@ Context ctxbasicrobot     ip [host="192.168.1.22"   port=8020]
 
 ExternalQActor basicrobot    context ctxbasicrobot
 /*
- * excutes a plan without 'interruption'
+ * excutes a plan (HOPEFULLY) without 'interruption'
  */  
  
 QActor trustingwalker context ctxtrustingwalker{  
@@ -32,15 +32,26 @@ QActor trustingwalker context ctxtrustingwalker{
 	var XT = "0"
 	var YT = "0"
 	var CurrentPlannedMove = ""
-	var StepTime    	   = 350L
+	var StepTime    	   = 348L
+	val BackTime           = 2 * StepTime / 3
 	var obstacleFound      = false  
+	val inmapname          = "teaRoomExplored" 
 #]
-	State waitCmd initial {	     
-		println("&&&  trustingwalker waits for a command 'movetoCell'")
-// 		forward basicrobot -m cmd : cmd(l)
-//		delay 300
-//		forward basicrobot -m cmd : cmd(r)    
-//		delay 300
+
+	State s0 initial {	     
+ 		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
+		run itunibo.planner.plannerUtil.showCurrentRobotState()
+		println("&&&  trustingwalker STARTS")
+ 		forward basicrobot -m cmd : cmd(l)
+		delay 300
+		forward basicrobot -m cmd : cmd(r)    
+		delay 300
+	}	
+	Goto waitCmd   
+	 
+	State waitCmd {	     
+ 		println("&&&  trustingwalker waits for a command 'movetoCell'")
 	}	
 	Transition t0 whenRequest movetoCell -> walk
  	
@@ -81,11 +92,11 @@ QActor trustingwalker context ctxtrustingwalker{
 	    [# obstacleFound = true #]
  		println("trustingwalker | stepFailed")
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
-			[# var Dt = payloadArg(0).toLong() / 4  #] 
-			//println("explorewawelike | stepFail after: $Dt vs ${3*StepTime/4.0}")
-			if [# Dt < 3*StepTime/4.0  #] {     
+			[# val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2 #] 
+			println("trustingwalker stepFail D= $D, BackTime = ${BackTime}")
+			if [# D > BackTime #] {    
 				forward basicrobot -m cmd : cmd( s )
-				delayVar Dt
+				delayVar BackT
 				forward basicrobot -m cmd : cmd( h )
 			}	
  		}
@@ -102,14 +113,14 @@ QActor trustingwalker context ctxtrustingwalker{
  	Goto execPlannedMoves if [# CurrentPlannedMove.length > 0 #] else sendSuccessAnswer 
  
 /*
- * Answers
+ * Answers  
  */ 
  	State sendSuccessAnswer{
 	     	println("&&&  trustingwalker POINT ($XT,$YT) REACHED")
 	     	run itunibo.planner.plannerUtil.showCurrentRobotState()
 	     	replyTo movetoCell with atcell : atcell($XT,$YT) 					
 	}
-	Goto waitCmd
+	Goto waitCmd  
 
 	State sendFailureAnswer{
 	    println("&&&  trustingwalker FAILS")
@@ -123,16 +134,16 @@ QActor trustingwalker context ctxtrustingwalker{
        
  }
  
-  
+ /* 
  QActor walkerconsole context ctxtrustingwalker{
 [#
  	//val inmapname  = "mapRoomExplored"
  	val inmapname  = "teaRoomExplored"  
 #] 	
  	State s0 initial {	  
- 		run itunibo.planner.plannerUtil.initAI()
-		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
-		run itunibo.planner.plannerUtil.showCurrentRobotState()
+ 		//run itunibo.planner.plannerUtil.initAI()
+		//run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
+		//run itunibo.planner.plannerUtil.showCurrentRobotState()
   		run  consolegui.consoleGuiCoap.create( "localhost", "8043", "ctxtrustingwalker", "walkerconsole")
   		//forward walkerconsole -m cmd : cmd(start)
  	}
@@ -160,4 +171,4 @@ QActor trustingwalker context ctxtrustingwalker{
  	Goto waitCmd
  }
  
- 
+ */

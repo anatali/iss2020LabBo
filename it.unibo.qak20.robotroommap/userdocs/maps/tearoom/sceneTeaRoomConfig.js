@@ -1,22 +1,22 @@
 const config = {
     floor: {
-        size: { x: 30, y: 24                   }
+        size: { x: 34, y: 30                   }
     },
     player: {
         //position: { x: 0.5, y: 0.5 },		//CENTER
-        position: { x: 0.12, y: 0.16 },		//INIT
+        position: { x: 0.10, y: 0.15 },		//INIT
         //position: { x: 0.8, y: 0.85 },		//END
         speed: 0.2
     },
      sonars: [
         {
             name: "sonar1",
-            position: { x: 0.99, y: 0.24 },
+            position: { x: 1.0, y: 0.24 },
             senseAxis: { x: true, y: false }
         },
         {
             name: "sonar2",
-            position: { x: 0.94, y: 0.93},
+            position: { x: 1.0, y: 0.93},
             senseAxis: { x: true, y: false }
         } 
      ],
@@ -38,15 +38,15 @@ const config = {
 		},
 */
         {
-            name: "bottle1",
+            name: "table12",
             centerPosition: { x: 0.64, y: 0.45 },
-            size: { x: 0.077, y: 0.066      }
+            size: { x: 0.05, y: 0.06      }
 		},
 		
         {
-            name: "bottle2",
-            centerPosition: { x: 0.24, y: 0.45},
-            size: { x: 0.077, y: 0.066      }
+            name: "table1",
+            centerPosition: { x: 0.33, y: 0.45},
+            size: { x: 0.05, y: 0.06      }
 		},
 
         {
@@ -56,13 +56,13 @@ const config = {
         },
         {
             name: "gatein",
-            centerPosition: { x: 0.04, y: 0.112},
-            size: { x: 0.03, y: 0.01}
+            centerPosition: { x: 0.066, y: 0.11},
+            size: { x: 0.089, y: 0.01}
         },
         {
             name: "wallDown",
-            centerPosition: { x: 0.5, y: 0.112},
-            size: { x: 0.54, y: 0.01}
+            centerPosition: { x: 0.56, y: 0.11},
+            size: { x: 0.64, y: 0.01}
         },
         {
             name: "wallLeft",
@@ -71,10 +71,10 @@ const config = {
         },
         {
             name: "wallRight",
-            centerPosition: { x: 0.97, y: 0.5},
+            centerPosition: { x: 0.99, y: 0.5},
             size: { x: 0.01, y: 0.99}
         }
     ]
 }
-
+ 
 export default config;

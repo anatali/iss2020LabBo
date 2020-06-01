@@ -156,6 +156,10 @@ table, th, td {
 LabISS-lectures site</a></font> 
  
  <h2>Overview</h2>
+ In this section we report a set of examples built using the planner support introduced in  
+ <a href="../../it.unibo.planner20/userdocs/LabPlanner.html" target="code">LabPlanner | Exploiting Planning Tools</a>
+ and deployed in the file <a href="../../unibolibs/it.unibo.planner20-1.0.jar" target="code">it.unibo.planner20-1.0.jar</a>.
+ 
   
 <h2>Examples  </h2>	
 
@@ -164,7 +168,7 @@ LabISS-lectures site</a></font>
 	 
 	<tr>
  	<td style="width:60%">	 
-	 <h3>Boundary walker (<a href="../src/boundarywalker.qak" target="code">boundarywalker.qak</a>)</h3>
+	 <h3 id="boundarywalker">Boundary walker (<a href="../src/boundarywalker.qak" target="code">boundarywalker.qak</a>)</h3>
 	<m>
 	We assume that:
 
@@ -191,19 +195,25 @@ LabISS-lectures site</a></font>
 |1, 0, 0, 0, 0, 1, X, 
 |1, 1, 1, 1, 1, 1, X, 
 |X, X, X, X, X, X, X, 	</pre>
+
+	 To sends commands to the <a href="../src/boundarywalker.qak" target="code">boundarywalker</a> we can use 
+	 the <ks>Jupyter</ks> file <a href="../resources/consolepython/boundarywalkerconsole.ipynb" target="code">boundarywalkerconsole.ipynb</a>.
+
 	</m>
 	
  
 	</td>
 	</tr> 
+	
+	
 	<tr> 
 	<td>
-	 <h3>Mapping walker (<a href="../src/mappingwalker.qak" target="code">mappingwalker.qak</a>)</h3>
+	 <h3 id="mappingwalker">Mapping walker (<a href="../src/mappingwalker.qak" target="code">mappingwalker.qak</a>)</h3>
 	 <m>
 		We assume that 
 		<ul>
-		<li>the robot works in an empty, rectangular room with a obstacle-free area along the borders</li>
-		<li>that a map of the room is already available</li>
+		<li>the robot works in the same room of the <a href="#boundarywalker">boundarywalker</a></li>
+		<li>a map of the room is already available (e.g. <a href="../roomBoundary.txt" target="code">roomBoundary.txt</a>)</li>
 		</ul>  
 		The robot:
 		<ol>
@@ -230,12 +240,96 @@ LabISS-lectures site</a></font>
 |1, X, 1, X, X, 1, X, 
 |1, 1, 1, 1, 1, 1, X, 
 |X, X, X, X, X, X, X, </pre>
+
+	 To sends commands to the <a href="../src/mappingwalker.qak" target="code">mappingwalker</a> we can use 
+	 the <ks>Jupyter</ks> file <a href="../resources/consolepython/mappingwalkerconsole.ipynb" target="code">mappingwalkerconsole.ipynb</a>.
+
 	</m>
 
 	</td>
 	</tr>
+	
+	<tr> 
+	<td>
+	 <h3 id="trustingwalker">Trusting walker (<a href="../src/trustingwalker.qak" target="code">trustingwalker.qak</a>)</h3>
+	 <m>
+		We assume that:
+		<ul>
+		<li>the robot works in the same room of the <a href="#mappingwalker">mappingwalker</a></li>
+		<li>ta map of the room is already available (e.g. <a href="../mapRoomExplored.txt" target="code">mapRoomExplored.txt</a>)</li>
+		</ul>  
+		The robot:
+		<ol>
+		<li>loads the boundary-free-room map 
+		(e.g. <a href="../roomBoundary.txt" target="code">roomBoundary.txt</a>);</li>
+		<li>waits for a <bc>request</bc>  <tt>movetoCell:movetoCell(X,Y)</tt>;</li>
+		<li>creates a plan to move form its current position to the specified cell <tt>X,Y</tt>; </li>
+		<li>executes the plan and sends the <bc>reply</bc> <tt>atcell : atcell(X,Y)</tt> if the plan ends with success;</li>
+		<li>sends the <bc>reply</bc> <tt>walkbreak : walkbreak(OX,OY)</tt> if it detects an obstacle in the cell <tt>OX,OY</tt>.</li>
+		</ol>
+	</m>
+	<!-- <center><img src="./explan0_2.png" alt="explan0_2" width="100%" height="32%"/></center> -->
+	</td>
+ 	<td>
+	 <a href="../src/trustingwalker.qak" target="code">trustingwalker.qak</a> <br/> 
+	 <m>
+	 To sends commands to the <a href="../src/trustingwalker.qak" target="code">trustingwalker</a> we can use the GUI proposed by
+	 the application itself or the <ks>Jupyter</ks> file <a href="../resources/consolepython/trustingwalkerconsole.ipynb" target="code">trustingwalkerconsole.ipynb</a>.
+	
+	<h3>Warning</h3>
+	 The <a href="../src/trustingwalker.qak" target="code">trustingwalker</a> must be considere a 'slave' of some other component,
+	 since it modifies the map stored in the planner-support 
+	 object <a href="../../it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt" target="code">plannerUtil.kt</a>.
+	</m>
+
+	</td>
+	</tr>	
+	
+	<tr> 
+	<td>
+	 <h3>Skilled walker (<a href="../src/skilledwalker.qak" target="code">skilledwalker.qak</a>)</h3>
+	 <m>
+		We assume that:
+		<ul>
+		<li>the robot works in the same room of the <a href="#trustingwalker" target="code"">trustingwalker</a></li>
+		<li>ta map of the room is already available (e.g. <a href="../mapRoomExplored.txt" target="code">mapRoomExplored.txt</a>)</li>
+		<li>the robot moves by exploiting the <a href="#trustingwalker" target="code">trustingwalker</a>
+		</ul>  
+		The robot simply send a seqeunce of <bc>request</bc> <tt>movetoCell:movetoCell(X,Y)</tt> to reach a set of cells that it
+		knoes to be free. <br/>
+		It writes a message <tt>There is something wrong ...</tt> if  the  <a href="#trustingwalker" target="code">trustingwalker</a>
+		replies with a <tt>walkbreak</tt> answer.
+	</m>
+	<!-- <center><img src="./explan0_2.png" alt="explan0_2" width="100%" height="32%"/></center> -->
+	</td>
+ 	<td>
+ <m>With the scene described in
+	<a href="../userdocs/sceneTeaRoomConfig.js" target="code">sceneTeaRoomConfig.js</a>,
+	the virtual robot uses the map <a href="../teaRoomExplored.txt" target="code">teaRoomExplored.txt</a>):</m>
+		<pre>
+|r, 1, 1, 1, 1, 1, 1, X, 
+|1, 1, 1, 1, 1, 1, 1, X, 
+|<k>1</k>, 1, 1, 1, 1, 1, 1, X, 
+|1, 1, X, 1, X, 1, <k>1</k>, X, 
+|1, 1, 1, 1, 1, 1, 1, X, 
+|X, X, X, X, X, X, X, X, </pre>
+
+<m>The  
+	 <a href="../src/skilledwalker.qak" target="code">skilledwalker.qak</a>  
+will reach the cells in red before returning to home.</m>
+	 <m>
+ 	
+ 	</m>
+
+	</td>
+	</tr>	
+	
 	</table>
-	</center> 	
+	</center> 
+
+
+
+	
 
  <!--
  <h2>An approach for the butler project</h2>	

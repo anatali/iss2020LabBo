@@ -41,7 +41,7 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						updateResourceRep( "initial"  
 						)
 					}
-					 transition( edgeName="goto",targetState="exploreDirties", cond=doswitch() )
+					 transition(edgeName="t00",targetState="exploreDirties",cond=whenDispatch("start"))
 				}	 
 				state("exploreDirties") { //this:State
 					action { //it:State
@@ -69,8 +69,8 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t00",targetState="stepDone",cond=whenReply("stepdone"))
-					transition(edgeName="t01",targetState="stepFail",cond=whenReply("stepfail"))
+					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
+					transition(edgeName="t02",targetState="stepFail",cond=whenReply("stepfail"))
 				}	 
 				state("otherPlannedMove") { //this:State
 					action { //it:State

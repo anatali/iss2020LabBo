@@ -1,0 +1,88 @@
+/* 
+ * ================================================================================
+ * skilledwalker.qak
+ * VERSION June 1, 2020 
+ * 
+ * External MQTT sites:
+ * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
+ * ================================================================================
+ */ 
+System skilledwalker
+mqttBroker "localhost" : 1883 eventTopic "unibo/polar" 
+
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+Reply	 walkbreak  : walkbreak(X,Y) 
+
+Dispatch cmd       : cmd(MOVE)
+Request step       : step( TIME )	
+Reply   stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)
+
+Context ctxskilledwalker         ip [host="localhost" port=8049]    
+Context ctxfortrustingwalker     ip [host="dontcare"   port=8043]   
+
+ExternalQActor trustingwalker    context ctxfortrustingwalker
+/*
+ * The robot kowns the map of the room and reaches a sequence of cells that
+ * it kones to be free, by using the trustingworker as a service
+ */  
+ 
+QActor skilledwalker context ctxskilledwalker{  
+[#
+	var XT = "0"
+	var YT = "0"
+	var CurrentPlannedMove = ""
+	var StepTime    	   = 348L
+	val BackTime           = 2 * StepTime / 3
+	var obstacleFound      = false  
+#]
+	State waitCmd initial {	     
+	}	
+	Goto reachPoint1
+ 	 
+	State reachPoint1{
+		println("Going to POINT1  (6,3) ...")
+		[# readLine() #]
+ 		request trustingwalker -m movetoCell : movetoCell (6,3)
+	}
+	Transition t0 whenReply atcell ->  reachPoint2
+				whenReply walkbreak -> unexpected
+	
+	State reachPoint2{
+		println("Going to POINT2  (0,2) ...")
+		[# readLine() #]
+		delay 1000
+		//run itunibo.planner.plannerUtil.showCurrentRobotState()
+		request trustingwalker -m movetoCell : movetoCell (0,2)
+	}
+	Transition t0 whenReply atcell ->  reachHome
+				whenReply walkbreak -> unexpected
+		 
+	State reachHome{
+		println("Going to home ...")
+		[# readLine() #]
+		delay 1000
+		//run itunibo.planner.plannerUtil.showCurrentRobotState()
+		request trustingwalker -m movetoCell : movetoCell (0,0)
+	}
+	Transition t0 whenReply atcell ->  reachPoint2
+				whenReply walkbreak -> unexpected
+
+    State endOfTrip{
+    	run itunibo.planner.plannerUtil.showCurrentRobotState()
+    	println("BYE")
+    }   
+    
+ 	State unexpected{
+ 		println("There is something wrong ...")
+		printCurrentMessage
+	}
+    
+    
+    
+ }
+ 
+  
+  
+ 
