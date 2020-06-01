@@ -7,7 +7,7 @@ import connQak.ConnectionType
 import it.unibo.kactor.MsgUtil
 
 class consoleGuiSimple( val connType : ConnectionType, val hostIP : String,   val port : String,
-						val destName : String ) : IObserver {
+						val ctxDest : String,  val destName : String ) : IObserver {
 lateinit var connQakSupport : connQakBase
 	
   		 //val buttonLabels = arrayOf("e","w", "s", "l", "r", "z", "x", "b", "p", "h")
@@ -17,7 +17,7 @@ lateinit var connQakSupport : connQakBase
 		create( connType )
 	}
 		 fun create( connType : ConnectionType){
-			 connQakSupport = connQakBase.create(connType, hostIP, port,destName )
+			 connQakSupport = connQakBase.create(connType, hostIP, port,ctxDest,destName )
 			 connQakSupport.createConnection()
 			 var guiName = ""
 			 when( connType ){
@@ -35,8 +35,9 @@ lateinit var connQakSupport : connQakBase
 	 
 	
 	  
-	  override fun update(o: Observable, arg: Any) {	   
+	  override fun update(o: Observable, arg: Any) {
     	   var move = arg as String
+		   println("consoleGuiSimple update arg=" + move );   
 		  if( move == "p" ){
 			  val msg = MsgUtil.buildRequest("console", "step", "step(600)", destName )
 			  connQakSupport.request( msg )
@@ -56,5 +57,5 @@ lateinit var connQakSupport : connQakBase
 
 
 fun main(){
-	consoleGuiSimple( ConnectionType.COAP, hostAddr, port, qakdestination)
+	consoleGuiSimple( ConnectionType.COAP, hostAddr, port, ctxqadest, qakdestination)
 }

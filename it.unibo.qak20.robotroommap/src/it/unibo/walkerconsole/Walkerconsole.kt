@@ -17,14 +17,15 @@ class Walkerconsole ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-		 	val inmapname  = "mapRoomExplored"
+		 	//val inmapname  = "mapRoomExplored"
+		 	val inmapname  = "teaRoomExplored"  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( inmapname  )
 						itunibo.planner.plannerUtil.showCurrentRobotState(  )
-						consolegui.consoleGuiCoap.create( "localhost", "8043", "walkerconsole"  )
+						consolegui.consoleGuiCoap.create( "localhost", "8043", "ctxtrustingwalker", "walkerconsole"  )
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
@@ -40,7 +41,7 @@ class Walkerconsole ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								val move = payloadArg(0)  
 								if(  move =="start"  
-								 ){request("movetoCell", "movetoCell(5,3)" ,"trustingwalker" )  
+								 ){request("movetoCell", "movetoCell(6,3)" ,"trustingwalker" )  
 								}
 						}
 					}

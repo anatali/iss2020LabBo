@@ -27,6 +27,7 @@ public static ButtonAsGui createButtons(  String logo, String[] cmd  ){
 
 	@Override  //from ActionListener
 	public void actionPerformed(ActionEvent e) {
+		//System.out.println("ButtonAsGui " +e );
 		this.setChanged();
 		this.notifyObservers(e.getActionCommand());
 	}

@@ -20,7 +20,7 @@ Reply   stepdone   : stepdone(V)
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
 Context ctxtrustingwalker   ip [host="localhost" port=8043]    
-Context ctxbasicrobot     ip [host="192.168.1.68"   port=8020]   
+Context ctxbasicrobot     ip [host="192.168.1.22"   port=8020]   
 
 ExternalQActor basicrobot    context ctxbasicrobot
 /*
@@ -37,10 +37,15 @@ QActor trustingwalker context ctxtrustingwalker{
 #]
 	State waitCmd initial {	     
 		println("&&&  trustingwalker waits for a command 'movetoCell'")
+// 		forward basicrobot -m cmd : cmd(l)
+//		delay 300
+//		forward basicrobot -m cmd : cmd(r)    
+//		delay 300
 	}	
 	Transition t0 whenRequest movetoCell -> walk
  	
 	State walk{
+		printCurrentMessage
 		onMsg( movetoCell : movetoCell(X,Y) ){
 			[# XT = payloadArg(0)
 			   YT = payloadArg(1)			  
@@ -56,7 +61,7 @@ QActor trustingwalker context ctxtrustingwalker{
  */					  
  	State execPlannedMoves{ 
  		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
- 		println("trustingwalker | doing move $CurrentPlannedMove")
+ 		//println("trustingwalker | doing move $CurrentPlannedMove")
  	}
  	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
  
@@ -121,25 +126,28 @@ QActor trustingwalker context ctxtrustingwalker{
   
  QActor walkerconsole context ctxtrustingwalker{
 [#
- 	val inmapname  = "mapRoomExplored"
+ 	//val inmapname  = "mapRoomExplored"
+ 	val inmapname  = "teaRoomExplored"  
 #] 	
  	State s0 initial {	  
  		run itunibo.planner.plannerUtil.initAI()
 		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
 		run itunibo.planner.plannerUtil.showCurrentRobotState()
-  		run  consolegui.consoleGuiCoap.create( "localhost", "8043", "walkerconsole")
+  		run  consolegui.consoleGuiCoap.create( "localhost", "8043", "ctxtrustingwalker", "walkerconsole")
+  		//forward walkerconsole -m cmd : cmd(start)
  	}
  	Goto waitCmd
  	
  	State waitCmd{
   	}
  	Transition t0 whenMsg cmd -> handleCmd
+ 	
  	State handleCmd{
  		printCurrentMessage
  		onMsg( cmd : cmd(M) ){
  			[#val move = payloadArg(0) #]
  			if [# move =="start" #]{
- 				request trustingwalker -m movetoCell : movetoCell( 5,3 )
+ 				request trustingwalker -m movetoCell : movetoCell( 6,3 )
  			}
  		}
  	}

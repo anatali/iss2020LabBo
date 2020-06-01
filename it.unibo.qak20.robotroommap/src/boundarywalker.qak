@@ -17,7 +17,7 @@ ExternalQActor basicrobot    context ctxbasicrobot
 
 QActor boundarywalker context ctxboundarywalker{         
 [#
-val mapname     = "roomBoundary"  		 
+val mapname     = "tearoomBoundary"  		 
 var NumStep     = 0
  
 //REAL ROBOT

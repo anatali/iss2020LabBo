@@ -1,10 +1,10 @@
 const config = {
     floor: {
-        size: { x: 34, y: 30                   }
+        size: { x: 30, y: 24                   }
     },
     player: {
         //position: { x: 0.5, y: 0.5 },		//CENTER
-        position: { x: 0.10, y: 0.15 },		//INIT
+        position: { x: 0.12, y: 0.16 },		//INIT
         //position: { x: 0.8, y: 0.85 },		//END
         speed: 0.2
     },
@@ -38,15 +38,15 @@ const config = {
 		},
 */
         {
-            name: "table11",
+            name: "bottle1",
             centerPosition: { x: 0.64, y: 0.45 },
-            size: { x: 0.05, y: 0.06      }
+            size: { x: 0.077, y: 0.066      }
 		},
 		
         {
-            name: "table2",
-            centerPosition: { x: 0.33, y: 0.45},
-            size: { x: 0.05, y: 0.06      }
+            name: "bottle2",
+            centerPosition: { x: 0.24, y: 0.45},
+            size: { x: 0.077, y: 0.066      }
 		},
 
         {
@@ -56,13 +56,13 @@ const config = {
         },
         {
             name: "gatein",
-            centerPosition: { x: 0.066, y: 0.11},
-            size: { x: 0.089, y: 0.01}
+            centerPosition: { x: 0.04, y: 0.112},
+            size: { x: 0.03, y: 0.01}
         },
         {
             name: "wallDown",
-            centerPosition: { x: 0.51, y: 0.11},
-            size: { x: 0.57, y: 0.01}
+            centerPosition: { x: 0.5, y: 0.112},
+            size: { x: 0.54, y: 0.01}
         },
         {
             name: "wallLeft",

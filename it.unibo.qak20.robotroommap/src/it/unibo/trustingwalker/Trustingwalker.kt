@@ -31,6 +31,7 @@ class Trustingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				}	 
 				state("walk") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						if( checkMsgContent( Term.createTerm("movetoCell(X,Y)"), Term.createTerm("movetoCell(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 XT = payloadArg(0)
@@ -44,7 +45,6 @@ class Trustingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				state("execPlannedMoves") { //this:State
 					action { //it:State
 						  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove()  
-						println("trustingwalker | doing move $CurrentPlannedMove")
 					}
 					 transition( edgeName="goto",targetState="wMove", cond=doswitchGuarded({ CurrentPlannedMove == "w"  
 					}) )

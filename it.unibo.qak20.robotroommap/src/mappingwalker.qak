@@ -1,7 +1,7 @@
 /*  
  * mappingwalker.qak 
  */    
-System -trace mappingwalker  
+System  mappingwalker  
 mqttBroker "localhost" : 1883 eventTopic "unibo/polar"  
 
 Dispatch start   : start(ARG)
@@ -24,13 +24,14 @@ QActor mappingwalker context ctxmappingwalker  {
   	
 [# 
 var NumStep      = 0  
-var GoalOk       = true
+var GoalOk       = true 
 val StepTime     = 350
+val BackTime     = 2 * StepTime / 3
 var StartTime    = 0L
 var Workduration = 0L    
 var CurrentPlannedMove = ""
-val inmapname    = "mapRoomEmpty"
-val outmapname   = "mapRoomExplored"
+val inmapname    = "tearoomBoundary"
+val outmapname   = "teaRoomExplored"
 #] 
 
 	State s0 initial { 	  
@@ -49,8 +50,8 @@ val outmapname   = "mapRoomExplored"
 		updateResource [# "initial" #]
 		//forward mappingwalker -m start : start(go)  //automsg
 	}	
- 	//Goto exploreDirties  
- 	Transition t0 whenMsg start -> exploreDirties
+ 	Goto exploreDirties  
+ 	//Transition t0 whenMsg start -> exploreDirties
  	
  	  
  	State exploreDirties{
@@ -107,14 +108,15 @@ val outmapname   = "mapRoomExplored"
 	State stepFail{
 	    println("				robotmapper | stepFail  ")
  		[#
- 			var Dt = 0L 			
+ 			//var Dt = 0L 			
 		#]     
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
-			[# Dt = payloadArg(0).toLong()  #] 
-			//println("robotmapper stepFail after: $Dt vs ${3*StepTime/4.0}")
-			if [# Dt < 3*StepTime/4.0  #] {    
+			[# val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2 #] 
+			println("robotmapper stepFail D= $D, BackTime = ${BackTime}")
+			//if [# Dt < 2*StepTime/3.0  #] {    
+			if [# D > BackTime #] {    
 				forward basicrobot -m cmd : cmd( s )
-				delayVar Dt
+				delayVar BackT
 				forward basicrobot -m cmd : cmd( h )
 			}	
 //	 		if [# ! itunibo.planner.plannerUtil.atHome() #]{
