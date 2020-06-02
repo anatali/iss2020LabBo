@@ -1,13 +1,13 @@
 /* 
  * ================================================================================
- * trustingwalker.qak
+ * maitrewalker.qak
  * VERSION June 1, 2020 
  * 
  * External MQTT sites:
  * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
  * ================================================================================
  */ 
-System  trustingwalker 
+System   tearoom 
 mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
 
 Event    twstarted   : twstarted(X)
@@ -21,15 +21,12 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
-Context ctxtrustingwalker   ip [host="localhost" port=8043]    
-Context ctxbasicrobot     ip [host="192.168.1.22"   port=8020]   
+Context ctxtearoom        ip [host="localhost"      port=8050]     
+Context ctxbasicrobot     ip [host="192.168.1.68"   port=8020]   
 
 ExternalQActor basicrobot    context ctxbasicrobot
-/*
- * excutes a plan (HOPEFULLY) without 'interruption'
- */  
  
-QActor trustingwalker context ctxtrustingwalker{  
+QActor maitrewalker context ctxtearoom{  
 [#
 	var XT = "0"
 	var YT = "0"
@@ -45,12 +42,12 @@ QActor trustingwalker context ctxtrustingwalker{
 		forward basicrobot -m cmd : cmd(r)    
 		delay 500
 		emit twstarted : twstarted(0)
-		println("&&&  trustingwalker STARTS")
+		println("&&&  maitrewalker STARTS")
 	}	
 	Goto waitCmd   
 	 
 	State waitCmd {	     
- 		println("&&&  trustingwalker waits for a command 'movetoCell'")
+ 		println("&&&  maitrewalker waits for a command 'movetoCell'")
 	}	
 	Transition t0 whenRequest movetoCell -> walk
  	
@@ -60,14 +57,14 @@ QActor trustingwalker context ctxtrustingwalker{
 			[# XT = payloadArg(0)
 			   YT = payloadArg(1)			  
 			 #]
-			println("&&&  trustingwalker  | MOVING to ($XT,$YT)")
+			println("&&&  maitrewalker  | MOVING to ($XT,$YT)")
 			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
 		}
 	}
 	Goto execPlannedMoves if[# itunibo.planner.plannerUtil.existActions() #] else noPlan
 
 	State noPlan{
-		println("&&&  trustingwalker | NO PLAN FOUND for MOVING to ($XT,$YT)")
+		println("&&&  maitrewalker | NO PLAN FOUND for MOVING to ($XT,$YT)")
 		replyTo movetoCell with walkbreak : walkbreak( $XT,$YT )
 	}
 	Goto waitCmd
@@ -77,7 +74,7 @@ QActor trustingwalker context ctxtrustingwalker{
  */					  
  	State execPlannedMoves{ 
  		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
- 		//println("trustingwalker | doing move $CurrentPlannedMove")
+ 		//println("maitrewalker | doing move $CurrentPlannedMove")
  	}
  	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
  
@@ -95,10 +92,10 @@ QActor trustingwalker context ctxtrustingwalker{
 		
 	State stepFailed{  //has found an obstacle 
 	    [# obstacleFound = true #]
- 		println("trustingwalker | stepFailed")
+ 		println("maitrewalker | stepFailed")
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
 			[# val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2 #] 
-			println("trustingwalker stepFail D= $D, BackTime = ${BackTime}")
+			println("maitrewalker stepFail D= $D, BackTime = ${BackTime}")
 			if [# D > BackTime #] {    
 				forward basicrobot -m cmd : cmd( s )
 				delayVar BackT
@@ -121,14 +118,14 @@ QActor trustingwalker context ctxtrustingwalker{
  * Answers  
  */ 
  	State sendSuccessAnswer{
-	     	println("&&&  trustingwalker POINT ($XT,$YT) REACHED")
+	     	println("&&&  maitrewalker POINT ($XT,$YT) REACHED")
 	     	run itunibo.planner.plannerUtil.showCurrentRobotState()
 	     	replyTo movetoCell with atcell : atcell($XT,$YT) 					
 	}
 	Goto waitCmd  
 
 	State sendFailureAnswer{
-	    println("&&&  trustingwalker FAILS")
+	    println("&&&  maitrewalker FAILS")
 	    [# val Curx = itunibo.planner.plannerUtil.getPosX()
 	       val Cury = itunibo.planner.plannerUtil.getPosY()	
 	    #]
@@ -139,41 +136,3 @@ QActor trustingwalker context ctxtrustingwalker{
        
  }
  
- /* 
- QActor walkerconsole context ctxtrustingwalker{
-[#
- 	//val inmapname  = "mapRoomExplored"
- 	val inmapname  = "teaRoomExplored"  
-#] 	
- 	State s0 initial {	  
- 		//run itunibo.planner.plannerUtil.initAI()
-		//run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
-		//run itunibo.planner.plannerUtil.showCurrentRobotState()
-  		run  consolegui.consoleGuiCoap.create( "localhost", "8043", "ctxtrustingwalker", "walkerconsole")
-  		//forward walkerconsole -m cmd : cmd(start)
- 	}
- 	Goto waitCmd
- 	
- 	State waitCmd{
-  	}
- 	Transition t0 whenMsg cmd -> handleCmd
- 	
- 	State handleCmd{
- 		printCurrentMessage
- 		onMsg( cmd : cmd(M) ){
- 			[#val move = payloadArg(0) #]
- 			if [# move =="start" #]{
- 				request trustingwalker -m movetoCell : movetoCell( 6,3 )
- 			}
- 		}
- 	}
- 	Transition t0 whenReply atcell -> showAnswer
- 		whenReply walkbreak -> showAnswer
- 	
- 	State showAnswer{
- 		printCurrentMessage
- 	}
- 	Goto waitCmd
- }
- 
- */

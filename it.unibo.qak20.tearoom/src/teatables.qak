@@ -1,0 +1,56 @@
+System   tearoom
+
+mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
+
+Dispatch engage  : engage(N)
+Dispatch release : release(N)
+Dispatch clean   : clean(N)
+
+Context ctxtearoom   ip [host="localhost" port=8050]    
+
+QActor teatables context ctxtearoom{ 
+[#
+	var StateOfTables = ""
+#]	
+	State s0 initial{
+		println("teatables START")
+		solve( consult("tearoomkb.pl")	 )
+	}
+	Goto work
+	
+	State work{
+		solve( stateOfTeatables(S) )
+		ifSolved { [# StateOfTables = getCurSol("S").toString() #] }
+		println("teatables s0: $StateOfTables")
+		updateResource [# StateOfTables #] 		
+	}
+	Transition t0  whenMsg engage -> engageTable
+					whenMsg clean -> cleanTable
+					
+	State engageTable{
+		printCurrentMessage
+		onMsg( engage : engage(N) ){
+			println("engageTable ${payloadArg(0)}")
+			solve( engageTable( $payloadArg(0) ) )	//could do anything
+			solve( stateOfTeatables(S) )
+			[# StateOfTables = getCurSol("S").toString() #]  
+			println("teatables engageTable ${payloadArg(0)}: $StateOfTables")
+			updateResource [# StateOfTables #] 			 
+		}
+	}
+	Goto work
+	
+	State cleanTable{
+		printCurrentMessage
+		onMsg( clean : clean(N) ){
+			println("clean ${payloadArg(0)}")
+			solve( cleanTable( $payloadArg(0) ) )	//could do anything
+			solve( stateOfTeatables(S) )
+			[# StateOfTables = getCurSol("S").toString() #]  
+			println("teatables cleanTable ${payloadArg(0)}: $StateOfTables")
+			updateResource [# StateOfTables #] 			 
+		}
+	}
+	Goto work
+	
+}

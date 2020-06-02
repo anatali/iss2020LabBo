@@ -61,7 +61,7 @@ QActor skilledwalker context ctxskilledwalker{
 		//[# readLine() #]
 		delay 1000
 		//run itunibo.planner.plannerUtil.showCurrentRobotState()
-		request trustingwalker -m movetoCell : movetoCell (0,2)
+		request trustingwalker -m movetoCell : movetoCell(0,2)
 	}
 	Transition t0 whenReply atcell ->  reachHome
 				whenReply walkbreak -> unexpected

@@ -1,0 +1,222 @@
+/* 
+ * ================================================================================
+ * maitremind.qak
+ * VERSION June 1, 2020 
+ * 
+ * External MQTT sites:
+ * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
+ * ================================================================================
+ */ 
+System   tearoom
+mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
+Event    twstarted   : twstarted(X)
+
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+Reply	 walkbreak  : walkbreak(X,Y) 
+
+Dispatch cmd       : cmd(MOVE)
+Request step       : step( TIME )	
+Reply   stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)
+
+//---------- Tables ---------------
+Dispatch engage  : engage(N)
+Dispatch release : release(N)
+Dispatch clean   : clean(N)
+ 
+
+Context ctxtearoom   ip [host="localhost" port=8050]    
+ 
+CodedQActor teatables    context ctxtearoom className "it.unibo.teatables.Teatables"
+CodedQActor maitrewalker context ctxtearoom className "it.unibo.maitrewalker.Maitrewalker"
+ 
+QActor maitremind context ctxtearoom{  
+[#
+	var XT = "0"
+	var YT = "0"
+	var CurrentPlannedMove = ""
+	var StepTime    	   = 350L
+	val BackTime           = 2 * StepTime / 3
+	var obstacleFound      = false  
+	val inmapname          = "teaRoomExplored" 
+	
+	var X_barman		= "0"
+	var Y_barman		= "0"
+	
+	var X_entrancedoor  = "0"
+	var Y_entrancedoor  = "0"
+	
+	var X_exitdoor      = "0"
+	var Y_exitdoor      = "0"
+	 
+	var X_teatable1     = "0"
+	var Y_teatable1     = "0"
+
+	var X_teatable2     = "0"
+	var Y_teatable2     = "0"
+	
+#]
+	State s0 initial {	
+		//delay 1000 //give time to the   trustingwalker  to start ... 
+ 		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
+		run itunibo.planner.plannerUtil.showCurrentRobotState()		
+		 
+		solve( consult("tearoomkb.pl")	 )
+		solve( pos( entrancedoor, X, Y ) ) 
+		ifSolved { [# X_entrancedoor=getCurSol("X").toString() ;  Y_entrancedoor=getCurSol("Y").toString() #] }
+		println("entrancedoor($X_entrancedoor, $Y_entrancedoor )")
+ 
+		solve( pos( exitdoor, X, Y ) ) 
+		ifSolved { [# X_exitdoor = getCurSol("X").toString();  Y_exitdoor = getCurSol("Y").toString() #] }
+		println("exitdoor($X_exitdoor, $Y_exitdoor )")
+ 				
+		solve( pos( barman, X, Y ) ) 
+		ifSolved { [# X_barman = getCurSol("X").toString();  Y_barman = getCurSol("Y").toString() #] }
+		println("barman($X_barman, $Y_barman)")
+
+		solve( pos( teatable1, X, Y ) ) 
+		ifSolved { [# X_teatable1 = getCurSol("X").toString();  Y_teatable1 = getCurSol("Y").toString() #] }
+		println("teatable1($X_teatable1, $Y_teatable1)")
+
+		solve( pos( teatable2, X, Y ) ) 
+		ifSolved { [# X_teatable2 = getCurSol("X").toString();  Y_teatable2 = getCurSol("Y").toString() #] }
+		println("teatable2($X_teatable2, $Y_teatable2)")
+ 	}	
+ 	Transition t0 whenEvent twstarted -> controlTrip   
+		
+	State controlTrip{
+		println("controlTrip. ")
+ 		solve( stateOfTeatables(S) )
+		ifSolved { [# val StateOfTables = getCurSol("S").toString(); println("maitremind $StateOfTables") #] } 
+		//WARNING: we should find the current state of tables by asking to the teatables
+		delay 1000
+ 	}
+ 	Goto gotoEntrancedoor       
+
+	State gotoEntrancedoor{
+		//WARNING: we should find the current state of tables by asking to the teatables
+		forward teatables -m engage : engage(2)
+		delay 1000
+		println("Going to the entrancedoor havineg booked dteatable2... ")
+ 		request maitrewalker -m movetoCell : movetoCell ($X_entrancedoor, $Y_entrancedoor)
+	}
+	Transition t0 whenReply atcell ->  gotoTable2
+				whenReply walkbreak -> unexpected
+
+	State gotoTable2{    
+		delay 1000
+		println("Going to teatable2 ...")
+ 		request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+	}
+	Transition t0 whenReply atcell ->  gotoBarman
+				whenReply walkbreak -> unexpected
+
+	State gotoBarman{
+		delay 1000
+		println("Going to barman ...")
+		request maitrewalker -m movetoCell : movetoCell($X_barman, $Y_barman)
+	}
+	Transition t0 whenReply atcell ->  gotoTable2WithTea
+				whenReply walkbreak -> unexpected
+
+	State gotoTable2WithTea{
+		delay 1000
+		println("Going gotoTable2WithTea ...")
+		request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+	}
+	Transition t0 whenReply atcell ->  gotoExitdoor
+				whenReply walkbreak -> unexpected
+
+
+	State gotoExitdoor{
+		delay 1000
+		println("Going to exitdoor ...")
+		request maitrewalker -m movetoCell : movetoCell ($X_exitdoor, $Y_exitdoor)
+	}
+	Transition t0 whenReply atcell ->  gotoTable2Clean
+				whenReply walkbreak -> unexpected
+
+	State gotoTable2Clean{
+		delay 1000
+		println("Going to gotoTable2Clean ...")
+		request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+	}
+	Transition t0 whenReply atcell ->  cleanTable2
+				whenReply walkbreak -> unexpected
+ 
+	State cleanTable2 { 
+		delay 1000 
+		println("Going to gcleanTable2 ...") 
+		forward teatables -m clean : clean(2)
+ 		//request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+	}
+	Transition t0 whenReply atcell ->  gotoExitdoor
+				whenReply walkbreak -> unexpected
+
+
+	State gotoTable1{
+		delay 1000
+		println("Going to teatable1 ...")
+		request maitrewalker -m movetoCell : movetoCell ($X_teatable1, $Y_teatable1)
+	}
+	Transition t0 whenReply atcell ->  gotoHome
+				whenReply walkbreak -> unexpected
+
+
+	State gotoHome{
+		delay 1000
+		println("Going to home ...")
+		request maitrewalker -m movetoCell : movetoCell (0,0)
+	}
+	Transition t0 whenReply atcell ->  endOfTrip
+				whenReply walkbreak -> unexpected
+
+    State endOfTrip{
+    	run itunibo.planner.plannerUtil.showCurrentRobotState()
+    	println("END OF TRIP ... BYE")
+    }   
+    
+ 	State unexpected{
+ 		println("There is something wrong ...")
+		printCurrentMessage
+	}
+
+/* 	 
+	State reachPoint1{
+		println("Going to POINT1  (6,3) ...")
+		[# readLine() #]
+ 		request maitrewalker -m movetoCell : movetoCell (6,3)
+	}
+	Transition t0 whenReply atcell ->  reachPoint2
+				whenReply walkbreak -> unexpected
+	
+	State reachPoint2{
+		println("Going to POINT2  (0,2) ...") 
+		//[# readLine() #]
+		delay 1000
+		//run itunibo.planner.plannerUtil.showCurrentRobotState()
+		request maitrewalker -m movetoCell : movetoCell (0,2)
+	}
+	Transition t0 whenReply atcell ->  reachHome
+				whenReply walkbreak -> unexpected
+		 
+	State reachHome{
+		println("Going to home ...")
+		//[# readLine() #]
+		delay 1000
+		//run itunibo.planner.plannerUtil.showCurrentRobotState()
+		request maitrewalker -m movetoCell : movetoCell (0,0)
+	}
+	Transition t0 whenReply atcell ->  endOfTrip
+				whenReply walkbreak -> unexpected
+*/
+    
+    
+    
+ }
+ 
+  
+  
+ 

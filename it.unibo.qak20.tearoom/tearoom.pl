@@ -1,6 +1,6 @@
-pos( barman,       5, 0 ).
-pos( teatable1,    2, 3 ).
-pos( teatable2,    4, 3 ).
-pos( entrancedoor, 1, 4 ).
-pos( exitdoor,     6, 4 ).
-
+%====================================================================================
+% tearoom description   
+%====================================================================================
+mqttBroker("mqtt.eclipse.org", "1883", "unibo/polar").
+context(ctxtearoom, "localhost",  "TCP", "8050").
+ qactor( teatables, ctxtearoom, "it.unibo.teatables.Teatables").
