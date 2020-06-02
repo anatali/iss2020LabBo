@@ -61,8 +61,8 @@ const config = {
         },
         {
             name: "wallDown",
-            centerPosition: { x: 0.56, y: 0.11},
-            size: { x: 0.64, y: 0.01}
+            centerPosition: { x: 0.54, y: 0.11},
+            size: { x: 0.65, y: 0.01}
         },
         {
             name: "wallLeft",
@@ -73,7 +73,7 @@ const config = {
             name: "wallRight",
             centerPosition: { x: 0.99, y: 0.5},
             size: { x: 0.01, y: 0.99}
-        }
+        } 
     ]
 }
  

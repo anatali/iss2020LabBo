@@ -1,13 +1,13 @@
 /* 
  * ================================================================================
- * skilledwalker.qak
+ * maitreddr.qak
  * VERSION June 1, 2020 
  * 
  * External MQTT sites:
  * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
  * ================================================================================
  */ 
-System -trace skilledwalker
+System   maitreddr
 mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
 Event    twstarted   : twstarted(X)
 
@@ -20,16 +20,11 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
-Context ctxskilledwalker         ip [host="localhost" port=8049]    
+Context ctxmaitreddr         ip [host="localhost" port=8049]    
  
-/*
- * The robot kowns the map of the room and reaches a sequence of cells that
- * it kones to be free, by using the trustingworker as a service
- */  
+CodedQActor trustingwalker context ctxmaitreddr className "it.unibo.trustingwalker.Trustingwalker"
 
-CodedQActor  trustingwalker context ctxskilledwalker className "it.unibo.trustingwalker.Trustingwalker"
-
-QActor skilledwalker context ctxskilledwalker{  
+QActor maitreddr context ctxmaitreddr{  
 [#
 	var XT = "0"
 	var YT = "0"
@@ -44,8 +39,29 @@ QActor skilledwalker context ctxskilledwalker{
  		run itunibo.planner.plannerUtil.initAI()
 		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
 		run itunibo.planner.plannerUtil.showCurrentRobotState()		
+		solve( consult("tearoom.pl")	 )
+		solve( pos( exitdoor, ODX, ODY ) ) 
+		ifSolved { 
+			[# val edx = getCurSol("ODX")
+			   val edy = getCurSol("ODY") 
+			   println("exitdoor: ($edx,$edy)")
+			#]
+		}
+		[#  
+			 
+		   val sol = pengine.solve( "pos( entrancedoor, EDX, EDY ).")
+		    
+		   if( sol.isSuccess() ){
+			   val edx = sol.getVarValue("EDX").toString()
+			   val edy = sol.getVarValue("EDY").toString()
+			   println("entracedoor: ($edx,$edy)")
+		   }else{
+		   		println("sorry ...")
+		   }
+		#]
+		 
 	}	
-	Transition t0 whenEvent twstarted -> reachPoint1
+//	Transition t0 whenEvent twstarted -> reachPoint1
 	
  	 
 	State reachPoint1{

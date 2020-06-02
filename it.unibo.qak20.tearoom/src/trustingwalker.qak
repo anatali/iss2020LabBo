@@ -7,7 +7,7 @@
  * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
  * ================================================================================
  */ 
-System  trustingwalker
+System  trustingwalker 
 mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
 
 Event    twstarted   : twstarted(X)
