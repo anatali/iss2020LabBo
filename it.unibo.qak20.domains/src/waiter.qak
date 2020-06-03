@@ -1,0 +1,151 @@
+System   waiter
+mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
+Event    walkerstarted   : walkerstarted(X)
+
+//---------- Walker---------------
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+Reply	 walkbreak  : walkbreak(X,Y) 
+
+
+//---------- Tearoom ---------------
+Request getroomstate : getroomstate(V)
+Reply   roomstate    : roomstate(Answer)
+
+//---------- Client ---------------
+Request enterrequest : enterrequest(ID)
+Reply   enteranswer  : enteranswer(V)
+
+Context ctxtearoom   ip [host="localhost" port=8060]   
+
+CodedQActor waiterwalker context ctxtearoom className "it.unibo.waiterwalker.Waiterwalker"
+ 
+QActor waiter context ctxtearoom{
+[# var CurrentClientId        	= 0
+   var CurrentSelectedTable   	= 0
+   var CurMoveX  			  	= 0
+   var CurMoveY  				= 0
+#]
+
+	State s0 initial {	
+  		run itunibo.planner.plannerUtil.initAI()
+		solve( consult("tearoomkb.pl")	 )
+  		
+//		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
+//		run itunibo.planner.plannerUtil.showCurrentRobotState()				 
+ 	}	
+  	Transition t0 whenEvent walkerstarted -> someQuery //controlTrip    
+ 	
+ 	 
+ 	State someQuery{
+  		println("waiter | sending some query ... ")
+ 			solve( teatable(1,ST)  )  
+			ifSolved { [# val S = getCurSol("ST").toString()   #] 
+				println("waiter | teatable 1 state=$S") 
+ 			}					
+			solve( numavailabletables(N) ) 
+			ifSolved { [# val Ntables = getCurSol("N").toString().toInt()  #] 
+				println("waiter | numavailabletables=$Ntables")
+ 			}					
+			solve( roomstate( V )  )  
+			ifSolved { 
+				[# val W = getCurSol("V").toString()   
+				#] 
+				println("waiter | $W  ") 				
+			}
+		println(" ------------- end of Queries ----------------  ")	
+	}	
+	Goto listening
+	
+	State listening{
+		[# 
+			CurrentClientId        	= 0
+			CurrentSelectedTable   	= 0
+			CurMoveX  			  	= 0
+			CurMoveY  				= 0			
+		#]
+	}
+  	Transition t0  whenRequest enterrequest -> handleEnterrequest
+  
+
+	State handleEnterrequest{
+ 		printCurrentMessage
+ 			onMsg( enterrequest : enterrequest(CID) ){
+ 				[# CurrentClientId = payloadArg(0).toString().toInt() #]
+				solve( tableavailable(N) ) 
+				ifSolved { [# CurrentSelectedTable = getCurSol("N").toString().toInt()  #] 
+					println("waiter | tableavailable=$CurrentSelectedTable")					 
+					replyTo enterrequest with enteranswer : enteranswer( $CurrentSelectedTable )
+					solve( engageTable($CurrentSelectedTable, $CurrentClientId ) ) 
+	 			}else{
+	 				replyTo enterrequest with enteranswer : enteranswer( 0 )
+	 			}		 
+ 		}					
+ 	}
+ 	Goto listening if [# CurrentClientId == 0 #] else gotoEntrance
+ 	
+ 	State gotoEntrance{
+ 		solve( pos( entrancedoor, X,Y ) )
+  		ifSolved { 	//defensive
+ 			[# CurMoveX = getCurSol("X").toString().toInt()  
+ 			   CurMoveY = getCurSol("Y").toString().toInt()  
+ 			#]  
+ 			request waiterwalker -m movetoCell : movetoCell($CurMoveX, $CurMoveY)
+ 		}	
+ 	}
+ 	Transition t0 whenReply atcell    -> deployCurrentclient
+ 				  whenReply walkbreak -> unexpected
+ 	
+ 	State deployCurrentclient{
+ 		//1) move to entrancedoor 2) move to the CurrentSelectedTable
+ 		solve( pos( teatable, $CurrentSelectedTable, X, Y ) )
+ 		ifSolved { 	//defensive
+ 			[# CurMoveX = getCurSol("X").toString().toInt()  
+ 			   CurMoveY = getCurSol("Y").toString().toInt() - 1  //cell near the se
+ 			#]  
+ 			request waiterwalker -m movetoCell : movetoCell($CurMoveX, $CurMoveY)
+ 		}
+ 	}
+ 	Transition t0 whenReply atcell    -> clientdeployed
+	 			  whenReply walkbreak -> unexpected
+
+	State clientdeployed{
+		println("client $CurrentClientId deployed to ($CurMoveX, $CurMoveY)")
+	}
+ 	Goto listening
+
+	 			  
+    State endOfJob{
+    	run itunibo.planner.plannerUtil.showCurrentRobotState()
+    	println("END OF Job ... BYE")
+    }   
+    
+ 	State unexpected{
+ 		println("There is something wrong ...")
+		printCurrentMessage
+	}
+}
+
+
+QActor clientsimulator context ctxtearoom{
+	[# var ClientId = 1 #]
+	State s0 initial {			
+	}
+	Goto dorequest
+	
+	State dorequest{
+		 request  waiter -m enterrequest : enterrequest( $ClientId )
+		 [# ClientId = ClientId+1 #]
+	}
+	Transition t0  whenReply enteranswer -> handleEnteranswer
+	
+	State handleEnteranswer{
+		printCurrentMessage
+ 	}
+	Goto dorequest if [# ClientId < 4 #] else endOfJob
+	
+    State endOfJob{
+     	println("clientsimulator BYE")
+    }   
+	
+}

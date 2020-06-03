@@ -1,8 +1,8 @@
 /*
  * Builds a map of the room by using the planner
- */   
+ */    
 System boundarywalker
-mqttBroker "localhost" : 1883 eventTopic "unibo/boundarywalker"
+mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/boundarywalker"
 
 Dispatch cmd       : cmd(MOVE)
  
@@ -11,7 +11,7 @@ Reply   stepdone   : stepdone(V)
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
 Context ctxboundarywalker    ip [host="localhost"      port=8068]                
-Context ctxbasicrobot         ip [host="192.168.1.22"   port=8020]    
+Context ctxbasicrobot         ip [host="192.168.1.68"   port=8020]    
 
 ExternalQActor basicrobot    context ctxbasicrobot
 
@@ -24,11 +24,11 @@ var NumStep     = 0
 //var StepTime   = 600	 
     
 //VIRTUAL ROBOT
- var StepTime   = 350	 
+ var StepTime   = 360L	  
 #]
 	State s0 initial {	 
   		delay 500 
-		forward basicrobot -m cmd : cmd(l)
+		forward basicrobot -m cmd : cmd(l)  
 		delay 300
 		forward basicrobot -m cmd : cmd(r)    
 		delay 300
@@ -53,7 +53,7 @@ var NumStep     = 0
  
  	State doAheadMove{ 
    		request basicrobot -m step : step( $StepTime  )
-	}
+	} 
 	Transition t0   whenReply stepdone   -> stepDone   
 					whenReply stepfail   -> stepFailed 
 	 

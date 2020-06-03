@@ -24,7 +24,7 @@ class Boundarywalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 		//var StepTime   = 600	 
 		    
 		//VIRTUAL ROBOT
-		 var StepTime   = 350	 
+		 var StepTime   = 360L	  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State

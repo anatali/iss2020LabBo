@@ -9,8 +9,6 @@ System tearoomsubsys
 Request getroomstate : getroomstate(V)
 Reply   roomstate : roomstate(Answer)
 
- 
-
 Request numfreetables : numfreetables(V)
 Reply freetables      : freetables(N)
 

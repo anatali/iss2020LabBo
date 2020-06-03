@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxtearoomdummy.gradle
+build_ctxtearoom_dummy.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxtearoomdummy.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxtearoomdummy.gradle distZip
-	gradle  -b build_ctxtearoomdummy.gradle -q tasks --all
-	gradle  -b build_ctxtearoomdummy.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxtearoom_dummy.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxtearoom_dummy.gradle distZip
+	gradle  -b build_ctxtearoom_dummy.gradle -q tasks --all
+	gradle  -b build_ctxtearoom_dummy.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

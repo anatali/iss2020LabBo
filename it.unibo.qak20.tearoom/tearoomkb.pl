@@ -15,6 +15,12 @@ pos( exitdoor,     6, 4 ).
 %% ------------------------------------------ 
 %% Teatables
 %% ------------------------------------------ 
+%% busy
+%% free		(not busy and not clean)
+%% dirty	(not clean)
+%% clean	(not dirty)
+%% available (free and clean)	
+
 teatable( 1, clean ).
 teatable( 2, clean ).
 
@@ -50,8 +56,8 @@ cleanTable(N).
 
 %%  athome
 %%	serving( CLIENTID )
-%%	moving( CELL )
-%%	cleaning( N )
+%%	movingto( CELL )
+%%	cleaning( table(N) )
 
 waiter( athome ).	
 

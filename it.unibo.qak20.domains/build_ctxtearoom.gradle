@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxmaitreddr.gradle
+build_ctxtearoom.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxmaitreddr.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxmaitreddr.gradle distZip
-	gradle  -b build_ctxmaitreddr.gradle -q tasks --all
-	gradle  -b build_ctxmaitreddr.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxtearoom.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxtearoom.gradle distZip
+	gradle  -b build_ctxtearoom.gradle -q tasks --all
+	gradle  -b build_ctxtearoom.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
@@ -59,7 +59,8 @@ dependencies {
  
     //For p2p two-way connections (TCP, UDP, BTH, Serial ...)
     compile name: 'unibonoawtsupports'
-
+	compile name: 'it.unibo.planner20-1.0'	//ADDED FOR PLANNER
+	
 	//BLS
 	//compile name: 'it.unibo.bls19Local-1.0'
 	//RADAR

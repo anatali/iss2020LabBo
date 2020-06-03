@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 80%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 70%;
+	background-color: #fcf8c7; 
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}    
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+  -->
+</style>
+    
+<head>
+   
+<title>LabDomains</title></head>
+    
+<body>
+
+<div class="body"> 
+
+<h1>LabDomains: a tea-room</h1> 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/LectureBologna1819.html" target="isslm">
+LabISS-lectures site</a></font> 
+
+<h1>Introduction</h1>
+We want to manage a tea-room that offers a number <tt>N (N=2)</tt> of <em>teatable</em> situated at fixed position in the central area
+of the room. Each <em>teatable</em> can be in one of the following states:
+
+<ul>
+<li><em>clean</em>:  without food residue and sanitized</li>
+<li><em>dirty</em>:  not clean</li>
+<li><em>busy</em>:  occupied by a client;</li>
+<li><em>free</em>:  not busy and not clean</li>
+<li><em>available</em>:  free and clean</li>
+</ul>
+
+ A <em>waiter</em>:
+ 
+ <ol>
+ <li>assigns an <em>available</em> table to a <em>client</em> that makes a request to enter in the tea-room;</li>
+ <li>deploys the client from the tearoom <em>entrancedoor</em>  to the selected table.</li>
+</ol>
+ 
+ 
+ 	<center><table style="width:98%">
+	<tbody>	
+	<tr>
+ 	<td style="width:45%">
+	
+
+<h3>The map</h3>
+<a href="../tearoomexplored.txt" target="code">tearoomexplored.txt</a> 
+<pre>
+|r, 1, 1, 1, 1, 1, 1, X, 
+|1, 1, 1, 1, 1, 1, 1, X, 
+|1, 1, 1, 1, 1, 1, 1, X, 
+|1, 1, <k>X</k>, 1, <k>X</k>, 1, 1, X, 
+|1, <k>1</k>, 1, 1, 1, 1, 1, X, 
+|X, X, X, X, X, X, X, X, </pre>
+<a href="tearoomSceneConfig.js" target="code">tearoomSceneConfig.js</a>
+
+	</td>
+	<td>
+<h3>Knowledge representation</h3>
+<h4>Position of the entracedoor</h4>
+<pre>pos( entrancedoor, 1, 4 ).</pre>
+<h4>Position of the teatables</h4>
+<pre>
+pos( teatable1,    2, 2 ).
+pos( teatable2,    4, 2 ).</pre>
+
+<h4>Initial state of the teatables</h4>
+<pre>
+teatable( 1, available ).
+teatable( 2, available ).</pre>
+
+<h4>A knowledge-base for the tea-room</h4>
+<a href="../tearoomkb.pl" target="code">tearoomkb.pl</a>	
+	</td>
+	</tr>
+ 	 </table>
+	</center> 	
+	
+
+
+
+
+<!--
+<h2>Tea-room COVID-19</h2> 
+
+The <em>manager</em> of a <em>tearoom</em> intends to regulate the access to the service by means of a ddr robot (<em>maitre</em>).
+<br/><br/>
+The <em>tearoom</em> is a rectangular room that includes:
+
+<ul>
+<li>an <em>entrancedoor</em> to enter in the room and an <em>exitdoor</em> to exit form it;</li>
+<li>a number <tt>N (N=2)</tt> of <em>teatable</em>;</li>
+<li>a <em>serviceare</em> including a <em>servicedesk</em> at which works a <em>barman</em>;</li>
+<li>a <em>hall</em> equipped with a <em>presencedetector</em>, i.e. a device (e.g. a sonar) that can detect the presence of 
+a person (or some other entity) in it.</li>
+</ul>
+
+The <em>maitre</em> can freely move along the borders of the tearoom, since there are no obstacles there. 
+
+<center><img src="tearoom20.png" alt="tearoom20.png" width="75%" height="32%"/></center>
+
+
+<h3>User stories</h3>
+As a <em>client</em>,:
+<ul>
+<li>I intend to <em>notify</em> my interest in <em>entering</em> in the tearoom, <em>sitting</em> at a free teatable,  <em>ordering</em> 
+some tea,  <em>consuming</em> it  (within a limited amount of time <em>maxstaytime</em>)  <em>paying</em> the service
+with my credit card and finally <em>leaving</em> the room.</li>
+<li>I can submit my notification of interest by hitting the <em>smartbell</em> located near the  <em>entrancedoor</em> 
+that will automatically send a request message to the <em>maitre</em>.
+</li>
+<li>I my request cannot be immediately satisfied, I will be <em>informed</em> by the <em>maitre</em> 
+about the maximum waiting time.</li>
+</ul>
+
+ 
+
+
+<h3>Requirements</h3>
+
+The <em>maitre</em> should perform the following tasks:
+<ul>
+<li><em>accept</em> the request of a client to enter in the tearoom if there is at least one teatable in the state <em>tableclean</em>, i.e.
+the table is free and has been properly cleaned; </li>
+<li><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the client to the selected teatable;</li>
+<li><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em>; </li>
+<li><em>serve</em>  the client when the <em>barman</em> says that the requested drink is ready;</li>
+<li><em>collect</em> the payment</li>
+<li><em>convoy</em> the client to the <em>exit door</em> when he/she has finished to consume or when the <em>maxstaytime</em> is expired;</li>
+<li><em>clean</em> the teatable just freed  by the client</li>
+<li><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em>;</li> 
+</ul>
+
+Since the room could contain <tt>N</tt> clients at the time, the <em>maitre</em> should reduce as much as possible the waiting time
+of the requests coming from each client.
+   
+
+<h2>Non functional requirements</h2>  
+<ol>
+<li>The ideal work team is composed of 3 persons. Teams of 1 or 2 persons (<bc>NOT</bc> 4 or more) are also allowed. </li>
+<li>The team must present a workplan as the result of the requirement/problem analysis,
+including some significant <bc>TestPlan</bc>.</li>
+<li>The team must present the sequence of SPRINT performed, with appropriate motivations.</li>
+<li>The team must present (in synthetic, schematic way) the specific activity of each team-component.</li>
+</ol>	
+ -->
+ 
+ <!--
+ // https://mvnrepository.com/artifact/it.unibo.alice.tuprolog/2p-core
+compile group: 'it.unibo.alice.tuprolog', name: '2p-core', version: '4.1.1'
+ -->
+</div>
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI    
+</div> 
+</body>
+</html>

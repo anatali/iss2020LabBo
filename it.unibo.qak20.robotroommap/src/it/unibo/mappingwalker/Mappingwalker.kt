@@ -19,7 +19,7 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 		 
 		var NumStep      = 0  
 		var GoalOk       = true 
-		val StepTime     = 350
+		val StepTime     = 360L
 		val BackTime     = 2 * StepTime / 3
 		var StartTime    = 0L
 		var Workduration = 0L    
@@ -41,7 +41,7 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						updateResourceRep( "initial"  
 						)
 					}
-					 transition(edgeName="t00",targetState="exploreDirties",cond=whenDispatch("start"))
+					 transition( edgeName="goto",targetState="exploreDirties", cond=doswitch() )
 				}	 
 				state("exploreDirties") { //this:State
 					action { //it:State
@@ -69,8 +69,8 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
-					transition(edgeName="t02",targetState="stepFail",cond=whenReply("stepfail"))
+					 transition(edgeName="t00",targetState="stepDone",cond=whenReply("stepdone"))
+					transition(edgeName="t01",targetState="stepFail",cond=whenReply("stepfail"))
 				}	 
 				state("otherPlannedMove") { //this:State
 					action { //it:State
@@ -111,12 +111,10 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("stepFail") { //this:State
 					action { //it:State
 						println("				robotmapper | stepFail  ")
-						
-						 			//var Dt = 0L 			
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(DURATION,CAUSE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2  
-								println("robotmapper stepFail D= $D, BackTime = ${BackTime}")
+								println("robotmapper stepFail D= $D, BackTime = ${BackTime} BackT=$BackT")
 								if(  D > BackTime  
 								 ){forward("cmd", "cmd(s)" ,"basicrobot" ) 
 								delay(BackT)

@@ -2,7 +2,7 @@
  * mappingwalker.qak 
  */    
 System  mappingwalker  
-mqttBroker "localhost" : 1883 eventTopic "unibo/polar"  
+mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar"  
 
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)
@@ -25,7 +25,7 @@ QActor mappingwalker context ctxmappingwalker  {
 [# 
 var NumStep      = 0  
 var GoalOk       = true 
-val StepTime     = 350
+val StepTime     = 360L
 val BackTime     = 2 * StepTime / 3
 var StartTime    = 0L
 var Workduration = 0L    
@@ -50,8 +50,8 @@ val outmapname   = "teaRoomExplored"
 		updateResource [# "initial" #]
 		//forward mappingwalker -m start : start(go)  //automsg
 	}	
- 	//Goto exploreDirties  
- 	Transition t0 whenMsg start -> exploreDirties
+ 	Goto exploreDirties  
+ 	//Transition t0 whenMsg start -> exploreDirties
  	
  	  
  	State exploreDirties{
@@ -107,14 +107,10 @@ val outmapname   = "teaRoomExplored"
  	
 	State stepFail{
 	    println("				robotmapper | stepFail  ")
- 		[#
- 			//var Dt = 0L 			
-		#]     
-		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
+ 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
 			[# val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2 #] 
-			println("robotmapper stepFail D= $D, BackTime = ${BackTime}")
-			//if [# Dt < 2*StepTime/3.0  #] {    
-			if [# D > BackTime #] {    
+			println("robotmapper stepFail D= $D, BackTime = ${BackTime} BackT=$BackT")
+ 			if [# D > BackTime #] {    
 				forward basicrobot -m cmd : cmd( s )
 				delayVar BackT
 				forward basicrobot -m cmd : cmd( h )

@@ -20,7 +20,7 @@ class Trustingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 			var XT = "0"
 			var YT = "0"
 			var CurrentPlannedMove = ""
-			var StepTime    	   = 348L
+			var StepTime    	   = 350L
 			val BackTime           = 2 * StepTime / 3
 			var obstacleFound      = false  
 		return { //this:ActionBasciFsm

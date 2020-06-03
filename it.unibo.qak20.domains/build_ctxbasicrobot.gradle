@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxtrustingwalker.gradle
+build_ctxbasicrobot.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxtrustingwalker.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxtrustingwalker.gradle distZip
-	gradle  -b build_ctxtrustingwalker.gradle -q tasks --all
-	gradle  -b build_ctxtrustingwalker.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxbasicrobot.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxbasicrobot.gradle distZip
+	gradle  -b build_ctxbasicrobot.gradle -q tasks --all
+	gradle  -b build_ctxbasicrobot.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
