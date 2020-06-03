@@ -1,16 +1,20 @@
 /* 
  * ================================================================================
- * maitrewalker.qak
+ * waiterwalker.qak
  * VERSION June 1, 2020 
  * 
  * External MQTT sites:
  * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
  * ================================================================================
  */ 
-System   tearoom 
-mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
+System   tearoomsubsys 
+/*
+ * When used as a subsystem (e.g. within watermind), the mqttBroker spec
+ * works only if it is included in the main system
+ */
+//mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar"  //see watermind
 
-Event    twstarted   : twstarted(X)
+Event    walkerstarted   : walkerstarted(X)
 	
 Request  movetoCell : movetoCell(X,Y)
 Reply    atcell     : atcell(X,Y)
@@ -21,12 +25,12 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
-Context ctxtearoom        ip [host="localhost"      port=8050]     
+Context ctxtearoom_dummy        ip [host="localhost"      port=8050]     
 Context ctxbasicrobot     ip [host="192.168.1.68"   port=8020]   
 
 ExternalQActor basicrobot    context ctxbasicrobot
  
-QActor maitrewalker context ctxtearoom{  
+QActor waiterwalker context ctxtearoom_dummy{  
 [#
 	var XT = "0"
 	var YT = "0"
@@ -41,13 +45,13 @@ QActor maitrewalker context ctxtearoom{
 		delay 500
 		forward basicrobot -m cmd : cmd(r)    
 		delay 500
-		emit twstarted : twstarted(0)
-		println("&&&  maitrewalker STARTS")
+		emit walkerstarted : walkerstarted(0)
+		println("&&&  waiterwalker STARTS")
 	}	
 	Goto waitCmd   
 	 
 	State waitCmd {	     
- 		println("&&&  maitrewalker waits for a command 'movetoCell'")
+ 		println("&&&  waiterwalker waits for a command 'movetoCell'")
 	}	
 	Transition t0 whenRequest movetoCell -> walk
  	
@@ -57,14 +61,14 @@ QActor maitrewalker context ctxtearoom{
 			[# XT = payloadArg(0)
 			   YT = payloadArg(1)			  
 			 #]
-			println("&&&  maitrewalker  | MOVING to ($XT,$YT)")
+			println("&&&  waiterwalker  | MOVING to ($XT,$YT)")
 			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
 		}
 	}
 	Goto execPlannedMoves if[# itunibo.planner.plannerUtil.existActions() #] else noPlan
 
 	State noPlan{
-		println("&&&  maitrewalker | NO PLAN FOUND for MOVING to ($XT,$YT)")
+		println("&&&  waiterwalker | NO PLAN FOUND for MOVING to ($XT,$YT)")
 		replyTo movetoCell with walkbreak : walkbreak( $XT,$YT )
 	}
 	Goto waitCmd
@@ -74,7 +78,7 @@ QActor maitrewalker context ctxtearoom{
  */					  
  	State execPlannedMoves{ 
  		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
- 		//println("maitrewalker | doing move $CurrentPlannedMove")
+ 		//println("waiterwalker | doing move $CurrentPlannedMove")
  	}
  	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
  
@@ -92,10 +96,10 @@ QActor maitrewalker context ctxtearoom{
 		
 	State stepFailed{  //has found an obstacle 
 	    [# obstacleFound = true #]
- 		println("maitrewalker | stepFailed")
+ 		println("waiterwalker | stepFailed")
 		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
 			[# val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2 #] 
-			println("maitrewalker stepFail D= $D, BackTime = ${BackTime}")
+			println("waiterwalker stepFail D= $D, BackTime = ${BackTime}")
 			if [# D > BackTime #] {    
 				forward basicrobot -m cmd : cmd( s )
 				delayVar BackT
@@ -118,14 +122,14 @@ QActor maitrewalker context ctxtearoom{
  * Answers  
  */ 
  	State sendSuccessAnswer{
-	     	println("&&&  maitrewalker POINT ($XT,$YT) REACHED")
+	     	println("&&&  waiterwalker POINT ($XT,$YT) REACHED")
 	     	run itunibo.planner.plannerUtil.showCurrentRobotState()
 	     	replyTo movetoCell with atcell : atcell($XT,$YT) 					
 	}
 	Goto waitCmd  
 
 	State sendFailureAnswer{
-	    println("&&&  maitrewalker FAILS")
+	    println("&&&  waiterwalker FAILS")
 	    [# val Curx = itunibo.planner.plannerUtil.getPosX()
 	       val Cury = itunibo.planner.plannerUtil.getPosY()	
 	    #]

@@ -1,1 +1,121 @@
-System tearoom
+/*
+ * A 'shared' representation of the state of the room
+ */
+System tearoomsubsys
+
+//mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
+
+//---------- Tearoom ---------------
+Request getroomstate : getroomstate(V)
+Reply   roomstate : roomstate(Answer)
+
+ 
+
+Request numfreetables : numfreetables(V)
+Reply freetables      : freetables(N)
+
+Request istablestate  : istablestate(N)
+Reply isclean         : isclean(N,V)
+
+Context ctxtearoom_dummy   ip [host="localhost" port=8050] 
+
+QActor tearoom context ctxtearoom_dummy{ 
+[#
+ 	val inmapname          = "teaRoomExplored" 
+	
+	var X_barman		= "0"
+	var Y_barman		= "0"
+	
+	var X_entrancedoor  = "0"
+	var Y_entrancedoor  = "0"
+	
+	var X_exitdoor      = "0"
+	var Y_exitdoor      = "0"
+	 
+	var X_teatable1     = "0"
+	var Y_teatable1     = "0"
+
+	var X_teatable2     = "0"
+	var Y_teatable2     = "0"
+	
+#]	
+	State s0 initial {	
+		solve( consult("tearoomkb.pl")	 )
+		/*
+		solve( pos( entrancedoor, X, Y ) ) 
+		ifSolved { [# X_entrancedoor=getCurSol("X").toString() ;  Y_entrancedoor=getCurSol("Y").toString() #] }
+		println("entrancedoor($X_entrancedoor, $Y_entrancedoor )")
+ 
+		solve( pos( exitdoor, X, Y ) ) 
+		ifSolved { [# X_exitdoor = getCurSol("X").toString();  Y_exitdoor = getCurSol("Y").toString() #] }
+		println("exitdoor($X_exitdoor, $Y_exitdoor )")
+ 				
+		solve( pos( barman, X, Y ) ) 
+		ifSolved { [# X_barman = getCurSol("X").toString();  Y_barman = getCurSol("Y").toString() #] }
+		println("barman($X_barman, $Y_barman)")
+
+		solve( pos( teatable1, X, Y ) ) 
+		ifSolved { [# X_teatable1 = getCurSol("X").toString();  Y_teatable1 = getCurSol("Y").toString() #] }
+		println("teatable1($X_teatable1, $Y_teatable1)")
+
+		solve( pos( teatable2, X, Y ) ) 
+		ifSolved { [# X_teatable2 = getCurSol("X").toString();  Y_teatable2 = getCurSol("Y").toString() #] }
+		println("teatable2($X_teatable2, $Y_teatable2)")
+		
+		solve( numfreetables(N) ) 
+		ifSolved { [# val N = getCurSol("N").toString().toInt(); println("tearoom | numfreetables=$N") #] }
+		 */
+		
+		  
+	}
+	Goto work
+	
+	State work{		
+	}
+	Transition t0 whenRequest getroomstate -> evalRequest
+	
+	
+	State evalRequest{
+		printCurrentMessage
+		onMsg( getroomstate : getroomstate( numfreetables(N) ) ){
+			[# var NumOfFreetables = 0 #]
+			solve( numfreetables(N) ) 
+			ifSolved { [# NumOfFreetables = getCurSol("N").toString().toInt()  #] 
+				println("tearoom | numfreetables=$NumOfFreetables")
+				replyTo getroomstate with roomstate : roomstate( numfreetables($NumOfFreetables) )
+			}					
+		}
+		onMsg( getroomstate : getroomstate( tablestate(N,S) ) ){
+			[#
+				var t  = Term.createTerm( payloadArg(0) ) as Struct 
+				var N  = t.getArg(0).toString().toInt() 
+				var S  : String  = ""
+			#]   
+			solve( teatable($N,ST)  )  
+			ifSolved { [# S = getCurSol("ST").toString()   #] 
+				println("tearoom | teatable $N state=$S") 
+				replyTo getroomstate with roomstate : roomstate( teatable($N,$S) )
+			}					
+		} 
+		onMsg( getroomstate : getroomstate( roomstate(W,T,D) ) ){
+			[#
+				var W  : String  = ""
+				var T  : String  = ""
+				var D  : String  = ""
+			#]   
+			solve( roomstate(W,T,D)  )  
+			ifSolved { 
+				[# W = getCurSol("W").toString()   
+				   T = getCurSol("T").toString()
+				   D = getCurSol("D").toString()
+				#] 
+				println("tearoom | roomstate $W state=$T") 
+				replyTo getroomstate with roomstate : roomstate( $W,$T,$D )
+			}					
+		} 
+	}
+	Goto work
+	
+	
+	
+}

@@ -1,14 +1,14 @@
-System   tearoom
+System   tearoomsubsys
 
-mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
+//mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
 
 Dispatch engage  : engage(N)
 Dispatch release : release(N)
 Dispatch clean   : clean(N)
 
-Context ctxtearoom   ip [host="localhost" port=8050]    
+Context ctxtearoom_dummy   ip [host="localhost" port=8050]    
 
-QActor teatables context ctxtearoom{ 
+QActor teatables context ctxtearoom_dummy{ 
 [#
 	var StateOfTables = ""
 #]	

@@ -9,8 +9,7 @@
  */ 
 System   tearoom
 mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
-
-Event    walkerstarted   : walkerstarted(X)
+Event    twstarted   : twstarted(X)
 
 Request  movetoCell : movetoCell(X,Y)
 Reply    atcell     : atcell(X,Y)
@@ -21,53 +20,20 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
-//---------- Tearoom ---------------
-Request getroomstate : getroomstate(V)
-Reply   roomstate    : roomstate(Answer)
-
-Request numfreetables : numfreetables(V)
-Reply freetables      : freetables(N)
-
-Request istableclean  : istableclean(N)
-Reply isclean         : isclean(N,V)
-
-
-//---------- Barman ---------------
-Dispatch order       : order(V,CLIENTID)
-Dispatch orderdone   : orderdone(V,CLIENTID)
-
-//---------- Client ---------------
-Dispatch enterrequest   : enterrequest(ID)
-Dispatch orderrequest   : orderrequest(V)
-Dispatch paymentrequest : paymentrequest(V)
-Dispatch exitrequest    : exitrequest(V)		//???
-
 //---------- Tables ---------------
 Dispatch engage  : engage(N)
 Dispatch release : release(N)
 Dispatch clean   : clean(N)
-
-//---------- Waiter itself---------------
-Dispatch cleantable  : cleantable(N)
-Dispatch deliver     : deliver(V,CLIENTID)
-Dispatch rest        : rest(V)
-
-//---------- Trips ---------------
-Dispatch moveToDoor     	: moveToDoor(N)
-Dispatch moveToEntrance 	: moveToEntrance(V)
-Dispatch moveToExit     	: moveToExit(V)
-Dispatch moveToTeatable 	: moveToTeatable(N)
-Dispatch moveToServicedesk 	: moveToServicedesk(V)
+ 
 
 Context ctxtearoom   ip [host="localhost" port=8050]    
  
-CodedQActor tearoom      context ctxtearoom className "it.unibo.tearoom.Tearoom" 
 CodedQActor teatables    context ctxtearoom className "it.unibo.teatables.Teatables"
-CodedQActor waiterwalker context ctxtearoom className "it.unibo.waiterwalker.Waiterwalker"
-  
+CodedQActor maitrewalker context ctxtearoom className "it.unibo.maitrewalker.Maitrewalker"
+ 
 QActor waitermind context ctxtearoom{  
-[# 
-	var XT = "0" 
+[#
+	var XT = "0"
 	var YT = "0"
 	var CurrentPlannedMove = ""
 	var StepTime    	   = 350L
@@ -75,64 +41,50 @@ QActor waitermind context ctxtearoom{
 	var obstacleFound      = false  
 	val inmapname          = "teaRoomExplored" 
 	
-//	var X_barman		= "0"
-//	var Y_barman		= "0"
-//	
-//	var X_entrancedoor  = "0"
-//	var Y_entrancedoor  = "0"
-//	
-//	var X_exitdoor      = "0"
-//	var Y_exitdoor      = "0"
-//	 
-//	var X_teatable1     = "0"
-//	var Y_teatable1     = "0"
-//
-//	var X_teatable2     = "0"
-//	var Y_teatable2     = "0"
+	var X_barman		= "0"
+	var Y_barman		= "0"
+	
+	var X_entrancedoor  = "0"
+	var Y_entrancedoor  = "0"
+	
+	var X_exitdoor      = "0"
+	var Y_exitdoor      = "0"
+	 
+	var X_teatable1     = "0"
+	var Y_teatable1     = "0"
+
+	var X_teatable2     = "0"
+	var Y_teatable2     = "0"
 	
 #]
 	State s0 initial {	
 		//delay 1000 //give time to the   trustingwalker  to start ... 
  		run itunibo.planner.plannerUtil.initAI()
-//		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
-//		run itunibo.planner.plannerUtil.showCurrentRobotState()		
+		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
+		run itunibo.planner.plannerUtil.showCurrentRobotState()		
 		 
+		solve( consult("tearoomkb.pl")	 )
+		solve( pos( entrancedoor, X, Y ) ) 
+		ifSolved { [# X_entrancedoor=getCurSol("X").toString() ;  Y_entrancedoor=getCurSol("Y").toString() #] }
+		println("entrancedoor($X_entrancedoor, $Y_entrancedoor )")
+ 
+		solve( pos( exitdoor, X, Y ) ) 
+		ifSolved { [# X_exitdoor = getCurSol("X").toString();  Y_exitdoor = getCurSol("Y").toString() #] }
+		println("exitdoor($X_exitdoor, $Y_exitdoor )")
+ 				
+		solve( pos( barman, X, Y ) ) 
+		ifSolved { [# X_barman = getCurSol("X").toString();  Y_barman = getCurSol("Y").toString() #] }
+		println("barman($X_barman, $Y_barman)")
+
+		solve( pos( teatable1, X, Y ) ) 
+		ifSolved { [# X_teatable1 = getCurSol("X").toString();  Y_teatable1 = getCurSol("Y").toString() #] }
+		println("teatable1($X_teatable1, $Y_teatable1)")
+
+		solve( pos( teatable2, X, Y ) ) 
+		ifSolved { [# X_teatable2 = getCurSol("X").toString();  Y_teatable2 = getCurSol("Y").toString() #] }
+		println("teatable2($X_teatable2, $Y_teatable2)")
  	}	
-  	Transition t0 whenEvent walkerstarted -> someQuery //controlTrip    
- 	
- 	 
- 	State someQuery{
- 		println("waitermind | sending some query ... ")
- 		request tearoom -m getroomstate : getroomstate( tablestate(1,S) )
- 		delay 100
- 		request tearoom -m getroomstate : getroomstate( numfreetables(N) )
- 		delay 100
- 		request tearoom -m getroomstate : getroomstate( roomstate(W,T,D) )
- 	}
- 	Transition t0 whenReply roomstate -> handleAnswer 
- 	
- 	State handleAnswer{
- 		printCurrentMessage
- 	}
- 	Transition t0 whenTime 100 -> listening
- 				  whenReply roomstate -> handleAnswer 
- 	
-  	State listening{
- 		println("waitermind | listening while doing ... ")
- 	}
- 	Transition t0 whenMsg enterrequest   -> schedule
- 				  whenMsg paymentrequest -> schedule
- 				  whenMsg orderdone      -> schedule
- 	
- 	State schedule{
- 		
- 	}
- 	
- 	
- 	
- 	
- 	
-/*  	
+ 	Transition t0 whenEvent twstarted -> controlTrip   
 		
 	State controlTrip{
 		println("controlTrip. ")
@@ -148,7 +100,7 @@ QActor waitermind context ctxtearoom{
 		forward teatables -m engage : engage(2)
 		delay 1000
 		println("Going to the entrancedoor havineg booked dteatable2... ")
- 		request waiterwalker -m movetoCell : movetoCell ($X_entrancedoor, $Y_entrancedoor)
+ 		request maitrewalker -m movetoCell : movetoCell ($X_entrancedoor, $Y_entrancedoor)
 	}
 	Transition t0 whenReply atcell ->  gotoTable2
 				whenReply walkbreak -> unexpected
@@ -156,7 +108,7 @@ QActor waitermind context ctxtearoom{
 	State gotoTable2{    
 		delay 1000
 		println("Going to teatable2 ...")
- 		request waiterwalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+ 		request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
 	}
 	Transition t0 whenReply atcell ->  gotoBarman
 				whenReply walkbreak -> unexpected
@@ -164,7 +116,7 @@ QActor waitermind context ctxtearoom{
 	State gotoBarman{
 		delay 1000
 		println("Going to barman ...")
-		request waiterwalker -m movetoCell : movetoCell($X_barman, $Y_barman)
+		request maitrewalker -m movetoCell : movetoCell($X_barman, $Y_barman)
 	}
 	Transition t0 whenReply atcell ->  gotoTable2WithTea
 				whenReply walkbreak -> unexpected
@@ -172,7 +124,7 @@ QActor waitermind context ctxtearoom{
 	State gotoTable2WithTea{
 		delay 1000
 		println("Going gotoTable2WithTea ...")
-		request waiterwalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+		request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
 	}
 	Transition t0 whenReply atcell ->  gotoExitdoor
 				whenReply walkbreak -> unexpected
@@ -181,7 +133,7 @@ QActor waitermind context ctxtearoom{
 	State gotoExitdoor{
 		delay 1000
 		println("Going to exitdoor ...")
-		request waiterwalker -m movetoCell : movetoCell ($X_exitdoor, $Y_exitdoor)
+		request maitrewalker -m movetoCell : movetoCell ($X_exitdoor, $Y_exitdoor)
 	}
 	Transition t0 whenReply atcell ->  gotoTable2Clean
 				whenReply walkbreak -> unexpected
@@ -189,7 +141,7 @@ QActor waitermind context ctxtearoom{
 	State gotoTable2Clean{
 		delay 1000
 		println("Going to gotoTable2Clean ...")
-		request waiterwalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+		request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
 	}
 	Transition t0 whenReply atcell ->  cleanTable2
 				whenReply walkbreak -> unexpected
@@ -198,7 +150,7 @@ QActor waitermind context ctxtearoom{
 		delay 1000 
 		println("Going to gcleanTable2 ...") 
 		forward teatables -m clean : clean(2)
- 		//request waiterwalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
+ 		//request maitrewalker -m movetoCell : movetoCell($X_teatable2, $Y_teatable2)
 	}
 	Transition t0 whenReply atcell ->  gotoExitdoor
 				whenReply walkbreak -> unexpected
@@ -207,7 +159,7 @@ QActor waitermind context ctxtearoom{
 	State gotoTable1{
 		delay 1000
 		println("Going to teatable1 ...")
-		request waiterwalker -m movetoCell : movetoCell ($X_teatable1, $Y_teatable1)
+		request maitrewalker -m movetoCell : movetoCell ($X_teatable1, $Y_teatable1)
 	}
 	Transition t0 whenReply atcell ->  gotoHome
 				whenReply walkbreak -> unexpected
@@ -216,11 +168,10 @@ QActor waitermind context ctxtearoom{
 	State gotoHome{
 		delay 1000
 		println("Going to home ...")
-		request waiterwalker -m movetoCell : movetoCell (0,0)
+		request maitrewalker -m movetoCell : movetoCell (0,0)
 	}
 	Transition t0 whenReply atcell ->  endOfTrip
 				whenReply walkbreak -> unexpected
-*/
 
     State endOfTrip{
     	run itunibo.planner.plannerUtil.showCurrentRobotState()
@@ -236,7 +187,7 @@ QActor waitermind context ctxtearoom{
 	State reachPoint1{
 		println("Going to POINT1  (6,3) ...")
 		[# readLine() #]
- 		request waiterwalker -m movetoCell : movetoCell (6,3)
+ 		request maitrewalker -m movetoCell : movetoCell (6,3)
 	}
 	Transition t0 whenReply atcell ->  reachPoint2
 				whenReply walkbreak -> unexpected
@@ -246,7 +197,7 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		delay 1000
 		//run itunibo.planner.plannerUtil.showCurrentRobotState()
-		request waiterwalker -m movetoCell : movetoCell (0,2)
+		request maitrewalker -m movetoCell : movetoCell (0,2)
 	}
 	Transition t0 whenReply atcell ->  reachHome
 				whenReply walkbreak -> unexpected
@@ -256,7 +207,7 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		delay 1000
 		//run itunibo.planner.plannerUtil.showCurrentRobotState()
-		request waiterwalker -m movetoCell : movetoCell (0,0)
+		request maitrewalker -m movetoCell : movetoCell (0,0)
 	}
 	Transition t0 whenReply atcell ->  endOfTrip
 				whenReply walkbreak -> unexpected
