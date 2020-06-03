@@ -28,7 +28,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						request("enterrequest", "enterrequest($ClientId)" ,"waiter" )  
 						 ClientId = ClientId+1  
 					}
-					 transition(edgeName="t06",targetState="handleEnteranswer",cond=whenReply("enteranswer"))
+					 transition(edgeName="t010",targetState="handleEnteranswer",cond=whenReply("enteranswer"))
 				}	 
 				state("handleEnteranswer") { //this:State
 					action { //it:State

@@ -1,4 +1,4 @@
-System   waiter
+System   domains
 mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
 Event    walkerstarted   : walkerstarted(X)
 
@@ -25,15 +25,17 @@ QActor waiter context ctxtearoom{
    var CurrentSelectedTable   	= 0
    var CurMoveX  			  	= 0
    var CurMoveY  				= 0
-#]
+   
+   val inmapname          		= "teaRoomExplored" 
+#]	
 
 	State s0 initial {	
   		run itunibo.planner.plannerUtil.initAI()
 		solve( consult("tearoomkb.pl")	 )
   		
-//		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
-//		run itunibo.planner.plannerUtil.showCurrentRobotState()				 
- 	}	
+ 		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
+ 		run itunibo.planner.plannerUtil.showCurrentRobotState()				 
+ 	}	 
   	Transition t0 whenEvent walkerstarted -> someQuery //controlTrip    
  	
  	 
@@ -47,7 +49,7 @@ QActor waiter context ctxtearoom{
 			ifSolved { [# val Ntables = getCurSol("N").toString().toInt()  #] 
 				println("waiter | numavailabletables=$Ntables")
  			}					
-			solve( roomstate( V )  )  
+			solve( roomstate( V )  )   
 			ifSolved { 
 				[# val W = getCurSol("V").toString()   
 				#] 
@@ -65,9 +67,22 @@ QActor waiter context ctxtearoom{
 			CurMoveY  				= 0			
 		#]
 	}
-  	Transition t0  whenRequest enterrequest -> handleEnterrequest
+  	Transition t0  
+  			whenTime 5000 -> gotoHome
+  			whenRequest enterrequest -> handleEnterrequest
   
-
+	State gotoHome{
+		if [# ! itunibo.planner.plannerUtil.atHome() #] {
+ 			request waiterwalker -m movetoCell : movetoCell (0,0)
+ 		}else{
+ 			println("waiter | waiting at home ...  ") 
+ 		}
+	}
+	Transition t0 whenTime 100     ->  listening
+				  whenReply atcell ->  listening
+				  whenReply walkbreak -> unexpected
+	
+	
 	State handleEnterrequest{
  		printCurrentMessage
  			onMsg( enterrequest : enterrequest(CID) ){
@@ -79,12 +94,14 @@ QActor waiter context ctxtearoom{
 					solve( engageTable($CurrentSelectedTable, $CurrentClientId ) ) 
 	 			}else{
 	 				replyTo enterrequest with enteranswer : enteranswer( 0 )
-	 			}		 
+	 				[# CurrentClientId = 0 #]  //no client
+	 			}		  
  		}					
  	}
  	Goto listening if [# CurrentClientId == 0 #] else gotoEntrance
  	
  	State gotoEntrance{
+ 		println("waiter | going to entracedoor for client = $CurrentClientId ")	
  		solve( pos( entrancedoor, X,Y ) )
   		ifSolved { 	//defensive
  			[# CurMoveX = getCurSol("X").toString().toInt()  
@@ -101,7 +118,7 @@ QActor waiter context ctxtearoom{
  		solve( pos( teatable, $CurrentSelectedTable, X, Y ) )
  		ifSolved { 	//defensive
  			[# CurMoveX = getCurSol("X").toString().toInt()  
- 			   CurMoveY = getCurSol("Y").toString().toInt() - 1  //cell near the se
+ 			   CurMoveY = getCurSol("Y").toString().toInt() - 1  //cell upon the table
  			#]  
  			request waiterwalker -m movetoCell : movetoCell($CurMoveX, $CurMoveY)
  		}
@@ -110,7 +127,10 @@ QActor waiter context ctxtearoom{
 	 			  whenReply walkbreak -> unexpected
 
 	State clientdeployed{
-		println("client $CurrentClientId deployed to ($CurMoveX, $CurMoveY)")
+		[# val Msg = "DEPLOYED client $CurrentClientId to table$CurrentSelectedTable at ($CurMoveX, $CurMoveY)"#]
+		updateResource [# Msg #]
+		println("waiter | $Msg")	
+ 		[# readLine() #] 
 	}
  	Goto listening
 

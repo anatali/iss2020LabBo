@@ -21,6 +21,7 @@ class Waiterwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 			var YT = "0"
 			var CurrentPlannedMove = ""
 			var StepTime    	   = 360L
+			val PauseTime          = 250L
 			val BackTime           = 2 * StepTime / 3
 			var obstacleFound      = false  
 		return { //this:ActionBasciFsm
@@ -67,6 +68,7 @@ class Waiterwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				state("execPlannedMoves") { //this:State
 					action { //it:State
 						  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove()  
+						delay(PauseTime)
 					}
 					 transition( edgeName="goto",targetState="wMove", cond=doswitchGuarded({ CurrentPlannedMove == "w"  
 					}) )
@@ -82,8 +84,6 @@ class Waiterwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State
-						updateResourceRep( itunibo.planner.plannerUtil.getMapOneLine()  
-						)
 						itunibo.planner.plannerUtil.updateMap( "w"  )
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ CurrentPlannedMove.length > 0  

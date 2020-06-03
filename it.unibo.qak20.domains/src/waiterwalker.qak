@@ -7,7 +7,7 @@
  * 	"mqtt.eclipse.org:  mosquitto.org mqtt.fluux.io  broker.hivemq.com
  * ================================================================================
  */ 
-System   tearoomsubsys 
+System   domainssubsys 
 //mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar"  //see watermind
 
 Event    walkerstarted   : walkerstarted(X)
@@ -32,6 +32,7 @@ QActor waiterwalker context ctxtearoom_dummy{
 	var YT = "0"
 	var CurrentPlannedMove = ""
 	var StepTime    	   = 360L
+	val PauseTime          = 250L
 	val BackTime           = 2 * StepTime / 3
 	var obstacleFound      = false  
 #]
@@ -75,6 +76,7 @@ QActor waiterwalker context ctxtearoom_dummy{
  	State execPlannedMoves{ 
  		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
  		//println("waiterwalker | doing move $CurrentPlannedMove")
+ 		delayVar PauseTime
  	}
  	Goto wMove if [# CurrentPlannedMove == "w" #] else otherPlannedMove
  
@@ -85,7 +87,7 @@ QActor waiterwalker context ctxtearoom_dummy{
 					whenReply stepfail   -> stepFailed 
 	 
  	State stepDone{  
- 		updateResource [# itunibo.planner.plannerUtil.getMapOneLine() #]
+ 		//updateResource [# itunibo.planner.plannerUtil.getMapOneLine() #]
  		run itunibo.planner.plannerUtil.updateMap(  "w" )
   	}
 	Goto execPlannedMoves if [# CurrentPlannedMove.length > 0 #] else sendSuccessAnswer

@@ -16,7 +16,7 @@ object tearoomCoapObserver {
 	
 	private val ipaddr      = "localhost:8050"		//5683 default
 	private val context     = "ctxtearoom"
- 	private val destactor   = "teatables"
+ 	private val destactor   = "walker"
  
 
 	fun init(){

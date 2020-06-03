@@ -20,11 +20,15 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		   var CurrentSelectedTable   	= 0
 		   var CurMoveX  			  	= 0
 		   var CurMoveY  				= 0
+		   
+		   val inmapname          		= "teaRoomExplored" 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						itunibo.planner.plannerUtil.initAI(  )
 						solve("consult('tearoomkb.pl')","") //set resVar	
+						itunibo.planner.plannerUtil.loadRoomMap( inmapname  )
+						itunibo.planner.plannerUtil.showCurrentRobotState(  )
 					}
 					 transition(edgeName="t00",targetState="someQuery",cond=whenEvent("walkerstarted"))
 				}	 
@@ -60,8 +64,26 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 									CurrentSelectedTable   	= 0
 									CurMoveX  			  	= 0
 									CurMoveY  				= 0			
+						stateTimer = TimerActor("timer_listening", 
+							scope, context!!, "local_tout_waiter_listening", 5000.toLong() )
 					}
-					 transition(edgeName="t01",targetState="handleEnterrequest",cond=whenRequest("enterrequest"))
+					 transition(edgeName="t01",targetState="gotoHome",cond=whenTimeout("local_tout_waiter_listening"))   
+					transition(edgeName="t02",targetState="handleEnterrequest",cond=whenRequest("enterrequest"))
+				}	 
+				state("gotoHome") { //this:State
+					action { //it:State
+						if(  ! itunibo.planner.plannerUtil.atHome()  
+						 ){request("movetoCell", "movetoCell(0,0)" ,"waiterwalker" )  
+						}
+						else
+						 {println("waiter | waiting at home ...  ")
+						 }
+						stateTimer = TimerActor("timer_gotoHome", 
+							scope, context!!, "local_tout_waiter_gotoHome", 100.toLong() )
+					}
+					 transition(edgeName="t03",targetState="listening",cond=whenTimeout("local_tout_waiter_gotoHome"))   
+					transition(edgeName="t04",targetState="listening",cond=whenReply("atcell"))
+					transition(edgeName="t05",targetState="unexpected",cond=whenReply("walkbreak"))
 				}	 
 				state("handleEnterrequest") { //this:State
 					action { //it:State
@@ -77,6 +99,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								}
 								else
 								{answer("enterrequest", "enteranswer", "enteranswer(0)"   )  
+								 CurrentClientId = 0  
 								}
 						}
 					}
@@ -87,6 +110,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("gotoEntrance") { //this:State
 					action { //it:State
+						println("waiter | going to entracedoor for client = $CurrentClientId ")
 						solve("pos(entrancedoor,X,Y)","") //set resVar	
 						if( currentSolution.isSuccess() ) { CurMoveX = getCurSol("X").toString().toInt()  
 						 			   CurMoveY = getCurSol("Y").toString().toInt()  
@@ -95,25 +119,29 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						else
 						{}
 					}
-					 transition(edgeName="t02",targetState="deployCurrentclient",cond=whenReply("atcell"))
-					transition(edgeName="t03",targetState="unexpected",cond=whenReply("walkbreak"))
+					 transition(edgeName="t06",targetState="deployCurrentclient",cond=whenReply("atcell"))
+					transition(edgeName="t07",targetState="unexpected",cond=whenReply("walkbreak"))
 				}	 
 				state("deployCurrentclient") { //this:State
 					action { //it:State
 						solve("pos(teatable,$CurrentSelectedTable,X,Y)","") //set resVar	
 						if( currentSolution.isSuccess() ) { CurMoveX = getCurSol("X").toString().toInt()  
-						 			   CurMoveY = getCurSol("Y").toString().toInt() - 1  //cell near the se
+						 			   CurMoveY = getCurSol("Y").toString().toInt() - 1  //cell upon the table
 						request("movetoCell", "movetoCell($CurMoveX,$CurMoveY)" ,"waiterwalker" )  
 						}
 						else
 						{}
 					}
-					 transition(edgeName="t04",targetState="clientdeployed",cond=whenReply("atcell"))
-					transition(edgeName="t05",targetState="unexpected",cond=whenReply("walkbreak"))
+					 transition(edgeName="t08",targetState="clientdeployed",cond=whenReply("atcell"))
+					transition(edgeName="t09",targetState="unexpected",cond=whenReply("walkbreak"))
 				}	 
 				state("clientdeployed") { //this:State
 					action { //it:State
-						println("client $CurrentClientId deployed to ($CurMoveX, $CurMoveY)")
+						 val Msg = "DEPLOYED client $CurrentClientId to table$CurrentSelectedTable at ($CurMoveX, $CurMoveY)" 
+						updateResourceRep( Msg  
+						)
+						println("waiter | $Msg")
+						 readLine()  
 					}
 					 transition( edgeName="goto",targetState="listening", cond=doswitch() )
 				}	 
