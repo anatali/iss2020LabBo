@@ -157,7 +157,14 @@ LabISS-lectures site</a></font>
 
 <h1>Introduction</h1>
 We want to manage a tea-room that offers a number <tt>N (N=2)</tt> of <em>teatable</em> situated at fixed position in the central area
-of the room. Each <em>teatable</em> can be in one of the following states:
+of the room. 
+
+<center><img src="./img/tearoom.png" alt="tearoom.png" width="75%" height="32%"/></center>
+
+
+
+
+Each <em>teatable</em> can be in one of the following states:
 
 <ul>
 <li><em>clean</em>:  without food residue and sanitized</li>
@@ -174,10 +181,22 @@ of the room. Each <em>teatable</em> can be in one of the following states:
  <li>deploys the client from the tearoom <em>entrancedoor</em>  to the selected table.</li>
 </ol>
 
-During its work, the <em>waiter</em> (represented by a ddr robot) could be in one of the following states (performing the corresponfing activity):
+<h2>Problem analysis (just to start ... )</h2>
+
+The map of the room is already available (see <a href="../tearoomexplored.txt" target="code">tearoomexplored.txt</a>).
+<br/><br/>
+Our application domain demands for a <m><ks>proper representation of knowledge about the world</ks></m>. 
+To this end, we could exploit
+a declarative style of programming based on 
+<a href="http://amsacta.unibo.it/5450/7/tuprolog-guide.pdf" target="web">(tu)<bc>Prolog</bc></a>
+(for a general introduction, see for example <a href="AnIntroductionToProlog.pdf" target="code">AnIntroductionToProlog.pdf</a>).
+
+<br/><br/>
+We note that during its work, also the <em>waiter</em> (represented by a ddr robot) could be in
+different 'logical' state, each related  to a corresponding activity:
 <ul>
 <li><em>athome</em>:  waits for someting to do</li>
-<li><em>movingto( cell(X,Y) )</em>:  move from  it current position to <tt>cell(X,Y)/tt></li>
+<li><em>movingto( cell(X,Y) )</em>:  move from  it current position to <tt>cell(X,Y)</tt></li>
 <li><em>cleaning( table(N) )</em>:  cleans the teatable number <tt>N</tt>.</li>
 </ul>
  
@@ -219,14 +238,15 @@ pos( teatable2,    4, 2 ).</pre>
 teatable( 1, available ).
 teatable( 2, available ).</pre>
 
+Other possible states: <tt>busy, free, dirty, clean</tt>
 <h4>Initial state of the waiter</h4>
 <pre>
 waiter( athome ).</pre>
+Other possible states: <tt>serving( CLIENTID ), movingto( cell(X,Y) ),  cleaning( table(N) )</tt>
 
-<h3>Rules</h3>
+<h3>State of the world</h3>
 <pre>
-roomstate(  waiter(S), stateOfTeatables(V)  ):-
-	 waiter(S), stateOfTeatables(V), servicedesk(D).</pre>
+roomstate( state( waiter(S), tables(V) )  ):- waiter(S), stateOfTeatables(V) .</pre>
 	 
 	 
 
@@ -238,14 +258,18 @@ roomstate(  waiter(S), stateOfTeatables(V)  ):-
 
 
 <h2>A model</h2>	
+Our application consists in moving the <em>waiter</em> according to the requirements and to properly represent
+the state of the resources. For example:
 
 	<center><table style="width:98%">
 	<tbody>	
 	<tr>
  	<td style="width:45%">
+	<h3>The 'mind'</h3>
 <a href="../src/waiter.qak" target="code">waiter.qak</a> 
 	</td>
 	<td>
+	<h3>The 'body'</h3>
 <a href="../src/waiterwalker.qak" target="code">waiterwalker.qak</a> 	
 	</td>
 	</tr>
