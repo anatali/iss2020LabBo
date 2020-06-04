@@ -11,17 +11,23 @@ object configurator{
 	@JvmStatic public var pageTemplate		= "robotGuiSocket"
 
 //MQTT broker	
-	@JvmStatic var mqtthostAddr    	= "broker.hivemq.com"
+//	@JvmStatic var mqtthostAddr    	= "broker.hivemq.com"
+	@JvmStatic var mqtthostAddr    	= "localhost"
 	@JvmStatic var mqttport    		= "1883"
 //
 	@JvmStatic var stepsize			= "350" 
 	
 //Basicrobot application
-	@JvmStatic var hostAddr   	    = "localhost";  //"192.168.1.5";		
-	@JvmStatic var port    			= "8020";
-	@JvmStatic var qakdest	     	= "basicrobot";
-	@JvmStatic var ctxqadest 		= "ctxbasicrobot";
+//	@JvmStatic var hostAddr   	    = "localhost";  //"192.168.1.5";		
+//	@JvmStatic var port    			= "8020";
+//	@JvmStatic var qakdest	     	= "basicrobot";
+//	@JvmStatic var ctxqadest 		= "ctxbasicrobot";
 	
+//Domains application
+	@JvmStatic var hostAddr   	    = "192.168.1.22";  //"192.168.1.5";		
+	@JvmStatic var port    			= "8060";
+	@JvmStatic var qakdest	     	= "waiter";
+	@JvmStatic var ctxqadest 		= "ctxdomains";
 	
 	@JvmStatic	//to be used by Java
 	fun configure(){

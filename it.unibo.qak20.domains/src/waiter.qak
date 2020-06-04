@@ -1,11 +1,12 @@
 System   domains
-mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
-Event    walkerstarted   : walkerstarted(X)
+mqttBroker "localhost" : 1883 eventTopic "unibo/polar" 	//mqtt.eclipse.org
+Event    walkerstarted   : walkerstarted(X)	
 
 //---------- Walker---------------
 Request  movetoCell : movetoCell(X,Y)
 Reply    atcell     : atcell(X,Y)
 Reply	 walkbreak  : walkbreak(X,Y) 
+Dispatch rest       : rest(V)
 
 
 //---------- Tearoom ---------------
@@ -16,11 +17,11 @@ Reply   roomstate    : roomstate(Answer)
 Request enterrequest : enterrequest(ID)
 Reply   enteranswer  : enteranswer(V)
 
-Context ctxtearoom   ip [host="localhost" port=8060]   
+Context ctxdomains  ip [host="localhost" port=8060]   
 
-CodedQActor waiterwalker context ctxtearoom className "it.unibo.waiterwalker.Waiterwalker"
+CodedQActor waiterwalker context ctxdomains className "it.unibo.waiterwalker.Waiterwalker"
  
-QActor waiter context ctxtearoom{
+QActor waiter context ctxdomains{
 [# var CurrentClientId        	= 0
    var CurrentSelectedTable   	= 0
    var CurMoveX  			  	= 0
@@ -34,7 +35,9 @@ QActor waiter context ctxtearoom{
 		solve( consult("tearoomkb.pl")	 )
   		
  		run itunibo.planner.plannerUtil.loadRoomMap( inmapname ) 		
- 		run itunibo.planner.plannerUtil.showCurrentRobotState()				 
+ 		run itunibo.planner.plannerUtil.showCurrentRobotState()		
+ 		
+ 		updateResource [# "waiter athome" #]		 
  	}	 
   	Transition t0 whenEvent walkerstarted -> someQuery //controlTrip    
  	
@@ -60,29 +63,36 @@ QActor waiter context ctxtearoom{
 	Goto listening
 	
 	State listening{
-		[# 
+		[#  //RESET all variables
 			CurrentClientId        	= 0
 			CurrentSelectedTable   	= 0
 			CurMoveX  			  	= 0
-			CurMoveY  				= 0			
+			CurMoveY  				= 0		
+			var CurX                = itunibo.planner.plannerUtil.getPosX()
+			var CurY                = itunibo.planner.plannerUtil.getPosY()	
+			var Msg                 = "waiter listening at ($CurX,$CurY)"
 		#]
+ 		updateResource [# Msg #]
+ 		println( Msg)
 	}
   	Transition t0  
-  			whenTime 5000 -> gotoHome
+  			whenTime 5000 -> checkrest 		 
   			whenRequest enterrequest -> handleEnterrequest
   
-	State gotoHome{
+    
+	State checkrest  {
+		[# var Msg = "waiter moving to rest" #]
 		if [# ! itunibo.planner.plannerUtil.atHome() #] {
+			updateResource [# Msg #]
  			request waiterwalker -m movetoCell : movetoCell (0,0)
- 		}else{
- 			println("waiter | waiting at home ...  ") 
- 		}
+  		} 
+		else{ forward waiter -m rest : rest(0)  }
 	}
-	Transition t0 whenTime 100     ->  listening
-				  whenReply atcell ->  listening
+	Transition t0 whenMsg rest 		  ->  listening
+				  whenReply atcell    ->  listening
 				  whenReply walkbreak -> unexpected
 	
-	
+ 	
 	State handleEnterrequest{
  		printCurrentMessage
  			onMsg( enterrequest : enterrequest(CID) ){
@@ -101,6 +111,7 @@ QActor waiter context ctxtearoom{
  	Goto listening if [# CurrentClientId == 0 #] else gotoEntrance
  	
  	State gotoEntrance{
+ 		updateResource [# "going to entrace for client $CurrentClientId" #]
  		println("waiter | going to entracedoor for client = $CurrentClientId ")	
  		solve( pos( entrancedoor, X,Y ) )
   		ifSolved { 	//defensive
@@ -114,6 +125,7 @@ QActor waiter context ctxtearoom{
  				  whenReply walkbreak -> unexpected
  	
  	State deployCurrentclient{
+ 		updateResource [# "waiter at entrace, depolying client $CurrentClientId to table$CurrentSelectedTable " #]
  		//1) move to entrancedoor 2) move to the CurrentSelectedTable
  		solve( pos( teatable, $CurrentSelectedTable, X, Y ) )
  		ifSolved { 	//defensive
@@ -131,8 +143,9 @@ QActor waiter context ctxtearoom{
 		updateResource [# Msg #]
 		println("waiter | $Msg")	
  		[# readLine() #] 
+ 		//delay 2000
 	}
- 	Goto listening
+  	Goto listening
 
 	 			  
     State endOfJob{
@@ -141,15 +154,16 @@ QActor waiter context ctxtearoom{
     }   
     
  	State unexpected{
- 		println("There is something wrong ...")
+ 		println("Sorry, there is something wrong ...")
 		printCurrentMessage
 	}
 }
 
 
-QActor clientsimulator context ctxtearoom{
+QActor clientsimulator context ctxdomains{
 	[# var ClientId = 1 #]
-	State s0 initial {			
+	State s0 initial {		
+		delay 2000	
 	}
 	Goto dorequest
 	

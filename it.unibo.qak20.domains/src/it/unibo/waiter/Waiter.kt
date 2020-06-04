@@ -29,6 +29,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						solve("consult('tearoomkb.pl')","") //set resVar	
 						itunibo.planner.plannerUtil.loadRoomMap( inmapname  )
 						itunibo.planner.plannerUtil.showCurrentRobotState(  )
+						updateResourceRep( "waiter athome"  
+						)
 					}
 					 transition(edgeName="t00",targetState="someQuery",cond=whenEvent("walkerstarted"))
 				}	 
@@ -59,29 +61,36 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("listening") { //this:State
 					action { //it:State
-						 
+						  //RESET all variables
 									CurrentClientId        	= 0
 									CurrentSelectedTable   	= 0
 									CurMoveX  			  	= 0
-									CurMoveY  				= 0			
+									CurMoveY  				= 0		
+									var CurX                = itunibo.planner.plannerUtil.getPosX()
+									var CurY                = itunibo.planner.plannerUtil.getPosY()	
+									var Msg                 = "waiter listening at ($CurX,$CurY)"
+						updateResourceRep( Msg  
+						)
+						println(Msg)
 						stateTimer = TimerActor("timer_listening", 
 							scope, context!!, "local_tout_waiter_listening", 5000.toLong() )
 					}
-					 transition(edgeName="t01",targetState="gotoHome",cond=whenTimeout("local_tout_waiter_listening"))   
+					 transition(edgeName="t01",targetState="checkrest",cond=whenTimeout("local_tout_waiter_listening"))   
 					transition(edgeName="t02",targetState="handleEnterrequest",cond=whenRequest("enterrequest"))
 				}	 
-				state("gotoHome") { //this:State
+				state("checkrest") { //this:State
 					action { //it:State
+						 var Msg = "waiter moving to rest"  
 						if(  ! itunibo.planner.plannerUtil.atHome()  
-						 ){request("movetoCell", "movetoCell(0,0)" ,"waiterwalker" )  
+						 ){updateResourceRep( Msg  
+						)
+						request("movetoCell", "movetoCell(0,0)" ,"waiterwalker" )  
 						}
 						else
-						 {println("waiter | waiting at home ...  ")
+						 {forward("rest", "rest(0)" ,"waiter" ) 
 						 }
-						stateTimer = TimerActor("timer_gotoHome", 
-							scope, context!!, "local_tout_waiter_gotoHome", 100.toLong() )
 					}
-					 transition(edgeName="t03",targetState="listening",cond=whenTimeout("local_tout_waiter_gotoHome"))   
+					 transition(edgeName="t03",targetState="listening",cond=whenDispatch("rest"))
 					transition(edgeName="t04",targetState="listening",cond=whenReply("atcell"))
 					transition(edgeName="t05",targetState="unexpected",cond=whenReply("walkbreak"))
 				}	 
@@ -110,6 +119,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("gotoEntrance") { //this:State
 					action { //it:State
+						updateResourceRep( "going to entrace for client $CurrentClientId"  
+						)
 						println("waiter | going to entracedoor for client = $CurrentClientId ")
 						solve("pos(entrancedoor,X,Y)","") //set resVar	
 						if( currentSolution.isSuccess() ) { CurMoveX = getCurSol("X").toString().toInt()  
@@ -124,6 +135,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("deployCurrentclient") { //this:State
 					action { //it:State
+						updateResourceRep( "waiter at entrace, depolying client $CurrentClientId to table$CurrentSelectedTable "  
+						)
 						solve("pos(teatable,$CurrentSelectedTable,X,Y)","") //set resVar	
 						if( currentSolution.isSuccess() ) { CurMoveX = getCurSol("X").toString().toInt()  
 						 			   CurMoveY = getCurSol("Y").toString().toInt() - 1  //cell upon the table
@@ -153,7 +166,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("unexpected") { //this:State
 					action { //it:State
-						println("There is something wrong ...")
+						println("Sorry, there is something wrong ...")
 						println("$name in ${currentState.stateName} | $currentMsg")
 					}
 				}	 

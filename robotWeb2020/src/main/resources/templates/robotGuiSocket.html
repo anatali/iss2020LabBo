@@ -11,15 +11,17 @@
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/app.js"></script>
     
-    <script>connect()</script>
-    
+     
     <script>
     function myIp() {
       var ip = location.host;
+      //alert(ip);
       document.getElementById("myIp").innerHTML = ip;
       document.getElementById("raspIp").innerHTML = "192.168.1.5";
     }
   </script>
+ 
+    <script>connect()</script>
     
     
 </head>
@@ -93,8 +95,8 @@
 	</div>
 
 	<script type="text/javascript">
-		 var url = "192.168.1.5:8090" //window.location.host;
-	     var len = url.length;
+		 var url = "192.168.1.5:8090" //window.location.host;   //TO BE CHANGED: FOR WEB CAM
+ 	     var len = url.length;
 	     var n   = url.indexOf(":");
 	     var j   = url.substring(n+1,len);
 	     //var ip  = url.replace(j,'8899');	 
@@ -125,21 +127,81 @@
     </div>
     -->
     
- 	<div id="ipaddr" align="left">
- 	<p>
- 	I am the WebGui of a front-end server that works on <span id="myIp"></span>.<br/>
- 	I am connected to the server via <tt>socket.io</tt>.<br/>
- 	My requests are handled by the <tt>RobotController.java</tt> that is connected via CoAP with  
- 	a robot-resource working on a RaspberryPI (ip=<span id="raspIp"></span>).<br/>
- 	The Rasp is in its turn connected with a (virtual) robot-device working on ip="192.168.1.22" 	
- 	</p>
- 	
- 	Please activate the basicrobot (port <tt>8020</tt>) or some other robot ... 
+ <h1>About myself</h1>
+ <p>
+ 	I am the WebGui of a front-end server for an application that should be already running.
+ </p><p>	
+  	For example, you could activate the <tt>basicrobot</tt> (port <tt>8020</tt>) or some other application,
+  	like that in  project    <i>it.unibo.qak20.domains</i>.
  	<!-- <tt>bash /home/pi/nat/basicrobotInit.sh</tt> in <tt>nat</tt> --> 
  	</div>
  	
  	<center><img src="robotWebTuesday26.png" alt="robotWebTuesday26.png" width="80%" ></center><br/> 
+ 
+ 
+ 	<div id="ipaddr" align="left">
+ 	<p>
+ 	My server works on <span id="myIp"></span> and  I'm connected to it via <tt>socket.io</tt>.<br/>
+ 		The Rasp could be in its turn connected with a (virtual) robot-device working on the PC. 	
+ 	
+	</p><p>
+	
+	
+ <h2>Application-related configuration</h2>
+ 	My configuration in file <b><tt>pageConfig.json</tt></b>  the <tt>basicrobot</tt> is:
+ 	<pre>
+ {"page":"robotGuiSocket", "host":"192.168.1.22", "port":"8020", 
+   "qakdest":"basicrobot", "ctxqadest":"ctxbasicrobot", "stepsize":"350"} </pre>
+or, for the project    <i>it.unibo.qak20.domains</i>:
+ <pre>{"page":"robotGuiSocket", "host":"192.168.1.22", "port":"8060", 
+   "qakdest":"waiter", "ctxqadest":"ctxdomains", "stepsize":"350"} </pre>
+ 	</p><p>
+
+ <h2>My work</h2>	
+ 	My requests are handled by the <tt>RobotController.java</tt> that is connected via CoAP with  
+ 	the application-resource working on the PC or on a RaspberryPI (ip=<span id="raspIp"></span>).
+	</p><p>
+	I'm able to show in 'real time' the current state of the working application in the <tt>Resource State</tt> area 
+	since the server sets (thanks to <i>Eugenio Cerulo</i>):
+	<pre>@Autowired
+    	<b>SimpMessagingTemplate</b> simpMessagingTemplate;</pre>
+	
+	</p><p>
+	When the main page is loaded, the <tt>RobotController</tt> calls following operation, 
+	in order to 'observe' the application resource by means of CoAP and update the web-page via <tt>socket.io</tt>:	
+<pre>private void peparePageUpdating() {
+  connQakSupport.getClient().observe(new CoapHandler() {
+    @Override
+    public void onLoad(CoapResponse response) {
+      <b>simpMessagingTemplate.convertAndSend</b>(WebSocketConfig.topicForClient, 
+        new ResourceRep("" + HtmlUtils.htmlEscape(response.getResponseText()) ));
+    }
+    @Override
+    public void onError() { System.out.println("RobotController --> CoapClient error!"); }
+  });
+}</pre>
+</p>
+ <h2>The CoAP configuration</h2>	
+ 
+ <p>My server performs the connection via CoAP with the application when the <tt>RobotController</tt> is created,
+ by looking at the information stored in the file <tt>connQak/configurator.kt</tt>
+ <pre>//Basicrobot application
+@JvmStatic var hostAddr    = "localhost";  //"192.168.1.5";		
+@JvmStatic var port        = "8020";
+@JvmStatic var qakdest     = "basicrobot";
+@JvmStatic var ctxqadest   = "ctxbasicrobot";</pre>
+  	</p>
+ 	
+  	<p>
+ 	More details are reported in: 
+ 	<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/robotWeb2020/userdocs/RobotWebonSpring.html" target="lab">
+ 	RobotWeb | A user-interface based on SpringBoot for robot-control</a>
+ 	</p>
+ 	
     
 </div>
+
+
+
 </body>
 </html>

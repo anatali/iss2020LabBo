@@ -9,17 +9,19 @@ import org.eclipse.californium.core.CoapResponse
 
 class connQakCoap( )  {
 
-lateinit var client   : CoapClient
+ var client   : CoapClient = CoapClient(  )
 	
 	 fun createConnection(  ){
- 			System.out.println("connQakCoap | createConnection hostIP=${configurator.hostAddr} port=${configurator.port}")
-			val url = "coap://${configurator.hostAddr}:${configurator.port}/${configurator.ctxqadest}/${configurator.qakdest}"
-			client = CoapClient( url )
+ 			val url = "coap://${configurator.hostAddr}:${configurator.port}/${configurator.ctxqadest}/${configurator.qakdest}"
+ 			System.out.println("connQakCoap | url=${url.toString()}")
+ 			//uriStr: coap://192.168.1.22:8060/ctxdomains/waiter
+			//client = CoapClient(  )
+		    client.uri = url.toString()
 			client.setTimeout( 1000L )
  			//initialCmd: to make console more reactive at the first user cmd
  		    val respGet  = client.get( ) //CoapResponse
 			if( respGet != null )
-				System.out.println("connQakCoap | createConnection doing  get | CODE=  ${respGet.code}")
+				System.out.println("connQakCoap | createConnection doing  get | CODE=  ${respGet.code} content=${respGet.getResponseText()}")
 			else
 				System.out.println("connQakCoap | url=  ${url} FAILURE")
 	}

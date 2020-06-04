@@ -20,6 +20,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						delay(2000) 
 					}
 					 transition( edgeName="goto",targetState="dorequest", cond=doswitch() )
 				}	 

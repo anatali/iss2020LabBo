@@ -10,18 +10,21 @@ import it.unibo.kactor.ApplMessage
 import java.util.Scanner
 import org.eclipse.californium.core.CoapHandler 
  
-object tearoomCoapObserver {
+object domainsCoapObserver {
 
     private val client = CoapClient()
 	
-	private val ipaddr      = "localhost:8050"		//5683 default
-	private val context     = "ctxtearoom"
- 	private val destactor   = "walker"
+	private val ipaddr      = "localhost:8060"		//5683 default
+	private val context     = "ctxdomains"
+ 	private val destactor   = "waiter"
+//	private val ipaddr      = "localhost:8020"		//5683 default
+//	private val context     = "ctxbasicrobot"
+// 	private val destactor   = "basicrobot"
  
 
 	fun init(){
        val uriStr = "coap://$ipaddr/$context/$destactor"
-	  println("tearoomCoapObserver | START uriStr: $uriStr")
+	   println("tearoomCoapObserver | START uriStr: $uriStr")
        client.uri = uriStr
        client.observe(object : CoapHandler {
             override fun onLoad(response: CoapResponse) {
@@ -37,7 +40,7 @@ object tearoomCoapObserver {
 
  
  fun main( ) {
-		tearoomCoapObserver.init()
+		domainsCoapObserver.init()
 		System.`in`.read()   //to avoid exit
  }
 

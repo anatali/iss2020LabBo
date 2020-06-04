@@ -21,17 +21,17 @@ Request step       : step( TIME )
 Reply   stepdone   : stepdone(V)  
 Reply   stepfail   : stepfail(DURATION, CAUSE)
 
-Context ctxtearoom_dummy        ip [host="localhost"      port=8050]     
+Context ctxdomains_dummy        ip [host="localhost"      port=8050]     
 Context ctxbasicrobot     ip [host="192.168.1.68"   port=8020]    
 
 ExternalQActor basicrobot    context ctxbasicrobot
  
-QActor waiterwalker context ctxtearoom_dummy{  
+QActor waiterwalker context ctxdomains_dummy{  
 [#
 	var XT = "0"
 	var YT = "0"
 	var CurrentPlannedMove = ""
-	var StepTime    	   = 360L
+	var StepTime    	   = 355L
 	val PauseTime          = 250L
 	val BackTime           = 2 * StepTime / 3
 	var obstacleFound      = false  

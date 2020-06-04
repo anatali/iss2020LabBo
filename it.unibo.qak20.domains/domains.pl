@@ -1,8 +1,8 @@
 %====================================================================================
 % domains description   
 %====================================================================================
-mqttBroker("mqtt.eclipse.org", "1883", "unibo/polar").
-context(ctxtearoom, "localhost",  "TCP", "8060").
- qactor( waiterwalker, ctxtearoom, "it.unibo.waiterwalker.Waiterwalker").
-  qactor( waiter, ctxtearoom, "it.unibo.waiter.Waiter").
-  qactor( clientsimulator, ctxtearoom, "it.unibo.clientsimulator.Clientsimulator").
+mqttBroker("localhost", "1883", "unibo/polar").
+context(ctxdomains, "localhost",  "TCP", "8060").
+ qactor( waiterwalker, ctxdomains, "it.unibo.waiterwalker.Waiterwalker").
+  qactor( waiter, ctxdomains, "it.unibo.waiter.Waiter").
+  qactor( clientsimulator, ctxdomains, "it.unibo.clientsimulator.Clientsimulator").
