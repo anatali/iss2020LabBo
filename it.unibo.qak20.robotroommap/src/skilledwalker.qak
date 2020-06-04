@@ -8,7 +8,7 @@
  * ================================================================================
  */ 
 System -trace skilledwalker
-mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar" 
+mqttBroker "localhost" : 1883 eventTopic "unibo/polar" 	//mqtt.eclipse.org
 Event    twstarted   : twstarted(X)
 
 Request  movetoCell : movetoCell(X,Y)
@@ -27,7 +27,7 @@ Context ctxskilledwalker         ip [host="localhost" port=8049]
  * it kones to be free, by using the trustingworker as a service
  */  
 
-CodedQActor  trustingwalker context ctxskilledwalker className "it.unibo.trustingwalker.Trustingwalker"
+CodedQActor trustingwalker context ctxskilledwalker className "it.unibo.trustingwalker.Trustingwalker"
 
 QActor skilledwalker context ctxskilledwalker{  
 [#

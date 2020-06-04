@@ -2,7 +2,7 @@
  * mappingwalker.qak 
  */    
 System  mappingwalker  
-mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar"  
+mqttBroker "localhost" : 1883 eventTopic "unibo/polar"  //mqtt.eclipse.org
 
 Dispatch start   : start(ARG)
 Dispatch stop    : stop(ARG)

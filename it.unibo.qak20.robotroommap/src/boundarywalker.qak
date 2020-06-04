@@ -2,7 +2,7 @@
  * Builds a map of the room by using the planner
  */    
 System boundarywalker
-mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/boundarywalker"
+mqttBroker "localhost" : 1883 eventTopic "unibo/boundarywalker"	//"mqtt.eclipse.org"
 
 Dispatch cmd       : cmd(MOVE)
  
@@ -11,13 +11,13 @@ Reply   stepdone   : stepdone(V)
 Reply   stepfail   : stepfail(DURATION, CAUSE)
   
 Context ctxboundarywalker    ip [host="localhost"      port=8068]                
-Context ctxbasicrobot         ip [host="192.168.1.68"   port=8020]    
+Context ctxbasicrobot        ip [host="192.168.1.22"   port=8020]    
 
 ExternalQActor basicrobot    context ctxbasicrobot
 
 QActor boundarywalker context ctxboundarywalker{         
 [#
-val mapname     = "tearoomBoundary"  		 
+val mapname     = "tearoomBoundaryxx"  		 
 var NumStep     = 0
  
 //REAL ROBOT

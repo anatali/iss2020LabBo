@@ -110,7 +110,7 @@ QActor resumablewalker context ctxresumablewalker{
  				  whenMsg doMove  -> execTheOldMove		//execTheOldMove if RESUME , discardOldMoveTodo if REPLAN 
 
   	State execTheOldMove{
-  		//printCurrentMessage
+  		//printCurrentMessage 
   		onMsg( doMove : doMove(M) ){ 			
    			delayVar StepTime //simulate some real movement ...
   			[# val move = payloadArg(0)

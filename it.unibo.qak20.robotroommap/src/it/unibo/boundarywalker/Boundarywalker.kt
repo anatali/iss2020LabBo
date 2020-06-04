@@ -17,7 +17,7 @@ class Boundarywalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-		val mapname     = "tearoomBoundary"  		 
+		val mapname     = "tearoomBoundaryxx"  		 
 		var NumStep     = 0
 		 
 		//REAL ROBOT
