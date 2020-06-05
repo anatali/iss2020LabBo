@@ -169,7 +169,7 @@ writes these data on the standard output.
 </ul>
 
 The library <k>radarPojo.jar</k> (from the project <i>it.unibo.java.radar</i>) provides an object-utility
-(<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.java.radar/src/radarPojo/radarSupport.java" target="code">radarSupport.java</a>) to create a radar-like-GUI and to show values on that GUI. It could be useful in building the <em>radarGuiservice</em>.
+(<a href="../resources/radarPojo/radarSupport.java" target="code">radarSupport.java</a>) to create a radar-like-GUI and to show values on that GUI. It could be useful in building the <em>radarGuiservice</em>.
 <br/>
 
  
@@ -181,8 +181,7 @@ Thus, there are two main problems to solve:
 <ol>
 <li>Find a way to transmit data from the <em>robot-sonar</em> to the <em>radarGui</em>.</li>
 <li>Build a new radar component (the <em>radarGuiservice</em> indeed) able to receive sonar-data and to display them by using the available 
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.java.radar/src/radarPojo/radarSupport.java" target="code">
-radarSupport.java</a></li>
+<a href="../resources/radarPojo/radarSupport.java" target="code">radarSupport.java</a></li>
 </ol>
 
 The picture below shows our initial situation:
@@ -248,7 +247,7 @@ that includes also some possible refactoring of the code.
 
 <h3 id="bottomCoap">Interaction based on a CoAP-Resource</h3>
 According to 
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.coapintro/userDocs/LabCoAP.html" target="lab">
+<a href="../../it.unibo.coapintro/userDocs/LabCoAP.html" target="lab">
 LabCoAP | Introduction to CoAP</a>, let us introduce first of all a CoAP resource :
 <br/><br/>
 <table style="width:98%">
@@ -413,9 +412,9 @@ in order to update the CoAP resource.
 The <em>radarGuiservice</em> is now an observer of the CoAP resource that runs on a PC.
 <br/><br/>
 The CoAP resource can run both on the Raspberry and on the PC.
-<br/><br/>
-See <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.raspIntro2020/userDocs/LabRobotRadar_2020.html" target="lab">
-LabRobotRadar_2020 | A robot-radar system</a> 
+<!--
+See <a href="../..//it.unibo.raspIntro2020/userDocs/LabRobotRadar_2020.html" target="lab">LabRobotRadar_2020 | A robot-radar system</a> 
+-->
 </td>
 </tr>
 </tbody>
@@ -608,6 +607,8 @@ by defining the  method <k>actorBody</k> ao to implement the behavior of a <tt>F
 <li><a href="../../it.unibo.qakactor/src/main/kotlin/MsgUtil.kt" target="code">MsgUtil.kt</a>.</li>
 </ol>
 
+<!--
+OLD: done in Cesena a.a 2019/2020 but already known in Bologna
 <h3>ActorBasic</h3>
 
  <table style="width:100%">
@@ -690,37 +691,9 @@ See <a href="../resources/actors/RadarGui.kt" target="code">RadarGui.kt</a>
 To provide actors with <k>message-based</k> behavior rather than <k>message-driven</k> behavior, we introduce the class
 <a href="../../it.unibo.qakactor/src/main/kotlin/ActorBasicFsm.kt" target="code">ActorBasicFsm.kt</a> whose behavior
 s summarized in the following figure:
-<!--
-that allows an application designer to structure the code of a component as a
-<a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="web">Finite State Machine</a> (<bc>FSM</bc>) based on the following
-concepts:
 
-<ol>
-<li>A fsm-actor can be described as a 5-tuple <ks>(States, Inputs, Outputs, Transitions, InitialState)</ks>:
+
  
-<ul>
-<li><em>States</em>: Set of possible states (called state space)</li>
-<li><em>Inputs</em>: Set of possible input elements (called <tt>input alphabet</tt>; in our case <i>messages</i>)</li>
-<li><em>Outputs</em>: Set of possible output elements (called <tt>output alphabet</tt>; in our case <i>actions</i> ) </li>
-<li><em>InitialState</em>: The initial state</li>
-<li><em>Transition</em>: A <tt>Transition</tt> defines the new state and output given the current state and input.
-It is often expressed by two functions:
-<pre>
-nextState:      States x Inputs -> States
-output:         States x Inputs -> Outputs
-</pre>
-</li>
-</ul>
- 
-
-</li>
-<li>A fsm-actor is a <bc>Moore FSM</bc>, that generates output while it is in a particular state (output depends on state only).
-Thus, when the fsm-actor is in state, it first executes a sequence of <bc>terminating Actions</bc> and then  checks 
-for the possibility to 'fire' a transition among the set of the active transitions related to that state. </li>
-</ol>
-
-The logic of the infrastructural layer is summarized in the following figure:
--->
 <br/><br/>
 <center><table style="width:98%">
 <tbody>	
@@ -741,9 +714,7 @@ This behavior is better described in
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.qakintro2020/userDocs/ActorBasicFsm.html" target="web">
 LabQak | ActorBasicFsm</a>. The implementation is based on a
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.kotlin.dsl/userDocs/LabDsl.html" target="web">Kotlin internal DSL</a>
-<!-- (see <a href="#impl">About implementation</a>)
-in <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2019Lab/blob/master/it.unibo.qakactor/src/main/kotlin/ActorBasicFsm.kt" target="code">
-it.unibo.qakactor.ActorBasicFsm.kt</a>. -->
+ 
 </div>
 </m> 
  </td>
@@ -770,48 +741,7 @@ or <em>ActorBasicFsm</em>) that work into a set of (different) computational nod
 <a href="../../it.unibo.qakactor/src/main/kotlin/QakContext.kt" target="code">QakContext.kt</a>.
 <br/><br/>
 ... TO BE COMPLETED ...
-<!--
-The description of the system configuration must be wriiten in Prolog syntax in a file. For example:
-<br/><br/>
-
-<center><table style="width:98%">
-<tbody>	
-
-<tr>
-<td style="width:50%">
  
-<h5>Description of a distributed ButtonLed system</h5>
-<pre>
-context(ctxButton,"localhost", "TCP", 8010).
-context(ctxLeds1, "localhost", "TCP", 8020).
-context(ctxLeds2, "localhost", "TCP", 8030).
-
-qactor( button,  ctxButton, "it.unibo.bls19d.chain.ButtonGuiActork").
-qactor( control, ctxButton, "it.unibo.bls19d.chain.ControlActor").
-
-qactor( led1, ctxLeds1, "it.unibo.bls19d.qak.LedActork" ).
-qactor( led2, ctxLeds1, "it.unibo.bls19d.qak.LedActork" ).
-qactor( led3, ctxLeds1, "it.unibo.bls19d.qak.LedActork" ).
-
-qactor( led4, ctxLeds2, "it.unibo.bls19d.qak.LedActork" ).
-qactor( led5, ctxLeds2, "it.unibo.bls19d.qak.LedActork" ).
-
-</pre>
-
-
-</td>
-<td><h5>Meaning of the description</h5>
-<ol>
-<li>The system is composed of three computational nodes.</li>
-<li>The <tt>control</tt> works in the same context of the <tt>button</tt>. </li>
-<li>The <tt>leds</tt> are spread on two different nodes.</li>
-</ol>
-</td>
-</tr>
-
-</tbody>	
-</table></center>
--->
 
 <h1>A model-based approach</h1> 
 The <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.qakintro2020/userDocs/LabQakIntro2020.html" target="web">
@@ -1068,61 +998,7 @@ LabRadarUsage | Using the RadarGUI service</a>
 <h2>2) Using CoAP resources</h2>
  <br/><br/>
 ... TO BE COMPLETED ...
-<!--
-A ddr robot  equipped with a <tt>HC-SR04</tt> sonar device on its front can be considered as an autonomous agent, able to produce sonar data
-that can be consumed by some other (remote) agent.<br/>
-In this work, our consumer will be a device able to show to data on a <tt>GUI</tt>, like the 'radar' made available (as a plain object) by the project
-<i>it.unibo.java.radar</i>.
-
-<center><img src="./img/robotRadar.png" alt="robotRadar" width="50%"  /></center>
  
-<h2 id="problemrr">The interaction sonar-radar</h2>
-
-The project <i>it.unibo.java.radar</i> deploys the library <tt>radarPojo.jar</tt>  that provides an object utility to create
-a radar-GUI and to show values on that GUI:
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020Lab/blob/master/it.unibo.java.radar/src/radarPojo/radarSupport.java" target="code">
-radarSupport.java</a>.
-<br/><br/>
-
-
-
-
-The right part of the picture is a possible step towards a more high-level way of reasoning, based on a custom set
-of communication-pattern names (dispatch, request, event). The intent id to capture (or better to express) the <k>logic</k> of the
-interaction between the robot and the radar, rather than the particular low-level technology that makes such an interaction possible.
-<br/><br/>
-
-<table style="width:98%">
-<tbody>	
-<tr>
-<td style="width:50%" ><img src="./img/robotAsDataSource.png" alt="robotAsDataSource" width="100%"  /></td>
-<td> <img src="./img/robotAsDataSourceConceptual.png" alt="robotAsDataSourceConceptual" width="100%"  /></td>
-</tr>
-</tbody>
-</table>
-<br/>
-
-
-
-
-<h3>Producers of sonar data</h3>
-<a href="../src/kotlincode/sonarOnPcSimulate.kt" target="code">sonarOnPcSimulate.kt</a>: provides a simulator
-of sonar data that might be useful during software development in absence of a RaspberryPi. <br/>
-<m>
-This class implements a process that:
-<ol>
-<li>generates a sonar value <tt>V</tt> by reading an input value from the user-console;</li>
-<li>creates an event <tt>EV</tt> as an instance of <tt>ApplMessage</tt>. For example:
-<pre>
-msg(sonar,event,sonaronpcsimulated,none,sonar(2,57),2)
-</pre>
-<li>updates the CoAP resource
- <a href="../src/javacode/ResourceSonar.java" target="code">ResourceSonar.java</a>
- using the operation <tt>updateTheResource(String msg)</tt> defined in
- <a href="../src/javacode/CoapSupport.java" target="code">CoapSupport.java</a>
- </li>
-</ol>
-</m>
 -->
 
 <br/><br/>

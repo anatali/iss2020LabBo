@@ -595,14 +595,29 @@ Verso la costruzione di front-end basati su Web:
  <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webspring.intro/userDocs/LabSpringIntro.html" target="web">  
 LabSpringIntro | Introduction to the usage of Spring Boot</a> 
 <br/>
+Esperimenti di comando del robot virtuale con  interazione human-to-machine a machine-to-machine (via CoAP
+si veda  <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.coapintro/userDocs/LabCoAP.html" target="web">  
+LabCoAP | Introduction to CoAP</a>)<br/>
+Oltre le architetture a layer:
  <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webspring.intro/userDocs/LabArchitectures.html" target="web">  
-LabArchitectures | From MVC to Hexagonal architectures</a><br/>
+LabArchitectures | From MVC to Hexagonal architectures</a>. Il domain model come 'core' per la business logic del sistema.<br/>
 Un nuovo problema: costruzione della mappa di una stanza e degli oggetti fissi presenti in essa.
 </td>
 </tr>
 
 <tr><td><m>21/05/2020 (15-17)</m></td><td>Lab2</td> 
 <td>
+Il passaggio dal robot virtual al robot fisico: un problema di configurazione.
+Discussione sulla opportunitò di attivare anche il front-end server su RaspberryPi.<br/>
+Costruziione di un componenete/servizio riusabile
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html" target="web"> 
+Qak20Basicrobot | The basicrobot using QAkactors </a> 
+<br/>
+Lavoro da svolgere: portare il basicrobot 'logico' su RaspberryPi e muovere il virtual robot su PC usando la WebGui sviluppata.<br/>
+
+
+ 
+
  </td>
 </tr>
 
@@ -613,31 +628,40 @@ Un nuovo problema: costruzione della mappa di una stanza e degli oggetti fissi p
 <tr><td><em>Week 14</em></td><td></td><td></td></tr>    
     
 <tr><td><m>26/05/2020 (15-18)</m></td><td>Lab2</td> 
-Sperimentazione di un sistema di comando per un basic robot 
-(<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html" target="web">  
-Qak20Basicrobot | The basicrobot using QAkactors</a>)
-basato su un server Web definito con SpringBoot
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webspring.intro/userDocs/RobotWebonSpring.html" target="web"> 
-RobotWeb  | A user-interface based on SpringBoot for robot-control</a> 
+
 <br/>
 
 <td>
-<pre>
- robotWeb2020/userdocs/RobotWebonSpring.html
+
+Sperimentazione di un sistema di comando per un basic robot 
+(<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html" target="web">  
+Qak20Basicrobot | The basicrobot using QAkactors</a>) basato su un server Web definito con SpringBoot
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webspring.intro/userDocs/RobotWebonSpring.html" target="web"> 
+RobotWeb  | A user-interface based on SpringBoot for robot-control</a> 
+ <br/>
  
-</pre> 
+
+ Compilazione del questionario opinioni degli studenti
 </td>
 </tr>
 
 <tr><td><m>28/05/2020 (15-17)</m></td><td>Lab2</td> 
 <td>
+Dagli attuatori ai sensori: un visualizzatore di punti su uno schermo radar:
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak.radar2020/userDocs/LabRadarGui.html" target="web"> 
+LabRadarGui | Radar GUI as a service (from BottomUp to TopDown)</a>.<br/>
+Utilizzo del visualizzatore radar per osservare i dati emessi dal sonar a bordo del basicrobot in forma di eventi-qak <tt>polar:polar(D,A)</tt>.
+Opportunità di installazione di un broker MQTT locale.
+<br/>Costruzione di attori per la percezione di eventi emessi da sensori.
+
+<!--
 <pre>
 1) it.unibo.qak20.robotroommap\userdocs\roomexplore.txt
 2) web page per roomexplore
 3) it.unibo.qak20.basicrobot\src\basicrobot.qak  con MQTT ed emissione di polar:polar(D,A)
 4) it.unibo.qak.radar2020\src\radargui.qak
 5) it.unibo.radarusage\src\radarusage.qak
-</pre>
+</pre>-->
  </td>
 </tr>
 
@@ -654,15 +678,22 @@ Festività
 
 <tr><td><m>04/06/2020 (15-17)</m></td><td>Lab2</td> 
 <td>
+Il constributo di Eugenio Cerulo all'aggiornamento delle pagine web con il meccansimo <tt>SimpMessagingTemplate</tt> di Spring.</br>
+Opportunità di introdurre una utility per la costruione e gestione di piani
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/userDocs/LabPlanner.html" target="web"> 
 LabPlanner | Exploiting Planning Tools</a> <br/>
+Primi esperimenti per muovere un robot mediante la esecuzione di piani 'mentali', senza attuazione fisica:
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.robotroommap/userdocs/LabRobotPlanned.html" target="web"> 
 LabRobotPlanned | Moving a robot with plans</a> <br/>
+Verso applicazioni domain-centered: muovere un robot virtuale all'interno di una tea-room virtuale come premessa alla applicazione finale.
 <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.domains/userDocs/LabDomanins.html" target="web"> 
 LabDomains: a tea-room</a> 
-
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/TemaFinaleBo20.html" target="lab">TemaFinaleBo20.html</a>
-
+<br/><br/>
+Definizione del final task:
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/TFBO20ISS.pdf" target="lab">
+TFBO20ISS.pdf</a><br/><br/>
+Definizione di un perido di riferimento per il ricevimento al giovedi, ore 15.
+Definizione di un perido di riferimento per il ricevimento al giovedi, ore 15.
  </td>
 </tr>
 
