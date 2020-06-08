@@ -9,7 +9,7 @@ logs
 log4jInfo.log
 
 #node
-nodeCode/*/node_modules/
+resources/node_modules/
 *.lck
 package-lock.json
 

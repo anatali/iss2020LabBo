@@ -1,0 +1,13 @@
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "coap": "^0.23.1",
+    "node-coap-client": "^1.0.2",
+    "socket.io": "^2.2.0"
+  }
+}
