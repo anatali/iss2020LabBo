@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ 
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+	font-size: 110%;
+};
+
+P{
+    font-family: Tahoma;
+    font-size: 110%;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #99ffcc;
+    font-size: 100%;
+	width: 750px;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 20px;
+}   
+div.body.p{
+    font-size: 150%;
+} 
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  font-size: 100%;
+} 
+
+
+        
+</style>
+    
+<head>
+   
+<title>Microservices with Docker</title></head>
+    
+<body>
+<div id="body">
+<h1>Deploy Microservices Using Docker<font size="5"></font> </h1>
+Following Chapter 4 of Hands-On Microservices with Spring Boot and Spring Cloud: Build and deploy Java microservices using Spring Cloud, Istio, and Kubernetes by Magnus Larsson
+<h2>Deploying a Single Microservice</h2>
+<ol>
+<li>Create some microservices and build them as &quot;fat&quot; JARs as seen in the previous chapter<br></li>
+<li>Install <a href="https://docs.docker.com/docker-for-windows/install/">Docker  Desktop for Windows</a> <b>Note:</b> on windows Home and some older version of Windows Pro/enterprise you get the following error when installing Docker Desktop:<pre>Docker Desktop requires Windows 10 Pro or Enterprise version 15063 to run.</pre>
+In this case, you must install <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">Docker Toolbox</a>, which relies on VirtualBox instead of Hyper-V<br>
+<m><hr>Docker  Toolbox will install VirtualBox if not already present in your system and will create a virtual machine named <k>default</k>. The resources of the docker containers (e.g. Memory, Number of available  CPUs, ...) will depend on the settings of this virtual machine. To change the settings, enter the virtual machine (preferably when no Docker container is running!) and enter <k>sudo shutdown -h now</k>, then right click on the virtual machine in the VirtualBox interface to access the settings panel.<hr></m>
+</li>
+<li>
+Create a file named <k>Dockerfile</k> in each project root, with the following content:
+<pre>FROM openjdk:12.0.2
+EXPOSE 8080
+ADD ./build/libs/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]</pre>
+</li>
+<li>
+Change the <k>application.yml</k> configuration file in each project's resource folder by adding the following <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-multi-profile-yaml">Spring Profile</a> configuration:
+<pre>---
+spring.profiles: docker
+server.port: 8080</pre>
+</li>
+<li>Build a Docker image for each project with the following command (in each project's root directory):
+<pre>docker build -t product-service .</pre>
+</li>
+<li>Use the following command to finally <b>run</b> the docker container:
+<pre>docker run --rm -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" product-service</pre>
+</li>
+<li>Test the service exposed via the Docker container. To do this, you need the IP of the Docker Host (the port seems to not be forwarded to Windows for some reason). You can get the IP with the following command:
+<pre>docker-machine ip default</pre>
+Then, you can test the service as done previously via <k>curl</k> or simply by writing the appropriate URL in your browser.
+</li>
+</ol>
+
+<h3>Running Containers in Detached Mode</h3>
+
+To avoid locking the terminal while running the containers, just use the following command to run containers in <k>detached mode</k> and give containers a name:
+<pre>docker run -d -p8080:8080 -e "SPRING_PROFILES_ACTIVE=docker" --name my-prd-srv product-service</pre>
+To get log messages from the named container:
+<pre>docker logs my-prd-srv -f</pre>
+Then finally stop and remove the container:
+<pre>docker rm -f my-prd-srv</pre>
+
+<h2>Running Multiple Microservices with Docker Compose<font size="5"></font> </h2>
+<ol>
+<li>
+Create a file name <k>docker-compose.yml</k> with the following content:
+<pre>
+version: '2.1'
+
+services:
+  product:
+    build: &lt;(Relative)Path-To-Dockerfile-Folder&gt;
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+  product-composite:
+    build: &lt;(Relative)Path-To-Dockerfile-Folder&gt;
+    mem_limit: 350m
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+</pre>
+</li>
+<li>
+The service names given in the file above (e.g. <k>product</k>) can be used as host names for referencing services exposed as Docker containers. For example,  
+in  the <k>application.yml</k> configuration file for the <k>product-composite</k> service, the the <k>docker</k> profile would look like that:</li>
+<pre>---
+spring.profiles: docker
+server.port: 8080
+app:
+  product-service:
+    host: product
+    port: 8080</pre>
+Where the <k>product</k> host name comes from the service name defined in the <k>docker-compose.yml</k> file.
+<li>
+After editing these files, rebuild each microservice with:
+<pre>gradlew build</pre>
+</li>
+<li>
+Now you can build the deployment by running this command <u>in the same directory</u> where you created the <k>docker-compose.yml</k> file:<pre>docker-compose build</pre>
+<m><hr><b>Note:</b>&nbsp;If the command exits with an error like <k>When using ADD with more than one source file, the destination must be a directory and end with a /</k>, it means that there are multiple JAR files in the <b>./build/libs/</b> &nbsp; folder of some service (maybe as a result of previous builds with different project names). Just delete the old file and it should work.<hr></m>
+</li>
+<li>
+Then you can run run the microservice landscape by using:
+<pre>docker-compose up -d</pre>
+</li>
+<li>
+To see the logs of the deployed services use:
+<pre>
+docker-compose logs -f</pre>
+</li>
+<li>
+Now you can test in the usual way the microservice landscape you just deployed. Please note that in the <k>docker-compose.yml</k> file, only one service is exposed so it can be reached via the IP of the Docker Host and therefore is the only one that can be tested when running on Docker, at least in this configuration.<br></li>
+<li>When done, you can stop all the services with:
+<pre>docker-compose down</pre></li>
+</ol>
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By Jean Claude Correale
+</div> 
+
+</body>
+</html>
+
+
+ 

@@ -1,0 +1,23 @@
+FROM openjdk:12.0.2
+EXPOSE 8020
+ADD ./build/distributions/*.tar /
+ADD ./*.pl /
+ADD ./*.json /
+# ADD ./*.pl it.unibo.qak20.basicrobot-1.0/bin/   #many file => dest must be a dir
+# ADD ./basicrobotConfig.json /
+CMD ["bash", "it.unibo.qak20.basicrobot-1.0/bin/it.unibo.qak20.basicrobot"]
+
+## gradle -b build_ctxBasicrobot.gradle distZip
+## docker build --rm -t basicrobotqak20 .
+## docker run -ti -p 8020:8020  basicrobotqak20
+## docker run --rm -p8080:8080 basicrobotqak20
+
+## Docker should be running a process in the foreground in your container and 
+## it will be spawned as PID 1 within the container's pid namespace
+## there are no other OS processes and daemons running inside the container 
+## (like systemd, cron, syslog, etc)
+
+## apt-get install iputils-ping -y
+## apt-get install net-tools -y
+## apt  install openssh-server  systemctl enable ssh  ssh  anatali@192.168.1.22
+## docker run -d --name redis --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro jrei/systemd-ubuntu:18.04

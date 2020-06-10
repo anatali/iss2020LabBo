@@ -31,13 +31,14 @@ object robotSupport{
 		val config = File("${configFileName}").readText(Charsets.UTF_8)
 		//println( "		--- robotSupport | config=$config" )
 		val jsonObject   = JSONObject( config )
+		val hostAddr     	= jsonObject.getString("host") 
 		robotKind        = jsonObject.getString("type") 
 		val robotPort    = jsonObject.getString("port") 
-		println( "		--- robotSupport | CREATED for $robotKind port=$robotPort" )
+		println( "		--- robotSupport | CREATED for $robotKind host=$hostAddr port=$robotPort" )
 
 		when( robotKind ){
 			"mockrobot"  ->  { robotMock.mockrobotSupport.create(  ) }
-			"virtual"    ->  { robotVirtual.virtualrobotSupport.create( owner, "localhost", robotPort) }
+			"virtual"    ->  { robotVirtual.virtualrobotSupport.create( owner, hostAddr, robotPort) }
 			"realmbot"   ->  { robotMbot.mbotSupport.create( owner, robotPort  ) //robotPort="/dev/ttyUSB0"   "COM6"
 				//create an actor named realsonar			
 			} 

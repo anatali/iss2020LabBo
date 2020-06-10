@@ -18,29 +18,39 @@ object configurator{
 	@JvmStatic var stepsize			= "350" 
 	
 //Basicrobot application
-//	@JvmStatic var hostAddr   	    = "localhost";  //"192.168.1.5";		
-//	@JvmStatic var port    			= "8020";
-//	@JvmStatic var qakdest	     	= "basicrobot";
-//	@JvmStatic var ctxqadest 		= "ctxbasicrobot";
+	@JvmStatic var hostAddr   	    = "localhost";  //"192.168.1.5";		
+	@JvmStatic var port    			= "8020";
+	@JvmStatic var qakdest	     	= "basicrobot";
+	@JvmStatic var ctxqadest 		= "ctxbasicrobot";
 	
 //Domains application
-	@JvmStatic var hostAddr   	    = "192.168.1.22";  //"192.168.1.5";		
-	@JvmStatic var port    			= "8060";
-	@JvmStatic var qakdest	     	= "waiter";
-	@JvmStatic var ctxqadest 		= "ctxdomains";
+//	@JvmStatic var hostAddr   	    = "192.168.1.22";  //"192.168.1.5";		
+//	@JvmStatic var port    			= "8060";
+//	@JvmStatic var qakdest	     	= "waiter";
+//	@JvmStatic var ctxqadest 		= "ctxdomains";
 	
 	@JvmStatic	//to be used by Java
 	fun configure(){
-		val configfile =   File("pageConfig.json")
-		val config     =   configfile.readText()	//charset: Charset = Charsets.UTF_8
-		//println( "		--- configurator | config=$config" )
-		val jsonObject	=  JSONObject( config )
-		pageTemplate 	=  jsonObject.getString("page") 
-		hostAddr    	= jsonObject.getString("host") 
-		port    		= jsonObject.getString("port")
-		qakdest         = jsonObject.getString("qakdest")
-		ctxqadest		= jsonObject.getString("ctxqadest")
-		stepsize		= jsonObject.getString("stepsize")
+		try{
+			val configfile =   File("pageConfig.json")
+			val config     =   configfile.readText()	//charset: Charset = Charsets.UTF_8
+			//println( "		--- configurator | config=$config" )
+			val jsonObject	=  JSONObject( config )			
+			pageTemplate 	=  jsonObject.getString("page") 
+			hostAddr    	=  jsonObject.getString("host") 
+			port    		=  jsonObject.getString("port")
+			qakdest         =  jsonObject.getString("qakdest")
+			ctxqadest		=  jsonObject.getString("ctxqadest")
+			stepsize		=  jsonObject.getString("stepsize")
+		}catch(e:Exception){
+			System.out.println( " &&& SORRY pageConfig.json NOT FOUND ")
+			pageTemplate 	=  "robotGuiSocket"  //jsonObject.getString("page") 
+			hostAddr    	=  "192.168.1.22"    //jsonObject.getString("host") 
+			port    		= "8020"             //jsonObject.getString("port")
+			qakdest         = "basicrobot"       //jsonObject.getString("qakdest")
+			ctxqadest		= "ctxbasicrobot"    //jsonObject.getString("ctxqadest")
+			stepsize		= "350"              //jsonObject.getString("stepsize")
+		}
 		
 		System.out.println( "		--- configurator | pageTemplate=$pageTemplate hostAddr=$hostAddr port=$port stepsize=$stepsize" )
 		

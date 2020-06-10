@@ -1,0 +1,693 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ 
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+top {
+	width: 100%;
+}
+
+
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #abe876;
+    color: #1632cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #E6E6E6;
+	border: 1.5px solid silver;
+	padding: 5px;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 700px;
+    font-size: 15px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px; 
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 120%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 110%;
+}
+h4 {
+    background-color: #C0F0E0;
+    font-size: 100%;
+	width: 100%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+	
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #ffffff;	
+    border: 1.5px solid #d5f2ed;
+    padding: 15px;
+    margin: 10px;
+	border-radius: 25px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+} 
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}     
+
+table, th, td {
+	border: 2px solid #d5f2ed;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+	
+}
+
+a {
+	text-decoration: none;
+	color: #9C90E7;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}
+
+
+        
+</style>
+    
+<head>
+   
+<title>IntroDocker</title></head>
+    
+<body>
+<div id="body">
+<h1>Introduction to Docker<font size="5"></font> </h1>
+<p>
+Docker is a software that offers a set of platform-as-a-service products for developing and deploying applications by packaging software in containers.
+The container becomes the unit for distributing and testing of applications. They are great for continuous integration and continuous delivery (<bc>CI/CD</bc>) workflows.
+</p><p>
+Containers are lightweight, portable, virtual environments that developers can share without risking inconsistencies in development. 
+Due to these useful features, many organizations have switched from using 
+<a href="https://phoenixnap.com/kb/containers-vs-vms" target="web">virtual machines to Docker containers</a>.
+</p><p>
+See <a href="https://docs.docker.com/get-started/overview/"  target="web">Docker overview</a>, 
+ <a href="https://docs.docker.com/"  target="web">Docker docs</a>.
+
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%">
+	<h4>Docker Engine</h4> is a client-server application
+	<center><img src="./img/dockerengine-components-flow.png" alt="dockerengine-components-flow.png" width="90%"  /></center> </td>
+ 	<td><h4>Docker architecture</h4>
+	<center><img src="./img/architecture.svg" alt="architecture.svg" width="90%"  /></td>
+</tr>
+</table>
+</center> 
+<h3>Basic concepts</h3>
+<ul>
+<li>Docker is written in <a href="https://en.wikipedia.org/wiki/Go_(programming_language)" target="web">Go</a> 
+and takes advantage of several features of the Linux kernel to deliver its functionality.</li>
+<li>The Docker daemon (<tt>dockerd</tt>) listens for Docker API requests and manages Docker objects.</li>
+<li>A <em>container</em> is a runnable instance of an image. When you run a container, Docker creates a set of <em>namespaces</em>
+(each provides a layer of isolation) for that container:
+	<ul>
+	<li><bc>pid</bc> namespace: Process isolation (PID: Process ID).</li>
+	<li><bc>net</bc> namespace: Managing network interfaces (NET: Networking)</li>
+	<li><bc>ipc</bc> namespace: Managing access to IPC resources (IPC: InterProcess Communication)</li>
+	<li><bc>mnt</bc> namespace: Managing filesystem mount points (MNT: Mount)</li>
+	<li><bc>uts</bc> namespace: Isolating kernel and version identifiers. (UTS: Unix Timesharing System)</li>
+	</ul>
+ </li>
+ <li>A <em>cgroup</em> (control group) limits an application to a specific set of resources.
+ Control groups allow Docker Engine to share available hardware resources to containers and optionally enforce limits and constraints. 
+ For example, you can limit the memory available to a specific container.
+ </li>
+<li>An <em>image</em> is a read-only template with instructions for creating a Docker container.
+Often, an image is based on another image, with some additional customization</li>
+<li>The Docker client (<tt>docker</tt>) is the primary way that many Docker users interact with Docker.</li>
+<li>A <em>Docker registry</em> stores Docker images. <a href="https://hub.docker.com/" target="web">Docker Hub</a> is a public registry. </li>
+<li>To build your own image, you create a <em>Dockerfile</em>. Each instruction creates a <em>layer</em> in the image. 
+When you change the Dockerfile and rebuild the image, only those layers which have changed are rebuilt. 
+This is part of what makes images so lightweight, small, and fast, when compared to other virtualization technologies.</li>
+<li><em>Services</em> allow you to scale containers across multiple Docker daemons, which all work together as a <bc>swarm</bc> with multiple managers and workers.</li>
+</ul>
+
+ 
+
+</p>
+
+<h2>Install on Windows10</h2>
+<ul>
+<li>On ThinkPad (Virtualization enabled) I'm using <a href="https://docs.docker.com/docker-for-windows/install/">Docker  Desktop for Windows</a>  
+described in <a href="https://docs.docker.com/docker-for-windows/" target="web">Docker for Windows</a></li>
+<li>On I'm using  <a href="https://docs.docker.com/toolbox/toolbox_install_windows/" target="web">Docker Toolbox on Windows</a> </li>
+</ul>
+
+ 
+<b>Note:</b> on windows Home and some older version of Windows Pro/enterprise you get the following error when installing Docker Desktop:
+<pre>Docker Desktop requires Windows 10 Pro or Enterprise version 15063 to run.</pre>
+In this case, you must install <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">Docker Toolbox</a>, 
+which relies on VirtualBox instead of Hyper-V<br>
+<m><hr>Docker  Toolbox will install VirtualBox if not already present in your system and will create a virtual machine named <k>default</k>. 
+The resources of the docker containers (e.g. Memory, Number of available  CPUs, ...) will depend on the settings of this virtual machine. 
+To change the settings, enter the virtual machine (preferably when no Docker container is running!) and enter <k>sudo shutdown -h now</k>, 
+then right click on the virtual machine in the VirtualBox interface to access the settings panel.<hr></m>
+
+<h2>Docker Image Searching</h2>
+
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%">Search an image on a Docker registry </td>
+ 	<td ><pre>docker search [search term] </pre></td>
+</tr>
+
+<tr>
+ 	<td> </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+
+</table>
+</center> 
+
+<h2>Docker Image Commands</h2>
+See also <a href="https://phoenixnap.com/kb/create-docker-images-with-dockerfile" target="web">How to Create Docker Image with Dockerfile</a>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%">Create an image from a Dockerfile </td>
+ 	<td ><pre>docker build [URL] </pre></td>
+</tr>
+
+<tr>
+ 	<td>builds an image from a Dockerfile in the current directory and tags the image </td>
+ 	<td ><pre>docker build -t </pre></td>
+</tr>
+
+<tr>
+ 	<td>Pull an image from a registry </td>
+ 	<td ><pre>docker pull [IMAGE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Push an image to a registry </td>
+ 	<td ><pre>docker push [IMAGE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Create an image from a tarball </td>
+ 	<td ><pre>docker import [URL/FILE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Create an image from a container </td>
+ 	<td ><pre>docker commit [CONTAINER] [NEW_IMAGE_NAME] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Remove an image </td>
+ 	<td ><pre>docker rmi [IMAGE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Load an image from a tar archive or stdin </td>
+ 	<td ><pre>docker load [TAR_FILE/STDIN_FILE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Save an image to a tar archive, streamed to STDOUT with all parent layers, tags, and versions </td>
+ 	<td ><pre>docker save [IMAGE] > [TAR_FILE] </pre></td>
+</tr>
+
+
+</table>
+</center> 
+
+<h2>Docker Commands for Container and Image Information</h2>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%">List running containers </td>
+ 	<td ><pre>docker ps </pre></td>
+</tr>
+
+<tr>
+ 	<td>lists both running containers and ones that have stopped </td>
+ 	<td ><pre>docker ps -a </pre></td>
+</tr>
+
+<tr>
+ 	<td>List the logs from a running container </td>
+ 	<td ><pre>docker logs [CONTAINER]  </pre></td>
+</tr>
+
+<tr>
+ 	<td>List low-level information on Docker objects </td>
+ 	<td ><pre>docker inspect [OBJECT_NAME/ID] </pre></td>
+</tr>
+
+<tr>
+ 	<td>List real-time events from a container</td>
+ 	<td ><pre>docker events [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Show port (or specific) mapping for a container </td>
+ 	<td ><pre>docker port [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Show running processes in a container </td>
+ 	<td ><pre>docker top [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Show live resource usage statistics of containers </td>
+ 	<td ><pre>docker stats [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Show changes to files (or directories) on a filesystem </td>
+ 	<td ><pre>docker diff [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>List all images that are locally stored with the docker engine </td>
+ 	<td ><pre>docker image ls </pre></td>
+</tr>
+
+<tr>
+ 	<td>Show the history of an image </td>
+ 	<td ><pre>docker history [IMAGE] </pre></td>
+</tr>
+
+</table>
+</center> 
+
+
+
+
+<h2>Docker Container Commands</h2>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%">Create a container (without starting it)</td>
+ 	<td ><pre>docker create [IMAGE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Rename an existing container</td>
+ 	<td ><pre>docker rename [CONTAINER_NAME] [NEW_CONTAINER_NAME] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Run a command in a new container </td>
+ 	<td ><pre>docker run [IMAGE] [COMMAND] 
+	
+docker run --rm [IMAGE]   <kc>//removes a container after it exits</kc>	
+docker run -td [IMAGE]    <kc>//starts a container and keeps it running</kc></pre></td>
+</tr>
+
+<tr>
+ 	<td>Starts a container, allocates a pseudo-TTY connected to the container's stdin, and creates an interactive bash shell in the container </td>
+ 	<td ><pre>docker run -it [IMAGE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Creates, starts, and runs a command inside the container. Once it executes the command, the container is removed </td>
+ 	<td ><pre>docker run -it-rm [IMAGE] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Starts a container in background </td>
+ 	<td ><pre>docker run -d [IMAGE] 
+docker exec -ti [CONTAINER] [CMD]</pre></td>
+</tr>
+
+<tr>
+ 	<td>Delete a container (if it is not running) </td>
+ 	<td ><pre>docker rm [CONTAINER] 
+docker rm -f [CONTAINER]  <kc>//remove even still running</kc></pre></td>
+</tr>
+
+<tr>
+ 	<td>Update the configuration of one or more containers </td>
+ 	<td ><pre>docker update [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Copy files/folders between a container and the local filesystem</td>
+ 	<td ><pre>docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH</pre></td>
+</tr>
+
+</table>
+</center> 
+
+<h2>Starting and Stopping Containers</h2>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%">Start a container </td>
+ 	<td ><pre>docker start [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Stop a running container </td>
+ 	<td ><pre>docker stop [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Stop a running container and start it up again </td>
+ 	<td ><pre>docker restart [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Pause processes in a running container </td>
+ 	<td ><pre>docker pause [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Unpause processes in a running container </td>
+ 	<td ><pre>docker unpause [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Block a container until others stop (after which it prints their exit codes) </td>
+ 	<td ><pre>docker wait [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Kill a container by sending a SIGKILL to a running container </td>
+ 	<td ><pre>docker kill [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Attach local standard input, output, and error streams to a running container </td>
+ 	<td ><pre>docker attach [CONTAINER] </pre></td>
+</tr>
+
+
+
+</table>
+</center> 
+
+<h2>Networks</h2>
+See also <a href="https://phoenixnap.com/kb/how-to-share-data-between-docker-containers" target="web">How to Share Data Between Docker Containers</a>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%">List networks </td>
+ 	<td ><pre>docker network ls </pre></td>
+</tr>
+
+
+<tr>
+ 	<td>Remove one or more networks </td>
+ 	<td ><pre>docker network rm [NETWORK] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Show information on one or more networks </td>
+ 	<td ><pre>docker network inspect [NETWORK] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Connects a container to a network </td>
+ 	<td ><pre>docker network connect [NETWORK] [CONTAINER] </pre></td>
+</tr>
+
+<tr>
+ 	<td>Disconnect a container from a network </td>
+ 	<td ><pre>docker network disconnect [NETWORK] [CONTAINER] </pre></td>
+</tr>
+
+</table>
+</center> 
+
+
+<h4>temp ...</h4>
+
+<pre>
+docker run -p 8484 -a stdin -a stdout -i -t --name natdocker node:nat /bin/bash
+
+  
+docker run -ti -p 1883:1883 -p 9001:9001 eclipse-mosquitto
+Run for MQTT + websocket:
+docker run -d -p 1883:1883 -p 9001:9001 --name=mosquitto sourceperl/mosquitto
+
+-------------------------------------------------
+docker pull eclipse-mosquitto
+docker run -it --name mosquitto -p 1883:1883 eclipse-mosquitto
+
+The -p 1883:1883 argument maps the docker container’s default MQTT socket 1883 the localhost (127.0.0.1) port 1883. 
+Alternatively, we could map that onto another localhost port if it clashed with a locally running 
+MQTT broker, e.g. -p 11883:1883.
+</pre>
+
+<h2>Example</h2>
+
+<h3>Spring-based front-end</h3>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:25%"><a href="../../robotweb2020/Dockerfile" target="code">robotweb2020/Dockerfile</a> </td>
+ 	<td ><pre>FROM <k>openjdk:12.0.2</k>		<kc>#creates a layer from the given image</kc>
+EXPOSE 8080
+ADD ./build/distributions/robotWeb2020-1.0.tar / 
+ADD ./build/distributions/robotWeb2020-boot-1.0.tar / 
+ADD ./*.json / 			<kc>#we could also copy it ...</kc>
+RUN ls robotWeb2020-1.0/bin
+RUN ls robotWeb2020-boot-1.0/bin
+CMD ["bash","robotWeb2020-boot-1.0/bin/robotWeb2020"]</pre>
+
+Note that:
+<ul>
+<li><bc>ENTRYPOINT</bc> configures a container that will run as an executable.</li>
+<li><bc>CMD</bc> sets default command and/or parameters, which can be overwritten from command line when docker container runs.</li>
+<!-- <li><bc>RUN</bc> executes command(s) in a new layer and creates a new image. E.g., it is often used for installing software packages.</li> -->
+</ul>
+
+</td>
+</tr>
+
+<tr>
+ 	<td>Add a 
+	<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-multi-profile-yaml">
+	Spring Profile</a> configuration in <a href="../../robotweb2020/src/main/resources/application.yml" target="code">application.yml</a> </td>
+ 	<td ><pre>---
+spring.profiles: docker
+server.port: 8080</pre></td>
+</tr>
+
+<tr>
+ 	<td>Create the image</td>
+ 	<td ><pre>docker build -t <ks>frontendqak20basicrobot</ks> . 	<kc>//NOTE THE DOT !!!</kc> </pre></td>
+</tr>
+
+<tr>
+ 	<td>Run the image</td>
+ 	<td >
+<pre>docker run <k>--name</k> brfe -p8080:8080 <ks>frontendqak20basicrobot</ks> <kc>//starts the web server</kc>
+
+docker run <k>-it</k> --name brfe -p8080:8080 <ks>frontendqak20basicrobot</ks> <k>/bin/bash</k> <kc>//starts the shell</kc>
+
+docker run --name brfe -p8080:8080 		 <kc>//<k>-e</k> sets an env variable</kc>
+       <k>-e</k> "SPRING_PROFILES_ACTIVE=docker" <ks>frontendqak20basicrobot</ks>  </pre></td>
+</tr>
+
+<tr>
+ 	<td>Copy the configuration file <a href="../../robotweb2020/pageConfig.json" target="code">robotweb2020/pageConfig.json</a> </td>
+ 	<td >Launch the shell and copy the configuration file:
+<pre>docker run <k>-it</k> --name brfe -p8080:8080 frontendqak20basicrobot <k>/bin/bash</k>
+	
+docker <k>cp</k> robotweb2020/pageConfig.json <k>brfe</k>:/pageConfig.json</pre></td>
+</tr>
+
+</table>
+</center> 
+
+
+<h3>Basicrobot</h3>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:25%"> </td>
+ 	<td ><pre>FROM openjdk:12.0.2
+EXPOSE 8020
+ADD ./build/distributions/*.tar /
+ADD ./*.pl /
+ADD ./basicrobotConfig.json /
+CMD ["bash", "/it.unibo.qak20.basicrobot/bin/it.unibo.qak20.basicrobot"]
+ </pre></td>
+</tr>
+
+<tr>
+ 	<td>Generate the image </td>
+ 	<td ><pre>docker build -t qak20basicrobot . </pre></td>
+</tr>
+
+<tr>
+ 	<td>Run overcoming CMD </td>
+ 	<td ><pre>docker run -it --name qak20br -p8020:8020 qak20basicrobot /bin/bash</pre></td>
+</tr>
+
+<tr>
+ 	<td>Copy from home to <tt>it.unibo.qak20.basicrobot-1.0/bin</tt></td>
+ 	<td >In project <i>it.unibo.qak20.basicrobot</i>:
+<pre>cd it.unibo.qak20.basicrobot-1.0/bin/
+cp ../../*.json ./		
+cp ../../*.pl ./
+</pre> </td>
+</tr> 
+
+<tr>
+ 	<td>Copy from PC to container   </td>
+ 	<td >In project <i>it.unibo.qak20.basicrobot</i>:
+<pre>docker cp basicrobotConfig.json  qak20br:/it.unibo.qak20.basicrobot-1.0/bin 
+docker cp basicrobot.pl qak20br:/it.unibo.qak20.basicrobot-1.0/bin
+docker cp sysRules.pl qak20br:/it.unibo.qak20.basicrobot-1.0/bin</pre> </td>
+</tr> 
+
+<tr>
+ 	<td>Activate</td>
+ 	<td > 
+<pre>bash it.unibo.qak20.basicrobot</pre> </td>
+</tr> 
+<tr>
+ 	<td>Activate after configuration </td>
+ 	<td ><pre>docker run --name qak20br -p8020:8020 qak20basicrobot </pre></td>
+</tr>
+
+
+</table>
+</center> 
+
+
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%"> </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td> </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+
+</table>
+</center> 
+
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN - DISI - Unibo
+</div> 
+
+</body>
+</html>
+
+
+ 

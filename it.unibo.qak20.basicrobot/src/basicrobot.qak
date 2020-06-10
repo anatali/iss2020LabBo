@@ -16,7 +16,7 @@
  */ 
   
 System -msglog basicrobot 
-mqttBroker "localhost" : 1883 eventTopic "unibo/polar"   
+//mqttBroker "localhost" : 1883 eventTopic "unibo/polar"   
 
 Dispatch cmd       	: cmd(MOVE)    
 Dispatch end       	: end(ARG)  
@@ -145,7 +145,7 @@ QActor basicrobot context ctxbasicrobot{
 	}  
 	   
 }
-
+/*
 QActor envsonarhandler context ctxbasicrobot{
  	State s0 initial { 	 
  		println("envsonarhandler | START")	 		
@@ -161,7 +161,7 @@ QActor envsonarhandler context ctxbasicrobot{
 	Goto s0  
 	
 }
-
+*/
 /* 
  * 
 //Just to test that the event is emiited ...

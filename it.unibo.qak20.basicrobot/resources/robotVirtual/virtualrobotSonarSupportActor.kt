@@ -69,7 +69,9 @@ companion object {
                               }
                         }
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        //e.printStackTrace()
+						println("startSensorObserver ERROR: ${e.message}")
+						break
                     }
                 }
             }

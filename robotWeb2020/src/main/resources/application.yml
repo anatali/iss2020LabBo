@@ -1,0 +1,35 @@
+api:
+  common:
+    version: 1.0.0
+    title: Sample API
+    description: Description of the API...
+    termsOfServiceUrl: MINE TERMS OF SERVICE URL
+    license: License
+    licenseUrl: MY LICENSE URL
+
+    contact:
+      name: Contact
+      url: My
+      email: me@mail.com
+
+  robot-control:
+
+    get-robot-state:
+      description: Provides a front-end server for the basicrobot
+  
+server.port: 7001
+
+app:
+  robot-control:
+    host: localhost
+    port: 7001
+ 
+logging:
+  level:
+    root: INFO
+ 
+---
+spring.profiles: docker
+server.port: 8080
+
+ 
