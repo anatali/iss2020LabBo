@@ -4,7 +4,8 @@
 version: "3.8"
 services:
   frontend:
-    build: ../robotweb2020       
+    #build: ../robotweb2020       
+    image:  frontendqak20basicrobot
     depends_on:
      - basicrobot
     ports:             #HOST:CONTAINER
@@ -12,7 +13,8 @@ services:
     environment:
        - "SPRING_PROFILES_ACTIVE=docker"    
   basicrobot:
-    build: ../it.unibo.qak20.basicrobot
+    #build: ../it.unibo.qak20.basicrobot
+    image:  qak20basicrobot
     ports:             #HOST:CONTAINER
      - "8020:8020/udp"
 

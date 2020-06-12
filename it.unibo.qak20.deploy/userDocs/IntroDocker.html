@@ -245,7 +245,9 @@ This is part of what makes images so lightweight, small, and fast, when compared
 
 </p>
 
-<h2>Install on Windows10</h2>
+<h2>Install</h2>
+
+<h3>On Windows10</h3>
 <ul>
 <li>On ThinkPad (Virtualization enabled) I'm using <a href="https://docs.docker.com/docker-for-windows/install/">Docker  Desktop for Windows</a>  
 described in <a href="https://docs.docker.com/docker-for-windows/" target="web">Docker for Windows</a></li>
@@ -261,6 +263,51 @@ which relies on VirtualBox instead of Hyper-V<br>
 The resources of the docker containers (e.g. Memory, Number of available  CPUs, ...) will depend on the settings of this virtual machine. 
 To change the settings, enter the virtual machine (preferably when no Docker container is running!) and enter <k>sudo shutdown -h now</k>, 
 then right click on the virtual machine in the VirtualBox interface to access the settings panel.<hr></m>
+
+<h3>On RaspberryPi</h3>
+Raspberry Pis use the <tt>ARM</tt> architecture, and as a result, won't be compatible with all containers out of the box. 
+Images will need to be built from an <bc>ARM</bc> base image. 
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:30%">Install <bc>Docker</bc></td>
+ 	<td ><pre>curl -sSL https://get.docker.com | sh </pre></td>
+</tr>
+
+<tr>
+ 	<td>Add permission to run Docker Commands </td>
+ 	<td ><pre>sudo usermod -aG docker pi </pre>
+	<k>reboot !!!</k></td>
+</tr>
+
+<tr>
+ 	<td>Test Docker installation </td>
+ 	<td ><pre>docker run hello-world </pre></td>
+</tr>
+
+<tr>
+ 	<td>Install proper dependencies </td>
+ 	<td ><pre>sudo apt-get install -y libffi-dev libssl-dev
+sudo apt-get install -y python3 python3-pip
+sudo apt-get remove python-configparser </pre></td>
+</tr>
+
+<tr>
+ 	<td>Install <bc>Docker Compose</bc> </td>
+ 	<td ><pre>sudo pip3 install docker-compose </pre></td>
+</tr>
+
+<tr>
+ 	<td> </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td> </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+</table>
+</center> 
 
 <h2>Docker Image Searching</h2>
 
@@ -389,6 +436,14 @@ or <a href="https://docs.docker.com/engine/reference/builder/" target="web">Dock
  	<td>Show the history of an image </td>
  	<td ><pre>docker history [IMAGE] </pre></td>
 </tr>
+
+
+<tr>
+ 	<td>Save-(copy)-restore an image </td>
+ 	<td ><pre>docker save qak20basicrobot:latest > qak20basicrobot.tar
+docker load < qak20basicrobot.tar</pre></td>
+</tr>
+
 
 </table>
 </center> 
