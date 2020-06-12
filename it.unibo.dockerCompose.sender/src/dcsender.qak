@@ -1,0 +1,34 @@
+System -trace -msglog dcsender
+//	"mqtt.eclipse.org:1883  mosquitto.org mqtt.fluux.io  broker.hivemq.com
+mqttBroker "mqtt.eclipse.org" : 1883 eventTopic "unibo/polar"  
+
+Dispatch cmd   : cmd(X)
+Dispatch start : start(X)
+
+Context ctxdcsender   ip [host="localhost" port=8039]
+Context ctxdcreceiver ip [host="127.0.0.1" port=8037]
+
+ExternalQActor dcreceiver context ctxdcreceiver
+
+QActor dcsender context ctxdcsender{
+	State s0 initial { 		
+		println("Please send me a start msg. In any case I'll start after 5 secs")
+	}
+	Transition t0 whenTime 5000 -> autostart
+				  whenMsg start -> work
+				  
+	State autostart{
+		forward dcsender -m start : start(auto)		
+	}
+ 	Transition t0 whenMsg start -> work
+ 		
+	State work{
+		println("dcsender sends")
+		forward  dcreceiver -m cmd : cmd(r)
+		delay 1000
+		println("dcsender sends")
+		forward  dcreceiver -m cmd : cmd(l)		
+	}
+	Transition t0 whenMsg start -> work
+	 
+}

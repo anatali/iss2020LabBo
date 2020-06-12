@@ -1,16 +1,18 @@
+## ------------------------------------------------------- 
+## Dockerfile for frontend  
+## ------------------------------------------------------- 
 FROM openjdk:12.0.2
 
 EXPOSE 8080
 
 ADD ./build/distributions/robotWeb2020-1.0.tar / 
 ADD ./build/distributions/robotWeb2020-boot-1.0.tar / 
-# ADD ./*.json /robotWeb2020-1.0/bin/
-ADD ./*.json /robotWeb2020-boot-1.0/bin/
-ADD ./*.json / 
-RUN ls robotWeb2020-1.0/bin
-RUN ls robotWeb2020-boot-1.0/bin
-# RUN ls robotWeb2020-1.0/lib
-CMD ["bash","robotWeb2020-boot-1.0/bin/robotWeb2020"]
+WORKDIR robotWeb2020-boot-1.0/bin
+COPY ./*.json ./
+RUN pwd
+RUN ls  
+CMD ["bash","robotWeb2020"]
+
 # ENTRYPOINT ["echo","docker exec -ti robotWeb2020-boot-1.0/bin/robotWeb2020 /bash"]
 
 ## docker build -t frontendqak20basicrobot .

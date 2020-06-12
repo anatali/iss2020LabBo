@@ -4,7 +4,7 @@ build.gradle
  
 USAGE:	 
   	gradlew build  eclipse		//to set the dependency on the library
-	gradlew build  distZip
+	gradlew build  distTar
 ================================================================================
 */
 plugins {

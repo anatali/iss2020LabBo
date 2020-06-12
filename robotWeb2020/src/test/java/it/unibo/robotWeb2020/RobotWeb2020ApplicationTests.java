@@ -1,4 +1,4 @@
-package it.unibo.robotWeb2020;
+package java.it.unibo.robotWeb2020;
 /*
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

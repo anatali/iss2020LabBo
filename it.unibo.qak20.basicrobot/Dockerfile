@@ -1,11 +1,13 @@
+## ------------------------------------------------------- 
+## Dockerfile for  basicrobot  
+## ------------------------------------------------------- 
 FROM openjdk:12.0.2
 EXPOSE 8020
 ADD ./build/distributions/*.tar /
-ADD ./*.pl /
-ADD ./*.json /
-# ADD ./*.pl it.unibo.qak20.basicrobot-1.0/bin/   #many file => dest must be a dir
-# ADD ./basicrobotConfig.json /
-CMD ["bash", "it.unibo.qak20.basicrobot-1.0/bin/it.unibo.qak20.basicrobot"]
+WORKDIR /it.unibo.qak20.basicrobot-1.0/bin
+COPY ./*.pl ./
+COPY ./*.json ./
+CMD ["bash", "it.unibo.qak20.basicrobot"]
 
 ## gradle -b build_ctxBasicrobot.gradle distZip
 ## docker build --rm -t basicrobotqak20 .

@@ -1,0 +1,21 @@
+## ------------------------------------------------------- 
+## docker-compose.yml for  basicrobot with front-end 
+## -------------------------------------------------------
+version: "3.8"
+services:
+  frontend:
+    build: ../robotweb2020       
+    depends_on:
+     - basicrobot
+    ports:             #HOST:CONTAINER
+     - "8080:8080"
+    environment:
+       - "SPRING_PROFILES_ACTIVE=docker"    
+  basicrobot:
+    build: ../it.unibo.qak20.basicrobot
+    ports:             #HOST:CONTAINER
+     - "8020:8020/udp"
+
+
+#docker-compose up --build -d 
+#docker-compose logs

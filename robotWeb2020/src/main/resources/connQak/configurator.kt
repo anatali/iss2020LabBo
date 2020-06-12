@@ -2,6 +2,7 @@ package connQak
 
 import org.json.JSONObject
 import java.io.File
+import java.net.InetAddress
 //import java.nio.charset.Charset
 //import org.apache.commons.io.Charsets
   
@@ -42,18 +43,22 @@ object configurator{
 			qakdest         =  jsonObject.getString("qakdest")
 			ctxqadest		=  jsonObject.getString("ctxqadest")
 			stepsize		=  jsonObject.getString("stepsize")
+			System.out.println("System IP Address : " + (InetAddress.getLocalHost().getHostAddress()).trim()); 
+			System.out.println( "		--- configurator | configfile path=${configfile.getPath()} pageTemplate=$pageTemplate hostAddr=$hostAddr port=$port stepsize=$stepsize" )
 		}catch(e:Exception){
 			System.out.println( " &&& SORRY pageConfig.json NOT FOUND ")
-			pageTemplate 	=  "robotGuiSocket"  //jsonObject.getString("page") 
-			hostAddr    	=  "192.168.1.22"    //jsonObject.getString("host") 
-			port    		= "8020"             //jsonObject.getString("port")
-			qakdest         = "basicrobot"       //jsonObject.getString("qakdest")
-			ctxqadest		= "ctxbasicrobot"    //jsonObject.getString("ctxqadest")
-			stepsize		= "350"              //jsonObject.getString("stepsize")
-		}
-		
-		System.out.println( "		--- configurator | pageTemplate=$pageTemplate hostAddr=$hostAddr port=$port stepsize=$stepsize" )
-		
+			pageTemplate 	=  "robotGuiSocket"   
+			hostAddr    	=  "localhost"        
+			port    		= "8020"              
+			qakdest         = "basicrobot"        
+			ctxqadest		= "ctxbasicrobot"     
+			stepsize		= "350"               
+			System.out.println( "		--- configurator | pageTemplate=$pageTemplate hostAddr=$hostAddr port=$port stepsize=$stepsize" )
 	}
+		
+		
+	}//configure
+	
+	
 }
 

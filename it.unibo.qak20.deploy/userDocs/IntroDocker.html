@@ -281,6 +281,8 @@ then right click on the virtual machine in the VirtualBox interface to access th
 
 <h2>Docker Image Commands</h2>
 See also <a href="https://phoenixnap.com/kb/create-docker-images-with-dockerfile" target="web">How to Create Docker Image with Dockerfile</a>
+or <a href="https://docs.docker.com/engine/reference/builder/" target="web">Dockerfile reference</a>.
+
  <center><table style="width:95%">
 <tr>
  	<td style="width:40%">Create an image from a Dockerfile </td>
@@ -615,7 +617,9 @@ docker <k>cp</k> robotweb2020/pageConfig.json <k>brfe</k>:/pageConfig.json</pre>
  <center><table style="width:95%">
 <tr>
  	<td style="width:25%"> </td>
- 	<td ><pre>FROM openjdk:12.0.2
+ 	<td >
+	
+<pre>FROM openjdk:12.0.2
 EXPOSE 8020
 ADD ./build/distributions/*.tar /
 ADD ./*.pl /
@@ -631,7 +635,10 @@ CMD ["bash", "/it.unibo.qak20.basicrobot/bin/it.unibo.qak20.basicrobot"]
 
 <tr>
  	<td>Run overcoming CMD </td>
- 	<td ><pre>docker run -it --name qak20br -p8020:8020 qak20basicrobot /bin/bash</pre></td>
+ 	<td ><pre>docker run -it --name qak20br -p8020:8020/tcp -p8020:8020/udp qak20basicrobot /bin/bash
+docker inspect --format '{{.NetworkSettings.IPAddress}}' qak20br   <kc>//'172.17.0.2'</kc> 
+	docker restart qak20br
+	docker exec -ti qak20br /bin/bash</pre></td>
 </tr>
 
 <tr>
@@ -664,6 +671,280 @@ docker cp sysRules.pl qak20br:/it.unibo.qak20.basicrobot-1.0/bin</pre> </td>
 
 </table>
 </center> 
+
+
+<h2><a href="https://docs.docker.com/compose/gettingstarted/" target="web">Docker Compose</a></h2>
+<a href="https://docs.docker.com/compose/gettingstarted/" target="web">Docker Compose</a> is a tool for defining and running multi-container Docker applications.
+Compose can be used in many different ways (see <a href="https://docs.docker.com/compose/#common-use-cases" target="web">Compose Common use cases</a>):
+<ul>
+<li>Development environments: The Compose file provides a way to document and configure all of the application’s service dependencies 
+(databases, queues, caches, web service APIs, etc). 
+Using the Compose command line tool you can create and start one or more containers for each dependency with a single command (<tt>docker-compose up</tt>).</li>
+<li>Automated testing environments: Automated end-to-end testing requires an environment in which to run tests. 
+Compose provides a convenient way to create and destroy isolated testing environments for your test suite.</li>
+<li>Single host deployments: You can use Compose to deploy to a remote Docker Engine. The Docker Engine may be a single instance provisioned with 
+<a href="https://docs.docker.com/machine/overview/" target="web">Docker Machine</a> or 
+an entire <a href="https://docs.docker.com/engine/swarm/" target="web">Docker Swarm</a> cluster.</li>
+</ul>
+<br/> 
+Almost every rule in a single <bc>docker-compose.yml</bc> configuration file replaces a specific Docker command.
+We can get dozens of configurations applied by Compose under the hood.
+
+ 
+
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%"> Services:<br/> refer to containers' configuration</td>
+ 	<td ><pre>services:
+  frontend:
+    build: <kc>/path/to/dockerfile/</kc>
+    image: robotWeb2020
+    ...
+  basicrobot:
+    build: <kc>/path/to/dockerfile/</kc>
+    image: basicrobot
+    ...
+ </pre>
+ Sometimes, the image we need for our service has already been published.<br/>
+ Here, we <em>build</em> an image from the source code by reading its Dockerfile.<br/>
+ The <em>image</em> name in conjunction with the build attribute, gives a name to the image once created, 
+ making it available to be used by other services:</td>
+</tr>
+
+<tr>
+ 	<td>Commands </td>
+ 	<td >create and start the containers, the networks, and the volumes defined in the configuration:
+	<pre>docker-compose up </pre>
+	start the services:
+<pre>docker-compose start</pre> 
+	stop - preserve containers, volumes, and networks, along with every modification made to them:
+<pre>docker-compose stop</pre>  
+destroy everything with only the exception of external volumes:
+<pre>docker-compose down</pre> </td>
+</tr>
+
+<tr>
+ 	<td>Environment Variables.<br/>
+There are different methods to provide those values to Compose:
+<ul>
+<li>.env file in the same directory</li>
+<li> .properties file</li>
+<li> set them in the OS before calling the command docker-compose up</li>
+<li></li>
+ 
+</ul>
+Priorty order:
+<ol>
+<li>Compose file</li>
+<li>Shell environment variables</li>
+<li>Environment file</li>
+<li>Dockerfile</li>
+<li>Variable not defined</li>
+</ol>
+
+
+
+
+
+
+	</td>
+ 	<td ><pre>services:
+  frontend:
+    build: <kc>/path/to/dockerfile/</kc>
+    image: robotWeb2020
+    <k>environment:</k>
+       USER: "${USER}"   <kc>#dynamic variable</kc>
+	</pre></td>
+</tr>
+
+
+<tr>
+ 	<td>Networks:<br/> define the communication rules between containers, and between a container and the host.<br/><br/>
+	A service can communicate with another service on the same network by simply referencing it by container name and port 
+	(for example <tt>network-qak202:8020</tt>), provided that we've made the port accessible through the <em>expose</em> keyword.<br/>
+	It would also work without exposing, when the expose directive is already in the image Dockerfile.	  
+	</td>
+ 	<td >Docker containers communicate between themselves in networks created, implicitly or through configuration, by Docker Compose.
+	<pre>services:
+  network-qak202:
+    image: ...
+    expose:
+      - "8020" 
+    ports:
+      - "8020:8020"
+	  </pre>
+Port <tt>8020</tt> will now be visible from the host.	<br/>
+Let us now make port <tt>3000</tt> of our two containers be available on ports <tt>8080</tt> and <tt>8081</tt> in the host.  
+ 
+	<pre>services:
+  network-qak202:
+    image: ...
+    ports:
+      - "8020:8020"
+  frontend:
+    build: <kc>/path/to/dockerfile/</kc>
+    image: robotWeb2020
+    ports:
+      - "8080:3000"
+   ...
+  basicrobot:
+    build: <kc>/path/to/dockerfile/</kc>
+    image: basicrobot
+    ports:
+      - "8081:3000"
+    ...
+	  </pre> 
+	  
+ This powerful mechanism allows us to run different containers exposing the same ports without collisions.	 
+	  </td>
+</tr>
+
+
+
+
+<tr>
+ 	<td>Dependencies:<br/>
+allow to create a dependency chain between our services, so that some services get loaded before (and unloaded after) other ones	</td>
+ 	<td ><pre>services:
+  frontend:
+    build: <kc>/path/to/dockerfile/</kc>
+    image: robotWeb2020
+    <k>depends_on</k>:
+      - basicrobot
+    ...
+  basicrobot:
+    build: <kc>/path/to/dockerfile/</kc>
+    image: basicrobot
+     ...	</pre>
+ Compose will not wait for the basicrobot service to finish loading before starting the frontend service: it will simply wait for it to start.	
+ For more advanced control, eee
+ <a href="https://docs.docker.com/compose/startup-order/" target="web">Control startup and shutdown order in Compose</a> 
+	 </td>
+</tr>
+
+
+
+<tr>
+ 	<td> </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td>Volume: <br/>a shared directory in the host, visible from some or all containers. 
+	There are three types of volumes: 
+	<ul>
+	<li>anonymous (used in older versions of Docker)</li>
+	<li>named</li>
+	<li>host</li>
+	</ul>
+Docker manages both anonymous and named volumes, automatically mounting them in self-generated directories in the host. <br/>
+Host volumes also allow us to specify an existing folder in the host.	
+	
+	</td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td>Virtual networks:<br/>
+	 define additional virtual networks to segregate our containers
+	</td>
+ 	<td ><pre>services:
+  network-example-service:
+    image: karthequian/helloworld:latest
+    networks: 
+      - my-shared-network
+    ...
+  another-service-in-the-same-network:
+    image: alpine:latest
+    networks: 
+      - my-shared-network
+    ...
+  another-service-in-its-own-network:
+    image: alpine:latest
+    networks: 
+      - my-private-network
+    ...
+networks:
+  my-shared-network: {}
+  my-private-network: {} </pre></td>
+</tr>
+<tr>
+ 	<td> </td>
+ 	<td ><pre>docker run --name dcs -p8039:8039/tcp -p8039:8039/udp dcsender
+docker run --name dcr -p8037:8037/tcp -p8037:8037/udp dcreceiver</pre></td>
+</tr>
+
+
+
+</table>
+</center> 
+
+<h3>Example: basicrobot with Spring-web frontend</h3>
+
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%"><h4>Basic robot</h4>
+<a href="../../it.unibo.qak20.basicrobot/Dockerfile" target="code">Dockerfile</a> for  basicrobot (project <tt>it.unibo.qak20.basicrobot</tt>):
+<pre>FROM openjdk:12.0.2
+EXPOSE 8020
+ADD ./build/distributions/*.tar /
+WORKDIR /it.unibo.qak20.basicrobot-1.0/bin
+COPY ./*.pl ./
+COPY ./*.json ./
+CMD ["bash", "it.unibo.qak20.basicrobot"]
+</pre>
+
+<pre>docker build --rm -t basicrobotqak20 .
+docker run  --name br  -p8020:8020/tcp  -p8020:8020/udp 
+                                        basicrobotqak20</pre>
+
+	</td>
+ 	<td><h4>Front end</h4> <a href="../../robotWeb2020/Dockerfile" target="code">Dockerfile</a> for  <tt>frontend</tt> (project <tt>robotWeb2020</tt>):
+<pre>FROM openjdk:12.0.2
+EXPOSE 8080
+ADD ./build/distributions/robotWeb2020-1.0.tar / 
+ADD ./build/distributions/robotWeb2020-boot-1.0.tar / 
+WORKDIR /robotWeb2020-boot-1.0/bin
+COPY ./*.json /.
+CMD ["bash","robotWeb2020"]</pre>
+
+<pre>docker build -t frontendqak20basicrobot .
+docker run  --name brfe  -p8080:8080  
+   -e "SPRING_PROFILES_ACTIVE=docker" frontendqak20basicrobot </pre>
+	</td>
+</tr>
+
+<tr>
+  	<td ><h4>Application</h4>
+	<a href="../../robotWeb2020/docker-compose.yml" target="code">docker-compose.yml</a>   for <tt basicrobot</tt with <tt>frontend</tt> (project <tt>robotWeb2020</tt>):
+<pre>## ------------------------------------------------------- 
+## docker-compose.yml for  basicrobot with front-end 
+## -------------------------------------------------------
+version: "3.8"
+services:
+  frontend:
+    build: ../robotweb2020       
+    depends_on:
+     - basicrobot
+    ports:             #HOST:CONTAINER
+     - "8080:8080"
+    environment:
+       - "SPRING_PROFILES_ACTIVE=docker"    
+  basicrobot:
+    build: ../it.unibo.qak20.basicrobot
+    ports:             #HOST:CONTAINER
+     - "8020:8020/udp"                             
+ </pre></td>
+	<td><h4>Application-related commands</h4>
+<pre>docker-compose up --build -d
+docker-compose logs
+--------------------------------
+docker-compose stop
+docker-compose start
+--------------------------------
+docker-compose down
+</pre>	</td>
+</tr>
 
 
  <center><table style="width:95%">

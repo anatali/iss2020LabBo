@@ -1,0 +1,12 @@
+## ------------------------------------------------------- 
+## docker-compose.yml for  sender/receiver appl
+## ------------------------------------------------------- 
+  receiver:
+    build: ../it.unibo.dockerCompose.receiver	## named: itunibodockercompose_receiver
+    #image: dcreceivercomposer
+  sender:
+    build: ../it.unibo.dockerCompose.sender		## named: itunibodockercompose_sender
+    #image: dcsendercomposer
+
+#docker-compose up -d
+#docker-compose logs
