@@ -19,28 +19,13 @@ class Dcsender ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("Please send me a start msg. In any case I'll start after 5 secs")
-						stateTimer = TimerActor("timer_s0", 
-							scope, context!!, "local_tout_dcsender_s0", 5000.toLong() )
 					}
-					 transition(edgeName="t00",targetState="autostart",cond=whenTimeout("local_tout_dcsender_s0"))   
-					transition(edgeName="t01",targetState="work",cond=whenDispatch("start"))
-				}	 
-				state("autostart") { //this:State
-					action { //it:State
-						forward("start", "start(auto)" ,"dcsender" ) 
-					}
-					 transition(edgeName="t02",targetState="work",cond=whenDispatch("start"))
+					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
-						println("dcsender sends")
 						forward("cmd", "cmd(r)" ,"dcreceiver" ) 
-						delay(1000) 
-						println("dcsender sends")
-						forward("cmd", "cmd(l)" ,"dcreceiver" ) 
 					}
-					 transition(edgeName="t03",targetState="work",cond=whenDispatch("start"))
 				}	 
 			}
 		}

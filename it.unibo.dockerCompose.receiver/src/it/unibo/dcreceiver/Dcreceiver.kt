@@ -26,6 +26,8 @@ class Dcreceiver ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("handleCmd") { //this:State
 					action { //it:State
 						println("$name in ${currentState.stateName} | $currentMsg")
+						updateResourceRep( "dcreceiver ${currentMsg}"  
+						)
 					}
 					 transition( edgeName="goto",targetState="s0", cond=doswitch() )
 				}	 

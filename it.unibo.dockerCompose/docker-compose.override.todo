@@ -6,19 +6,10 @@ services:
   receiver:
     #build: ../it.unibo.dockerCompose.receiver  ## named: itunibodockercompose_receiver
     image: dcreceivercomposer
-    #expose:
-    #  - "8037"
-    ports: 
-     - "8037:8037/udp"
-     - "8037:8037/tcp"
   sender:
-    # xxbuild: ../it.unibo.dockerCompose.sender   ## named: itunibodockercompose_sender
-    # xximage: dcsendercomposer
     image: consolenogui
     depends_on: 
        - receiver
-    links:
-       - receiver:reclk
 
 #docker-compose up -d
 #docker-compose logs
