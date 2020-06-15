@@ -1,0 +1,13 @@
+services:
+  frontend:
+    image:  frontendqak20basicrobot
+    depends_on:
+     - basicrobot
+    ports:              
+     - "8080:8080"
+    environment:
+       - "SPRING_PROFILES_ACTIVE=docker"    
+  basicrobot:
+      image:  qak20basicrobot
+    ports:              
+     - "8020:8020/udp"

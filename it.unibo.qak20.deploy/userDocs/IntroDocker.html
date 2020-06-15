@@ -583,6 +583,11 @@ See also <a href="https://phoenixnap.com/kb/how-to-share-data-between-docker-con
  	<td ><pre>docker network disconnect [NETWORK] [CONTAINER] </pre></td>
 </tr>
 
+<tr>
+ 	<td>Disconnect a container from a network </td>
+ 	<td ><pre>docker exec -ti [CONTAINER] /etc/hosts </pre></td>
+</tr>
+
 </table>
 </center> 
 
@@ -741,9 +746,76 @@ Compose provides a convenient way to create and destroy isolated testing environ
 <a href="https://docs.docker.com/machine/overview/" target="web">Docker Machine</a> or 
 an entire <a href="https://docs.docker.com/engine/swarm/" target="web">Docker Swarm</a> cluster.</li>
 </ul>
-<br/> 
-Almost every rule in a single <bc>docker-compose.yml</bc> configuration file replaces a specific Docker command.
+<h3>About docker-compose.yml</h3>
+A <em>docker-compose.yml</em> file specifies (see <a href="https://gabrieltanner.org/blog/docker-compose" target="web">The definitive Guide to Docker compose</a>) 
+a set of rules expressed in multiple layers that are split using tab stops or spaces. A .yaml specification usually includes:<br/><br/>
+<ul>
+<li>The version of the compose file</li>
+<li>The services which will be built</li>
+<li>All used volumes</li>
+<li>The networks which connect the different services</li>
+</ul>
+
+Docker Compose reads two files by default, <i>a docker-compose.yml</i> file, and an <i>optional docker-compose.override.yml</i> file.
+ The <em>docker-compose.override</em> file can be used (<bc>-f</bc> option to <tt>docker-compose up</tt>) to store overrides of the existing 
+ services or define new services.<br/>
+This allows you to change your application for different environments (e.g. staging, dev, and production) and helps you run admin tasks 
+or tests against your application.<br/>
+
+<br/><br/>
+Almost every rule in a single <em>docker-compose.yml</em> configuration file replaces a specific Docker command.
 We can get dozens of configurations applied by Compose under the hood.
+<br/><br/>
+
+  <center><table style="width:95%">
+<tr>
+ 	<td style="width:45%"><k>Services</k>: the services tag contains all the containers which are included in the Compose file and acts as their parent tag. </td>
+ 	<td ><pre>services:
+  frontend:
+    build: <kc>/path/to/dockerfile/</kc>
+     ...
+  basicrobot:
+    image: basicrobot
+    ...
+ </pre>
+ Sometimes, the image we need for our service has already been published.<br/>
+ Here, we <em>build</em> an image from the source code by reading its Dockerfile.<br/>
+ The <em>image</em> name in conjunction with the build attribute, gives a name to the image once created, 
+ making it available to be used by other services.</td>
+</tr>
+
+<tr>
+ 	<td><k>Environment variables</k>: bring configuration data into your applications. </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td><k>Commands</k>: are used to execute actions once the container is started and act as a replacement for the <ks>CMD</ks> action in your Dockerfile. </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td><k>Volumes</k>: used to share data between containers and the Host system. </td>
+ 	<td > <center><img src="./img/volumes.png" alt="volumes.png" width="80%"  /></center> <pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td><k>Networking</k>: define the communication rules between containers, and between containers and the host system. 
+	They can be configured to provide complete isolation for containers, which enables building applications that work together securely. </td>
+ 	<td ><pre> </pre></td>
+</tr>
+
+<tr>
+ 	<td><k>Links</k>:  define other names under which the container can be reached.</td>
+ 	<td >  <pre> </pre></td>
+</tr>
+
+
+
+
+</table>
+</center> 
+ 
 
  
 
@@ -763,7 +835,8 @@ We can get dozens of configurations applied by Compose under the hood.
  Sometimes, the image we need for our service has already been published.<br/>
  Here, we <em>build</em> an image from the source code by reading its Dockerfile.<br/>
  The <em>image</em> name in conjunction with the build attribute, gives a name to the image once created, 
- making it available to be used by other services:</td>
+ making it available to be used by other services.
+ </td>
 </tr>
 
 <tr>
@@ -782,10 +855,11 @@ destroy everything with only the exception of external volumes:
  	<td>Environment Variables.<br/>
 There are different methods to provide those values to Compose:
 <ul>
-<li>.env file in the same directory</li>
-<li> .properties file</li>
+<li>key-value pairs</li>
+<li><k>.env</k> file in the same directory</li>
+<li> <k>.properties</k> file</li>
 <li> set them in the OS before calling the command docker-compose up</li>
-<li></li>
+
  
 </ul>
 Priorty order:
@@ -798,7 +872,13 @@ Priorty order:
 </ol>
 
 
-
+<pre>
+docker run -d \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v /etc/localtime:/etc/localtime \
+    -e DISPLAY=unix$DISPLAY \
+    <yourcontainer>
+</pre>
 
 
 
@@ -993,6 +1073,7 @@ services:
 	<td><h4>Application-related commands</h4>
 <pre>docker-compose up --build -d
 docker-compose logs
+docker-compose ps
 --------------------------------
 docker-compose stop
 docker-compose start
