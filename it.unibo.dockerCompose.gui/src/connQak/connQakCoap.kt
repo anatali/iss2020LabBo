@@ -23,14 +23,14 @@ lateinit var client   : CoapClient
 	fun getcurrent( ){
  		    val respGet  = client.get( ) //CoapResponse
 			if( respGet != null )
-				println("connQakCoap | createConnection doing  get | CODE=  ${respGet.code} ${respGet.getResponseText()}")
+				println("connQakCoap | getcurrent doing  get | CODE=  ${respGet.code} ${respGet.getResponseText()}")
 			else
 				println("connQakCoap |  FAILURE"	)	
 	}
 	
 	override fun forward( msg: ApplMessage ){		
         val respPut = client.put(msg.toString(), MediaTypeRegistry.TEXT_PLAIN)
-			getcurrent( )
+//			getcurrent( )
         //println("connQakCoap | PUT forward ${d} RESPONSE CODE=  ${respPut.code}")		
 	}
 	

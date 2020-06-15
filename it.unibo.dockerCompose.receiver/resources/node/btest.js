@@ -1,14 +1,14 @@
-const readline        = require('../../../it.unibo.qak20.sensors/resources/node_modules/readline-sync');
+//const readline        = require('../../../it.unibo.qak20.sensors/resources/node_modules/readline-sync');
 const coap            = require("../../../it.unibo.qak20.sensors/resources/node_modules/node-coap-client").CoapClient; 
-var url               = require('url');
-var coapResourceAddr  = "coaps://192.168.1.22:8037/ctxdcreceiver/dcreceiver";
+//var url               = require('url');
+var coapResourceAddr  = "coap://192.168.1.175:8037/ctxdcreceiver/dcreceiver";
 
-var qurl = url.parse(coapResourceAddr, true);
-var q = url.format(qurl)
+//var qurl = url.parse(coapResourceAddr, true);
+//var q = url.format(qurl)
 //var q = new url( coapResourceAddr );
 
 
-console.log( "CREATED connection   " + q  ) 
+console.log( "CREATED connection   " + coapResourceAddr  ) 
 
 createCoapObserver = function( ){
 console.log("createCoapObserver "  );
@@ -60,4 +60,5 @@ const delay = (ms) => require("child_process")
     .execSync(`"${process.argv[0]}" -e setTimeout(function(){},${ms})`);
 
 coapGet()  
+createCoapObserver()
 //forwardMsg( "s" )  

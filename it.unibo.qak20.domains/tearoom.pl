@@ -1,5 +1,5 @@
 %====================================================================================
-% dcreceiver description   
+% tearoom description   
 %====================================================================================
-context(ctxdcreceiver, "localhost",  "TCP", "8037").
- qactor( dcreceiver, ctxdcreceiver, "it.unibo.dcreceiver.Dcreceiver").
+context(ctxtearoom, "localhost",  "TCP", "8060").
+ qactor( waiter, ctxtearoom, "it.unibo.waiter.Waiter").

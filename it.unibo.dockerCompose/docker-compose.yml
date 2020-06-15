@@ -1,11 +1,11 @@
 ## ------------------------------------------------------- 
 ## docker-compose.yml for  sender/receiver appl
 ## ------------------------------------------------------- 
-version: "3.8"
+version: "3.3"
 services:
   receiver:
-    #build: ../it.unibo.dockerCompose.receiver  ## named: itunibodockercompose_receiver
-    image: dcreceivercomposer
+    build: ../it.unibo.dockerCompose.receiver  ## named: itunibodockercompose_receiver
+    #image: dcreceivercomposer
     #expose:
     #  - "8037"
     ports: 
@@ -14,7 +14,8 @@ services:
   sender:
     # xxbuild: ../it.unibo.dockerCompose.sender   ## named: itunibodockercompose_sender
     # xximage: dcsendercomposer
-    image: consolenogui
+    build: ../it.unibo.dockerCompose.gui   ## named: itunibodockercompose_sender
+    #image: consolenogui
     depends_on: 
        - receiver
     links:

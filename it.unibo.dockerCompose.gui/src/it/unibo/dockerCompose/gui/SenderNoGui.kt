@@ -3,8 +3,9 @@ import connQak.connQakBase
 import connQak.ConnectionType
 import it.unibo.kactor.MsgUtil
 
+
 class SenderNoGui(val connType : ConnectionType=ConnectionType.TCP,
-				  val hostIP : String="192.168.1.22", val port : String="8037", val destName : String="dcreceiver"){
+				  val hostIP : String="192.168.1.175", val port : String="8037", val destName : String="dcreceiver"){
 	val connQakSupport : connQakBase  = connQakBase.create(connType, hostIP, port, destName ) 
 	
 	init{
