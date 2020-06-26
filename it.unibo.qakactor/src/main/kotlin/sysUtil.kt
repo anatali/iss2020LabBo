@@ -44,18 +44,18 @@ object sysUtil{
 	val connActive : MutableSet<IConnInteraction> = mutableSetOf<IConnInteraction>()    //Oct2019
 
 	
-	fun getMqttEventTopic() : String {
+@JvmStatic    	fun getMqttEventTopic() : String {
 		if(mqttBrokerEventTopic !== null ) return mqttBrokerEventTopic!!
 		else return "unibo/qak/events"
 	}
 
-	fun getPrologEngine() : Prolog = pengine
-	fun curThread() : String = "thread=${Thread.currentThread().name}"
+@JvmStatic    	fun getPrologEngine() : Prolog = pengine
+@JvmStatic    	fun curThread() : String = "thread=${Thread.currentThread().name}"
 
-	fun getContext( ctxName : String ) : QakContext?  { return ctxsMap.get(ctxName.toLowerCase())}
-	fun getActor( actorName : String ) : ActorBasic? { return ctxActorMap.get(actorName.toLowerCase())}
+@JvmStatic    	fun getContext( ctxName : String ) : QakContext?  { return ctxsMap.get(ctxName.toLowerCase())}
+@JvmStatic    	fun getActor( actorName : String ) : ActorBasic? { return ctxActorMap.get(actorName.toLowerCase())}
 
-	fun getActorContextName( actorName : String): String?{
+@JvmStatic    	fun getActorContextName( actorName : String): String?{
 		val ctxName = solve( "qactor($actorName,CTX,_)", "CTX" )
 		return ctxName
 	}
@@ -65,7 +65,7 @@ object sysUtil{
 		if( res == "success") println("$actorName already set in $ctxName")
 		else solve( "assertz( qactor($actorName,$ctxName,_) )", "" )
 	}
-	fun getActorContext ( actorName : String): QakContext?{
+@JvmStatic    	fun getActorContext ( actorName : String): QakContext?{
 		val ctxName = solve( "qactor($actorName,CTX,_)", "CTX" )
 		//println("               %%% sysUtil |  getActorContext ctxName=${ctxName} - ${ctxsMap.get( ctxName )}")
 		return ctxsMap.get( ctxName )

@@ -40,6 +40,14 @@ var count = 1;
             actor, "none", "$content", "${count++}")
     }
 	
+//@kotlinx.coroutines.ObsoleteCoroutinesApi
+//@kotlinx.coroutines.ExperimentalCoroutinesApi
+//@JvmStatic suspend fun sendAMsg( sender : String, msgId: String, msg: String, destActorName: String) {
+//		val a = sysUtil.getActor(destActorName)
+//        val dispatchMsg = buildDispatch(sender, msgId, msg, destActorName)
+//        //println("sendMsg $dispatchMsg")
+//        if( a != null ) a.actor.send( dispatchMsg )
+//    }
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @JvmStatic    suspend fun sendMsg( sender : String, msgId: String, msg: String, destActor: ActorBasic) {
