@@ -32,14 +32,14 @@ public class MachineInterfaceController {
     }
 
   String applicationModelRep="waiting";
-
-  @GetMapping("/") 		 
+ 
+ @GetMapping("/") 		 
   public String entry(Model model) {
 	  System.out.println("------------------- MachineInterfaceController homePage " + model  );
       model.addAttribute("arg", appName);
       return "gui";	//just a string, no more a view ...
   } 
-  
+   
   
   @GetMapping("/model")  
   public String applmodel(Model model) {
@@ -102,6 +102,6 @@ public class MachineInterfaceController {
         return new ResponseEntity<String>(
         		"MachineInterfaceController ERROR " + ex.getMessage(), responseHeaders, HttpStatus.CREATED);
     }
-
+ 
 }
 

@@ -911,13 +911,68 @@ It automatically publishes the authentication events if spring-security is in ex
 <table style="width:98%">
 <tbody>	
 <tr>
-<td style="width:40%" >
+<td style="width:30%" >
+To add the actuator to a Gradle based project, include the proper ‘Starter’ dependency:
 </td>
-<td>To add the actuator to a Gradle based project, add the following ‘Starter’ dependency:<pre>
+<td><pre>
 implementation 'org.springframework.boot:spring-boot-starter-actuator'
 </pre>
 </td>
 </tr>
+
+<tr>
+<td>An application that enables also security and JMX .
+</td>
+<td><pre>
+dependencies {
+ implementation 'org.springframework.boot:spring-boot-starter-web'
+ implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+ <k>implementation 'org.springframework.boot:spring-boot-starter-actuator'
+ implementation 'org.springframework.boot:spring-boot-starter-security'
+ compile 'org.springframework.integration:spring-integration-jmx'</k>
+	
+ developmentOnly 'org.springframework.boot:spring-boot-devtools'
+   testImplementation('org.springframework.boot:spring-boot-starter-test') {
+     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+   testImplementation 'org.springframework.security:spring-security-test'  
+}</pre>
+
+</td>
+</tr>
+
+<tr>
+<td>File <a href="../src/main/resources/application.properties" traget="code">application.properties</a>,
+ <a href="../src/main/resources/application.yml" traget="code">application.yml</a> (see 
+<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html" traget="web">JConsole</a>).
+
+<img src="./img/JMMConsole.png" alt="JMMConsole.png" width="100%"  />
+ 
+
+</td>
+<td><pre>
+management.security.enabled=false
+management.endpoint.health.show-details=ALWAYS
+management.endpoint.beans.enabled=true
+management.endpoint.autoconfig.enabled=true 
+management.endpoint.env.enabled=true
+management.endpoint.mappings.enabled=true
+management.endpoint.metrics.enabled=true
+management.endpoint.trace.enabled=true
+management.endpoint.dump.enabled=true
+management.endpoints.web.exposure.include=* 
+
+spring.jmx.enabled = true
+</pre>
+</td>
+</tr>
+
+<tr>
+<td>Using python to monitor the application
+</td>
+<td>
+</td>
+</tr>
+
  </tbody>
 </table>
 

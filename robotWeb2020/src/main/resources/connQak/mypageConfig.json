@@ -1,11 +1,12 @@
-{"page":"robotGuiSocket", "host":"192.168.1.22", "port":"8020", 
+{"page":"robotGuiPost", "host":"192.168.1.22", "port":"8020", 
+	"qakdest":"basicrobot", "ctxqadest":"ctxbasicrobot", "stepsize":"350"} 	
+
+{"comment":"OK","page":"robotGuiSocket", "host":"192.168.1.22", "port":"8020", 
 	"qakdest":"basicrobot", "ctxqadest":"ctxbasicrobot", "stepsize":"350"} 
 
 {"comment":"other","page":"robotGuiSocket", "host":"192.168.1.22", "port":"8060", 
 	"qakdest":"waiter", "ctxqadest":"ctxdomains", "stepsize":"350"} 
 
-{"comment":"other","page":"robotGuiSocket", "host":"192.168.1.22", "port":"8020", 
-	"qakdest":"basicrobot", "ctxqadest":"ctxbasicrobot", "stepsize":"350"} 	
 
 {"comment":"other","page":"robotGuiPostBoundary", "host":"192.168.1.22", "port":"8068", 
 	"qakdest":"roomboundaryexplorer", "ctxqadest":"ctxboundaryplanned", "stepsize":"350"} 
