@@ -18,9 +18,12 @@ CMD ["bash","robotWeb2020"]
 ## docker build -t frontendqak20basicrobot .
 ## docker run -it --name brfe  -p8080:8080  -e "SPRING_PROFILES_ACTIVE=docker" frontendqak20basicrobot 
 
-## docker run -it --name brfe  -p8080:8080   frontendqak20basicrobot  /bin/bash
+## docker run -it --name brfe  -p8080:8080   frontendqak20basicrobot  /bin/bash  ## MAGGIOR CONTROLLO
+## docker run -it --name brfe  -p7001:7001   frontendqak20basicrobot  /bin/bash  ## MAGGIOR CONTROLLO
+## cat pageConfig.json
+## bash robotWeb2020
 
-## docker run  --name brfe  -p8080:8080   frontendqak20basicrobot  
 
 
 ## docker cp C:\Didattica2018Work\iss2020LabBo\robotWeb2020\src\main\resources\connQak\mypageConfig.json brfe:/xxx.json
+## 
