@@ -5,7 +5,8 @@ version: "3.8"
 services:
   frontend:
     #build: ../robotweb2020       
-    image:  frontendqak20basicrobot
+    #image:  frontendqak20basicrobot
+    image:   springbootqak
     depends_on:
      - basicrobot
     ports:             #HOST:CONTAINER
@@ -14,9 +15,10 @@ services:
        - "SPRING_PROFILES_ACTIVE=docker"    
   basicrobot:
     #build: ../it.unibo.qak20.basicrobot
-    image:  qak20basicrobot
+    image:  basicrobotqak20
     ports:             #HOST:CONTAINER
      - "8020:8020/udp"
+     - "8020:8020/tcp"
 
 
 #docker-compose up --build -d 

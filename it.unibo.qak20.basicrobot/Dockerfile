@@ -1,6 +1,6 @@
-## ------------------------------------------------------- 
-## Dockerfile for  basicrobot  
-## ------------------------------------------------------- 
+## -------------------------------------------------------
+## Dockerfile for  basicrobot
+## -------------------------------------------------------
 FROM openjdk:12.0.2
 EXPOSE 8020
 ADD ./build/distributions/*.tar /
@@ -9,14 +9,18 @@ COPY ./*.pl ./
 COPY ./*.json ./
 CMD ["bash", "it.unibo.qak20.basicrobot"]
 
-## gradle -b build_ctxBasicrobot.gradle distZip
+## gradle -b build_ctxBasicrobot.gradle distTar
 ## docker build --rm -t basicrobotqak20 .
-## docker run -ti -p 8020:8020  basicrobotqak20
-## docker run --rm -p8080:8080 basicrobotqak20
+## docker run -it --name br20  -p8020:8020/tcp -p8020:8020/udp  basicrobotqak20  /bin/bash
+## docker run -ti -p8020:8020/tcp -p8020:8020/udp  br20
+## docker restart br20
+## docker exec -ti br20 /bin/bash
 
-## Docker should be running a process in the foreground in your container and 
+
+
+## Docker should be running a process in the foreground in your container and
 ## it will be spawned as PID 1 within the container's pid namespace
-## there are no other OS processes and daemons running inside the container 
+## there are no other OS processes and daemons running inside the container
 ## (like systemd, cron, syslog, etc)
 
 ## apt-get install iputils-ping -y
