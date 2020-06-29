@@ -48,7 +48,7 @@ companion object {
                     try {
                         val inpuStr = inFromServer.readLine()
 						println("sensorObserver inpuStr= $inpuStr")
-						if( inpuStr == null ) continue;		//JUNE2020
+						if( inpuStr == null ) break;		//JUNE2020
                         val jsonMsgStr =
                             inpuStr!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
                         //println("inpuStr= $jsonMsgStr")

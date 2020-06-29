@@ -1081,12 +1081,16 @@ docker-compose start
 docker-compose down
 </pre>	</td>
 </tr>
+</table>
+</center> 
 
-
- <center><table style="width:95%">
+<h2>Monitoring containers</h2>
+ <center><table style="width:98%">
 <tr>
  	<td style="width:40%"> </td>
- 	<td ><pre> </pre></td>
+ 	<td ><pre>docker inspect  ituniboqak20deploy_basicrobot_1
+docker inspect -f '{{ .NetworkSettings.IPAddress }}' ituniboqak20deploy_basicrobot_1	
+	</pre></td>
 </tr>
 
 <tr>
@@ -1098,6 +1102,60 @@ docker-compose down
 </table>
 </center> 
 
+<pre>
+ON Raspberry:
+since Ubuntu 16.04 with its systemd docker daemon the /etc/default/docker is no longer effective.
+-------------------------------
+/etc/systemd/system/docker.service.d/remote-api.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd -H tcp://192.168.1.5:2375 -H unix:///var/run/docker.sock
+------------------------------
+sudo systemctl daemon-reload // reloading daemon definitions
+sudo systemctl restart docker
+
+ON RASP docker -H tcp://192.168.1.5:2375 images/json		OK
+ON PC   curl -s http://192.168.1.5:2375/images/json		    OK
+
+curl -s http://192.168.1.5:2375/images/json | python -m json.tool		OK
+</pre>
+
+<pre>export DOCKER_HOST=tcp://192.168.59.103:2375
+service docker stop
+service docker start
+docker -H tcp://127.0.0.1:2375 images
+
+curl http://192.168.1.5:2376/images
+
+on PC: curl -s http://192.168.1.5:2375/images/json | python -m json.tool
+
+
+https://docs.docker.com/engine/reference/commandline/dockerd/
+https://www.portainer.io/2018/03/enable-remote-access-docker-windows-10/
+netsh advfirewall firewall add rule name="docker_daemon" dir=in action=allow protocol=TCP localport=2375
+docker run -d -p 8000:8000 -p 9000:9000 -v portainer_data:C:\data --restart=always --name=portainer portainer/portainer
+
+
+
+</pre>
+
+<br/><br/>
+ <center><table style="width:95%">
+<tr>
+ 	<td style="width:40%"> </td>
+ 	<td > </td>
+</tr>
+
+<tr>
+ 	<td> </td>
+ 	<td > </td>
+</tr>
+
+
+</table>
+</center> 
+
+<br/><br/>
 
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
 By AN - DISI - Unibo
