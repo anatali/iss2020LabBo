@@ -267,6 +267,9 @@ then right click on the virtual machine in the VirtualBox interface to access th
 <h3>On RaspberryPi</h3>
 Raspberry Pis use the <tt>ARM</tt> architecture, and as a result, won't be compatible with all containers out of the box. 
 Images will need to be built from an <bc>ARM</bc> base image. 
+<br/>
+See <a href="https://www.docker.com/blog/happy-pi-day-docker-raspberry-pi/" target="web">Happy Pi Day with Docker and Raspberry Pi</a>.
+<br/>
  <center><table style="width:95%">
 <tr>
  	<td style="width:30%">Install <bc>Docker</bc></td>
@@ -1115,7 +1118,10 @@ sudo systemctl daemon-reload // reloading daemon definitions
 sudo systemctl restart docker
 
 ON RASP docker -H tcp://192.168.1.5:2375 images/json		OK
-ON PC   curl -s http://192.168.1.5:2375/images/json		    OK
+ON PC    (pg.121)
+	curl -s http://192.168.1.5:2375/images/json		    OK
+	curl -s http://192.168.1.5:2375/containers/json
+	
 
 curl -s http://192.168.1.5:2375/images/json | python -m json.tool		OK
 </pre>
