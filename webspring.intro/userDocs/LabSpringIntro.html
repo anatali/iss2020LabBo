@@ -677,12 +677,21 @@ For example, <tt>DispatcherServlet</tt> will look for <bc>@RequestMapping</bc>  
 </table>
 
 
- <h3>Request processing</h3>
+ <h2>Request processing</h2>
 IO operations can be orders of magnitude slower than data processing. 
  Reading just one kilobyte of data would take 1.4 microseconds (read speed of 200-730 MB/s), 
  but during this time a CPU clocked at 2GHz could have performed 28000 of instruction-processing cycles.
 
 
+<h3>Traditional REST APIs</h3>
+<ul> 
+ <li><strong>Blocking and Synchronous →</strong> The request is blocking and synchronous. The request thread will be waiting for any blocking I/O and the thread is not freed to return the response to the caller until the I/O wait is over.</li> 
+ <li><strong>Thread per request&nbsp;</strong><strong>→&nbsp;</strong>The web container uses a thread-per-request model. This limits the number of concurrent requests to handle. Beyond certain requests, the container queues the requests that eventually impact the performance of the APIs.</li> 
+ <li><strong>Limitations to handle high concurrent users&nbsp;</strong><strong>→&nbsp;</strong>As the web container uses a thread-per-request model, we cannot handle high concurrent requests.</li> 
+ <li><strong>No better utilization of system resources&nbsp;</strong><strong>→&nbsp;</strong>The threads will be blocking for I/O and sitting idle. But, the web container cannot accept more requests. During this scenario, we are not able to utilize the system resources efficiently.</li> 
+ <li><strong>No backpressure support →&nbsp;</strong>We cannot apply backpressure from the client or the server. If there is a sudden surge of requests the server or client outages may happen. After that, the application will not be accessible to the users. If we have backpressure support, the application should sustain during the heavy load rather than the unavailability.</li> 
+</ul> 
+ 
 <h4>Synchronous request processing</h4>
  <table style="width:98%">
 <tbody>	
@@ -696,14 +705,30 @@ when a request come to server,
 <li>the servlet thread delegates the request to worker threads for <bc>I/O operations</bc> such as database access etc.</li>
 <li>when worker threads are busy, servlet thread (request thread) remain in waiting status and thus it is blocked</li>
 </ol>
+<img src="./img/imgBlocking-request-processing.png" alt="imgBlocking-request-processing.png" width="70%"  />
  </td>
 <td>
 <m></m>
-<img src="./img/imgBlocking-request-processing.png" alt="imgBlocking-request-processing.png" width="100%"  />
+<img src="./img/traditional-rest-api-requestresponse.png" alt="traditional-rest-api-requestresponse.png" width="80%"  />
+
+ 
+
 </td>
 </tr>
  </tbody>
 </table>
+
+<h3>Reactive APIs</h3> 
+<ul> 
+ <li><strong>Asynchronous and Non-Blocking <strong>→&nbsp;</strong></strong>Reactive programming gives the flexibility to write asynchronous and Non-Blocking applications.</li> 
+ <li><strong>Event/Message Driven</strong><strong>→&nbsp;</strong>The system will generate events or messages for any activity. For example, the data coming from the database is treated as a stream of events.</li> 
+ <li><strong>Support for backpressure&nbsp;</strong><strong><strong>→&nbsp;</strong></strong>Gracefully we can handle the pressure from one system to on to the other system by applying back pressure to avoid denial of service.</li> 
+ <li><strong>Predictable application response time →&nbsp;</strong>As the threads are asynchronous and non-blocking, the application response time is predictable under the load.</li> 
+ <li><strong>Better utilization of system resources&nbsp;</strong><strong>→&nbsp;</strong>As the threads are asynchronous and non-blocking, the threads will not be hogged for the I/O. With fewer threads, we could able to support more user requests.</li> 
+ <li><strong>Scale based on the load</strong></li> 
+ <li><strong>Move away from thread per request&nbsp;</strong><strong>→&nbsp;</strong>With the reactive APIs, we are moving away from thread per request model as the threads are asynchronous and non-blocking. Once the request is made, it creates an event with the server and the request thread will be released to handle other requests.</li> 
+</ul> 
+
 
 <h4>Asynchronous request processing</h4>
  <table style="width:98%">
@@ -718,11 +743,12 @@ when a request come to server,
 There is <bc>only one request thread</bc> receiving the request.
 
 <ol>
-<li>Incoming requests come with a <em>HandlerFunction</em> and <em>call back</em> information</li>
-<li>The request thread delegates the incoming requests to a thread pool</li>
-<li>The request thread immediately start processing other incoming requests from request thread</li>
-<li>The handler function precesses the request given to it; it could reach a potentially (I/O) blocking operation.</li> 
-<li>When the handler function is complete, one of thread from pool collect the response and pass it to the <em>call back</em> function</li>
+<li>Incoming requests come with a <em>HandlerFunction</em> and <em>call back</em> information.<br/><br/></li>
+<li>The request thread delegates the incoming requests to a thread pool.<br/><br/></li>
+<li>The request thread immediately start processing other incoming requests from request thread<br/><br/></li>
+<li>The handler function precesses the request given to it; it could reach a potentially (I/O) blocking operation.<br/><br/></li> 
+<li>When the handler function is complete, one of thread from pool collect the response and pass 
+it to the <em>call back</em> function.<br/><br/></li>
 <!--
 <li>If the servlet reaches a potentially blocking operation when processing a request, 
 it can assign the operation to an asynchronous execution context and return the thread associated with the request 
@@ -731,12 +757,28 @@ immediately to the container without generating a response</li>
 <li>The request thread delegates the incoming requests to a thread pool </li>
 <li>delegate the request to it’s handler function</li>
 -->
-
- 
 </ol>
+<img src="./img/Non-blocking-request-processing.png" alt="Non-blocking-request-processing.png" width="100%"  />
+
 </td> 
 <td>
-<img src="./img/Non-blocking-request-processing.png" alt="Non-blocking-request-processing.png" width="100%"  />
+<h4>Get data</h4>
+Once the application makes a call to get the data from a data source, the thread will be returned immediately, 
+and the data from the data source will come as a data/event stream. <br/>
+Here, the application is a <k>subscriber</k>, and the data source is a <k>publisher</k>. 
+Upon the completion of the data stream, the <k>onComplete</k> event will be triggered.<br/>
+<img src="./img/data-flow-as-an-eventmessage-driven-stream-1.png" alt="data-flow-as-an-eventmessage-driven-stream-1.png" width="70%"  />  
+
+<h4>Errors</h4>
+The publisher will trigger an <k>onError</k> event if any exception happens.
+<img src="./img/data-flow-as-an-eventmessage-driven-stream-2.png" alt="data-flow-as-an-eventmessage-driven-stream-2.png" width="70%"  /> 
+
+<h4>No data</h4>
+In some cases, there might not be any items to deliver from the publisher. 
+For example, deleting an item from the database. 
+In that case, the publisher will trigger the <k>onComplete/onError</k> event immediately without calling onNext event, 
+as there is no data to return.
+<img src="./img/data-flow-as-an-eventmessage-driven-stream-3.png" alt="data-flow-as-an-eventmessage-driven-stream-3.png" width="70%"  />  
 </td>
 </tr>
  </tbody>
@@ -773,7 +815,7 @@ as the HTTP client library. But others can be plugged in through a custom <tt>Cl
 
 
 
-<h3>Beyond request-response</h3>
+<h2>Beyond request-response</h2>
 <!-- See https://www.confluent.io/blog/microservices-apache-kafka-domain-driven-design/ -->
 When we consider microservice communication, the approach that most people start with is REST, 
 i.e., communication with synchronous HTTP(S) calls. This works well for many use cases. 
