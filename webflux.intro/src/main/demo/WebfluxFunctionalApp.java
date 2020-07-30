@@ -1,5 +1,5 @@
 package demo;
-
+/*
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
  
@@ -10,3 +10,4 @@ public class WebfluxFunctionalApp {
         SpringApplication.run(WebfluxFunctionalApp.class, args); 
     }
 } 
+*/

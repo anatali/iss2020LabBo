@@ -11,6 +11,6 @@ public class MyController {
     @GetMapping("/")
     @ResponseBody
     public Publisher<String> handler() {
-        return Mono.just("Hello world!");
+        return Mono.just("it.unibo.webflux.intro.MyController | Hello world!");
     }
 }

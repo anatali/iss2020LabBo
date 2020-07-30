@@ -26,8 +26,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Image {
 
-	private int id;
-	private String name;
+//	private int id;
+//	private String name;
+	public int id;					//By AN
+	public String name;				//By AN
 
 	public Image(int id, String name) {
 		this.id = id;

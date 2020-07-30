@@ -18,7 +18,9 @@ package  learningspringboot;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import reactor.core.publisher.Flux;
@@ -50,13 +52,24 @@ public class ImageService {
 // end::1[]
 
 	// tag::2[]
-	public Flux<Image> findAllImages() {
+	public Flux<Image> findAllImages(){			//By AN to avoid ERROR: Iterator already obtained
+		return Flux.just(
+			new Image(1, "basicrobotlogical.png"),
+			new Image(2, "basicRobotOnRasp.png"),
+			new Image(3, "basicrobotproject.png")
+		);
+	}
+	public Flux<Image> findAllImagesOld() {
+		System.out.println("ImageService | findAllImages");	 
 		try {
-			return Flux.fromIterable(
-					Files.newDirectoryStream(Paths.get(UPLOAD_ROOT)))
-				.map(path ->
-					new Image(path.hashCode(),
-						path.getFileName().toString()));
+			/*
+			 * The iterator of the Iterable returned by Files.newDirectoryStream 
+			 * (DirectoryStream implements Iterable) can only be used once. 
+			 */
+			DirectoryStream<Path> ds = Files.newDirectoryStream( Paths.get(UPLOAD_ROOT) );
+			System.out.println("ImageService | ds="+ds);	 
+			return Flux.fromIterable( ds )
+				.map(path -> new Image(path.hashCode(), path.getFileName().toString()));
 		} catch (IOException e) {
 			return Flux.empty();
 		}
@@ -100,8 +113,10 @@ public class ImageService {
 	 *         run after app context is loaded.
 	 */
 	@Bean
-	CommandLineRunner setUp() throws IOException {
+	CommandLineRunner setUp() throws IOException {  //pg. 51
+		System.out.println("ImageService | setUp populates");	 
 		return (args) -> {
+			/*
 			FileSystemUtils.deleteRecursively(new File(UPLOAD_ROOT));
 
 			Files.createDirectory(Paths.get(UPLOAD_ROOT));
@@ -116,6 +131,7 @@ public class ImageService {
 
 			FileCopyUtils.copy("Test file3",
 				new FileWriter(UPLOAD_ROOT + "/bazinga.png"));
+		*/
 		};
 	}
 	// end::6[]

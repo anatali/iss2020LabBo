@@ -44,6 +44,8 @@ public class HomeController {
 	private static final String FILENAME = "{filename:.+}";
 
 	private final ImageService imageService;
+	
+	private Flux<Image> fluxOfImages = null;
 
 	public HomeController(ImageService imageService) {
 		this.imageService = imageService;
@@ -53,9 +55,14 @@ public class HomeController {
 	// tag::5[]
 	@GetMapping("/")
 	public Mono<String> index(Model model) {
-		model.addAttribute("images", imageService.findAllImages());
+		try {
+			if( fluxOfImages == null ) fluxOfImages = imageService.findAllImages();
+			model.addAttribute("images", fluxOfImages );			
+		}catch(Exception e) {
+			System.out.println("HomeController | ERROR" + e);
+		}
 		return Mono.just("index");
-	}
+ 	}
 	// end::5[]
 
 	// tag::2[]

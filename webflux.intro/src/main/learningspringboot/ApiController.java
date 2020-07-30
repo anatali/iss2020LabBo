@@ -42,10 +42,14 @@ public class ApiController {
 	Flux<Image> images() {
 		Hooks.onOperatorDebug();
 
-		return Flux.just(
-			new Image(1, "learning-spring-boot-cover.jpg"),
-			new Image(2, "learning-spring-boot-2nd-edition-cover.jpg"),
-			new Image(3, "bazinga.png")
+		return Flux.just(				
+				new Image(1, "basicrobotlogical.png"),
+				new Image(2, "basicRobotOnRasp.png"),
+				new Image(3, "basicrobotproject.png")
+				
+//			new Image(1, "learning-spring-boot-cover.jpg"),
+//			new Image(2, "learning-spring-boot-2nd-edition-cover.jpg"),
+//			new Image(3, "bazinga.png")
 		);
 	}
 	// end::get[]
@@ -65,3 +69,10 @@ public class ApiController {
 	// end::post[]
 
 }
+
+/*
+ * https://spring.io/blog/2016/06/07/notes-on-reactive-programming-part-i-the-reactive-landscape				part 1
+ * https://spring.io/blog/2016/06/13/notes-on-reactive-programming-part-ii-writing-some-code					part 2
+ * https://spring.io/blog/2016/07/20/notes-on-reactive-programming-part-iii-a-simple-http-server-application	part 3
+ * https://spring.io/blog/2016/04/19/understanding-reactive-types
+*/
