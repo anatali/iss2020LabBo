@@ -52,25 +52,28 @@ public class ImageService {
 // end::1[]
 
 	// tag::2[]
-	public Flux<Image> findAllImages(){			//By AN to avoid ERROR: Iterator already obtained
+	public Flux<Image> findAllImagesOk(){			//By AN to avoid ERROR: Iterator already obtained
 		return Flux.just(
 			new Image(1, "basicrobotlogical.png"),
 			new Image(2, "basicRobotOnRasp.png"),
 			new Image(3, "basicrobotproject.png")
 		);
 	}
-	public Flux<Image> findAllImagesOld() {
+	public Flux<Image> findAllImages() {
 		System.out.println("ImageService | findAllImages");	 
 		try {
 			/*
 			 * The iterator of the Iterable returned by Files.newDirectoryStream 
 			 * (DirectoryStream implements Iterable) can only be used once. 
+			 * Fixed from https://www.isaacnote.com/2020/05/sprint-boot-list-files-to-flux.html?m=1
 			 */
-			DirectoryStream<Path> ds = Files.newDirectoryStream( Paths.get(UPLOAD_ROOT) );
-			System.out.println("ImageService | ds="+ds);	 
-			return Flux.fromIterable( ds )
-				.map(path -> new Image(path.hashCode(), path.getFileName().toString()));
-		} catch (IOException e) {
+// 			Flux<Image> fluxImage = fluxPath.map( path -> 
+//   				new Image( path.hashCode(), path.getFileName().toString() )  
+//  				);			
+ 			return Flux.fromStream(Files.list(Paths.get(UPLOAD_ROOT)))
+ 		            .map(path -> new Image(path.hashCode(), path.getFileName().toString() )); 			
+		} catch (Exception e) {
+			System.out.println("ImageService | ERROR: "+e.getMessage());
 			return Flux.empty();
 		}
 	}

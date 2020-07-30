@@ -10,6 +10,8 @@ import org.springframework.web.filter.reactive.HiddenHttpMethodFilter;
 public class LearningSpringBootApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("spring.devtools.restart.enabled", "false"); //By AN: to avoid SilentExitException in Eclipse
+
 		SpringApplication.run(
 			LearningSpringBootApplication.class, args);
 	}
