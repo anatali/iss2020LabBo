@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  learningspringboot;
+package  learningstep0;
 
 import java.io.IOException;
 
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 // tag::1[]
 @Controller
-public class HomeController {
+public class HumanInterfaceController {
 
 	private static final String BASE_PATH = "/images";
 	private static final String FILENAME = "{filename:.+}";
@@ -47,7 +47,7 @@ public class HomeController {
 	
 	private Flux<Image> fluxOfImages = null;
 
-	public HomeController(ImageService imageService) {
+	public HumanInterfaceController(ImageService imageService) {
 		this.imageService = imageService;
 	}
 	// end::1[]
@@ -65,6 +65,7 @@ public class HomeController {
  	}
 	// end::5[]
 
+	//curl localhost:8082/images/basicrobotlogical.png/raw
 	// tag::2[]
 	@GetMapping(value = BASE_PATH + "/" + FILENAME + "/raw",
 		produces = MediaType.IMAGE_JPEG_VALUE)
@@ -87,10 +88,10 @@ public class HomeController {
 	}
 	// end::2[]
 
+	//curl localhost:8082/images 
 	// tag::3[]
 	@PostMapping(value = BASE_PATH)
-	public Mono<String> createFile(@RequestPart(name = "file")
-									   Flux<FilePart> files) {
+	public Mono<String> createFile(@RequestPart(name = "file") Flux<FilePart> files) {
 		return imageService.createImage(files)
 			.then(Mono.just("redirect:/"));
 	}

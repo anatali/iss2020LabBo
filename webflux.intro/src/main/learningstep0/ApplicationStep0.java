@@ -1,4 +1,4 @@
-package  learningspringboot;
+package  learningstep0;
  
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,13 +7,13 @@ import org.springframework.web.filter.reactive.HiddenHttpMethodFilter;
 
 // tag::code[]
 @SpringBootApplication
-public class LearningSpringBootApplication {
+public class ApplicationStep0 {
 
 	public static void main(String[] args) {
-		System.setProperty("spring.devtools.restart.enabled", "false"); //By AN: to avoid SilentExitException in Eclipse
+//		System.setProperty("spring.devtools.restart.enabled", "false"); //By AN: to avoid SilentExitException in Eclipse
 
 		SpringApplication.run(
-			LearningSpringBootApplication.class, args);
+			ApplicationStep0.class, args);
 	}
 
 	@Bean

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  learningspringboot;
+package  learningstep0;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,26 +31,29 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Greg Turnquist
  */
 @RestController
-public class ApiController {
+public class MachineInterfaceController {
 
-	private static final Logger log = LoggerFactory.getLogger(ApiController.class);
+	private static final Logger log = LoggerFactory.getLogger(MachineInterfaceController.class);
 
 	private static final String API_BASE_PATH = "/api";
-
-	// tag::get[]
+	
+	private final ImageService imageService;
+	
+	public MachineInterfaceController(ImageService imageService) {
+		this.imageService = imageService;
+	}
+ 
+	//curl localhost:8082/api/images 
+	// tag::get[]		//See https://spring.io/guides/gs/gradle/
 	@GetMapping(API_BASE_PATH + "/images")
 	Flux<Image> images() {
 		Hooks.onOperatorDebug();
-
-		return Flux.just(				
-				new Image(1, "basicrobotlogical.png"),
-				new Image(2, "basicRobotOnRasp.png"),
-				new Image(3, "basicrobotproject.png")
-				
-//			new Image(1, "learning-spring-boot-cover.jpg"),
-//			new Image(2, "learning-spring-boot-2nd-edition-cover.jpg"),
-//			new Image(3, "bazinga.png")
-		);
+		return imageService.findAllImages();
+//		return Flux.just(				
+//				new Image(1, "basicrobotlogical.png"),
+//				new Image(2, "basicRobotOnRasp.png"),
+//				new Image(3, "basicrobotproject.png")
+//		);
 	}
 	// end::get[]
 

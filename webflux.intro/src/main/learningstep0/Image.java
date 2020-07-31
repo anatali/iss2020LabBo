@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  learningspringboot;
+package  learningstep0;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * @author Greg Turnquist
+ * Property or field 'id' cannot be found on object of type 'com.greglturnquist.learningspringboot.Image' - maybe not public or not valid?
+ * com.greglturnquist.learningspringboot
  */
 // tag::code[]
 @Data

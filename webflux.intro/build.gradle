@@ -14,15 +14,50 @@ repositories {
 }
 
 dependencies {
+	
+/*
+BASIC SPRING
+*/
+	//implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	compileOnly 'org.projectlombok:lombok'
+
+/* 
+CODE BOILERPLATE
+*/
+  	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'   
+
+/* 
+ACTUATORS
+*/
+	 implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	 compile 'org.springframework.integration:spring-integration-jmx'	
+
+/* 
+SECURITY
+*/
+	 //implementation 'org.springframework.boot:spring-boot-starter-security'
+
+/*
+TESTING
+*/
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'io.projectreactor:reactor-test'
+ 	 
+/*
+HTTP CLIENT
+ 	 
+	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+	// https://mvnrepository.com/artifact/commons-io/commons-io
+	compile group: 'commons-io', name: 'commons-io', version: '2.6'
+	// https://mvnrepository.com/artifact/org.json/json
+	compile group: 'org.json', name: 'json', version: '20090211'
+*/	
 }
 
 //Added by AN to avoid duplication in src (Thanks Gozzi)

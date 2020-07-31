@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ 
+<style type="text/css">
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+top {
+	width: 100%;
+}
+
+
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+    font-size: 80%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #abe876;
+    color: #1632cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 700px;
+    font-size: 15px;
+}
+k{
+    color: #990000;
+	font-weight: bold;
+}
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+	padding: 10px; 
+}
+
+h2 {
+    background-color: #9ed8ff;
+    font-size: 130%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 100%;
+}
+h4 {
+    background-color: #C0F0E0;
+    font-size: 100%;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+h5 {
+    background-color: #d5ffb0;
+    font-size: 100%;
+	
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #E3F2FD;	
+    border: 1.5px solid #d5f2ed;
+    padding: 15px;
+    margin: 10px;
+	border-radius: 25px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+} 
+
+ol, ul, li {
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  padding-bottom: 5px;
+}     
+
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	border: 1.5px solid #d5f2ed
+	
+}
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+div.wrapdesc{
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc{
+	width: 85%;
+	margin: auto;
+}
+</style>
+    
+<head>
+   
+<title>Webfluxintro</title></head>
+    
+<body>
+<div id="body">
+<h1>LabSpringIntro  | Introducion to WebFlux </h1>
+<!--
+<h2>References</h2>
+<ul>
+<li><a href="https://dev-itel.atlassian.net/wiki/spaces/NEXTAGORA/overview" target="web">Confluence space: Nextagora</a> </li>
+<li><a href="https://dev-itel.atlassian.net/wiki/spaces/UNIBO/overview" target="web">Confluence space: UNIBO</a> </li>
+<li><a href="https://bitbucket.org/itelunibo/workspace/projects/" target="web">Projects on bitbucket</a> </li>
+<li><a href="https://bitbucket.org/itelunibo/overviewrepo/src/master/it.unibo.itel/userDocs/3-LogicalArch/HDA_Disi.html" target="web">HDA_Disi.html (overviewrepo)</a> </li>
+<hr/>
+
+</ul>
+ 
+<ul>
+<li><a href="http://htmlpreview.github.com/?https://github.com/anatali/natmaterial/blob/master/health/userDocs/HealthReferences.html" target="web"> 
+DISI - HealthReferences.html</a> (on <tt>natmaterial .... health/userDocs/</tt>) </li>
+<li><a href="http://htmlpreview.github.com/?https://github.com/anatali/natmaterial/blob/master/health/userDocs/HealthReferences.html" target="web">DISI - HealthReferences.html </a></li>
+ <li><a href="./MirthIntro.html" target="web"> 
+DISI - MirthIntro.html</a> (on <tt>natMicroservices .... it.unibo.mirth.java/userDocs/MirthExperiments.html/</tt>) </li>
+<li><a href="http://htmlpreview.github.com/?https://github.com/anatali/natmaterial/blob/master/it.unibo.hapi2.2/userDocs/HapiUsage.html" target="web"> 
+DISI - HapiUsage.html</a> (on <tt>natMicroservices .... it.unibo.hapi2.2/userDocs/</tt>) </li>
+<li><a href="http://htmlpreview.github.com/?https://github.com/anatali/natmaterial/blob/master/it.unibo.mirth.java/userDocs/HapiFhirUsage.html" target="web"> 
+DISI - HapiFhirUsage.html</a> (on <tt>natMicroservices .... it.unibo.mirth.java/userDocs/</tt>) </li>
+</ul>
+ 
+ -->
+
+<!-- http://192.168.1.244/debug/clip.html -->
+
+<h2>Start-up</h2>
+ 
+<ol>
+<li>Connect to <a href="https://start.spring.io/">https://start.spring.io/</a> </li>
+<li>Select <tt>Gradle Project, Java</tt>, <tt><ks>Group=</ks>it.unibo</tt>, <tt><ks>Artifact=</ks>HealthAdapterFacade</tt>
+(<tt><ks>Options</ks>:Packaging=Jar, Java=8</tt>), <m><ks>Dependencies</ks></m>:
+<hr/>
+<ul>
+<li><bc>Spring Boot DevTools</bc> </li>
+<li><bc>Spring WebFlux</bc> <m><kc>//Reactive </kc></m> </li>
+<li><bc>Thymeleaf</bc> 	  <m><kc>//For m2m interaction</kc></m></li>
+<li><bc>Lombok</bc>  <m><kc>//Java annotation library which helps to reduce boilerplate code</kc></m> </li>
+<li><bc>Spring Boot Actuator</bc> <m><kc>//monitor and manage the application</kc></m>  </li>
+
+ <!--
+<li><bc>Spring Security</bc>                 <m><kc>//Not used at the moment</kc></m></li>
+<li><bc>Spring Redis</bc>  <m><kc>//just to remember ... </kc></m></li>
+-->
+</ul>
+Read 
+<a href="https://spring.io/guides/gs/gradle/" target="code">Spring: Building Java Projects with Gradle</a>
+and look at <a href="../build.gradle" target="code">build.gradle</a>.
+<hr/> 
+    
+ </li>
+<li>Click on <k>Generate</k>, unzip the generated file into your working dir and update 
+ and 
+<a href="../src/resources/application.properties" target="code"><ks>application.properties</ks></a> (port=<k>8082</k>): 
+<ul>
+<li>Set some logo for human-to-machine (<k>h2m</k>) interaction and for machine-to-machine (<k>m2m</k>) interaction</li>
+<!-- <li>Enable/Disable security</li> -->
+<li>Set endpoint management</li>
+<li>Enables <tt>spring.jmx</tt></li>
+</ul>
+ 
+</li>
+
+<li>Use <a href="http://patorjk.com/software/taag"  target="code">patorjk.com/software/taag</a>
+to change the logo in file <a href="../src/resources/banner.txt"  target="code">banner.txt</a><br/> <br/></li>
+<li>Define in <tt>templates</tt> a GUI page: <a href="../src/resources/templates/index.html"  target="code">
+index.html</a> for <k>h2m</k> interaction <br/><br/></li>
+<li>Define (see <a href="https://dzone.com/articles/build-reactive-rest-apis-with-spring-webflux"  target="web">
+Build Reactive REST APIs With Spring WebFlux</a> and
+<a href="https://medium.com/@codespeaks/build-restful-services-with-spring-boot-2-x-in-few-steps-95c895a7abf5"  target="web">
+Build RESTful Services with Spring Boot 2.X in Few Steps</a>
+):<br/><br/>
+<ul>
+ 
+<li>a 'conventional' controller: 
+<a href="../src/main/learningstep0/HumanInterfaceController.java"  target="code">
+HumanInterfaceController.java</a> to be used with <bc>Spring Web</bc> and <bc>Thymeleaf</bc> for <em>h2m</em> interaction.<br/><br/></li>  
+<li>a RestController
+
+<a href="../src/main/learningstep0/MachineInterfaceController.java"  target="code">
+MachineInterfaceController.java</a> to be used with <bc>Spring WebFlux</bc> for <em>m2m</em> interaction.<br/><br/></li>
+</ul>
+</li>
+ 
+<li>
+Run <a href="../src/main/learningstep0/ApplicationStep0.java" target="code">
+ApplicationStep0.java</a> and then:
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:33%" >
+activate <m><ks>localhost:8082</ks></m>:<br/> <br/>
+<img src="./img/ApplicationStep0.png" alt="ApplicationStep0.png" width="100%"><br/> 
+</td>
+<td style="width:33%">
+ Run 
+<a href="https://openjdk.java.net/tools/svc/jconsole/" target="code"><m><ks>JConsole</ks></m></a><br/> <br/>
+<img src="./img/JConsoleApplicationStep0.png" alt="JConsoleApplicationStep0.png" width="100%"><br/>
+</td>
+
+<td>Run <m><ks>localhost:8082/images/basicrobotlogical.png/raw</ks></m>:<br/> <br/>
+<img src="./img/ApplicationStep0AnImage.png" alt="ApplicationStep0AnImage.png" width="100%"><br/>
+Immagine dopo modifica del colore di sfondo (nero)
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+ 
+</li>
+ </ol>
+
+ 
+
+
+
+
+
+
+<h2>ApplicationStep0</h2>
+<ul>
+<li>A set of images is stored in the directory
+<a href="../upload-dir" target="code">upload-dir</a>
+</li>
+<li><a href="../src/main/learningstep0/HumanInterfaceController.java"  target="code">HumanInterfaceController.java</a> 
+shows such a set of images 
+through the HTML page <a href="../src/resources/templates/index.html"  target="code">index.html</a>
+and allows an user to add an image to the set by uploading a file. Moreover it provides:
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<pre>
+@PostMapping(value = BASE_PATH)
+public Mono<String> createFile(
+     @RequestPart(name = "file") Flux<FilePart> files)
+</pre>
+</td>
+<td>To create a new images by using a 
+<a href="../src/main/learningstep0/ImageService.java"  target="code">ImageService.java</a> that in its turn uses
+<a href="../src/main/learningstep0/Image.java"  target="code">Image.java</a> 
+ </td>
+</tr>
+ </tbody>
+</table>
+</li>
+<li><a href="../src/main/learningstep0/MachineInterfaceController.java"  target="code">
+MachineInterfaceController.java</a> 
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+Provides a method to get the set of images
+<pre>
+@GetMapping(API_BASE_PATH + "/images")
+	Flux<Image> images(){ ... </pre>
+</td>
+<td> 
+<pre>
+<m><ks>curl localhost:8082</ks><k>/api/images</k><ks> | python -m json.tool</ks>
+<kc>//ON WINDOWS 10 </kc>
+OUTPUT:
+[
+    {
+        "id": 1510985485,
+        "name": "basicrobotlogical.png"
+    },
+    {
+        "id": 2032074525,
+        "name": "basicRobotOnRasp.png"
+    },
+	...
+]</m>
+</pre> 
+ </td>
+
+</tr>
+
+ <tr>
+ <td>Provides a method to create an image given ... TODO 
+<pre>
+@PostMapping(API_BASE_PATH + "/images")
+	Mono<Void> create(@RequestPart Flux<FilePart> images) { ...
+</pre>
+</td>
+  <td></td>
+ </tr>
+ 
+ <tr>
+ <td></td>
+  <td></td>
+ </tr> 
+ </tbody>
+</table>
+
+</li>
+<li></li>
+</ul>
+
+ <br/><br/>
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+<h3>...</h3>
+<pre>
+ </pre>
+</td>
+<td>
+ <h3>Usage</h3>
+ <div class="remark">
+<center>
+..</center>
+</div> 
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+ 
+ 
+ 
+  
+
+ <br/><br/>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:50%" >
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+</div>  
+
+ 
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+
+</body>
+</html>
+
+
+ 
