@@ -27,9 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author Greg Turnquist
- */
+ 
 @RestController
 public class MachineInterfaceController {
 

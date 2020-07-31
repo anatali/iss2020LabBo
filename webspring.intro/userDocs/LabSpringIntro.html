@@ -465,7 +465,7 @@ ourselves whether we still 'work in Java' or in some other 'conceptual space':
 <td style="width:25%" ><h3>Core Spring Framework Annotations</h3>
 <ul>
 <li>@Required</li>
-<li>@Autowired</li>
+<li><a href="https://www.baeldung.com/spring-core-annotations"  target="web"><ks>@Autowired</ks></a>      </li>
 <li>@Qualifier</li>
 <li>@Configuration</li>
 <li>@ComponentScan</li>
@@ -921,15 +921,66 @@ https://github.com/tzolov/coap
 
 https://github.com/tzolov/coap-shell
 --> 
- 
+<h1>Learning Spring</h1>
+<div class="remark">
+<a href="https://spring.io/" target="web">Spring</a><br/>
+<a href="https://spring.io/projects/spring-boot" target="web">Spring Boot 2.3.2</a><br/>
+<hr/>
+
+<a href="https://www.tutorialspoint.com/spring/index.htm" target="web">Spring Tutorial</a><br/>
+<a href="https://www.tutorialspoint.com/spring_boot/index.htm" target="web">Spring Boot Tutorial</a><br/>
+<a href="https://www.vogella.com/tutorials/SpringBoot/article.html" target="web">Spring Boot Tutorial (Vogella)</a><br/>
+
+<hr/>
+
+<a href="https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm" target="web">Spring Boot - Introduction</a>
+(<i>Micro Service, Auto Configuration, Application, Component Scan</i>)<br/>
+
  
 
-<h2><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html" target="web">Spring Actuators</a></h2>
-Spring Boot Actuator is a sub-project of the Spring Boot Framework. 
+</div> 
+<h2>About Beans</h2>
+A bean is an object that is instantiated, assembled, and otherwise managed by a Spring IoC container.<br/>
+It is a method-level annotation. During Java configuration (@Configuration), the method is executed and 
+its return value is registered as a bean within a BeanFactory.<br/> 
+Spring can automatically detect the relationships between various beans.
+<ul>
+<li>
+Spring <a href="https://www.tutorialspoint.com/spring/spring_bean_definition.htm" target="web"><ks>Bean Definition</ks></a> <br/>
+Spring <a href="https://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch02s02.html" target="web"><ks>@Bean</ks></a> 
+(<i>2.2 of reference</i> OLD?? ) <br/>
+</li>
+<li>Spring <a href="https://www.baeldung.com/spring-bean-annotations" target="web"><ks>Bean Annotations</ks></a>
+(<i>Component Scanning, @Component, @Repository, @Service, @Controller, @Configuration, Stereotype Annotations and AOP</i>)
+  </li>
+ 
+</ul>
+
+<h2>About Autowiring</h2>
+<ul>
+<li>See <a href="https://www.baeldung.com/spring-autowire" target="web">Guide to Spring @Autowired</a> </li>
+<li></li>
+</ul>
+
+<h2>About Service</h2>
+<ul>
+<li>Spring Boot <a href="https://www.tutorialspoint.com/spring_boot/spring_boot_service_components.htm" target="web">Service Components</a> </li>
+<li>Spring <a href="https://www.baeldung.com/spring-component-repository-service" target="web">@Component vs @Repository and @Service</a> <br/><br/></li>
+
+</li>
+</ul>
+ 
+
+<h2>About Actuators</h2>
+Spring Boot Actuator is a sub-project of the Spring Boot Framework. <br/>
 It includes a number of additional features that help us to monitor and manage the Spring Boot application. 
 It contains the actuator endpoints (the place where the resources live).
- We can use HTTP and <a href="https://en.wikipedia.org/wiki/Java_Management_Extensions" target="web"><bc>JMX</bc></a> endpoints to manage and monitor 
- the Spring Boot application. 
+<ul>
+ <li>Spring <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html" target="web">Actuator</a> </li>
+ <li>Use HTTP and <a href="https://en.wikipedia.org/wiki/Java_Management_Extensions" target="web"><bc>JMX</bc></a> 
+ endpoints to manage and monitor  the Spring Boot application. </li>
+</ul>
+  
  There are three main features of Spring Boot Actuator:
 
  <ul>
