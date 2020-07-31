@@ -58,7 +58,7 @@ public class MachineInterfaceController {
 	// tag::post[]
 	@PostMapping(API_BASE_PATH + "/images")
 	Mono<Void> create(@RequestPart Flux<FilePart> images) {
-		Hooks.onOperatorDebug();
+		//Hooks.onOperatorDebug();
 
 		return images
 			.map(image -> {
