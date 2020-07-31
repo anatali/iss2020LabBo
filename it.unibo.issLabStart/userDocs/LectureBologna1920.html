@@ -711,38 +711,112 @@ Poi si riprende (se tutto va bene) il 27 Agosto
 </tr>
 
 </table>   
+
+
+
 <h2>Suggerimenti / indicazioni</h2>  
 <em>1 Luglio</em>: Dopo i primi sprint-reviewc con <i>Gozzi, Piazza, Farina, Turra, Verdini, Corsale, Rafaraci, Tornatore, Bolognini, Cerulo, Stanzione</i>;,
 si è convenuto opporutuno (come risultato di una sorta di SPRINT RETROSPECTIVE) che ciascun team organiiìzzi le proprie attività
 impostando <tt>N+2</tt> workspace:
 <ol>
-<li>Un workspace relativo alla analisi dei requisiti. </li>
-<li>Un workspace relativo alla analisi del problema.</li>
-<li>N>1 (indicativamente N=3) workspace relativi agli SPRINT in cui si articolarà la progettazione/svliluppo. </li>
+<li>Un progetto relativo alla analisi dei requisiti. </li>
+<li>Un progetto relativo alla analisi del problema.</li>
+<li>N>1 (indicativamente N=3) progetto relativi agli SPRINT in cui si articolarà la progettazione/svliluppo. </li>
 </ol>
-La costruzione di questi workspace <em>NON presuppone uno sviluppo a cascata</em>, me introduce tre diversi  'contenitori', ciascuno con un proprio 'scope'.
+La costruzione di questi progetti <em>NON presuppone uno sviluppo a cascata</em>, 
+ma introduce diversi  'contenitori', ciascuno con un proprio 'scope'.
 <ul>
-<li>Il workspace relativo alla <em>analisi dei requisiti</em> mira ad una formalizzazione dei requisiti che dovrebbe
+<li>Il progetto relativo alla <em>analisi dei requisiti</em> mira ad una formalizzazione dei requisiti che dovrebbe
 risultare 'isomorfa' tra i diversi team, con lo scopo anche di evidenziare le problematiche da approfondire nella analisi.
 Non è escluso che già in questa fase si possa costruire un modello eseguibile.
 </li>
 <li>
-Il workspace relativo alla <em>analisi del problema</em> potrebbe (dopo una overview iniziale) essere articolato 
+Il progetto relativo alla <em>analisi del problema</em> potrebbe (dopo una overview iniziale) essere articolato 
 (sulla bsae di opportune osservazioni e motivazioni) in un
 insieme di <em>'scenari'</em>, ognuno definito da un preciso insieme di <em>ASSUNZIONI/VINCOLI</em>.<br/>
 L'analisi di ciascuno di questi 'scenari' deve essere formalizzata definendo l'<em>archittura logica del (sotto-)sistema relativo a quello scenario</em> ,
 includere un modello (esguibile) del sistema e un paio di test-plan significativi.<br/>
-Lo scopo è quello di MOTIVARE su basi organizzative ed economiche (tempi e costi) la definzione dello SPRINT successivo.   
+Lo scopo è quello di MOTIVARE su basi organizzative ed economiche (tempi e costi) la definizione dello SPRINT successivo.   
 
 </li>
 </ul>
  
-Al termine di ogni SPRINT i workspace di analisi potrebbero subire modifiche di tipo <em>incrementale</em>, cioè <em>estendere</em>
+Al termine di ogni SPRINT i progetti di analisi potrebbero subire modifiche di tipo <em>incrementale</em>, cioè <em>estendere</em>
 i propri contenuti. Ma è anche possibile (e non auspicabile)  che si debba 
 modificare (con un possibile effetto-domino) quanto già assertito in una fase di analisi.<br/>
  
+ 
+ 
+<h2 id="activity">ATTIVITA': UN QUADRO DI INSIEME</h2>
+<em>31 Luglio</em>: Per coloro che non abbiamo potuto seguire il corso, si ricorda che occorre  impostare, nell'ordine
+(ma <em>non water-fall</em>, cioè con possibilità di modifiche dopo un ciclo di sviluppo):
+<ol>
+<li>l'analisi dei requisiti </li>
+<li>l'analisi del problema</li>
+<li>la progettazione e lo sviluppo della applicazione</li>
 
-    
+</ol>
+ <p>
+Il nostro obiettivo è costruire software fin dalla analisi dei requisiti in forma di MODELLI
+eseguibili e PIANI DI TESTING che si estendono/modificano nelle varie fasi.
+Per questo fine può essere opportuno definire un 'progetto preliminare' da inserire in <em>UN SOLO
+workspace</em> (denominato ad esempio  <ks>xxxISS2020</ks>, con <ks>xxx</ks>=nome del Team).
+In questo workspace andranno inseriti altri progetti, da quando inizia la fase 3.
+</p><p>
+L'analisi del problema dovrebbe produrre un modello che esprime la architettura logica
+del sistema e pone in luce l'Abstraction Gap (se esiste) rispetto alle tecnologie di riferimento
+per la implementazione (per noi Java/Kotlin).
+</p><p>
+Per applicazioni relative a sistemi distribuiti eterogenei, noi siamo partiti
+dalla constatazione che esiste 'di base' un Abstraction Gap rispetto a Java/Kotlin 
+che ci ha portato a definire e realizzare il metamodello QAK
+e la relativa piattaforma di supporto (Plugin eclipse).
+Va sottolineato che ogni specifico problema potrebbe indurre un analista a individuare altri 
+Abstraction Gap rispetto al metamodello QAK stesso.
+</p><p>
+L'articolazione dello sviluppo in SPRINT (Scrum) inizia dopo l'analisi del problema,
+e si basa sulla opportunità di affrontare i requisiti in modo incrementale.
+Nel nostro caso abbiamo di solito seguito un approccio <em>'dal semplice al complesso'</em>,
+introducendo un opportuno insieme di ASSUNZIONI. Ma ovviamente questo non è
+l'unico criterio possibile nè quello sempre più opportuno.
+</p><p>
+Ad esempio il primo SPRINT della applicazione del
+<a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/TemaFinaleBo20.html" 
+target="web">TemaFinaleBo20.html</a>
+
+può essere volto alla costruzione di un prototipo
+relativo al caso di un solo cliente che entra, ordina, consuma ed esce (senza incorrere
+nel problema 'maxstaytime' ). 
+</p><p>
+Una volta arrivati al <em>'done'</em> (terminologia SCRUM) di uno SPRINT, per decidere come impostare il successivo SPRINT 
+vanno inooltre sempre considerati anche aspetti di tipo economico-organizzativo, 
+in modo da assicurare che il processo di sviluppo si possa compiere nei tempi stabiliti e con costi contenuti.
+</p><p>
+Ogni SPRINT dovrebbe includere opportuni test   (a partire dai Piano di Testing già delineati/definiti nella
+fase di analisi dei requisiti) da eseguire al termine dello SPRINT. 
+Inoltre vanno considerate le fasi di SPRINT-review
+e SPRINT-retrospective che potrebbero essere condotte dopo un meeting con il committente
+(cioè con il docente).
+</p><p>
+Dunque il <b>numero e le finalità degli SPRINT sono definiti dal Team</b> di sviluppo dopo le interazioni
+suddette con con il committente.
+</p><p>
+Come detto, ogni SPRINT andrebbe inserito in un apposito nuovo progetto nel workspace
+<ks>xxxISS2020</ks> e salvato in un apposito GIT repo, il cui indirizzo  farete avere al committente
+al momento della consegna.
+</p><p>
+E' importante che un progetto relativo ad uno SPRINT contenga un folder (<ks>userDocs</ks>)
+che include un documento organizzato secondo il template HTML proposto in
+<a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.issLabStart/userDocs/template2020.html" 
+target="web">template2020.html</a>.
+
+</p><p>
+In questo documento vanno riportati per ogni sezioni i PUNTI-CHIAVE
+(come se fosse un presentazione da illustrare in un meeting), facendo riferimento,
+se si ritiene opportuno, ad altri documenti per  descrizioni/discussioni più dettagliate.
+Ovviamente lo <tt>SPRINT/N</tt> potrà fare riferimento con opportuni link - se e' il caso - a documenti dello  
+<tt>SPRINT/N-1</tt> o precedenti.
+</p> 
  <br/> <br/>
  </div>    
 

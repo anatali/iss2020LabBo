@@ -65,6 +65,7 @@ public class ImageService {
 			/*
 			 * The iterator of the Iterable returned by Files.newDirectoryStream 
 			 * (DirectoryStream implements Iterable) can only be used once. 
+			 * *******  ERROR: Iterator already obtained  *******
 			 * Fixed from https://www.isaacnote.com/2020/05/sprint-boot-list-files-to-flux.html?m=1
 			 */
 // 			Flux<Image> fluxImage = fluxPath.map( path -> 
