@@ -6,28 +6,30 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
+import reactor.core.publisher.DirectProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class ReactorDemo {
 	
-	public void demoFluxPublisher() {
-		Flux<String> flux1 = Flux.just("A", "B", "C");
-		Flux<String> flux2 = Flux.fromArray(new String[]{"A", "B", "C"});
-		Flux<String> flux3 = Flux.fromIterable(Arrays.asList("A", "B", "C"));
-		
-		System.out.println("demoFluxPublisher ---------- ");
-		flux1.subscribe( System.out::println);
-		
-	}
-	public void demoMonoPublisher() {
-		System.out.println("demoMonoPublisher ---------- ");
+	public void demoMono() {
+		System.out.println("demoMono ---------- ");
 		Mono<String> mono1 = Mono.empty();
 		Mono<String> mono2 = Mono.just("Bob");
-
-		mono1.subscribe( System.out::println);
-		mono2.subscribe( System.out::println);
-
+		mono1.subscribe( item -> System.out.println("demoMono: " + item) );
+		mono2.subscribe( item -> System.out.println("demoMono: " + item) );
+	}
+	public void demoFlux() {
+		int n = 0;
+		Flux<String> flux1 = Flux.just("A"+ n++, "B" + n++, "C"+ n++);
+		Flux<String> flux2 = Flux.fromArray(new String[]{"A"+ n++, "B" + n++, "C"+ n++});
+		Flux<String> flux3 = Flux.fromIterable(Arrays.asList("A"+ n++, "B" + n++, "C"+ n++));		
+		System.out.println("demoFlux ---------- ");
+		flux1.subscribe( item -> System.out.println("demoFlux - 1: " + item) );
+		flux1.subscribe( item -> System.out.println("demoFlux - 1: " + item) );
+ 		flux2.subscribe( item -> System.out.println("demoFlux - 2: " + item) );
+ 		flux2.subscribe( item -> System.out.println("demoFlux - 2: " + item) );
+ 		flux3.subscribe( item -> System.out.println("demoFlux - 3: " + item) );		
 	}
 
 	public void demoFP0() {
@@ -133,30 +135,33 @@ public class ReactorDemo {
 	}
 	
 	//From https://projectreactor.io/docs/core/release/reference/#producing
+	//Example 11. Example of state-based generate
 	public void demoFluxGen0() {
 		System.out.println("demoFluxGen0 ---------- ");
 		Flux<String> flux = Flux.generate(
-			    () -> 0, 
+			    () -> 0, 			// initial state value
 			    (state, sink) -> {
 			      sink.next("3 x " + state + " = " + 3*state); 
 			      if (state == 10) sink.complete(); 
 			      return state + 1; 	//return a new state that we use in the next invocation
 			    });	
-		flux.subscribe(System.out::println);
+		flux.subscribe( item -> System.out.println("demoFluxGen0: " + item) );
 	}
 	
+	//Example 12. Mutable state variant
 	public void demoFluxGen1() {
 		System.out.println("demoFluxGen1 ---------- ");
 		Flux<String> flux = Flux.generate(
 		    AtomicLong::new, 		//generate a mutable object as the state
 		    (state, sink) -> {
-		      long i = state.getAndIncrement(); 	//We mutate the state here
+		      long i = state.getAndIncrement(); 	//mutate the state 
 		      sink.next("3 x " + i + " = " + 3*i);
 		      if (i == 10) sink.complete();
-		      return state; 		//We return the same instance as the new state
+		      return state; 		//return the same instance as the new state
 	     });
-		flux.subscribe(System.out::println);
+		flux.subscribe( item -> System.out.println("demoFluxGen1: " + item) );
 	}
+	
 	//the generate method that includes a Consumer
 	//In the case of the state containing a database connection or other resource that needs to be handled 
 	//at the end of the process, the Consumer lambda could close the connection 
@@ -172,7 +177,7 @@ public class ReactorDemo {
 			      if (i == 10) sink.complete();
 			      return state; 
 			    }, (state) -> System.out.println("state: " + state)); 		
-		flux.subscribe(System.out::println);
+		flux.subscribe( item -> System.out.println("demoFluxGen2: " + item) );
 	}
 	
 	//create is a more advanced form of programmatic creation of a Flux which is suitable for  
@@ -208,9 +213,8 @@ public class ReactorDemo {
 	*/
 	
 	/*
-	//push is a middle ground between generate and create which is suitable for processing events from a single producer.
 	public void demoFluxPush0() {
-		System.out.println("demoFluxGen2 ---------- ");
+		System.out.println("demoFluxPush0 ---------- ");
 		Flux<String> bridge = Flux.push(sink -> {
 		    myEventProcessor.register(	//	All of this is done asynchronously whenever the myEventProcessor executes
 		      new SingleThreadEventListener<String>() { 
@@ -236,6 +240,7 @@ public class ReactorDemo {
 	
  
 
+	//push is a middle ground between generate and create which is suitable for processing events from a single producer.
 	public void demoFluxPush0() {
 		System.out.println("demoFluxPush0 ---------- ");
 		Flux<String> bridge = Flux.push(sink -> {
@@ -255,13 +260,39 @@ public class ReactorDemo {
 			}.start();
 			 
  		});		
-		bridge.subscribe(System.out::println);
+		bridge.subscribe( item -> System.out.println("received: " + item));
+	}
+	
+	
+	public void demoCold0() {
+		Flux<String> source = Flux.fromIterable(Arrays.asList("blue", "green", "orange", "purple"))
+                .map(String::toUpperCase);
+			source.subscribe(d -> System.out.println("Subscriber 1: "+d));
+			source.subscribe(d -> System.out.println("Subscriber 2: "+d));		
+	}
+	
+	//The process described by the operators on this Flux runs regardless of when subscriptions have been attached.
+	public void demoHot0() {
+		DirectProcessor<String> hotSource = DirectProcessor.create();
+		Flux<String> hotFlux              = hotSource.map(String::toUpperCase);
+
+		hotFlux.subscribe(d -> System.out.println("Subscriber 1 to Hot Source: "+d));
+
+		hotSource.onNext("blue");
+		hotSource.onNext("green");
+
+		hotFlux.subscribe(d -> System.out.println("Subscriber 2 to Hot Source: "+d));
+
+		hotSource.onNext("orange");
+		hotSource.onNext("purple");
+		hotSource.onComplete();		
 	}
 		
 	public static void main( String[] args) {
 		ReactorDemo appl = new ReactorDemo();
-//		appl.demoMonoPublisher();
-//		appl.demoFluxPublisher();
+		appl.demoMono();
+		appl.demoFlux();
+		
 //		appl.demoFP0();
 //		appl.demoFP1();
 //		appl.demoFP2();
@@ -278,6 +309,9 @@ public class ReactorDemo {
 		
 //		appl.demoFluxCreate0();
 		
-		appl.demoFluxPush0();
+//		appl.demoFluxPush0();
+		
+//		appl.demoCold0();
+//		appl.demoHot0();
 	}
 }

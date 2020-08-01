@@ -83,11 +83,11 @@ kc{
 	 
 }
 pre{
-	font-family: "Consolas";
-	font-size: 85%;
+	font-family: 8"Consolas";
+	font-size: 90%;
 	background-color: #f5f5f5;
-	border: 1.5px solid silver;
-	padding: 5px;
+	border: 1.0px solid silver;
+	padding: 2px;
 }
 m{
 	font-family: "Helvetica";
@@ -219,25 +219,197 @@ DISI - HapiFhirUsage.html</a> (on <tt>natMicroservices .... it.unibo.mirth.java/
 <div class="remark">
 <a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/" 
 target="web">Spring Framework Reference Documentation</a> (5.0.0.BUILD-SNAPSHOT)<br/>
-
-<hr/>
-
-<a href="https://spring.io/projects/spring-boot" target="web">Spring Boot 2.3.2</a><br/>
-<hr/>
-
-<a href="https://www.tutorialspoint.com/spring_boot/index.htm" target="web">Spring Boot Tutorial</a><br/>
-<a href="https://www.vogella.com/tutorials/SpringBoot/article.html" target="web">Spring Boot Tutorial (Vogella)</a><br/>
 <a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html" 
 target="web">23. WebFlux framework</a><br/>
 
 <hr/>
+See also:
+ <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webspring.intro/userDocs/LabSpringIntro.html" target="web">  
+LabSpringIntro | Introduction to Spring Boot</a> 
+<!--
+<a href="https://spring.io/projects/spring-boot" target="web">Spring Boot 2.3.2</a><br/>
+<a href="https://www.tutorialspoint.com/spring_boot/index.htm" target="web">Spring Boot Tutorial</a><br/>
+<a href="https://www.vogella.com/tutorials/SpringBoot/article.html" target="web">Spring Boot Tutorial (Vogella)</a><br/>
 <a href="https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm" target="web">Spring Boot - Introduction</a>
-(<i>Micro Service, Auto Configuration, Application, Component Scan</i>)<br/>
-
- 
-
+(TutorialsPoint: <i>Micro Service, Auto Configuration, Application, Component Scan</i>)<br/>
+-->
 </div> 
 
+
+<h2>About Reactor</h2>
+
+<ul>
+<li><a href="https://projectreactor.io/docs/core/release/reference/index.html" target="web">Reactor 3 Reference Guide (<ks>R3RFG</ks>)</a></li>
+<li><a href="https://projectreactor.io/docs/core/release/reference/index.html#intro-reactive" target="web">
+<ks>R3RFG  | 3.</ks> Introduction to Reactive Programming</a> 
+(<i>Iterable, Asynchronicity, Callbacks, Futures, CompletableFuture, Backpressure, Operators, Hot vs Cold</i>)</li>
+<li><a href="https://projectreactor.io/docs/core/release/reference/index.html#intro-reactive" target="web">
+<ks>R3RFG  | 4.</ks> Reactor Core Features</a> 
+(<i>Publisher, Flux, Mono,  subscribe, Disposable, BaseSubscriber, ...</i>)</li>
+
+<li><a href="https://projectreactor.io/docs/core/release/reference/#producing" target="web">
+<ks>R3RFG  | 4.4.</ks> Programmatically creating a sequence</a>
+(<i>generate, create, push, handle, concurrency-agnostic, Scheduler, publishOn, subscribeOn, onError, retry, Handling Exceptions,
+Processor, Sink, Available Processors (Direct,Unicast,Emitter,Replay)</i>)</li>
+
+<li><a href="https://projectreactor.io/docs/core/release/reference/#producing" target="web">
+<ks>R3RFG  | 4.5.</ks> Threading and Schedulers</a>
+(<i>concurrency-agnostic, Scheduler, publishOn, subscribeOn, )</i>)</li>
+
+<li><a href="https://projectreactor.io/docs/core/release/reference/#producing" target="web">
+<ks>R3RFG  | 4.6.</ks> Handling Errors</a>
+(<i>onError, retry, Handling Exceptions </i>)</li>
+
+<li><a href="https://projectreactor.io/docs/core/release/reference/#producing" target="web">
+<ks>R3RFG  | 4.7.</ks> Processors</a>
+(<i>Processor, Sink, Available Processors (Direct,Unicast,Emitter,Replay)</i>)</li>
+
+<li><a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
+<ks>R3RFG  | 9.2. </ks> Hot Versus Cold</a>
+(<i>Processor, Sink, Available Processors (Direct,Unicast,Emitter,Replay)</i>)</li>
+
+
+
+
+<hr/>
+ <li><a href="https://www.baeldung.com/spring-webflux" target="web">Guide to Spring 5 WebFlux</a> (Baeldung)<br/>
+</li>
+ <li><a href=" https://howtodoinjava.com/spring-webflux/spring-webflux-tutorial/" target="web">Spring WebFlux Tutorial</a> (HowToDoInJava)<br/>
+ </li>
+ 
+
+ <hr/>
+ <h4>From <a href="https://spring.io/team/dsyer" target="web">Dave Syer</a> (<i>Founder of Spring Cloud, Spring Boot, ...</i>)</h4>
+ <li><a href="https://spring.io/blog/2016/06/07/notes-on-reactive-programming-part-i-the-reactive-landscape" 
+ target="web">Notes on Reactive Programming Part I: The Reactive Landscape</a>
+</li>
+ <li><a href="https://spring.io/blog/2016/06/13/notes-on-reactive-programming-part-ii-writing-some-code" 
+ target="web">Notes on Reactive Programming Part II: Writing Some Code</a>
+</li>
+<li><a href="https://spring.io/blog/2016/07/20/notes-on-reactive-programming-part-iii-a-simple-http-server-application" 
+ target="web">Notes on Reactive Programming Part III: A Simple HTTP Server Application</a>
+
+</li>
+<hr/>
+<li><a href="https://www.influxdata.com/blog/use-flux-to-group-shape-and-analyze-your-time-series-data/" 
+ target="web">Use Flux to Group, Shape, and Analyze Your Time Series Data</a></li>
+ <li>
+ <a href="https://docs.influxdata.com/flux/v0.7/introduction/getting-started" 
+ target="web">InfluxData’s new functional data scripting language</a>
+
+ </li>
+ <hr/>
+ <li><a href="https://www.nurkiewicz.com/2019/02/rxjava-vs-reactor.html" target="web">RxJava vs Reactor</a></li>
+<li><a href="https://spring.io/blog/2019/10/15/simple-event-driven-microservices-with-spring-cloud-stream" 
+target="web">Simple Event Driven Microservices with Spring Cloud Stream</a></li>
+ 
+</ul>
+
+
+<h3>About Hooks.onOperatorDebug</h3>
+<li><a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
+<ks>R3RFG  | 7.2. </ks> Activating Debug Mode - aka tracebacks</a> </li>
+
+In reactor, <tt>Hooks.onOperatorDebug()</tt> instruments the Reactor operators to collect more information about 
+the current stack during the execution. This has a performance cost, and should not be done in production. 
+This is a static call that needs to be done only once per JVM execution, so no need to repeat it for every controller call. 
+With Spring Boot, this is done automatically for you is you have the spring-boot-devtools dependency on classpath.
+<br/><br/>
+Since Spring Boot 2.1, you can get better logs for web-related operations by setting to DEBUG the web logging group, 
+so <tt>logging.level.web=debug</tt>. This will log useful information about web requests processing.
+
+<h3>About Spring events (to remove???)</h3>
+<ul>
+  <li><a href="https://reflectoring.io/spring-boot-application-events-explained/" target="web">
+  Spring Boot Application Events Explained</a> (Tom Hombergs)</li>
+
+<li><a href="https://www.baeldung.com/spring-events" target="web">Spring Events</a> (Baeldung)</li>
+<li><a href="https://howtodoinjava.com/spring-core/how-to-publish-and-listen-application-events-in-spring/" 
+target="web">Spring – Application events</a> (HowToDoInJava)</li>
+</ul>
+
+
+<h2>Examples</h2>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#core-features" target="web">
+<ks>R3RFG | 4.</ks> Reactor Core Features</a><br/>
+The Reactor project main artifact is reactor-core, a reactive library that focuses on the 
+Reactive Streams specification and targets Java 8.
+
+Reactor introduces composable reactive types that implement <tt>Publisher</tt> but also provide a rich vocabulary of operators: 
+<tt>Flux</tt> and Mono</tt>. <br/><br/>
+A <ks>Flux</ks> object represents a reactive sequence of <tt>0..N</tt> items, 
+while a <ks>Mono</ks> object represents a single-value-or-empty <tt>(0..1)</tt> result.
+
+<h3>Flux and Mono</h3>
+The examples are reported in <a href="../src/main/reactiveDemo/ReactorDemo.java" target="code">ReactorDemo.java</a>
+<div class="remark">
+Flux (and Mono) represent an asynchronous sequence of data, and <k>nothing happens before you subscribe</k>.
+</div>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:40%" >
+<pre>
+public void demoMono() {
+  Mono<String> mono1 = Mono.empty();
+  Mono<String> mono2 = Mono.just("Bob");
+  mono1.subscribe( item -> System.out.println("demoMono: " + item) );
+  mono2.subscribe( item -> System.out.println("demoMono: " + item) );
+}
+</pre> 
+</td>
+<td>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#mono" target="web"><ks>R3RFG</ks> Mono</a>:<br/>
+<m>
+<ul>
+<li>A Mono&lt;T> is a specialized <tt>Publisher&lt;T></tt> that emits at most one item and then (optionally) terminates with an 
+<ks>onComplete</ks> signal or an <ks>onError</ks> signal.</li>
+</ul>
+</m>
+</td>
+</tr>
+
+<tr>
+<td >
+<pre>
+public void demoFlux() {
+  int n = 0;
+  Flux<String> flux1 = Flux.just("A"+ n++, "B" + n++, "C"+ n++);
+  Flux<String> flux2 = Flux.fromArray(new String[]{"A"+ n++, "B" + n++, "C"+ n++});
+  Flux<String> flux3 = Flux.fromIterable(Arrays.asList("A"+ n++, "B" + n++, "C"+ n++));
+  flux1.subscribe( item -> System.out.println("demoFlux - 1: " + item) );
+  flux1.subscribe( item -> System.out.println("demoFlux - 1: " + item) );
+  flux2.subscribe( item -> System.out.println("demoFlux - 2: " + item) );
+  flux2.subscribe( item -> System.out.println("demoFlux - 2: " + item) );
+  flux3.subscribe( item -> System.out.println("demoFlux - 3: " + item) );		
+}
+</pre><m></m>
+</td>
+<td>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#flux" target="web"><ks>R3RFG</ks> Flux</a>:<br/> 
+<m>
+<ul>
+<li>A Flux&lt;T> is a standard  <tt>Publisher&lt;T></tt> that represents an asynchronous sequence of 0 to N emitted items,
+optionally terminated by either <ks>onComplete</ks> signal or an <ks>onError</ks> signal.</li>
+</ul>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
+</m>
+<ks>R3RFG | 9.2.</ks>  Hot Versus Cold</a>:<br/> 
+<m>
+<ul>
+<li><em>just</em> is an example of the few hot operators in Reactor. 
+It directly captures the value at <i>assembly time</i> and replays it to anybody subscribing to it later. </li>
+</ul>
+</m>
+</td>
+</tr>
+ </tbody>
+</table>
+ <br/><br/>
+
+
+
+<h1>Building Applications</h1>
 <h2>Start-up</h2>
  
 <ol>
@@ -279,63 +451,6 @@ and look at <a href="../build.gradle" target="code">build.gradle</a>.
 to change the logo in file <a href="../src/resources/banner.txt"  target="code">banner.txt</a><br/>  </li>
 
  </ol>
-
- 
-<h2>About Flux</h2>
-
-<ul>
- <li><a href="https://www.baeldung.com/spring-webflux" target="web">Guide to Spring 5 WebFlux</a> (Baeldung)<br/>
-</li>
- <li><a href=" https://howtodoinjava.com/spring-webflux/spring-webflux-tutorial/" target="web">Spring WebFlux Tutorial</a> (HowToDoInJava)<br/>
- </li>
-  <li><a href="https://projectreactor.io/docs/core/release/reference/index.html" target="web">Reactor 3 Reference Guide</a></li>
- <li><a href="https://projectreactor.io/docs/core/release/reference/#producing" target="web">Reactor 3 Reference Guide. 4.4. Programmatically creating a sequence</a></li>
- <li><a href="https://reflectoring.io/spring-boot-application-events-explained/" target="web">Spring Boot Application Events Explained</a></li>
-
-<li><a href="https://www.baeldung.com/spring-events" target="web">Spring Events</a> (Baeldung)</li>
-<li><a href="https://howtodoinjava.com/spring-core/how-to-publish-and-listen-application-events-in-spring/" 
-target="web">Spring – Application events</a> (HowToDoInJava)</li>
-
-
- <hr/>
- <h4>From <a href="https://spring.io/team/dsyer" target="web">Dave Syer</a> (<i>Founder of Spring Cloud, Spring Boot, ...</i>)</h4>
- <li><a href="https://spring.io/blog/2016/06/07/notes-on-reactive-programming-part-i-the-reactive-landscape" 
- target="web">Notes on Reactive Programming Part I: The Reactive Landscape</a>
-</li>
- <li><a href="https://spring.io/blog/2016/06/13/notes-on-reactive-programming-part-ii-writing-some-code" 
- target="web">Notes on Reactive Programming Part II: Writing Some Code</a>
-</li>
-<li><a href="https://spring.io/blog/2016/07/20/notes-on-reactive-programming-part-iii-a-simple-http-server-application" 
- target="web">Notes on Reactive Programming Part III: A Simple HTTP Server Application</a>
-
-</li>
-<hr/>
-<li><a href="https://www.influxdata.com/blog/use-flux-to-group-shape-and-analyze-your-time-series-data/" 
- target="web">Use Flux to Group, Shape, and Analyze Your Time Series Data</a></li>
- <li>
- <a href="https://docs.influxdata.com/flux/v0.7/introduction/getting-started" 
- target="web">InfluxData’s new functional data scripting language</a>
-
- </li>
- <hr/>
- <li><a href="https://www.nurkiewicz.com/2019/02/rxjava-vs-reactor.html" target="web">RxJava vs Reactor</a></li>
-<li><a href="https://spring.io/blog/2019/10/15/simple-event-driven-microservices-with-spring-cloud-stream" 
-target="web">Simple Event Driven Microservices with Spring Cloud Stream</a></li>
-
- 
- 
-</ul>
-
-
-<h2>About Hooks.onOperatorDebug</h2>
-In reactor, <tt>Hooks.onOperatorDebug()</tt> instruments the Reactor operators to collect more information about 
-the current stack during the execution. This has a performance cost, and should not be done in production. 
-This is a static call that needs to be done only once per JVM execution, so no need to repeat it for every controller call. 
-With Spring Boot, this is done automatically for you is you have the spring-boot-devtools dependency on classpath.
-<br/><br/>
-Since Spring Boot 2.1, you can get better logs for web-related operations by setting to DEBUG the web logging group, 
-so <tt>logging.level.web=debug</tt>. This will log useful information about web requests processing.
- 
 
 <h2>ApplicationStep0</h2>
 <ul>
