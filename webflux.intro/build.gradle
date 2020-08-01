@@ -47,6 +47,15 @@ TESTING
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'io.projectreactor:reactor-test'
+
+/*
+RXJAVA
+*/
+	//https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
+	compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.0.6' 
+	
+	// https://mvnrepository.com/artifact/org.twitter4j/twitter4j-stream
+	compile group: 'org.twitter4j', name: 'twitter4j-stream', version: '4.0.2'
  	 
 /*
 HTTP CLIENT
