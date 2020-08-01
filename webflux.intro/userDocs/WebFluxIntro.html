@@ -348,7 +348,7 @@ Flux (and Mono) represent an asynchronous sequence of data, and <k>nothing happe
 <table style="width:98%">
 <tbody>	
 <tr>
-<td style="width:40%" >
+<td style="width:50%" >
 <pre>
 public void demoMono() {
   Mono<String> mono1 = Mono.empty();
@@ -392,8 +392,8 @@ public void demoFlux() {
 <li>A Flux&lt;T> is a standard  <tt>Publisher&lt;T></tt> that represents an asynchronous sequence of 0 to N emitted items,
 optionally terminated by either <ks>onComplete</ks> signal or an <ks>onError</ks> signal.</li>
 </ul>
-<a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
 </m>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
 <ks>R3RFG | 9.2.</ks>  Hot Versus Cold</a>:<br/> 
 <m>
 <ul>
@@ -405,7 +405,166 @@ It directly captures the value at <i>assembly time</i> and replays it to anybody
 </tr>
  </tbody>
 </table>
- <br/><br/>
+ 
+<h3>Generators</h3>
+<h4> 
+<td><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing.generate" target="web">
+<ks>R3RFG | 4.4.1.</ks>   Synchronous generate</a></h4>
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:65%" >
+<pre>
+public void demoFluxGen0() {
+  Flux<String> flux = Flux.generate(
+	() -> 0, 			<kc>//initial state value</kc>
+	(state, sink) -> {
+	  <k>sink.next</k>("3 x " + state + " = " + 3*state); 
+	  if (state == 10) <k>sink.complete()</k>; 
+	  return state + 1; 	<kc>//a new state for the next invocation</kc>
+	});	
+  flux.subscribe( item -> System.out.println("demoFluxGen0 - 1: " + item) );
+  flux.subscribe( item -> System.out.println("demoFluxGen0 - 2: " + item) );
+}
+</pre>
+</td>
+<td><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
+<ks>R3RFG | 4.4.1.</ks>   Synchronous generate</a> (Example 4.11):<br/> 
+<m>
+the generate method takes a generator function.
+</m>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>
+public void demoFluxGen1() {
+  Flux<String> flux = Flux.generate(
+	<k>(AtomicLong::new</k>, 	<kc>//a mutable object as the state</kc>
+	(state, sink) -> {
+	  long i = state.getAndIncrement();   <kc>//mutate the state</kc> 
+	  sink.next</k>("3 x " + i + " = " + 3*i);
+	  if (i == 5) sink.complete();
+	  return <k>state</k>;  <kc>//return the same instance as the new state</kc>
+	});	
+  flux.subscribe( item -> System.out.println("demoFluxGen1 - 1: " + item) );
+  flux.subscribe( item -> System.out.println("demoFluxGen1 - 2: " + item) );
+}
+</pre>
+</td>
+<td><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
+<ks>R3RFG | 4.4.1.</ks>   Synchronous generate</a> (Example 4.12):<br/> 
+<m>
+using a single <ks>AtomicLong</ks> as the state, mutating it on each round.
+</m>
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>
+public void demoFluxGen2() {
+  Flux<String> flux = Flux.generate(
+	(AtomicLong::new, 	<kc>//a mutable object as the state</kc>
+	(state, sink) -> {
+	  long i = state.getAndIncrement();   <kc>//mutate the state</kc> 
+	  sink.next("3 x " + i + " = " + 3*i);
+	  if (i == 5) sink.complete();
+	  return state;  <kc>//return the same instance as the new state</kc>
+	})<k>, (state) -> System.out.println("state: " + state))</k>;	
+  flux.subscribe( item -> System.out.println("demoFluxGen2 - 1: " + item) );
+  flux.subscribe( item -> System.out.println("demoFluxGen2 - 2: " + item) );
+}
+</pre>
+</td>
+<td><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
+<ks>R3RFG | 4.4.1.</ks>   Synchronous generate</a> (Example 4.12,  <k>with a consumer</k>):<br/> 
+<m>
+the <k>Consumer</k> lambda could close a connection or  handle any tasks that should be done at the end of the process.
+</m>
+</td>
+</tr>
+ 
+ </tbody>
+</table>
+
+<h4><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing.create" target="web">
+<ks>R3RFG | 4.4.2.</ks>  Asynchronous and Multi-threaded: create</a> | 
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#_asynchronous_but_single_threaded_push" target="web">
+<ks>R3RFG | 4.4.3.</ks>   Asynchronous but single-threaded: push</a>
+</h4>
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:45%" >
+<pre>
+public void demoCreate0() {
+  Flux<String> bridge = <k>Flux.create</k>(
+	emitter -> { <m><kc>//emitter type= Consumer&lt;? super FluxSink&lt;String>></kc></m>
+	  for (int i = 0; i < 3; i++) {
+		emitter<k>.next</k>(String.valueOf(i));
+	  }
+  });
+ bridge.subscribe(item -> System.out.println("demoCreate0 - 1: " + item));
+ bridge.subscribe(item -> System.out.println("demoCreate0 - 2: " + item));
+}
+
+</pre>
+</td>
+<td><m>
+create is a more advanced form of programmatic creation of a Flux which is suitable for  
+multiple emissions per round, even from multiple threads.</m>
+
+</td>
+</tr>
+
+
+<tr>
+<td><pre>
+	public void demoPush0() {
+		System.out.println("demoFluxPush0 ---------- ");
+		Flux<String> bridge = Flux.push(sink -> {
+			new Thread() {
+				int n = 0;
+				public void run() {
+					while( n < 5 ) {
+						sink.next("a" + n++);
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+	 						e.printStackTrace();
+						}
+					}//while
+					sink.complete();
+				}
+			}.start();
+			 
+ 		});		
+		bridge.subscribe( item -> System.out.println("demoPush0 - 1: " + item));
+		bridge.subscribe( item -> System.out.println("demoPush0 - 2: " + item));
+	}
+
+</pre>
+</td>
+<td><m>
+push is a middle ground between generate and create which is suitable for processing events from a single producer
+</m>
+</td>
+</tr>
+
+<tr>
+<td>
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
+<h3>Functional programming style</h3>
+
 
 
 

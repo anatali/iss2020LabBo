@@ -145,7 +145,8 @@ public class ReactorDemo {
 			      if (state == 10) sink.complete(); 
 			      return state + 1; 	//return a new state that we use in the next invocation
 			    });	
-		flux.subscribe( item -> System.out.println("demoFluxGen0: " + item) );
+		flux.subscribe( item -> System.out.println("demoFluxGen0 - 1: " + item) );
+		flux.subscribe( item -> System.out.println("demoFluxGen0 - 2: " + item) );
 	}
 	
 	//Example 12. Mutable state variant
@@ -156,10 +157,11 @@ public class ReactorDemo {
 		    (state, sink) -> {
 		      long i = state.getAndIncrement(); 	//mutate the state 
 		      sink.next("3 x " + i + " = " + 3*i);
-		      if (i == 10) sink.complete();
+		      if (i == 5) sink.complete();
 		      return state; 		//return the same instance as the new state
 	     });
-		flux.subscribe( item -> System.out.println("demoFluxGen1: " + item) );
+		  flux.subscribe( item -> System.out.println("demoFluxGen1 - 1: " + item) );
+		  flux.subscribe( item -> System.out.println("demoFluxGen1 - 2: " + item) );
 	}
 	
 	//the generate method that includes a Consumer
@@ -174,21 +176,23 @@ public class ReactorDemo {
 			      (state, sink) -> { 
 			      long i = state.getAndIncrement(); 
 			      sink.next("3 x " + i + " = " + 3*i);
-			      if (i == 10) sink.complete();
+			      if (i == 5) sink.complete();
 			      return state; 
 			    }, (state) -> System.out.println("state: " + state)); 		
-		flux.subscribe( item -> System.out.println("demoFluxGen2: " + item) );
+		flux.subscribe( item -> System.out.println("demoFluxGen2 - 1: " + item) );
+		flux.subscribe( item -> System.out.println("demoFluxGen2 - 2: " + item) );
 	}
 	
 	//create is a more advanced form of programmatic creation of a Flux which is suitable for  
 	//multiple emissions per round, even from multiple threads.
-	public void demoFluxCreate0() {
-		Flux<String> bridge = Flux.create(emitter -> {
+	public void demoCreate0() {  
+		Flux<String> bridge = Flux.create(emitter -> {	//Consumer<? super FluxSink<String>> emitter
 			for (int i = 0; i < 3; i++) {
 				emitter.next(String.valueOf(i));
 			}
 		});
-		bridge.subscribe(System.out::println);
+		bridge.subscribe(item -> System.out.println("demoFluxCreate0 - 1: " + item));
+		bridge.subscribe(item -> System.out.println("demoFluxCreate0 - 2: " + item));
 	}
 	
 	/*
@@ -241,7 +245,7 @@ public class ReactorDemo {
  
 
 	//push is a middle ground between generate and create which is suitable for processing events from a single producer.
-	public void demoFluxPush0() {
+	public void demoPush0() {
 		System.out.println("demoFluxPush0 ---------- ");
 		Flux<String> bridge = Flux.push(sink -> {
 			new Thread() {
@@ -260,7 +264,8 @@ public class ReactorDemo {
 			}.start();
 			 
  		});		
-		bridge.subscribe( item -> System.out.println("received: " + item));
+		bridge.subscribe( item -> System.out.println("demoPush0 - 1: " + item));
+		bridge.subscribe( item -> System.out.println("demoPush0 - 2: " + item));
 	}
 	
 	
@@ -290,8 +295,13 @@ public class ReactorDemo {
 		
 	public static void main( String[] args) {
 		ReactorDemo appl = new ReactorDemo();
-		appl.demoMono();
-		appl.demoFlux();
+//		appl.demoMono();
+//		appl.demoFlux();
+		
+// 		appl.demoFluxGen0();
+//  	appl.demoFluxGen1();
+// 		appl.demoFluxGen2();
+
 		
 //		appl.demoFP0();
 //		appl.demoFP1();
@@ -302,14 +312,11 @@ public class ReactorDemo {
 		
 //		appl.demoFlux1();
 		
-//		appl.demoFluxGen0();
-// 		appl.demoFluxGen1();
-//		appl.demoFluxGen2();
 		
 		
-//		appl.demoFluxCreate0();
+// 		appl.demoCreate0();
 		
-//		appl.demoFluxPush0();
+ 		appl.demoPush0();
 		
 //		appl.demoCold0();
 //		appl.demoHot0();
