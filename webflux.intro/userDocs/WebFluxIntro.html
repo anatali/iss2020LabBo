@@ -490,11 +490,7 @@ the <k>Consumer</k> lambda could close a connection or  handle any tasks that sh
  </tbody>
 </table>
 
-<h4><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing.create" target="web">
-<ks>R3RFG | 4.4.2.</ks>  Asynchronous and Multi-threaded: create</a> | 
-<a href="https://projectreactor.io/docs/core/release/reference/index.html#_asynchronous_but_single_threaded_push" target="web">
-<ks>R3RFG | 4.4.3.</ks>   Asynchronous but single-threaded: push</a>
-</h4>
+<h4>create and push</h4>
 
 <table style="width:98%">
 <tbody>	
@@ -514,7 +510,10 @@ public void demoCreate0() {
 
 </pre>
 </td>
-<td><m>
+<td>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#producing.create" target="web">
+<ks>R3RFG | 4.4.2.</ks>  Asynchronous and Multi-threaded: create</a><br/>
+<m>
 create is a more advanced form of programmatic creation of a Flux which is suitable for  
 multiple emissions per round, even from multiple threads.</m>
 
@@ -524,32 +523,32 @@ multiple emissions per round, even from multiple threads.</m>
 
 <tr>
 <td><pre>
-	public void demoPush0() {
-		System.out.println("demoFluxPush0 ---------- ");
-		Flux<String> bridge = Flux.push(sink -> {
-			new Thread() {
-				int n = 0;
-				public void run() {
-					while( n < 5 ) {
-						sink.next("a" + n++);
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-	 						e.printStackTrace();
-						}
-					}//while
-					sink.complete();
-				}
-			}.start();
-			 
- 		});		
-		bridge.subscribe( item -> System.out.println("demoPush0 - 1: " + item));
-		bridge.subscribe( item -> System.out.println("demoPush0 - 2: " + item));
-	}
-
+public void demoPush0() {
+ Flux<String> bridge = Flux.push(sink -> {
+   new Thread() {
+	int n = 0;
+	public void run() {
+	  while( n < 5 ) {
+		sink.next("a" + n++);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	  }//while
+	  sink.complete();
+	}//run
+   }.start();		 
+ });		
+ bridge.subscribe( item -> System.out.println("demoPush0 - 1: " + item));
+ bridge.subscribe( item -> System.out.println("demoPush0 - 2: " + item));
+}
 </pre>
 </td>
-<td><m>
+<td>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#_asynchronous_but_single_threaded_push" target="web">
+<ks>R3RFG | 4.4.3.</ks>   Asynchronous but single-threaded: push</a><br/>
+<m>
 push is a middle ground between generate and create which is suitable for processing events from a single producer
 </m>
 </td>
@@ -563,10 +562,70 @@ push is a middle ground between generate and create which is suitable for proces
 </tr>
  </tbody>
 </table>
+
+<h4>Hot publishers</h4>
+
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:45%" >
+<pre>
+public void demoHot0() {
+ DirectProcessor<String> hotSource = <k>DirectProcessor</k>.create();
+ Flux<String> hotFlux              = hotSource.map(String::toUpperCase);
+
+ <ks>hotFlux.subscribe</ks>(d -> System.out.println("Subscriber 1: "+d));
+
+ hotSource<k>.onNext</k>("blue");
+ hotSource<k>.onNext</k>("green");
+
+ <ks>hotFlux.subscribe</ks>(d -> System.out.println("Subscriber 2: "+d));
+
+ hotSource<k>.onNext</k>("orange");
+ hotSource<k>.onNext</k>("purple");
+ 
+ hotSource.<k>onComplete</k>();		
+}
+
+</pre>
+</td>
+<td>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
+<ks>R3RFG | 9.2.</ks>  Hot Versus Cold</a><br/>
+<m>
+Hot publishers <k>do not depend on any number of subscribers</k>.<br/>
+They might start publishing data right away and would continue doing so whenever a new Subscriber comes in 
+(in which case, the subscriber would see only new elements emitted after it subscribed). 
+<br/><br/>
+For hot publishers, <k>something does indeed happen before you subscribe</k>.
+</m>
+</td>
+</tr>
+
+ </tbody>
+</table>
+
 <h3>Functional programming style</h3>
 
+<table style="width:98%">
+<tbody>	
+<tr>
+<td style="width:45%" >
+<pre>
+</pre>
+</td>
+<td>
+</td>
+</tr>
 
-
+<tr>
+<td>
+</td>
+<td>
+</td>
+</tr>
+ </tbody>
+</table>
 
 <h1>Building Applications</h1>
 <h2>Start-up</h2>
