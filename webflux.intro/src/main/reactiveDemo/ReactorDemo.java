@@ -18,24 +18,69 @@ import reactor.core.scheduler.Schedulers;
 
 public class ReactorDemo {
 	
+	
+	private Subscriber<Long> anobserver = new Subscriber<Long>() {
+	    @Override
+	    public void onSubscribe(Subscription s) {
+//	    	System.out.println("subscriber2 - onSubscribe Long.MAX_VALUE= " + Long.MAX_VALUE );
+	    	s.request( 5 );		//0-4 only
+		}
+	 
+	    @Override
+	    public void onNext(Long v) {
+	      System.out.println("anobserver - onNext: " + v );
+ 	    }
+	 
+	    @Override
+	    public void onError(Throwable t) {
+	    	System.out.println("anobserver - onError " + t );				    	
+	    }
+	
+	    @Override
+	    public void onComplete() {
+	    	System.out.println("anobserver - onComplete "  );
+	    }
+
+	};
+	
 	public void demoMono() {
 		System.out.println("demoMono ---------- ");
 		Mono<String> mono1 = Mono.empty();
 		Mono<String> mono2 = Mono.just("Bob");
-		mono1.subscribe( item -> System.out.println("demoMono: " + item) );
-		mono2.subscribe( item -> System.out.println("demoMono: " + item) );
+		mono1.subscribe( item -> System.out.println("subscriber1 item= " + item) );
+		mono2.subscribe( 
+				item  -> System.out.println("subscriber2 item=  " + item),
+ 				error -> System.out.println("subscriber2 error= " + error ),
+ 				()    -> System.out.println("subscriber2 done "   )
+		);
 	}
 	public void demoFlux() {
 		int n = 0;
-		Flux<String> flux1 = Flux.just("A"+ n++, "B" + n++, "C"+ n++);
-		Flux<String> flux2 = Flux.fromArray(new String[]{"A"+ n++, "B" + n++, "C"+ n++});
-		Flux<String> flux3 = Flux.fromIterable(Arrays.asList("A"+ n++, "B" + n++, "C"+ n++));		
+		Flux<String> flux1 = Flux.just("A"+ n++, "B" + n++ );
+		Flux<String> flux2 = Flux.fromArray(new String[]{"A"+ n++, "B" + n++ });
+		Flux<String> flux3 = Flux.fromIterable(Arrays.asList("A"+ n++, "B" + n++ ));		
 		System.out.println("demoFlux ---------- ");
 		flux1.subscribe( item -> System.out.println("demoFlux - 1: " + item) );
 		flux1.subscribe( item -> System.out.println("demoFlux - 1: " + item) );
  		flux2.subscribe( item -> System.out.println("demoFlux - 2: " + item) );
- 		flux2.subscribe( item -> System.out.println("demoFlux - 2: " + item) );
- 		flux3.subscribe( item -> System.out.println("demoFlux - 3: " + item) );		
+ 		flux3.subscribe( 
+				item  -> System.out.println("demoFlux - 3 item=  " + item),
+ 				error -> System.out.println("demoFlux - 3 error= " + error ),
+ 				()    -> System.out.println("demoFlux - 3 done "   )	
+ 		);
+ 	}
+	public void demoObserver() {		
+		Flux<Long> data = Flux.just( 1L,2L,3L,4L,5L,6L,7L  );
+		data.subscribe( anobserver  );
+		data.subscribe( v -> System.out.println("v= " + v) );
+	}
+	
+	public void demoBackpressure() {
+		CustomSubscriber<String> sbscrb1 = new CustomSubscriber<>("sbscrb1");
+		CustomSubscriber<String> sbscrb2 = new CustomSubscriber<>("sbscrb2");
+		Flux<String> source              = Flux.just("A","B","C","D" );
+		source.subscribe( sbscrb1 );		
+		//source.subscribe( sbscrb2 );		
 	}
 
 	public void demoFP0() {
@@ -228,8 +273,8 @@ public class ReactorDemo {
         
 	    Note some operators will also cancel subscriptions on your behalf! 
 	    That is the case for take(int) for instance, which will cancel upstream once enough items have been emitted.
-	*/
-	
+	*/	
+	// %%%%%%%%%%%%%%%%% Nothing happens until you subscribe %%%%%%%%%%%%%%%%%
 	public void demoDuration() {
 		System.out.println("demoDuration ---------- ");
 		//Flux<Long> timer = Flux.interval( Duration.ofMillis(500 ) ) //enabled by Schedulers.parallel() sez. 4.5
@@ -239,7 +284,6 @@ public class ReactorDemo {
 		Flux<Long> timer = Flux.interval( Duration.ofMillis(500 ), disiScheduler ) 
 				.map( tick -> {if (tick <= 6) return tick; throw new RuntimeException("Aborted"); } );  //generate an error
  		
-		// %%%%%%%%%%%%%%%%% Nothing happens until you subscribe %%%%%%%%%%%%%%%%%
 		timer.take(3).subscribe( 
  				tick  -> System.out.println("subscriber0 tick= " + tick ),
  				error -> System.out.println("subscriber0 error= " + error ),
@@ -253,31 +297,7 @@ public class ReactorDemo {
  		);
 		
 		
-		timer.subscribe( 
-				new Subscriber<Long>() {
-				    @Override
-				    public void onSubscribe(Subscription s) {
-				    	System.out.println("subscriber2 - onSubscribe Long.MAX_VALUE= " + Long.MAX_VALUE );
-				    	s.request( 5 );		//0-4 only
- 				    }
-				 
-				    @Override
-				    public void onNext(Long v) {
-				      System.out.println("subscriber2 - onNext: " + v );
-				      //elements.add(integer);
-				    }
-				 
-				    @Override
-				    public void onError(Throwable t) {
-				    	System.out.println("subscriber2 - onError " + t );				    	
-				    }
-				
-				    @Override
-				    public void onComplete() {
-				    	System.out.println("subscriber2 - onComplete "  );
-				    }
-
- 				});
+		timer.subscribe( anobserver );
 		
  		delay(6000);
  		disiScheduler.dispose();
@@ -390,6 +410,7 @@ public class ReactorDemo {
 
 	/*
 	 * Backpressure is the ability for the consumer to signal the producer that the rate of emission is too high. sez 3.3.5
+	 * Propagating request signals upstream is  used to implement backpressure.
 	 *	A subscriber can work in unbounded mode and let the source push all the data at its fastest achievable rate 
 	 *	or it can use the request mechanism to signal the source that it is ready to process at most n elements.	  
 	 */
@@ -442,8 +463,10 @@ public class ReactorDemo {
 	
 	public static void main( String[] args) {
 		ReactorDemo appl = new ReactorDemo();
-//		appl.demoMono();
-//		appl.demoFlux();
+// 		appl.demoMono();
+// 		appl.demoFlux();
+		appl.demoObserver();
+//		appl.demoBackpressure();
 		
 // 		appl.demoFluxGen0();
 //  	appl.demoFluxGen1();
@@ -467,8 +490,8 @@ public class ReactorDemo {
 		
 //		appl.demoCold0();
 //		appl.demoHot0();
-		appl.demoHot1();
+//		appl.demoHot1();
 		
-//		appl.demoDuration();
+// 		appl.demoDuration();
 	}
 }
