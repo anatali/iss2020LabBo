@@ -6,9 +6,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import reactor.core.Disposable;
 import reactor.core.publisher.DirectProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 public class ReactorDemo {
 	
@@ -194,7 +200,89 @@ public class ReactorDemo {
 		bridge.subscribe(item -> System.out.println("demoFluxCreate0 - 1: " + item));
 		bridge.subscribe(item -> System.out.println("demoFluxCreate0 - 2: " + item));
 	}
+
+	public void demoDisposable() {
+//	int n = 0;
+//	Disposable disp = Flux.fromIterable( Arrays.asList("A"+ n++, "B" + n++, "C"+ n++) );
+//		disp.flatMap { customer -> client.call(customer) }
+//			  .subscribe();	
+	}
 	
+	/*sez. 4.5
+		In Reactor, the execution model and where the execution happens is determined by the Scheduler that is used. 
+		A Scheduler has scheduling responsibilities similar to an ExecutorService, but having a dedicated abstraction 
+		lets it do more, notably acting as a clock and enabling a wider range of implementations 
+		(virtual time for tests, trampolining or immediate scheduling, and so on).	  
+		
+		Reactor offers two means of switching the execution context (or Scheduler) in a reactive chain: publishOn and subscribeOn.
+	 
+		In Reactor, when you chain operators, you can wrap as many Flux and Mono implementations inside one another as you need. 
+		Once you subscribe, a chain of Subscriber objects is created, backward (up the chain)  to the first publisher. 
+		This is effectively hidden from you. 
+		All you can see is the outer layer of Flux (or Mono) and Subscription, but these intermediate 
+		operator-specific subscribers are where the real work happens.	 
+		With that knowledge, we can have a closer look at the publishOn and subscribeOn operators. 
+		------------------------------------------		
+        In Reactor, there is no sense in wanting to cancel a Subscription before you've called subscribe() 
+        (as it is that very method that creates the Subscription and propagates that signal up the chain to start the emission of data).
+        
+	    Note some operators will also cancel subscriptions on your behalf! 
+	    That is the case for take(int) for instance, which will cancel upstream once enough items have been emitted.
+	*/
+	
+	public void demoDuration() {
+		System.out.println("demoDuration ---------- ");
+		//Flux<Long> timer = Flux.interval( Duration.ofMillis(500 ) ) //enabled by Schedulers.parallel() sez. 4.5
+		Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");	//a per-call dedicated thread
+		//Scheduler disiSameThreadScheduler = Schedulers.single( );
+		//changes the Scheduler to a new instance similar to Schedulers.single()	//sez. 4.5
+		Flux<Long> timer = Flux.interval( Duration.ofMillis(500 ), disiScheduler ) 
+				.map( tick -> {if (tick <= 6) return tick; throw new RuntimeException("Aborted"); } );  //generate an error
+ 		
+		// %%%%%%%%%%%%%%%%% Nothing happens until you subscribe %%%%%%%%%%%%%%%%%
+		timer.take(3).subscribe( 
+ 				tick  -> System.out.println("subscriber0 tick= " + tick ),
+ 				error -> System.out.println("subscriber0 error= " + error ),
+ 				()    -> System.out.println("subscriber0 done "   )
+ 		);
+
+		timer.subscribe( 
+ 				tick  -> System.out.println("subscriber1 tick= " + tick ),
+ 				error -> System.out.println("subscriber1 error= " + error ),
+ 				()    -> System.out.println("subscriber1 done "   )
+ 		);
+		
+		
+		timer.subscribe( 
+				new Subscriber<Long>() {
+				    @Override
+				    public void onSubscribe(Subscription s) {
+				    	System.out.println("subscriber2 - onSubscribe Long.MAX_VALUE= " + Long.MAX_VALUE );
+				    	s.request( 5 );		//0-4 only
+ 				    }
+				 
+				    @Override
+				    public void onNext(Long v) {
+				      System.out.println("subscriber2 - onNext: " + v );
+				      //elements.add(integer);
+				    }
+				 
+				    @Override
+				    public void onError(Throwable t) {
+				    	System.out.println("subscriber2 - onError " + t );				    	
+				    }
+				
+				    @Override
+				    public void onComplete() {
+				    	System.out.println("subscriber2 - onComplete "  );
+				    }
+
+ 				});
+		
+ 		delay(6000);
+ 		disiScheduler.dispose();
+ 		System.out.println("demoDuration BYE "  ); 
+	}
 	/*
 	public void demoFluxCreate1() {
 //		CustomSpringEventListener myEventProcessor = new CustomSpringEventListener();
@@ -278,21 +366,80 @@ public class ReactorDemo {
 	
 	//The process described by the operators on this Flux runs regardless of when subscriptions have been attached.
 	public void demoHot0() {
-		DirectProcessor<String> hotSource = DirectProcessor.create();
-		Flux<String> hotFlux              = hotSource.map(String::toUpperCase);
+		/*
+		 * A direct Processor is a processor that can dispatch signals to zero or more Subscribers. 
+		 */
+		DirectProcessor<String> hotSource = DirectProcessor.create();		//sez. 4.7.3 it has the limitation of not handling backpressure		
+		/*
+		 * a DirectProcessor signals an IllegalStateException to its subscribers if you push N elements through it 
+		 * but at least one of its subscribers has requested less than N.
+		 */
+		Flux<String> hotFlux = hotSource.map(String::toUpperCase);
 
-		hotFlux.subscribe(d -> System.out.println("Subscriber 1 to Hot Source: "+d));
+		hotFlux.subscribe(d -> System.out.println("Subscriber 1: "+d));
 
 		hotSource.onNext("blue");
 		hotSource.onNext("green");
 
-		hotFlux.subscribe(d -> System.out.println("Subscriber 2 to Hot Source: "+d));
+		hotFlux.subscribe(d -> System.out.println("Subscriber 2: "+d));
 
 		hotSource.onNext("orange");
 		hotSource.onNext("purple");
 		hotSource.onComplete();		
 	}
+
+	/*
+	 * Backpressure is the ability for the consumer to signal the producer that the rate of emission is too high. sez 3.3.5
+	 *	A subscriber can work in unbounded mode and let the source push all the data at its fastest achievable rate 
+	 *	or it can use the request mechanism to signal the source that it is ready to process at most n elements.	  
+	 */
+	public void demoHot1() {
+		//Generates an exception
+		int curVal = 0;
+		/*
+		 * A direct Processor is a processor that can dispatch signals to zero or more Subscribers. 
+		 */
+		DirectProcessor<Integer> hotSource = DirectProcessor.create();	//sez. 4.7.3 it has the limitation of not handling backpressure		
+		/*
+		 * a DirectProcessor signals an IllegalStateException to its subscribers if you push N elements through it 
+		 * but at least one of its subscribers has requested less than N.
+		 */
+		Flux<Integer> hotFlux = hotSource 
+				.map( v -> {if (v <= 8) return v; throw new RuntimeException("Aborted"); } );  //generate an error
+
+		hotFlux.take(3).subscribe(
+  				d  -> System.out.println("Full observer: "+d),
+  				error -> System.out.println("Full observer error: "+ error),
+  				() -> System.out.println("Full observer ENDS " )
+  		);	 
+
+   		for( int i= 0; i<5; i++ ) { 
+  			delay(500); 
+  			hotSource.onNext( curVal++ ); 
+  		}
 		
+		hotFlux.subscribe(
+				d -> System.out.println("Partial observer: "+d),
+  				error -> System.out.println("Partial observer error: "+ error),
+  				() -> System.out.println("Partial observer ENDS " )
+		);
+
+   		for( int i= 0; i<5; i++ ) { 
+  			delay(500); 
+  			hotSource.onNext( curVal++); 
+  		}
+		
+		hotSource.onComplete();		
+	}
+	
+	private void delay(int dt) {
+		try {
+			Thread.sleep(dt);
+		} catch (InterruptedException e) {
+				e.printStackTrace();
+		}		
+	}
+	
 	public static void main( String[] args) {
 		ReactorDemo appl = new ReactorDemo();
 //		appl.demoMono();
@@ -316,9 +463,12 @@ public class ReactorDemo {
 		
 // 		appl.demoCreate0();
 		
- 		appl.demoPush0();
+// 		appl.demoPush0();
 		
 //		appl.demoCold0();
 //		appl.demoHot0();
+		appl.demoHot1();
+		
+//		appl.demoDuration();
 	}
 }

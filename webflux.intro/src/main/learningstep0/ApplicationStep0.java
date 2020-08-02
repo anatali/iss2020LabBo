@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.reactive.HiddenHttpMethodFilter;
 
 // tag::code[]
-@SpringBootApplication
+//@SpringBootApplication
 public class ApplicationStep0 {
 
 	public static void main(String[] args) {
