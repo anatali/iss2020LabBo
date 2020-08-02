@@ -32,13 +32,15 @@ public class HumanInterfaceController {
     }
 
   String applicationModelRep="waiting";
-/*
+
    @GetMapping("/") 		 
   public String entry(Model model) {
 	  System.out.println("------------------- HumanInterfaceController homePage " + model  );
       model.addAttribute("arg", appName);
       return "gui";
   } 
+   
+/*   
   @PostMapping( path = "/home") 		 
   public String homePage(Model model) {
        return entry(model);
