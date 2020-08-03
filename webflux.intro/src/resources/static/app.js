@@ -69,7 +69,7 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         stompClient.subscribe('/topic/display', function (msg) {
-             showMsg(JSON.parse(msg.body).content);
+             showMsg(JSON.parse(msg.body).content);	//See ResourceRep
         });
     });
 }
