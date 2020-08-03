@@ -1,4 +1,4 @@
-package reactiveDemo;
+package it.unibo.webflux.demobasic;
 
 import java.time.Duration;
 import java.util.Arrays;

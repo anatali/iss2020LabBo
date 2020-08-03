@@ -1,5 +1,10 @@
-var stompClient = null;
-var hostAddr = "http://localhost:8080/move";
+//https://github.com/sockjs/sockjs-client
+var Stomp       = require('stompjs');
+const readline = require('readline');
+
+//var stompClient = Stomp.overTCP('localhost', 8082);
+//var stompClient = Stomp.overWS('ws://localhost:8082/stomp'); 
+
 
 //SIMULA UNA FORM che invia comandi POST
 function sendRequestData( params, method) {
@@ -44,11 +49,7 @@ var settings = {
   "data": form
 };
 
-$.ajax(settings).done(function (response) {
-  //console.log(response);  //The web page
-  console.log("done move:" + themove );
-});
-
+ 
 }
 
 function setConnected(connected) {
@@ -63,28 +64,25 @@ function setConnected(connected) {
     $("#greetings").html("");
 }
 
-function myIpAndConnect() {
-      var ip = location.host;
-      //alert(ip);
-      document.getElementById("myIp").innerHTML = ip;
-      connect()
+function sendUpdateRequest(){
+	console.log(" sendUpdateRequest "  );
+    //stompClient.send("/app/update", {}, JSON.stringify({'name': 'update' }));
 }
 
 function connect() {
-    var socket  = new SockJS('/it-unibo-iss');
-    stompClient = Stomp.over(socket);
+    console.log("CONNECT INIT");
+    //var stompClient = Stomp.overWS('ws://localhost:8082/it-unibo-iss'); 
+    var stompClient = Stomp.overTCP('localhost', 8082); 
+    
     stompClient.connect({}, function (frame) {
         setConnected(true);
+        console.log("SUBSCRIBING");
         stompClient.subscribe('/topic/display', function (msg) {
-             showMsg(JSON.parse(msg.body).content);
+             showMsg(JSON.parse(msg.body).content);	//See ResourceRep
         });
     });
-}
-
-function showMsg(message) {
-	console.log(message );
-    $("#applmsgs").html( "<pre><ks>"+message.replace(/\n/g,"<br/>")+"</ks></pre>" );
-    //$("#applmsgintable").append("<tr><td>" + message + "</td></tr>");
+	console.log("CONNECTED");
+    sendUpdateRequest();
 }
 
 function disconnect() {
@@ -95,31 +93,31 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-/*
-function sendMove() {
-    stompClient.send("/app/move", {}, JSON.stringify({'name': $("#name").val()}));
-}
-*/
+ 
 
 function sendTheMove(move){
 	console.log("sendTheMove " + move);
     stompClient.send("/app/move", {}, JSON.stringify({'name': move }));
 }
 
-function sendUpdateResourceRequest(){
-	console.log(" sendUpdateResourceRequest "  );
-    stompClient.send("/app/showresource", {}, JSON.stringify( {'name': 'getresource' }));
+
+
+function showMsg(message) {
+console.log(message );
+    $("#applmsgs").html( "<pre>"+message.replace(/\n/g,"<br/>")+"</pre>" );
+    //$("#applmsgintable").append("<tr><td>" + message + "</td></tr>");
 }
 
-
-
-$(function () {
-    $("form").on('submit', function (e) { e.preventDefault();  });
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
-	$( "#showresource" ).click(function() { sendUpdateResourceRequest(  ) });
+console.log(" START "  ); 
+connect();
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
 });
+rl.question("What do you think of node.js? ", function(answer) {
+  // TODO: Log the answer in a database
+  console.log("Thank you for your valuable feedback:", answer);
 
-
-
+  rl.close();
+});
+ 

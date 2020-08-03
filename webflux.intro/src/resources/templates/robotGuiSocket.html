@@ -1,45 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>WebfluxintroGui</title>
-    
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
-    <link href="/main.css" rel="stylesheet">
+<head>
+    <title>WebfluxintroGui</title>   
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" >  
+    <link href="/disi.css" rel="stylesheet">
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/app.js"></script>
-    
      
-    <script>
-    function myIp() {
-      var ip = location.host;
-      //alert(ip);
-      document.getElementById("myIp").innerHTML = ip;
-      document.getElementById("raspIp").innerHTML = "192.168.1.5";
-    }
-  </script>
-
- 
-    <script>connect()</script>
-   
     
 </head>
-<body>
+<body onload=myIpAndConnect() >
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
+
 <div id="main-content" class="container">
-    <div class="row">
+<div class="row">
     
-  <h1>Webfluxintro GUI with socket.io</h1>
+  <h1>Webfluxintro GUI</h1>
  
-   <h3>Resource state</h3>
-   
-     <p id="applmsgs">...</p>
+  	<p>
+ 	The server works on <em><span id="myIp"></span></em> using WebFlux and <tt>socket.io</tt>.<br/> 	
+	</p>
+<h3>Resource state request</h3>   
+    <form class="form-inline"><button id="showresource" class="btn btn-default" type="submit">show resource</button> 
+    (see <a href="explainShowresource.html" target="explain">explainShowresource.html</a>)</form>
     
-    <form class="form-inline"><button id="update" class="btn btn-default" type="submit">show resource	</button></form>
+    <p id="applmsgs">...</p>   
+<h3>Resource state update</h3>
+
+<h3>Resource state update flux</h3>
 <hr/>     
  
  
@@ -56,8 +49,7 @@
  	<div id="ipaddr" align="left">
  	<p>
  	My server works on <span id="myIp"></span> and  I'm connected to it via <tt>socket.io</tt>.<br/>
- 		The Rasp could be in its turn connected with a (virtual) robot-device working on the PC. 	
- 	
+   	
 	</p><p>
 	
 	

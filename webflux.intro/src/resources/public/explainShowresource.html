@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>explainShowresource</title>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" >  
+    <link href="/disi.css" rel="stylesheet">
+ </head>
+<body>
+<h2>Explain | Requesting to show a resource</h2>
+
+For an introduction to the usage of WebSocket with SpringBoot, see <a href="https://www.toptal.com/java/stomp-spring-boot-websocket" target="web">Using Spring Boot for WebSocket Implementation with STOMP</a>
+<br/><br/>
+<img src="websockspring.webp" alt="websockspring" width="60%"><br/> 
+<br/><br/>
+<ol>
+<li>The home page <tt>robotGuiSocket.html</tt> contains initial specifications:
+<pre>
+&lt;head>
+	&lt;title>WebfluxintroGui&lt;/title>   
+	&lt;link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" >  
+	&lt;link href="/disi.css" rel="stylesheet">
+	&lt;script src="/webjars/jquery/jquery.min.js">&lt;/script>
+	&lt;script src="/webjars/sockjs-client/sockjs.min.js">&lt;/script>
+	&lt;script src="/webjars/stomp-websocket/stomp.min.js">&lt;/script>
+	&lt;script src="<ks>/app.js"</ks>&lt;/script>		<kc>User code stored in</kc> <k>src\resources\static</k>
+...
+</pre>
+</li>
+
+<li>The home page <tt>robotGuiSocket.html</tt> defines also fields to dynamically store values and messages:
+<pre>
+The server works on &lt;span <ks>id="myIp"</ks>>&lt;/span>  using ...   <kc>Area to show the server IP</kc>
+...
+   &lt;p <ks>id="applmsgs"</ks>>...&lt;/p> 		<kc>Output Area for the messages coming from the server</kc>
+</pre>
+Moreover, it provides a button to request an update of the resource:
+<pre>
+   &lt;form class="form-inline">&lt;button <ks>id="showresource"</ks> class="btn btn-default" type="submit">show resource&lt;/button>&lt;/form>
+</pre>
+</li>
+
+
+<li>The code <a href="app.js" target="code">app.js</a> is a user-defined support that defines code to connect 
+to the server using <k>socket.io</k> with a proper handling of messages sent by the server:
+<pre>
+var <k>stompClient</k> = null;
+
+function connect() {
+    var socket  = new SockJS(<ks>'/it-unibo-iss'</ks>);
+    stompClient = Stomp.over(socket);
+    <k>stompClient.connect(</K> {}, function (frame) {  //<kc>callback</kc>
+        setConnected(true);
+        <k>stompClient.subscribe</k>(<ks>'/topic/display'</ks>, function (msg) {
+             showMsg(JSON.parse(msg.body).content);
+        });
+    });
+}
+
+<kc>The function connect is called when the page is loaded:</kc>
+&lt;body <ks>onload=myIpAndConnect()</ks> >
+
+function myIpAndConnect() {
+   var ip = location.host;
+   document.<ks>getElementById("myIp")</ks>.innerHTML = ip;
+   connect()
+}
+
+function showMsg(message) {
+	console.log(message );
+    <ks>$("#applmsgs").html</ks>(  message.replace(/\n/g,"&lt;br/>")  );		//<k>$</k> <kc>is sign to define/access to  <a href="https://it.wikipedia.org/wiki/JQuery">jQuery</a></kc>
+    //$("#applmsgintable").append("&lt;tr>&lt;td>" + message + "&lt;/td>&lt;/tr>");		//<k>append</k> <kc>instead of replace</kc>
+}
+</pre>
+
+ 
+</li>
+
+<li>
+ <a href="app.js" target="code">app.js</a> contains the code that reacts to a 'click' on the button:
+<pre>
+$(function () {
+	...
+	$( "<ks>#showresource</ks>" )<k>.click</k>( function() { sendUpdateResourceRequest(  ) });
+});
+
+function sendUpdateResourceRequest(){
+    <k>stompClient.send</k>(<ks>"/app/showresource"</ks>, {}, JSON.stringify( {'name': 'getresource' }));
+}
+
+</pre>
+</li>
+<li>On the server site, the data are defined in <ks>WebSocketConfig.java</ks>:
+<pre>
+public static final String stompEndpointPath = <k>"/it-unibo-iss"</k>;
+public static final String topicForClient = <k>"/topic/display"</k>;
+public static final String brokerDestinationPrefix = "/topic";
+public static final String applDestinationPrefix = "/app";
+</pre>
+</li>
+<li>
+
+ 
+</li>
+<li></li>
+</ol>
+</body>
