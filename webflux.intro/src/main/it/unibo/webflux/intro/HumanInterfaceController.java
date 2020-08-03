@@ -17,6 +17,8 @@ import org.springframework.web.util.HtmlUtils;
 import reactor.core.publisher.DirectProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Controller
 public class HumanInterfaceController {
@@ -40,9 +42,15 @@ public class HumanInterfaceController {
     	return "robotGuiSocket";  
     }
 
+	//GET seems here within REST
 	@GetMapping("/update")
-//  @ResponseBody
-  public String autonomousupdate(Model model) {
+ //  @ResponseBody
+  public String autonomousupdate() {
+		startautonomousupdate();
+		return "robotGuiSocket";  
+  }
+ 	//Reused by @MessageMapping("/startResourceUpdating")
+	public void startautonomousupdate() {
 		ctrlUtil.setSimpMessagingTemplate( simpMessagingTemplate );
 		new Thread() {
 			int n = 0;
@@ -52,9 +60,8 @@ public class HumanInterfaceController {
 					ctrlUtil.delay(1000);
 				}
 			}
-		}.start();
-  	return "robotGuiSocket";  
-  }
+		}.start();		
+	}
 	
 	
 	public void demoCreate0() {
@@ -155,12 +162,35 @@ public class HumanInterfaceController {
      */
 
     	@MessageMapping("/showresource")
-    	@SendTo("/topic/display")
+    	//@SendTo("/topic/display")
+       	@SendTo( WebSocketConfig.topicForClient )  
     	public ResourceRep showresource(@Payload String message) {	//The receiver will look at a field named content
     		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("showresource after message=" + message)  );  
     		return rep;
     	}
     	
+    	@MessageMapping("/startresourceupdating")
+    	@SendTo( WebSocketConfig.topicForClient )
+    	public ResourceRep startresourceupdating(@Payload String message) {	//The receiver will look at a field named content
+    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("startResourceUpdating after message=" + message)  );  
+    		startautonomousupdate();
+    		return rep;
+    	}
+ 
+    	@MessageMapping("/resourceflux")
+    	@SendTo(  WebSocketConfig.topicForClient )
+     	public ResourceRep startresourceflux(@Payload String message) {	//The receiver will look at a field named content
+    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("startresourceflux after message=" + message)  );  
+    		generateFlux1();
+    		return rep;
+    	}
+    	   public void generateFlux1() {
+    		   ctrlUtil.setSimpMessagingTemplate( simpMessagingTemplate );
+    		   Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");
+    		   Flux<Long> flux = Flux.interval( Duration.ofMillis(1000 ), disiScheduler ) 
+    		   	        .map( tick -> {if (tick <= 6) return tick; else disiScheduler.dispose(); return tick; } );
+    		   flux.subscribe( v -> ctrlUtil.sendMsgToGui( "flux update " + v ) );
+    	   }
     	
 //	private void delay(int dt) {
 //		try {

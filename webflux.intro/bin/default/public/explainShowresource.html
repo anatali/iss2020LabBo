@@ -3,16 +3,18 @@
 
 <head>
     <title>explainShowresource</title>
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" >  
     <link href="/disi.css" rel="stylesheet">
  </head>
 <body>
-<h2>Explain | Requesting to show a resource</h2>
+<h1>Explain | Webflux introduction</h1>
 
 For an introduction to the usage of WebSocket with SpringBoot, see <a href="https://www.toptal.com/java/stomp-spring-boot-websocket" target="web">Using Spring Boot for WebSocket Implementation with STOMP</a>
 <br/><br/>
 <img src="websockspring.webp" alt="websockspring" width="60%"><br/> 
 <br/><br/>
+
+<h2>Structure of the page</h2>
+
 <ol>
 <li>The home page <tt>robotGuiSocket.html</tt> contains initial specifications:
 <pre>
@@ -32,16 +34,13 @@ For an introduction to the usage of WebSocket with SpringBoot, see <a href="http
 <pre>
 The server works on &lt;span <ks>id="myIp"</ks>>&lt;/span>  using ...   <kc>Area to show the server IP</kc>
 ...
+&lt;h4>Message area&lt;/h4>	
    &lt;p <ks>id="applmsgs"</ks>>...&lt;/p> 		<kc>Output Area for the messages coming from the server</kc>
-</pre>
-Moreover, it provides a button to request an update of the resource:
-<pre>
-   &lt;form class="form-inline">&lt;button <ks>id="showresource"</ks> class="btn btn-default" type="submit">show resource&lt;/button>&lt;/form>
 </pre>
 </li>
 
 
-<li>The code <a href="app.js" target="code">app.js</a> is a user-defined support that defines code to connect 
+<li>The code <a href="app.js" target="code"><em>app.js</em></a> is a user-defined support that defines code to connect 
 to the server using <k>socket.io</k> with a proper handling of messages sent by the server:
 <pre>
 var <k>stompClient</k> = null;
@@ -77,7 +76,7 @@ function showMsg(message) {
 </li>
 
 <li>
- <a href="app.js" target="code">app.js</a> contains the code that reacts to a 'click' on the button:
+ <a href="app.js" target="code"><em>app.js</em></a> contains the code that reacts to a 'click' on the button:
 <pre>
 $(function () {
 	...
@@ -90,7 +89,7 @@ function sendUpdateResourceRequest(){
 
 </pre>
 </li>
-<li>On the server site, the data are defined in <ks>WebSocketConfig.java</ks>:
+<li>On the <em>server site</em>, the data are defined in <ks>WebSocketConfig.java</ks>:
 <pre>
 public static final String stompEndpointPath = <k>"/it-unibo-iss"</k>;
 public static final String topicForClient = <k>"/topic/display"</k>;
@@ -98,10 +97,39 @@ public static final String brokerDestinationPrefix = "/topic";
 public static final String applDestinationPrefix = "/app";
 </pre>
 </li>
+ 
+</ol>
+
+<h2 id="reqshowres">Request to show a resource</h2>
+<ol>
+<li>
+The home page <tt>robotGuiSocket.html</tt> provides a button to request an update of the resource:
+<pre>
+   &lt;form class="form-inline">&lt;button <ks>id="showresource"</ks> class="btn btn-default" type="submit">show resource&lt;/button>&lt;/form>
+</pre>
+</li>
+<li></li>
+</ol>
+
+
+<h2 id="startresupdating">Start to update the page in autonomous way</h2>
+
+<ol>
 <li>
 
  
 </li>
 <li></li>
 </ol>
+
+<h2 id="resourceflux">Sending data using Flux</h2>
+
+<ol>
+<li>
+
+ 
+</li>
+<li></li>
+</ol>
+
 </body>

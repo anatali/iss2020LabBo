@@ -3,14 +3,11 @@
 
 <head>
     <title>WebfluxintroGui</title>   
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" >  
     <link href="/disi.css" rel="stylesheet">
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/app.js"></script>
-     
-    
 </head>
 <body onload=myIpAndConnect() >
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
@@ -25,47 +22,29 @@
   	<p>
  	The server works on <em><span id="myIp"></span></em> using WebFlux and <tt>socket.io</tt>.<br/> 	
 	</p>
+<h4>Message area</h4>	
+	    <p id="applmsgs">...</p>   
+	
 <h3>Resource state request</h3>   
     <form class="form-inline"><button id="showresource" class="btn btn-default" type="submit">show resource</button> 
-    (see <a href="explainShowresource.html" target="explain">explainShowresource.html</a>)</form>
+    (see <a href="explainShowresource.html#reqshowres" target="explain">explain showresource request</a>)</form>
     
-    <p id="applmsgs">...</p>   
-<h3>Resource state update</h3>
+    
 
-<h3>Resource state update flux</h3>
+
+
+<h3>Resource start an autonomous update</h3>
+    <form class="form-inline"><button id="resourceupdating" class="btn btn-default" type="submit">start resource updating</button> 
+    (see <a href="explainShowresource.html#startresupdating" target="explain">explain start resource updating</a>)</form>
+
+<h3>Resource start an update flux-based</h3>
+    <form class="form-inline"><button id="resourceflux" class="btn btn-default" type="submit">start resource updating</button> 
+    (see <a href="explainShowresource.html#resourceflux" target="explain">explain start resource flux-based</a>)</form>
 <hr/>     
  
  
  
-<!--   
- <h1>About myself</h1>
- <p>
- 	I am the WebGui of a front-end server for an application that should be already running.
- </p><p>	
-  	For example, you could activate the <tt>basicrobot</tt> (port <tt>8020</tt>) or some other application,
-  	like that in  project    <i>it.unibo.qak20.domains</i>.
-  	</div>
-   
- 	<div id="ipaddr" align="left">
- 	<p>
- 	My server works on <span id="myIp"></span> and  I'm connected to it via <tt>socket.io</tt>.<br/>
-   	
-	</p><p>
-	
-	
- <h2>Application-related configuration</h2>
- 	My configuration in file <b><tt>pageConfig.json</tt></b>  the <tt>basicrobot</tt> is:
- 	<pre>
- {"page":"robotGuiSocket", "host":"192.168.1.22", "port":"8020", 
-   "qakdest":"basicrobot", "ctxqadest":"ctxbasicrobot", "stepsize":"350"} </pre>
-or, for the project    <i>it.unibo.qak20.domains</i>:
- <pre>{"page":"robotGuiSocket", "host":"192.168.1.22", "port":"8060", 
-   "qakdest":"waiter", "ctxqadest":"ctxdomains", "stepsize":"350"} </pre>
- 	</p><p>
-
- <h2>My work</h2>	
-   	
--->    
+ 
 </div>
 
 

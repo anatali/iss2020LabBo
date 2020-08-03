@@ -107,10 +107,14 @@ function sendTheMove(move){
 }
 
 function sendUpdateResourceRequest(){
-	console.log(" sendUpdateResourceRequest "  );
+	console.log(" sendUpdateResourceRequest " + stompClient );
     stompClient.send("/app/showresource", {}, JSON.stringify( {'name': 'getresource' }));
 }
 
+function sendStartResourceUpdating(){
+	console.log(" sendStartResourceUpdating "  );
+    stompClient.send("/app/startresourceupdating", {}, JSON.stringify( {'name': 'startupdateresource' })); 
+}
 
 
 $(function () {
@@ -119,6 +123,11 @@ $(function () {
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendName(); });
 	$( "#showresource" ).click(function() { sendUpdateResourceRequest(  ) });
+	$( "#resourceupdating" ).click(function() { sendStartResourceUpdating(  ) });
+	$( "#resourceflux" ).click(function() { 
+		stompClient.send("/app/resourceflux", {}, JSON.stringify( {'name': 'startresourceflux' }))
+	});
+	
 });
 
 
