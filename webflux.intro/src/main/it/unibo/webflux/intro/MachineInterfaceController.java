@@ -1,7 +1,5 @@
 package it.unibo.webflux.intro;
 
-import java.time.Duration;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -10,19 +8,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ServerWebExchange;
-
 import reactor.core.publisher.DirectProcessor;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
+
 
 //https://www.booleanworld.com/curl-command-tutorial-examples
 
@@ -41,22 +32,24 @@ public class MachineInterfaceController {
   String applicationModelRep="  | now I'm waiting ...";
 
   @GetMapping(value = "/api",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-  //@ResponseBody
   public String entry(Model model) {
 	  return "MachineInterfaceController | " + applicationModelRep ;
   }
   
   
+  @GetMapping(value = "/api/fluxstring" )
+  public Flux<String> flux(Model model) {
+	  return  Flux.just("A", "B", "C "); 
+  }
   
-   @GetMapping(value = "/api/updateflux",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-//  @ResponseBody
-  public Flux<String> updateflux(Model model) {
+   @GetMapping(value = "/api/getflux",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)	
+   public Flux<String> getflux(Model model) {
 	   //return ctrlUtil.generateFluxLimitedWithScheduler( );  //does not terminates gracefully, but OK	   
 	   DirectProcessor<String> hotsource = ctrlUtil.createHotSource(  );
 	   int hotSourceNum = ctrlUtil.getElementCount();		//Java should provide a Pair ...
-	   ctrlUtil.populateHotFlux( hotsource, hotSourceNum );
+  	   ctrlUtil.populateHotFlux( hotsource, hotSourceNum );
 	   return  hotsource.map( v -> v );
-  }
+   }
 
     public Flux<String> generateFlux0() {
 	   return Flux.generate(

@@ -13,59 +13,50 @@ import reactor.core.scheduler.Schedulers;
 
 public class ControllerUtils {
  	private  int elementCount = 0;
-//	private  SimpMessagingTemplate simpMessagingTemplate = null;
  	
-//	public void setSimpMessagingTemplate( SimpMessagingTemplate t ) {
-//		this.simpMessagingTemplate = t;
-//	}
- 	
- 	public int getElementCount() {
+ 	public void resetElementCount() {
+ 		 elementCount = 0;
+ 	}
+ 	public void incElementCount() {
+		 elementCount++;
+	}
+	public int getElementCount() {
  		return elementCount;
  	}
  	//https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/messaging/simp/SimpMessagingTemplate.html
  	//https://www.baeldung.com/spring-websockets-send-message-to-user
  	//https://www.toptal.com/java/stomp-spring-boot-websocket
 	public  void sendMsgToGui(  SimpMessagingTemplate simpMessagingTemplate, String msg ) {
-		System.out.println("sendMsgToGui msg=" + msg + " simpMessagingTemplate=" + simpMessagingTemplate );
+//		System.out.println("ControllerUtils | sendMsgToGui msg=" + msg + " simpMessagingTemplate=" + simpMessagingTemplate );
 		if( simpMessagingTemplate != null )
 			simpMessagingTemplate.convertAndSend(WebSocketConfig.topicForClient, new ResourceRep( HtmlUtils.htmlEscape( msg )  ));		
 	}
 	
 	
 	   public Flux<Long> generateFluxLimitedWithScheduler(  ) {
+		   incElementCount();
 		   Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");
+		   delay(1000); //give some time to show SENDING ...
 		   Flux<Long> flux = Flux.interval( Duration.ofMillis(1000 ), disiScheduler ) 
 		   	        .map( tick -> {if (tick <= 6) return tick; else { disiScheduler.dispose(); return tick;}  } );
 		   return flux;
-		   //flux.subscribe( v -> sendMsgToGui( simpMessagingTemplate, "flux update " + v ) );
-	   }
-	   
-	   public Flux<Long> generateHotFluxLimited (  ) {
-		   Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");
-		   Flux<Long> flux = Flux.interval( Duration.ofMillis(1000 ), disiScheduler ) 
-		   	        .map( tick -> {if (tick <= 6) return tick; else { disiScheduler.dispose(); return tick;}  } );
-		   return flux;
-		   //flux.subscribe( v -> sendMsgToGui( simpMessagingTemplate, "flux update " + v ) );
-	   }
+ 	   }
 	   
 	/*
 	 * Updates the GUI page by using the socket
 	 */
 	public void startautonomousupdate( SimpMessagingTemplate simpMessagingTemplate ) {
- 		new Thread() {
-			int n = 0;
-			public void run() {
-				for( int i=0; i<5; i++) {
-					sendMsgToGui( simpMessagingTemplate, "autonomous update " + n++ );
-					delay(1000);
-				}
-			}
-		}.start();		
+		incElementCount();
+		for( int i=0; i<5; i++) {
+			sendMsgToGui( simpMessagingTemplate, "autonomous_ " + elementCount + " emits: " + i);
+			delay(1000);
+		}
 	}
 
 	public DirectProcessor<String> createHotSource( ) {
  		DirectProcessor<String> hotSource = DirectProcessor.create();
-		++elementCount;   	              //a new element is born
+ 		incElementCount();   	              //a new element is born
+ 		System.out.println("ControllerUtils |  createHotSource ------------------------------- "+ getElementCount() );
 		return hotSource;
  	}
 	
@@ -74,13 +65,13 @@ public class ControllerUtils {
  			public void run() {
 				for( int i=0; i<10; i++) {
 					hotSource.onNext("hotSource_" + myn +" emits value= " + i+"\n");	
-					System.out.println("populateHotFlux next= " + i);
+					System.out.println("ControllerUtils | populateHotFlux " + getElementCount() + "/" + myn + " next= " + i);
 					delay( 1000 + myn*50);
 				}
 				hotSource.onComplete();		
 			}
 		}.start();		
-		System.out.println("populateHotFlux STARTED");
+//		System.out.println("ControllerUtils | populateHotFlux STARTED");
 	}
 	
 	public  void delay(int dt) {

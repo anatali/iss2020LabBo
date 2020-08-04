@@ -1,9 +1,11 @@
 package it.unibo.webflux.intro.client;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 /*
@@ -58,12 +60,16 @@ public class WebFluxIntroClient0 {
         System.out.println("WebClientExample | last= " + last); 
 	}	
 
-	public void callForFluxString () {
+	public void callForFluxString ( String uriStr ) {
 		WebClient webClient = WebClient.create("http://localhost:8082");
         Flux<String> result = webClient.get()
-				.uri("/api/updateflux")   
+				.uri( uriStr )   
                 .retrieve()
-                .bodyToFlux(String.class);
+                 .bodyToFlux(String.class);
+        Mono<ResponseEntity<List<String>>> result1 = webClient.get()
+        				.uri( uriStr )   
+                        .retrieve()
+                        .toEntityList(String.class);
         System.out.println("WebClientExample | callForFlux response " + result);
         result.subscribe(  
         		item  -> System.out.println("item=  " + item),
@@ -72,14 +78,17 @@ public class WebFluxIntroClient0 {
         );
         String last = result.blockLast( Duration.ofMillis(20000));
         System.out.println("WebClientExample | last= " + last); 
+        
+        System.out.println("WebClientExample | result1= " + result1.block());
  	}	
 
     public static void main(String[] args)   {
     	
     	WebFluxIntroClient0 appl = new WebFluxIntroClient0();
     	//appl.callForHomePage();
-    	appl.callForFluxString();		
- 
+    	//appl.callForFluxString();		
+    	//appl.callForFluxString("/api/getflux");
+    	appl.callForFluxString("/api/fluxstring");
         //Thread.sleep(5000);   
     }
 }

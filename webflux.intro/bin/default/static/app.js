@@ -101,14 +101,11 @@ function sendMove() {
 }
 */
 
-function sendTheMove(move){
-	console.log("sendTheMove " + move);
-    stompClient.send("/app/move", {}, JSON.stringify({'name': move }));
-}
+ 
 
 function sendShowResourceRequest(){
 	console.log(" sendShowResourceRequest " + stompClient );
-    stompClient.send("/app/showresource", {}, JSON.stringify( {'name': 'getresource' }));
+    stompClient.send("/app/showresource", {}, JSON.stringify( {'name': 'showresource' }));
 }
 
 function sendStartResourceUpdating(){

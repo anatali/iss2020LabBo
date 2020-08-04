@@ -20,26 +20,36 @@
   <h1>Webfluxintro GUI</h1>
  
   	<p>
- 	The server works on <em><span id="myIp"></span></em> using WebFlux and <tt>socket.io</tt>.<br/> 	
+ 	The server works on <em><span id="myIp"></span></em> using WebFlux and Web Socket.<br/> 	
 	</p>
 <h4>Message area</h4>	
 	    <span th:text="${show}"></span><p id="applmsgs">...</p>
 	
-<h3>Show Resource request</h3>   
+<h3>Show Resource request (socket <tt>/showresource</tt>)</h3>   
+<m><k>Browser</k>: executes <ks>stompClient.send("/app/showresource" ...</ks><br/>
+<k>Server</k>: sends on the WebSocket the message <tt>HELLO</tt></m>
     <form class="form-inline"><button id="showresource" class="btn btn-default" type="submit">show resource</button> 
     (see <a href="explainShowresource.html#reqshowres" target="explain">explain showresource request</a>)</form>
-    
-    
-
-
-
-<h3>Resource start an autonomous update</h3>
+  
+ <h3>Resource start an autonomous update  (socket <tt>/startresourceupdating</tt>)</h3>
+ <m><k>Browser</k>: executes <ks>tompClient.send("/app/startresourceupdating" ...</ks><br/>
+<k>Server</k>: sends on the WebSocket <tt>5</tt> messages: <tt>autonomous_N emits:V</tt> and finally 
+ sends the 'answer' <tt>BYE</tt>. </m>
     <form class="form-inline"><button id="resourceupdating" class="btn btn-default" type="submit">start resource updating</button> 
     (see <a href="explainShowresource.html#startresupdating" target="explain">explain start resource updating</a>)</form>
 
-<h3>Resource start an update flux-based</h3>
+ <h3>Resource start an update flux-based (socket <tt>/resourceflux</tt>)</h3>
+<m><k>Browser</k>: executes <ks>stompClient.send("/app/resourceflux" ...</ks><br/>
+<k>Server</k>: starts a thread to send on the WebSocket a HOT flux of  messages <tt>HumanGui_N flux-value=V</tt> and then 
+sends the 'answer' <tt>SENDING</tt></m>
+  
     <form class="form-inline"><button id="resourceflux" class="btn btn-default" type="submit">start resource flux</button> 
     (see <a href="explainShowresource.html#resourceflux" target="explain">explain start resource flux-based</a>)</form>
+
+<h2>A Web Client</h2>
+    (see <a href="explainShowresource.html#webclient" target="explain">Explain web client</a>)</form>
+
+
 <hr/>     
  
  
