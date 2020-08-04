@@ -106,8 +106,8 @@ function sendTheMove(move){
     stompClient.send("/app/move", {}, JSON.stringify({'name': move }));
 }
 
-function sendUpdateResourceRequest(){
-	console.log(" sendUpdateResourceRequest " + stompClient );
+function sendShowResourceRequest(){
+	console.log(" sendShowResourceRequest " + stompClient );
     stompClient.send("/app/showresource", {}, JSON.stringify( {'name': 'getresource' }));
 }
 
@@ -122,7 +122,7 @@ $(function () {
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendName(); });
-	$( "#showresource" ).click(function() { sendUpdateResourceRequest(  ) });
+	$( "#showresource" ).click(function() { sendShowResourceRequest(  ) });
 	$( "#resourceupdating" ).click(function() { sendStartResourceUpdating(  ) });
 	$( "#resourceflux" ).click(function() { 
 		stompClient.send("/app/resourceflux", {}, JSON.stringify( {'name': 'startresourceflux' }))

@@ -23,9 +23,9 @@
  	The server works on <em><span id="myIp"></span></em> using WebFlux and <tt>socket.io</tt>.<br/> 	
 	</p>
 <h4>Message area</h4>	
-	    <p id="applmsgs">...</p>   
+	    <span th:text="${show}"></span><p id="applmsgs">...</p>
 	
-<h3>Resource state request</h3>   
+<h3>Show Resource request</h3>   
     <form class="form-inline"><button id="showresource" class="btn btn-default" type="submit">show resource</button> 
     (see <a href="explainShowresource.html#reqshowres" target="explain">explain showresource request</a>)</form>
     
@@ -38,7 +38,7 @@
     (see <a href="explainShowresource.html#startresupdating" target="explain">explain start resource updating</a>)</form>
 
 <h3>Resource start an update flux-based</h3>
-    <form class="form-inline"><button id="resourceflux" class="btn btn-default" type="submit">start resource updating</button> 
+    <form class="form-inline"><button id="resourceflux" class="btn btn-default" type="submit">start resource flux</button> 
     (see <a href="explainShowresource.html#resourceflux" target="explain">explain start resource flux-based</a>)</form>
 <hr/>     
  

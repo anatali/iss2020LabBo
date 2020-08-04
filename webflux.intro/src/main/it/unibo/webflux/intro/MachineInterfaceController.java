@@ -39,22 +39,26 @@ public class MachineInterfaceController {
     public MachineInterfaceController() { }
 
   String applicationModelRep="  | now I'm waiting ...";
- 
+
+  @GetMapping(value = "/api",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+  //@ResponseBody
+  public String entry(Model model) {
+	  return "MachineInterfaceController | " + applicationModelRep ;
+  }
+  
+  
   
    @GetMapping(value = "/api/updateflux",produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
 //  @ResponseBody
-  public Flux getMapping(Model model) {
-	   //return Flux.interval(Duration.ofMillis(300)).map(f -> "HI " + f);
-	   return generateFlux1();
+  public Flux<String> updateflux(Model model) {
+	   //return ctrlUtil.generateFluxLimitedWithScheduler( );  //does not terminates gracefully, but OK	   
+	   DirectProcessor<String> hotsource = ctrlUtil.createHotSource(  );
+	   int hotSourceNum = ctrlUtil.getElementCount();		//Java should provide a Pair ...
+	   ctrlUtil.populateHotFlux( hotsource, hotSourceNum );
+	   return  hotsource.map( v -> v );
   }
 
-   public Flux<Long> generateFlux1() {
-	   Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");
-	   Flux<Long> flux = Flux.interval( Duration.ofMillis(500 ), disiScheduler ) 
-	   	        .map( tick -> {if (tick <= 6) return tick; else disiScheduler.dispose(); return tick; } );
-	   return flux;
-   }
-   public Flux<String> generateFlux0() {
+    public Flux<String> generateFlux0() {
 	   return Flux.generate(
 	 	() -> 0, 			//initial state value
 	 	(n, sink) -> {

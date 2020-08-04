@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class WebClientExample {
@@ -46,9 +47,9 @@ public class WebClientExample {
 //	    	      .bodyToMono(JsonNode.class)
 //	    	      .block();
 //	    	  }
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         //WebClient webClient = WebClient.create("http://localhost:8081");
-    	
+    	/*    	
     	WebClient webClient = WebClient
 	    	  .builder()
 	    	  .filters(exchangeFilterFunctions -> {
@@ -56,13 +57,35 @@ public class WebClientExample {
 	    	      exchangeFilterFunctions.add(logResponse());
 	    	  })
 	    	  .build();
-    	 
+   	 
         Mono<String> result = webClient.get()
-        						.uri("http://localhost:8081")
+        						.uri("http://localhost:8082/api")
                                 .retrieve()
                                 .bodyToMono(String.class);
         String response = result.block();
-        System.out.println("WebClientExample2 handle response");
+        System.out.println("WebClientExample | handle response");
         System.out.println(response);
+ */
+    	WebClient webClient = WebClient
+  	    	  .builder()
+  	    	  .filters(exchangeFilterFunctions -> {
+  	    	      exchangeFilterFunctions.add(logRequest());
+  	    	      exchangeFilterFunctions.add(logResponse());
+  	    	  })
+  	    	  .build();
+
+    	Flux<Long> result1 = webClient.get()
+				.uri("http://localhost:8082/api/updateflux")  ///api/updateflux
+                .retrieve()
+                .bodyToFlux(Long.class);
+System.out.println("WebClientExample | handle response ...");
+//String response = result1.block( Duration.ofMillis(2000));
+result1.subscribe(  
+item  -> System.out.println("result1 item=  " + item),
+error -> System.out.println("result1 error= " + error ),
+()    -> System.out.println("result1 done " )   
+);
+  
+ Thread.sleep(5000);   
     }
 }

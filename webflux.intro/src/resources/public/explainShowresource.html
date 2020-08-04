@@ -100,36 +100,73 @@ public static final String applDestinationPrefix = "/app";
  
 </ol>
 
-<h2 id="reqshowres">Request to show a resource</h2>
+<h3 id="reqshowres">Request to show a resource</h3>
 <ol>
 <li>
-The home page <tt>robotGuiSocket.html</tt> provides a button to request an update of the resource:
+The home page <tt>robotGuiSocket.html</tt> provides a button to request an update of the resource xxxx:
 <pre>
    &lt;form class="form-inline">&lt;button <ks>id="showresource"</ks> class="btn btn-default" type="submit">show resource&lt;/button>&lt;/form>
 </pre>
 </li>
-<li></li>
+<li>Behavior/browser: <tt>click -> app.js | stompClient.send(<ks>"/app/showresource"</ks>, {}, JSON.stringify( {'name': 'getresource' }))
+-> ... </tt>
+</li>
+<li>Behavior/server: <tt> ... -> HumanInterfaceController (<k>@MessageMapping</k>(<ks>"/showresource"</ks>)) -> <k>@SendTo</k>( WebSocketConfig.topicForClient ) </tt>
+</li>
 </ol>
 
 
-<h2 id="startresupdating">Start to update the page in autonomous way</h2>
+<h3 id="startresupdating">Start to update the page in autonomous way</h3>
 
 <ol>
 <li>
-
- 
+The home page <tt>robotGuiSocket.html</tt> provides a button to request an update of the resource:
+<pre>
+   &lt;form class="form-inline">&lt;button <ks>id="resourceupdating"</ks> class="btn btn-default" type="submit">start resource updating&lt;/button>&lt;/form>
+</pre>
 </li>
-<li></li>
+<li>Behavior/browser: <tt>click -> app.js | stompClient.send(<ks>"/app/startresourceupdating"</ks>, {}, JSON.stringify( {'name': 'startupdateresource' }))
+-> ... </tt>
+</li>
+<li>Behavior/server: <tt> ... -> HumanInterfaceController (<k>@MessageMapping</k>(<ks>"/startresourceupdating"</ks>)) -> <k>@SendTo</k>( WebSocketConfig.topicForClient ) </tt>
+</li>
 </ol>
 
-<h2 id="resourceflux">Sending data using Flux</h2>
+ 
+
+<h3 id="resourceflux">Sending data using Flux</h3>
 
 <ol>
 <li>
-
- 
+The home page <tt>robotGuiSocket.html</tt> provides a button to request an update of the resource:
+<pre>
+   &lt;form class="form-inline">&lt;button <ks>id="resourceflux"</ks> class="btn btn-default" type="submit">start resource flux&lt;/button>&lt;/form>
+</pre>
 </li>
-<li></li>
+<li>Behavior/browser: <tt>click -> app.js | stompClient.send(<ks>"/app/resourceflux"</ks>, {}, JSON.stringify( {'name': 'startresourceflux' }))
+-> ... </tt>
+</li>
+<li>Behavior/server: <tt> ... -> HumanInterfaceController (<k>@MessageMapping</k>(<ks>"/resourceflux"</ks>)) -> <k>@SendTo</k>( WebSocketConfig.topicForClient )
+</tt>and activates a (limited) Hot Flux by calling <tt>generateFluxLimitedWithScheduler</tt>: 
+<pre> private void generateFluxLimitedWithScheduler() {
+  ctrlUtil.setSimpMessagingTemplate( simpMessagingTemplate );
+  Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");
+  Flux&lt;Long> flux = Flux.interval( Duration.ofMillis(1000 ), disiScheduler ) 
+       .map( tick -> {if (tick <= 6) return tick; else <k>disiScheduler.dispose()</k>; return tick; } );
+  <ks>flux.subscribe</ks>( v -> ctrlUtil.sendMsgToGui( "flux update " + v ) );
+ }
+  
+ <kc>//sendMsgToGui</kc> in <tt>ControllerUtils</tt>:
+ public  void sendMsgToGui(  String msg ) {
+   if( simpMessagingTemplate != null )
+	  simpMessagingTemplate.convertAndSend(WebSocketConfig.topicForClient, new ResourceRep( HtmlUtils.htmlEscape( msg )  ));		
+ }
+</pre>
+</li>
 </ol>
 
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
 </body>

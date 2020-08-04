@@ -41,27 +41,36 @@ public class HumanInterfaceController {
 		elCount = 0;	//reset counter of elements
     	return "robotGuiSocket";  
     }
+	
+	@GetMapping("/show") 
+    public String showResource(Model model) {
+     	String msg = HtmlUtils.htmlEscape("GET | show some resource"  );  
+     	model.addAttribute("show", msg);
+     	return "robotGuiSocket";  
+    }
 
 	//GET seems here within REST
 	@GetMapping("/update")
  //  @ResponseBody
   public String autonomousupdate() {
-		startautonomousupdate();
+		ctrlUtil.startautonomousupdate( simpMessagingTemplate );
 		return "robotGuiSocket";  
   }
+	
+	
  	//Reused by @MessageMapping("/startResourceUpdating")
-	public void startautonomousupdate() {
-		ctrlUtil.setSimpMessagingTemplate( simpMessagingTemplate );
-		new Thread() {
-			int n = 0;
-			public void run() {
-				for( int i=0; i<5; i++) {
-					ctrlUtil.sendMsgToGui( "autonomous update " + n++ );
-					ctrlUtil.delay(1000);
-				}
-			}
-		}.start();		
-	}
+//	public void startautonomousupdate() {
+//		ctrlUtil.setSimpMessagingTemplate( simpMessagingTemplate );
+//		new Thread() {
+//			int n = 0;
+//			public void run() {
+//				for( int i=0; i<5; i++) {
+//					ctrlUtil.sendMsgToGui( "autonomous update " + n++ );
+//					ctrlUtil.delay(1000);
+//				}
+//			}
+//		}.start();		
+//	}
 	
 	
 	public void demoCreate0() {
@@ -124,8 +133,14 @@ public class HumanInterfaceController {
 	@GetMapping("/updateflux")
 //  @ResponseBody
   public String autonomousupdateflux(Model model) {
-		DirectProcessor<String> hotSource =  ctrlUtil.createHotSource(simpMessagingTemplate);
-		ctrlUtil.populateHotFlux( hotSource );
+		DirectProcessor<String> hotSource =  ctrlUtil.createHotSource();
+		int hotSourceelnum = ctrlUtil.getElementCount();		//Java should provide a Pair ...
+		hotSource.subscribe( 
+				v     -> ctrlUtil.sendMsgToGui( simpMessagingTemplate, v ) ,
+				error -> System.out.println("autonomousupdateflux error= " + error ),
+				()    -> ctrlUtil.sendMsgToGui( simpMessagingTemplate, "hotSource_" + hotSourceelnum +" ends" )
+		); 
+		ctrlUtil.populateHotFlux( hotSource, hotSourceelnum );
   	return "robotGuiSocket";  
   }
 	
@@ -165,32 +180,33 @@ public class HumanInterfaceController {
     	//@SendTo("/topic/display")
        	@SendTo( WebSocketConfig.topicForClient )  
     	public ResourceRep showresource(@Payload String message) {	//The receiver will look at a field named content
-    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("showresource after message=" + message)  );  
+    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("socket | showresource after message=" + message)  );  
     		return rep;
     	}
     	
     	@MessageMapping("/startresourceupdating")
     	@SendTo( WebSocketConfig.topicForClient )
     	public ResourceRep startresourceupdating(@Payload String message) {	//The receiver will look at a field named content
-    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("startResourceUpdating after message=" + message)  );  
-    		startautonomousupdate();
+    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("socket | startResourceUpdating after message=" + message)  );  
+    		ctrlUtil.startautonomousupdate( simpMessagingTemplate );
     		return rep;
     	}
  
-    	@MessageMapping("/resourceflux")
+    	@MessageMapping("/resourceflux") 
     	@SendTo(  WebSocketConfig.topicForClient )
      	public ResourceRep startresourceflux(@Payload String message) {	//The receiver will look at a field named content
-    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("startresourceflux after message=" + message)  );  
-    		generateFlux1();
+    		ResourceRep rep = new ResourceRep( HtmlUtils.htmlEscape("socket | startresourceflux after message=" + message)  );  
+    		Flux<Long> flux = ctrlUtil.generateFluxLimitedWithScheduler();
+    		flux.subscribe( v -> ctrlUtil.sendMsgToGui( simpMessagingTemplate, "flux update " + v ) );
     		return rep;
     	}
-    	   public void generateFlux1() {
-    		   ctrlUtil.setSimpMessagingTemplate( simpMessagingTemplate );
-    		   Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");
-    		   Flux<Long> flux = Flux.interval( Duration.ofMillis(1000 ), disiScheduler ) 
-    		   	        .map( tick -> {if (tick <= 6) return tick; else disiScheduler.dispose(); return tick; } );
-    		   flux.subscribe( v -> ctrlUtil.sendMsgToGui( "flux update " + v ) );
-    	   }
+//    	   private void generateFluxLimitedWithScheduler() {
+//    		   //ctrlUtil.setSimpMessagingTemplate( simpMessagingTemplate );
+//    		   Scheduler disiScheduler = Schedulers.newSingle("disiScheduler");
+//    		   Flux<Long> flux = Flux.interval( Duration.ofMillis(1000 ), disiScheduler ) 
+//    		   	        .map( tick -> {if (tick <= 6) return tick; else disiScheduler.dispose(); return tick; } );
+//    		   flux.subscribe( v -> ctrlUtil.sendMsgToGui( simpMessagingTemplate, "flux update " + v ) );
+//    	   }
     	
 //	private void delay(int dt) {
 //		try {
