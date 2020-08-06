@@ -7,6 +7,7 @@ plugins {
 
 group = 'it.unibo'
 version = '1.1.0'
+description = 'spring-webflux-demo'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -20,8 +21,9 @@ BASIC SPRING
 */
 	//implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	//compile('org.springframework.boot:spring-boot-starter-netty')
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 /* 
 CODE BOILERPLATE
@@ -37,7 +39,7 @@ ACTUATORS
 
 /*
 WEBSOCKET
-*/
+
 	implementation 'org.springframework.boot:spring-boot-starter-websocket' 
 	implementation 'org.webjars:webjars-locator-core'
 	implementation 'org.webjars:sockjs-client:1.1.2'
@@ -46,6 +48,8 @@ WEBSOCKET
 	implementation 'org.webjars:bootstrap:4.5.0'
 	//implementation 'org.webjars:jquery:3.1.1-1'
 	implementation 'org.webjars:jquery:3.5.1'
+*/
+  	compile group: 'javax.websocket', name: 'javax.websocket-api'
 
  
 /* 
@@ -63,12 +67,18 @@ TESTING
 
 /*
 RXJAVA
-*/
+
 	//https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
 	compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.0.6' 
 	
 	// https://mvnrepository.com/artifact/org.twitter4j/twitter4j-stream
 	compile group: 'org.twitter4j', name: 'twitter4j-stream', version: '4.0.2'
+*/
+/*
+MONGODB
+*/
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+	compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
  	 
 /*
 HTTP CLIENT

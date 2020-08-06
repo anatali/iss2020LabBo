@@ -188,7 +188,9 @@ div.imagedesc{
     
 <body>
 <div id="body">
-<h1>LabSpringIntro  | Introducion to WebFlux </h1>
+<h1>LabSpringIntro  | Introducion to 
+<a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html" target="web">
+WebFlux </a></h1>
 <!--
 <h2>References</h2>
 <ul>
@@ -314,6 +316,83 @@ target="web">Simple Event Driven Microservices with Spring Cloud Stream</a></li>
  
 </ul>
 
+<h3>About webFlux</h3>
+From <a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html" 
+target="web">23. WebFlux framework</a> we read:<br/><br/>
+<ul>
+<li>Spring Framework 5 includes a new <k>spring-webflux</k> module. 
+The module contains support for reactive HTTP and WebSocket clients as well as for reactive server web applications including 
+REST, HTML browser, and WebSocket style interactions.<br/><br/>
+</li>
+<li>On the server-side WebFlux supports 2 distinct programming models:
+	<ul>
+	<li>Annotation-based with @Controller and the other annotations supported also with Spring MVC</li>
+	<li>Functional, Java 8 lambda style routing and handling (see
+	<a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#_routerfunctions"
+	target="web"><em>RouterFunctions</em></a>)
+	</li>
+	</ul>
+</li>
+
+<li>The same <k>@Controller</k> programming model and the same annotations used in Spring MVC are also supported in WebFlux. 
+The main difference is that the underlying core, framework contracts, i.e. <tt>HandlerMapping, HandlerAdapter</tt>, 
+are non-blocking and operate on the reactive <tt>ServerHttpRequest</tt> and <tt>ServerHttpResponse</tt> rather than on the 
+<tt>HttpServletRequest</tt> and <tt>HttpServletResponse</tt>.
+<br/><br/></li>
+
+<li>Incoming HTTP requests are handled by a HandlerFunction, which is essentially a function that takes a <tt>ServerRequest</tt> 
+and returns a <k>Mono&lt;ServerResponse></k>. 
+The annotation counterpart to a handler function would be a method with <k>@RequestMapping</k>.</li>
+
+<li>WebFlux includes a functional, reactive <k>WebClient</k> that offers a fully non-blocking and reactive alternative to the 
+<tt>RestTemplate</tt> (see <a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#web-reactive-client"
+	target="web"><em>Client Side</em></a>).<br/><br/></li>
+	
+<li>WebFlux includes reactive <a href="https://en.wikipedia.org/wiki/WebSocket" target="web"><k>WebSocket</k></a> 
+ client and server support.
+(see <a href="https://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#web-reactive-client"
+	target="web"><em>web-reactive-websocket-support</em></a> and
+	
+<a href="https://howtodoinjava.com/spring-webflux/reactive-websockets/" target="web"><ks>Spring Boot WebFlux WebSocket Example</ks></a>,
+
+<a href="https://www.baeldung.com/java-websockets" target="web"><ks>A Guide to the Java API for WebSocket</ks></a>
+	
+	
+	).<br/><br/></li>
+</ul>
+
+<h3>Netty and Tomcat</h3>
+<div class="remark">
+WebFlux can run on Servlet containers with support for the Servlet 3.1 Non-Blocking IO API as well as on other 
+async runtimes such as Netty and Undertow. 
+</div>
+Each runtime is adapted to a reactive ServerHttpRequest and ServerHttpResponse exposing the body of the request and response as 
+Flux<DataBuffer>, rather than InputStream and OutputStream, with reactive backpressure. 
+REST-style JSON and XML serialization and deserialization is supported on top as a Flux&lt;Object>, 
+and so is HTML view rendering and Server-Sent Events.
+<hr/>
+
+Developers describe Netty as "Asynchronous event-driven network application framework". 
+Netty is a NIO client server framework which enables quick and easy development of network applications such as protocol servers and clients. 
+It greatly simplifies and streamlines network programming such as TCP and UDP socket server. 
+<br/><br/>
+On the other hand, Apache Tomcat is detailed as "An open source software implementation of the Java Servlet and 
+JavaServer Pages technologies". 
+Apache Tomcat powers numerous large-scale, mission-critical web applications across a diverse range of industries and organizations.
+<br/><br/>
+Netty belongs to "Concurrency Frameworks" category of the tech stack, 
+while Apache Tomcat can be primarily classified under "Web Servers".
+<br/><br/>
+"High Performance" is the top reason why over 2 developers like Netty, while over 76 developers mention "Easy" 
+as the leading cause for choosing Apache Tomcat.
+<br/><br/>
+Netty and Apache Tomcat are both open source tools. 
+It seems that Netty with 19.9K GitHub stars and 9.05K forks on GitHub has more adoption than 
+Apache Tomcat with 3.51K GitHub stars and 2.4K GitHub forks.
+<br/><br/>
+According to the StackShare community, Apache Tomcat has a broader approval, 
+being mentioned in 566 company stacks & 432 developers stacks; compared to Netty, 
+which is listed in 11 company stacks and 14 developer stacks.
 
 <h3>About Hooks.onOperatorDebug</h3>
 <li><a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
@@ -338,7 +417,7 @@ target="web">Spring – Application events</a> (HowToDoInJava)</li>
 </ul>
 
 
-<h2>Examples</h2>
+<h2>Examples</h2> http://learning-spring-boot.cfapps.io/
 <a href="https://projectreactor.io/docs/core/release/reference/index.html#core-features" target="web">
 <ks>R3RFG | 4.</ks> Reactor Core Features</a><br/>
 The Reactor project main artifact is reactor-core, a reactive library that focuses on the 

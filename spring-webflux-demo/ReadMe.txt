@@ -1,0 +1,1 @@
+docker run --name natmongo -d mongo:tag

@@ -36,18 +36,26 @@ public class WebFluxIntroClient0 {
 	}
 	
 	public void callForHomePage() {
-		WebClient webClient = WebClient.create("http://localhost:8082");
+		WebClient webClient = WebClient.create("http://localhost:8081");
 		Mono<String> result = callForUri(webClient, "/" );
 		System.out.println(" %%%%%%%%%%%% callForHomePage");
 		String outS = result.block();
 		System.out.println(outS);
 	}
 	
+	public void callFoString() {
+		WebClient webClient = WebClient.create("http://localhost:8082");
+		Mono<String> result = callForUri(webClient, "/api" );
+		System.out.println(" %%%%%%%%%%%% callFoString");
+		String outS = result.block();
+		System.out.println("callForData answer= "+outS);
+	}
+	
 	//
-	public void callForFlux () {
+	public void callForFlux() {
 		WebClient webClient = WebClient.create("http://localhost:8082");
         Flux<Long> result = webClient.get()
-				.uri("/api/updateflux")   
+				.uri("/api/getfluxoflong")   
                 .retrieve()
                 .bodyToFlux(Long.class);
         System.out.println("WebClientExample | callForFlux response " + result);
@@ -62,33 +70,34 @@ public class WebFluxIntroClient0 {
 
 	public void callForFluxString ( String uriStr ) {
 		WebClient webClient = WebClient.create("http://localhost:8082");
-        Flux<String> result = webClient.get()
+//      Mono<ResponseEntity<List<String>>> result1 = webClient.get()
+//		.uri( uriStr )   
+//        .retrieve()
+//        .toEntityList(String.class);
+       Flux<String> result = webClient.get()
 				.uri( uriStr )   
                 .retrieve()
-                 .bodyToFlux(String.class);
-        Mono<ResponseEntity<List<String>>> result1 = webClient.get()
-        				.uri( uriStr )   
-                        .retrieve()
-                        .toEntityList(String.class);
-        System.out.println("WebClientExample | callForFlux response " + result);
+                .bodyToFlux(String.class);
+//         System.out.println("WebClientExample | callForFluxString response " + result);
         result.subscribe(  
         		item  -> System.out.println("item=  " + item),
         		error -> System.out.println("error= " + error ),
-        		()    -> System.out.println("done " )   
+        		()    -> System.out.println("done " + uriStr )   
         );
         String last = result.blockLast( Duration.ofMillis(20000));
-        System.out.println("WebClientExample | last= " + last); 
-        
-        System.out.println("WebClientExample | result1= " + result1.block());
+        System.out.println("WebClientExample | last= " + last);         
+        //System.out.println("WebClientExample | result1= " + result1.block());
  	}	
 
     public static void main(String[] args)   {
     	
     	WebFluxIntroClient0 appl = new WebFluxIntroClient0();
-    	//appl.callForHomePage();
-    	//appl.callForFluxString();		
-    	//appl.callForFluxString("/api/getflux");
-    	appl.callForFluxString("/api/fluxstring");
-        //Thread.sleep(5000);   
+    	appl.callForHomePage();
+	
+     	 //appl.callFoString( );
+//     	 appl.callForFlux();
+//    	 appl.callForFluxString("/api/fluxstring");
+//    	 appl.callForFluxString("/api/getflux");
+    	      
     }
 }

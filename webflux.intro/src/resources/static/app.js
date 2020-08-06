@@ -122,7 +122,7 @@ $(function () {
 	$( "#showresource" ).click(function() { sendShowResourceRequest(  ) });
 	$( "#resourceupdating" ).click(function() { sendStartResourceUpdating(  ) });
 	$( "#resourceflux" ).click(function() { 
-		stompClient.send("/app/resourceflux", {}, JSON.stringify( {'name': 'startresourceflux' }))
+		stompClient.send("/app/resourceflux", {}, JSON.stringify( {'name': 'resourceflux' }))
 	});
 	
 });

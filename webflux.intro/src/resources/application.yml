@@ -1,4 +1,5 @@
-info:
-   contact:
-       email: antonio.natali@unibo.it
-       phone: 1234567
+logging:
+  level:
+    io:
+      netty: DEBUG
+    reactor: DEBUG
