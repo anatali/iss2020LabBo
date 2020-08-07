@@ -56,12 +56,8 @@ public class ImageService {		//Book pg. 51
 //   				new Image( path.hashCode(), path.getFileName().toString() )  
 //  				);			WRONG
 			
-// 			return Flux.fromStream(Files.list(Paths.get(UPLOAD_ROOT)))
-// 		            .map(path -> new Image(path.hashCode(), path.getFileName().toString() )); 			
- 			
- 			return findAllImagesOk();
-		
-		
+ 			return Flux.fromStream(Files.list(Paths.get(UPLOAD_ROOT)))
+ 		            .map(path -> new Image(path.hashCode(), path.getFileName().toString() )); 					
 		} catch (Exception e) {
 			System.out.println("ImageService | ERROR: "+e.getMessage());
 			return Flux.empty();

@@ -19,8 +19,8 @@ import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyReques
 
 
 
-@SpringBootApplication
-//@EnableWebFlux		//AVOID!!
+//@SpringBootApplication
+//@EnableWebFlux		//REDUNDANT
 public class ApplicationIntro {
 
 	public static void main(String[] args) {

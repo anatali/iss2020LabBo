@@ -4,11 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.reactive.HiddenHttpMethodFilter;
-import org.springframework.web.reactive.config.EnableWebFlux;
+
 
 // tag::code[]
-//@SpringBootApplication
-//@EnableWebFlux		 
+//@SpringBootApplication		 
 public class ApplicationSocial {  //Book pg. 
 
 	public static void main(String[] args) {

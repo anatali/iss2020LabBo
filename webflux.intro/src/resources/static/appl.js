@@ -16,7 +16,7 @@ function connect()
 	ws = new WebSocket(url);
 	ws.onopen = function() {
 		setConnected(true);
-		log('Info: Connection Established.');
+		log('Info: Connection Established with:' + url);
 	};
 	
 	ws.onmessage = function(event) {

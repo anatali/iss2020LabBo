@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
-
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +24,11 @@ public class SocialMachineInterfaceController {
 	public SocialMachineInterfaceController(ImageService imageService) {
 		this.imageService = imageService;
 	}
+	
+	@GetMapping(API_BASE_PATH  )
+	Mono<String> entry(){
+		return Mono.just("indexSocial");
+	}
  
 	//curl localhost:8082/api/images 
 	// tag::get[]		//See https://spring.io/guides/gs/gradle/
@@ -32,11 +36,6 @@ public class SocialMachineInterfaceController {
 	Flux<Image> images() {
 		Hooks.onOperatorDebug();
 		return imageService.findAllImages();
-//		return Flux.just(				
-//				new Image(1, "basicrobotlogical.png"),
-//				new Image(2, "basicRobotOnRasp.png"),
-//				new Image(3, "basicrobotproject.png")
-//		);
 	}
 	// end::get[]
 
