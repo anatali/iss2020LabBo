@@ -45,17 +45,22 @@ public class ApplicationIntro {
 	public EchoHandler echoHandler() {				//(1) implements WebSocketHandler 
 		return new EchoHandler();
 	}
+	@Bean
+	public HotSourceDataEmitter dataemitter() {				//(1) implements WebSocketHandler 
+		return new HotSourceDataEmitter();
+	}
 
 	@Bean
 	public HandlerMapping handlerMapping() {
 		Map<String, WebSocketHandler> map = new HashMap<>();
 		map.put("/echo", echoHandler());
+		map.put("/data", dataemitter());
 		SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();		//(2)
 		mapping.setUrlMap(map);
 		mapping.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		return mapping;
 	}
-
+ 
 	@Bean
 	public WebSocketHandlerAdapter handlerAdapter() {				//(3)
 		return new WebSocketHandlerAdapter(webSocketService());

@@ -813,7 +813,7 @@ public void demoPush0() {
 <td style="width:45%" >
 <pre>
 public void demoHot0() {
- DirectProcessor<String> hotSource = <k>DirectProcessor</k>.create();
+ DirectProcessor&lt;String> hotSource = <k>DirectProcessor</k>.create();
  Flux<String> <ks>hotFlux</ks>   = hotSource.map(String::toUpperCase);
 
  <ks>hotFlux.subscribe</ks>(d -> System.out.println("Subscriber 1: "+d));
