@@ -238,8 +238,22 @@ is <ks>8082</ks>.
 
 <table style="width:98%">
 <tbody>	
+
 <tr>
 <td style="width:50%" >
+<a href="../src/main/it/unibo/websocket/intro/ApplicationWebsocket.java" target="code"><ks>ApplicationWebsocket.java</ks></a>
+<hr/>
+Example inspired by <a href="https://github.com/faros/reactive-websockets.git" target="code">faros/reactive-websockets.git></a>.
+
+</td>
+<td>
+Usage (handled by <a href="../src/main/it/unibo/websocket/intro/WebSockHIController.java" target="code">
+WebSockHIController.java</a>):
+</td>
+</tr>
+
+<tr>
+<td >
 <a href="../src/main/it/unibo/webflux/basic/ApplicationBasic.java" target="code"><ks>ApplicationBasic.java</ks></a>
 <hr/>
 Example taken from <k>Chapter 1</k> of the book 
@@ -296,6 +310,36 @@ SocialMachineInterfaceController.java</a>):
 </ul>
 </td>
 </tr>
+
+<tr>
+<td><a href="../src/main/it/unibo/webflux/social/ApplicationSocial.java" target="code"><ks>ApplicationSocial.java</ks></a>
+<hr/>
+Example taken from <k>Chapter 2</k> of the book 
+<a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
+<br/><br/>
+<hr/>
+Warning:
+<a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code">ImageService..findAllImages()</a>
+ has been modified to avoid the error: <em>Iterator already obtained</em>.
+</td>
+<td>
+Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHumanInterfaceController.java" target="code">
+SocialHumanInterfaceController.java</a>):
+<ul>
+<li><tt>http://localhost:8082</tt></li>
+<li><tt>localhost:8082/images</tt> (POST) </li>
+<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
+</ul>
+Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialMachineInterfaceController.java" target="code">
+SocialMachineInterfaceController.java</a>):
+<ul>
+<li><tt>http://localhost:8082</tt></li>
+<li><tt>localhost:8082/images</tt></li>
+<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
+</ul>
+</td>
+</tr>
+
 
 
 <tr>

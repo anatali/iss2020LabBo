@@ -1,11 +1,19 @@
+/*
+--------------------------------------------------
+webSocketConnection.js
+--------------------------------------------------
+*/
 var webSocket;
+var host =  location.host;
+var url  = "ws://"+host+"/demoflux";
+//alert(url);
 
 function logMessage(msg) {
     document.getElementById("result").appendChild(document.createTextNode(msg + "\n"));
 }
 
 function openWebSocket() {
-    webSocket = new WebSocket("ws://localhost:8082/stringConverter");
+    webSocket = new WebSocket( url );
 
     webSocket.onopen = function() { logMessage("Opened the Websocket Connection!"); };
     

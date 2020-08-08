@@ -2,15 +2,172 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reactive WebSockets Example</title>
-</head>
-<body onload="openWebSocket()">
+    <title>ReactiveWebSockets</title>
+    <link href="/disi.css" rel="stylesheet">
+    <script src="webSocketConnection.js"></script> 
+ </head>
+<body onload="openWebSocket()">  
+ 
+<h1>Explain | Using WebSockets</h1>
+For an introduction to the usage of WebSocket with SpringBoot Reactor, see 
+<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html#webflux-websocket" target="web">
+SpringFlux WebSockets</a>. See also
+<a href="https://www.toptal.com/java/stomp-spring-boot-websocket" target="web">Using Spring Boot for WebSocket Implementation with STOMP</a>
+<br/><br/>
+
+<h3>Functionality</h3>
+The WebSocket protocol, RFC 6455, provides a standardized way to establish a full-duplex, 
+two-way communication channel between client and server over a single TCP connection.
+A WebSocket interaction begins with an HTTP request that uses the HTTP <k>Upgrade</k> header.
+<br/><br/>
+By clicking on the <ks>Send</ks> button:
+<ul>
+<li>At the first (odd) click, the String written in the input area is rewritten in upcase, reverted and sent back over the socket.</li>
+<li>At the second (even) click, a hot flux of String is activated and sent back over the socket.</li>
+</ul>
+ 
+<hr/>
+
     <div>
         <input id="input">
         <button onclick="sendString()">Send</button>
     </div>
-    <br />
+    
+<h4>Output area</h4>
     <textarea id="result" style="min-height: 200px; min-width: 400px"></textarea>
-    <script type="text/javascript" src="webSocketConnection.js"></script>
+    
+    
+ <h2>Structure of the page</h2>   
+ <ol>
+<li>The home page <tt>indexWebsocket.html</tt> contains initial specifications:
+<pre>
+&lt;head>
+	&lt;title>ReactiveWebSockets&lt;/title>   
+ 	&lt;link href="/disi.css" rel="stylesheet">
+ 	&lt;script src="webSocketConnection.js">&lt;/script> 
+ ...
+</pre>
+</li>
+
+<li>The home page <tt>indexWebsocket.html</tt> defines also fields to dynamically store values and messages:
+<pre>
+   &lt;h4>Output area&lt;/h4>
+   &lt;textarea <ks>id="result"</ks> style="min-height: 200px; min-width: 400px">&lt;/textarea>
+</pre>
+</li>
+
+
+<li>The code <a href="webSocketConnection.js" target="code"><em>webSocketConnection.js</em></a> 
+is a user-defined support that defines code to connect 
+to the server using the reactive 
+
+<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html#webflux-websocket" target="web">
+SpringFlux WebSockets</a> with a proper handling of messages sent by the server:
+<pre>
+ 
+function openWebSocket() {  
+   webSocket = new WebSocket( "ws://"+host+"/stringConverter" );
+   webSocket.onopen = function() { logMessage("Opened the Websocket Connection!"); }; 
+   webSocket.onclose = function() { logMessage("Websocket Connection Closed !");};
+   webSocket.onmessage = function(event) { logMessage("Result: " + event.data); }
+}
+
+The function <i>openWebSocket</i> is called when the page is loaded:
+&lt;body <ks>onload=openWebSocket()</ks> >
+</pre>
+
+ 
+</li>
+
+<li>
+<a href="webSocketConnection.js" target="code"><em>webSocketConnection.js</em></a>
+ contains the code that reacts to a 'click' on the <tt>Send</tt> button:
+<pre>
+&lt;button onclick="sendString()">Send&lt;/button>
+
+function sendString() {
+    var input = document.getElementById("input").value;
+    if (!isOpen(webSocket)){
+    	console.log("socket closed");
+     }else  webSocket.send(input);
+}
+</pre>
+</li>
+<li>On the <em>server site</em>, the behaviour is specified in the class
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webflux.intro/src/main/it/unibo/websocket/intro/WebSocketConfiguration.java" 
+target="code"><k>WebSocketConfiguration.java</k></a> 
+ 
+<pre>
+<kc>@Configuration</kc>
+public class WebSocketConfiguration{
+    <kc>@Autowired</kc>
+    private WebSocketHandler webSocketHandler;
+    <kc>@Bean</kc>
+    public WebSocketHandlerAdapter webSocketHandlerAdapter(){
+        return new WebSocketHandlerAdapter();
+    }   
+    <kc>@Bean</kc>
+    public HandlerMapping handlerMapping(){
+        Map&lt;String, WebSocketHandler> map = new HashMap&lt;>();
+        map.put("<ks>/demoflux"</ks>, webSocketHandler);
+        SimpleUrlHandlerMapping simpleUrlHandlerMapping = new SimpleUrlHandlerMapping();
+        simpleUrlHandlerMapping.setOrder(10);
+        simpleUrlHandlerMapping.setUrlMap(map);
+        return simpleUrlHandlerMapping;
+    }
+}
+</pre>
+</li>
+<li>
+The class
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webflux.intro/src/main/it/unibo/websocket/intro/WebSocketHandlers.java" 
+target="code"><k>WebSocketHandlers.java</k></a>  defines the application code in the <k>handle</k> method:
+<pre>
+   <kc>@Override</kc>
+   public Mono<Void> <k>handle</k>(WebSocketSession session) {
+	return session.send(session.receive()
+		.map(WebSocketMessage::getPayloadAsText)
+		.flatMap( this::handleStream    )
+		.map(v -> session.textMessage(v))); 
+   } 
+   public Flux<String> handleStream(String v){  <kc>//click even -> hotSourceData | click odd -> reverseString</kc>
+	if( count++ %2 == 0 ) return hotSourceData(v); else return reverseString(v);   		
+   }
+   public Flux<String> reverseString(String userInput){
+	return Flux.just(new StringBuilder(userInput).reverse().toString());
+   }
+   public Flux<String> hotSourceData(String userInput){
+	DirectProcessor<String> hotSource = DirectProcessor.create();
+	Flux<String> result = hotSource.map(String::toUpperCase);
+	new Thread(){
+	   public void run() {
+	   System.out.println("demoHot0 start " + count);
+	   for( int i=1; i&lt;=3;i++) {
+		hotSource.onNext("item_"+ count+"_"+i);
+		delay(500);
+	   }
+	   hotSource.onComplete();			//further data will be dropped
+	   System.out.println("demoHot0 ends " + count);
+	   }
+	}.start();
+	return result; 
+   }
+   
+</pre>
+</li>
+ 
+</ol>
+
+
+<h2 id="webclient">Explain Web Client</h2>
+See  
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webflux.intro.client/src/it/unibo/webflux/intro/client/WebFluxIntroClient0.java" target="code">  
+WebFluxIntroClient0.java</a> 
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
+By AN Unibo-DISI  
+</div> 
+    
+    
 </body>
 </html>

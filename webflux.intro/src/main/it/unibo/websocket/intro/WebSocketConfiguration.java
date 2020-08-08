@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class WebSocketConfiguration
-{
+public class WebSocketConfiguration{
 
     @Autowired
     private WebSocketHandler webSocketHandler;
@@ -28,7 +27,7 @@ public class WebSocketConfiguration
     public HandlerMapping handlerMapping()
     {
         Map<String, WebSocketHandler> map = new HashMap<>();
-        map.put("/stringConverter", webSocketHandler);
+        map.put("/demoflux", webSocketHandler);
         SimpleUrlHandlerMapping simpleUrlHandlerMapping = new SimpleUrlHandlerMapping();
         simpleUrlHandlerMapping.setOrder(10);
         simpleUrlHandlerMapping.setUrlMap(map);
