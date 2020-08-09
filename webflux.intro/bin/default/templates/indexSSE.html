@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebfluxSseGui</title>
+    <link href="/disi.css" rel="stylesheet">
+</head>
+<body>
+<h1>Explain | Using Server Sent events</h1>
+
+<h2>Overview</h2>
+<h3>Server-Sent Events</h3>
+<a href="https://www.w3schools.com/html/html5_serversentevents.asp" target="web">Server-Sent Events (SSE)</a>
+ is a server push technology enabling a browser to receive automatic updates 
+from a server via HTTP connection. 
+In a server-sent event, a web page automatically gets updates from a server and the server produces 
+the response in a <k>text/event-stream format</k>.
+<br/><br/>
+<a href="https://www.w3schools.com/html/html5_serversentevents.asp" target="web">Server-Sent Events (SSE)</a>
+is a standard describing how servers can initiate data transmission towards clients once 
+an initial client connection has been established. They are commonly used to send message updates or continuous 
+data streams to a browser client and designed to enhance native, cross-browser streaming through 
+a JavaScript API called <k>EventSource</k>, through which a <i>client requests a particular URL</i> 
+in order to receive an event stream.
+
+
+<h2>Application</h2>
+
+<h4>OutputArea</h4>
+<div><textarea id="messages" cols="80" rows="20" readonly="readonly"></textarea></div>
+
+
+<h4>InputArea</h4>
+<div>User name: <input id="username" type="text" size="20" autofocus/></div>
+<br/>
+<div>Message: <input id="message" type="text" size="60"/>
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="update()">Update</button>
+</div>
+
+<h2>Functionality</h2>
+
+ 
+
+<h3>The HTML site</h3>
+
+<h4><ks>Page load</ks> time</h4>
+<ol>
+<li>The page defines fields for an output area:
+<pre>
+&lt;textarea id="messages" cols="80" rows="20" readonly="readonly">&lt;/textarea>
+</pre>
+The page defines fields for an input-data area:
+<pre>
+User name: &lt;input id="<ks>username</ks>" type="text" size="20" autofocus/>
+Message: &lt;input id="<ks>message</ks>" type="text" size="60"/>
+</pre>
+
+The page defines buttons:
+<pre>
+    &lt;button onclick="<ks>sendMessage()</ks>">Send&lt;/button>
+    &lt;button onclick="<ks>update()</ks>">Update&lt;/button>
+
+</pre>
+ </li>
+<li>The page executes the following code
+<pre>
+var messagesOutput, userNameInput, messageInput, eventSource;
+
+window.addEventListener("load", function () {
+	messagesOutput = document.getElementById("messages");
+	userNameInput  = document.getElementById("username");
+	messageInput   = document.getElementById("message");
+
+	<kc>// Connect to the server</kc>
+	eventSource = new <k>EventSource</k>("<ks>/receive</ks>");
+	<kc>// Receive messages</kc>
+	eventSource.onmessage = function (event) {
+		messagesOutput.value += event.data + '\r';
+	};
+	eventSource.onerror = function (e) {
+		console.log("EventSource failed: " + e);
+	};
+},false);
+</pre>
+ </li>
+</ol>
+
+<h4>Send button</h4>
+By clicking on the <ks>Send</ks> button, the following action is executed:
+<pre>
+ function <ks>sendMessage()</ks> {
+	var message = (userNameInput.value === '' ? "[Anonymous] " : '[' + userNameInput.value + '] ') + messageInput.value;
+	<k>fetch("<ks>/send</ks>", {method: "<ks>POST</ks>", body: message})</k>.then(function () {
+		messageInput.value = "";
+		messageInput.focus();
+	});           
+ }
+
+</pre>
+ 
+<h4>Update button</h4>
+By clicking on the <ks>Update</ks> button, the following action is executed:
+ 
+<pre>
+ function <ks>update()</ks> {
+	<kc>// Connect to the server</kc>
+	eventSource = new <k>EventSource</k>("<ks>/update</ks>");
+	<kc>// Receive messages</kc>
+	eventSource.onmessage = function (event) {
+		messagesOutput.value += event.data + '\r';
+	};
+	eventSource.onerror = function (e) {
+		console.log("EventSource failed: " + e);
+	};  	  	
+ }
+</pre>
+ 
+<h3>The server site</h3>
+<h4>MessageProcessor.java</h4> 
+<pre>
+@Service
+public class MessageProcessor {
+    private List<Consumer<String>> listeners = new CopyOnWriteArrayList<>();
+
+    public void <k>register</k>(Consumer<String> listener) {
+        listeners.add(listener);
+        System.out.println("Added a listener, for a total of " + listeners.size()   );
+    }
+    public void <k>process</k>(String message) {
+        listeners.forEach(c -> c.accept(message));
+    }
+}
+</pre>
+<h4>MessageController.java</h4>
+<pre>
+ @Autowired
+ private MessageProcessor processor;
+ 
+ @GetMapping(path = "<ks>/receive</ks>", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+ public Flux<String> receive() {
+	return Flux.create(sink -> {
+		processor.<k>register</k>( sink::next );
+		for (int i = 0; i < 3; i++) {
+			sink.next(   "value_"+i  );      		 
+		}       	 
+	});
+ }
+
+</pre>
+
+<ks>Send</ks> button:
+<pre>
+ @PostMapping("<ks>/send</ks>")
+ public String send(@RequestBody String message) {
+	processor.<k>process</k>(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " " + message);
+	return "Done";
+ }
+</pre>
+
+<ks>Update</ks> button:
+<pre>
+ @GetMapping(path = "<ks>/update</ks>", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+ public Flux<String> update() {
+	return Flux.create(sink -> {
+		for (int i = 0; i < 15; i++) {
+			sink.next(   "updatevalue_"+i  );    
+			try {Thread.sleep(1000);} catch (InterruptedException e) {}  <kc>//delay</kc>
+		}       	 
+	});
+ }
+</pre>
+ 
+
+
+<script>
+    var messagesOutput, userNameInput, messageInput, eventSource;
+
+    window.addEventListener("load", function () {
+            messagesOutput = document.getElementById("messages");
+            userNameInput  = document.getElementById("username");
+            messageInput   = document.getElementById("message");
+
+            // Connect to the server
+            eventSource = new EventSource("/receive");
+			//eventSource = new EventSource("/timestamps");
+            // Receive messages
+            eventSource.onmessage = function (event) {
+                messagesOutput.value += event.data + '\r';
+            };
+            eventSource.onerror = function (e) {
+                console.log("EventSource failed: " + e);
+            };
+        },
+        false);
+
+    function sendMessage() {
+        var message = (userNameInput.value === '' ? "[Anonymous] " : '[' + userNameInput.value + '] ') + messageInput.value;
+        fetch("/send", {method: "POST", body: message}).then(function () {
+            messageInput.value = "";
+            messageInput.focus();
+        });           
+    }
+    
+    function update() {
+             // Connect to the server
+            eventSource = new EventSource("/update");
+            // Receive messages
+            eventSource.onmessage = function (event) {
+                messagesOutput.value += event.data + '\r';
+            };
+            eventSource.onerror = function (e) {
+                console.log("EventSource failed: " + e);
+            };  	  	
+    }
+</script>
+</body>
+</html>

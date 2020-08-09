@@ -21,7 +21,7 @@ public class WebSocketsClient0 {
 		Mono<String> result = callForUri(webClient, "/" );
 		System.out.println(" %%%%%%%%%%%% callForHomePage");
 		String outS = result.block();
-		System.out.println(outS);
+		System.out.println(outS); 
 	}
 	
 	private Mono<String> callForUri( WebClient webClient, String uripath ){

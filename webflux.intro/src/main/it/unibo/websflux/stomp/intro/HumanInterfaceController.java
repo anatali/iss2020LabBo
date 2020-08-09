@@ -1,4 +1,4 @@
-package it.unibo.webflux.intro;
+package it.unibo.websflux.stomp.intro;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class HumanInterfaceController {
 	
 	@GetMapping("/gui")
     public Publisher<String> showGui() {
-    	return Mono.just( "indexWebfluxIntro" );
+    	return Mono.just( "indexWebfluxStompIntro" );
     }
 
 	

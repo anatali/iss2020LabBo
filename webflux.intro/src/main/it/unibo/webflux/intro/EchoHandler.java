@@ -1,11 +1,13 @@
 package it.unibo.webflux.intro;
 
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import it.unibo.webflux.utils.ControllerUtils;
 import reactor.core.publisher.Mono;
 
+@Component
 public class EchoHandler implements WebSocketHandler 
 {
 	@Override

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebfluxStompintroGui</title>   
+    <link href="/disi.css" rel="stylesheet">
+    <!--
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    -->
+    <script src="webfluxstomp.js"></script> 
+ 
+</head>
+<body onload=myIpAndConnect() >   
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<div id="main-content" class="container">
+<div class="row"> 
+   
+  <h1>WebfluxStompintro GUI</h1>
+  
+   
+ 
+  	<p>
+ 	The server works on <em><span id="myIp"></span></em> using WebFlux and Web Socket STOMP.
+ 	https://www.toptal.com/java/stomp-spring-boot-websocket
+ 	
+ 	<div class="remark">
+ 	Since WebSocket here are not reactive, this code should be executed in a dedicated project that will use Tomcat
+    </div>
+    
+<h2>Overview</h2>    
+
+WebSocket is preferred over HTTP where the client and server need to exchange information at high frequency 
+and with low latency because HTTP connection is closed once a request is served by the server and there 
+is a time constraint to open an HTTP connection again.
+
+<br/>
+Also, the WebSocket protocol is bi-directional i.e. a client can subscribe for some event and server can publish 
+the event to the client based on the availability of the event in the server.
+<br/>
+
+While talking about WebSocket, let us also talk about Server Sent Events introduced in HTML 5.  
+Many times, we may not really require WebSocket connection and these server sent events might serve our purpose.
+
+
+<h3>Server-Sent Events</h3>
+<a href="https://www.w3schools.com/html/html5_serversentevents.asp" target="web">Server-Sent Events (SSE)</a>
+ is a server push technology enabling a browser to receive automatic updates 
+from a server via HTTP connection. 
+In a server-sent event, a web page automatically gets updates from a server and the server produces 
+the response in a text/event-stream format.
+<br/><br/>
+Server-Sent Events is a standard describing how servers can initiate data transmission towards clients once 
+an initial client connection has been established. They are commonly used to send message updates or continuous 
+data streams to a browser client and designed to enhance native, cross-browser streaming through 
+a JavaScript API called EventSource, through which a client requests a particular URL in order to receive an event stream.
+
+<br/><br/>
+Spring WebFlux Server and client side Java implementation built on reactive streams and non-blocking servers.
+<pre>
+Flux&lt;ServerSentEvent>, Observable&lt;ServerSentEvent> 
+
+Emit server-sent events. 
+The ServerSentEvent wrapper can be omitted when only data needs to be written 
+(however, text/event-stream must be requested or declared in the mapping through the produces attribute).
+</pre>
+
+
+<h3>WebSockets</h3>
+
+It is a specification to allow synchronous bidirectional communication between a client and a server. 
+While similar to TCP sockets, it is a protocol that operates as an upgraded HTTP connection, exchanging variable-length 
+frames between the two parties, instead of a stream.
+<br/><br/>
+WebSocket does imply a messaging architecture but does not mandate the use of any specific messaging protocol. 
+It is a very thin layer over TCP that transforms a stream of bytes into a stream of messages (either text or binary) 
+and not much more. It is up to applications to interpret the meaning of a message.
+
+<br/><br/>
+Unlike HTTP, which is an application-level protocol, in the WebSocket protocol there is simply not enough information 
+in an incoming message for a framework or container to know how to route it or process it. 
+Therefore WebSocket is arguably too low level for anything but a very trivial application. 
+It can be done, but it will likely lead to creating a framework on top. 
+This is comparable to how most web applications today are written using a web framework rather than the Servlet API alone.
+<br/><br/>
+For this reason the WebSocket RFC defines the use of sub-protocols. 
+During the handshake, the client and server can use the header Sec-WebSocket-Protocol to agree on a sub-protocol, 
+i.e. a higher, application-level protocol to use. 
+The use of a sub-protocol is not required, but even if not used, applications will still need to choose 
+a message format that both the client and server can understand. 
+That format can be custom, framework-specific, or a standard messaging protocol.
+
+<h3>STOMP (Streaming Text Oriented Messaging Protocol)</h3>
+
+It defines a protocol for clients and servers to communicate with messaging semantics. 
+It does not define any implementation details, but rather addresses an easy-to-implement wire protocol for messaging integrations. 
+It provides higher semantics on top of the WebSockets protocol and defines a handful of frame types 
+that are mapped onto WebSockets frames. Some of these types are...
+<ul>
+<li>connect</li>
+<li>subscribe</li>
+<li>unsubscribe</li>
+<li>send (messages sent to the server)</li>
+<li>message (for messages send from the server) BEGIN, COMMIT, ROLLBACK (transaction management)  </li>
+</ul>    
+ STOMP can also be used without a websocket, e.g. over a Telnet connection or a message broking service.   
+	</p>
+	
+	
+See <br/>
+https://www.devglan.com/spring-boot/spring-websocket-integration-example-without-stomp
+<br/>
+https://www.devglan.com/spring-boot/spring-boot-websocket-example?baseUrl=https%3A%2F%2Fwww.devglan.com%2F	
+	
+	
+	
+<h2>APPLICATION</h2>
+<h4>Message area</h4>	
+	    <span th:text="${show}"></span><p id="applmsgs">...</p>
+	
+<h3>Show Resource request (socket <tt>/showresource</tt>)</h3>   
+<m><k>Browser</k>: executes <ks>stompClient.send("/app/showresource" ...</ks><br/>
+<k>Server</k>: sends on the WebSocket the message <tt>HELLO</tt></m>
+    <form class="form-inline"><button id="showresource" class="btn btn-default" type="submit">show resource</button> 
+    (see <a href="explainShowresource.html#reqshowres" target="explain">explain showresource request</a>)</form>
+  
+ <h3>Resource start an autonomous update  (socket <tt>/startresourceupdating</tt>)</h3>
+ <m><k>Browser</k>: executes <ks>tompClient.send("/app/startresourceupdating" ...</ks><br/>
+<k>Server</k>: sends on the WebSocket <tt>5</tt> messages: <tt>autonomous_N emits:V</tt> and finally 
+ sends the 'answer' <tt>BYE</tt>. </m>
+    <form class="form-inline"><button id="resourceupdating" class="btn btn-default" type="submit">start resource updating</button> 
+    (see <a href="explainShowresource.html#startresupdating" target="explain">explain start resource updating</a>)</form>
+
+ <h3>Resource start an update flux-based (socket <tt>/resourceflux</tt>)</h3>
+<m><k>Browser</k>: executes <ks>stompClient.send("/app/resourceflux" ...</ks><br/>
+<k>Server</k>: starts a thread to send on the WebSocket a HOT flux of  messages <tt>HumanGui_N flux-value=V</tt> and then 
+sends the 'answer' <tt>SENDING</tt></m>
+  
+    <form class="form-inline"><button id="resourceflux" class="btn btn-default" type="submit">start resource flux</button> 
+    (see <a href="explainShowresource.html#resourceflux" target="explain">explain start resource flux-based</a>)</form>
+
+<h2>A Web Client</h2>
+    (see <a href="explainShowresource.html#webclient" target="explain">Explain web client</a>)</form>
+
+
+<hr/>     
+ 
+ 
+ 
+ 
+</div>
+
+
+
+</body>
+</html>

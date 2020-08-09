@@ -159,10 +159,50 @@ target="code"><k>WebSocketHandlers.java</k></a>  defines the application code in
 </ol>
 
 
-<h2 id="webclient">Explain Web Client</h2>
-See  
-<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webflux.intro.client/src/it/unibo/webflux/intro/client/WebFluxIntroClient0.java" target="code">  
-WebFluxIntroClient0.java</a> 
+<h2 id="webclient">Using a Web Client</h2>
+We introduce a RestController 
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webflux.intro/src/main/it/unibo/websocket/intro/WebSockHMController.java" 
+target="code"><k>WebSocketHandlers.java</k></a>  <tt>WebSockHMController</tt> that reacts to uri <ks>/hotdata</ks> by creating a flux
+of <tt>String</tt>:
+<pre>
+@RestController
+public class WebSockHMController {
+	private int count = 0;
+	
+ 	@GetMapping( "<ks>/hotdata</ks>" )
+    public Flux&lt;String> genSourceData( ){
+ 		count++;
+     	DirectProcessor&lt;String> hotSource = DirectProcessor.create();
+     	Flux<String> result = hotSource.map(String::toUpperCase).map( v -> "["+ v + "]\n" );  
+	        new Thread(){
+	        	public void run() {
+	        		 System.out.println("genSourceData start " + count);
+	        		 for( int i=1; i&lt;=15;i++) {
+	        			 try { Thread.sleep(500); } catch (InterruptedException e) {}	
+	        			 hotSource.onNext("value_"+ count+"_"+i);
+	        		 }
+ 	           	 	 hotSource.onComplete();			 
+	        		 System.out.println("genSourceData ends " + count);
+	        	}
+	        }.start();
+		    System.out.println("genSourceData return result count=" + count);
+        return result; 
+    }
+</pre>
+
+Then we could execute a client:  
+<a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webflux.intro.client/src/it/unibo/websockets/client/WebSocketsClient0.java" target="code">  
+WebSocketsClient0.java</a>. 
+
+<hr/>
+Warning: 
+<ol>
+<li>Run <tt>http://localhost:8082/hotdata</tt> and look at the result shown in the page. Try to explain it. </li>
+<li>Run <a href="http://htmlpreview.github.com/?https://github.com/anatali/iss2020LabBo/blob/master/webflux.intro.client/src/it/unibo/websockets/client/WebSocketsClient0.java" target="code">  
+WebSocketsClient0.java</a> and look at the application output: it will show the exception <i>Connessione in corso interrotta forzatamente dall'host remoto</i>.Try to explain it.
+</li>
+</ol>
+<br/><br/>
 
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
 By AN Unibo-DISI  

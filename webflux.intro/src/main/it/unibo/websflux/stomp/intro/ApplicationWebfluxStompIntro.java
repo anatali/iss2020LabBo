@@ -1,4 +1,4 @@
-package it.unibo.webflux.intro;
+package it.unibo.websflux.stomp.intro;
  
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +19,13 @@ import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyReques
 
 
 
-@SpringBootApplication
+//@SpringBootApplication
 //@EnableWebFlux		//REDUNDANT
-public class ApplicationIntro {
+public class ApplicationWebfluxStompIntro {
 
 	public static void main(String[] args) {
  		//System.setProperty("spring.devtools.restart.enabled", "false"); //By AN: to avoid SilentExitException in Eclipse DEBUG
-		SpringApplication.run(ApplicationIntro.class, args);
+		SpringApplication.run(ApplicationWebfluxStompIntro.class, args);
 	}
 
 //From Spring Boot WebFlux WebSocket Example	

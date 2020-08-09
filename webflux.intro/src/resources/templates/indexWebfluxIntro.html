@@ -4,22 +4,27 @@
 <head>
     <title>WebfluxintroGui</title>   
     <link href="/disi.css" rel="stylesheet">
+    <!--
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-    <script src="/app.js"></script>
+    -->
+    <script src="webSocketConnection.js"></script> 
+    <!-- <script src="/app.js"></script>  -->
 </head>
-<body onload=myIpAndConnect() >
+ <body onload=openWebSocket() > 
+<!--<body onload=myIpAndConnect() >  -->
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 
 <div id="main-content" class="container">
-<div class="row">
-    
+<div class="row"> 
+   
   <h1>Webfluxintro GUI</h1>
- 
+  
  	<div> 
+	<h3>Testing websockets</h3>
 		<div id="connect-container" class="ui centered grid">
 			<div class="row">
 				<button id="connect" onclick="connect();" class="ui green button ">Connect</button>
@@ -40,6 +45,7 @@
 			<div id="logging"></div>
 		</div>
 	</div>
+ 
  
   	<p>
  	The server works on <em><span id="myIp"></span></em> using WebFlux and Web Socket.<br/> 	

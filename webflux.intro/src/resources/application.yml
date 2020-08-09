@@ -3,3 +3,7 @@ logging:
     io:
       netty: DEBUG
     reactor: DEBUG
+    
+logging.level:
+  ROOT: INFO
+#  org.springframework: DEBUG    

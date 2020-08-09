@@ -236,21 +236,47 @@ The <k>server port</k> (defined in <a href="../src/resources/application.propert
 is <ks>8082</ks>.
 <br/><br/>
 
+<div class="remark">
+Each of the following examples shows a page that explains its own structure and behavior.
+</div>
 <table style="width:98%">
-<tbody>	
+<tbody>	 
 
 <tr>
 <td style="width:50%" >
+<a href="../src/main/it/unibo/webflux/sse/ApplicationSse.java" target="code"><ks>ApplicationSse.java</ks></a>
+<hr/>
+Example inspired by <a href="https://github.com/fbeaufume/webflux-sse-sample" target="code">Florian Beaufumé webflux-sse-sample GIT</a>.<br/><br/>
+Shows the usage of <a href="https://www.w3schools.com/html/html5_serversentevents.asp" target="web">Server-Sent Events (SSE)</a>.
+
+</td>
+<td>
+Usage (handled by <a href="../src/main/it/unibo/webflux/sse/MessageController.java" target="code">
+MessageController.java</a>):
+<ul>
+<li><tt>http://localhost:8082</tt> Buttons send/update</li>
+</ul>
+</td>
+</tr>
+
+
+<tr>
+<td>
 <a href="../src/main/it/unibo/websocket/intro/ApplicationWebsocket.java" target="code"><ks>ApplicationWebsocket.java</ks></a>
 <hr/>
-Example inspired by <a href="https://github.com/faros/reactive-websockets.git" target="code">faros/reactive-websockets.git></a>.
+Example inspired by <a href="https://github.com/faros/reactive-websockets.git" target="code">faros/reactive-websockets.git</a>.<br/><br/>
+Shows the usage of a reactive WebSocket.
 
 </td>
 <td>
 Usage (handled by <a href="../src/main/it/unibo/websocket/intro/WebSockHIController.java" target="code">
 WebSockHIController.java</a>):
+<ul>
+<li><tt>http://localhost:8082/hotdata</tt></li>
+</ul>
 </td>
 </tr>
+
 
 <tr>
 <td >
