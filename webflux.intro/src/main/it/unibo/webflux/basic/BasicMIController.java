@@ -8,11 +8,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
  
 @RestController
-public class BasicMachineInterfaceController {  //Book pg.17
+public class BasicMIController {  //Book pg.17
 
 	private final ChapterRepository repository;
 
-	public BasicMachineInterfaceController(ChapterRepository repository) {
+	public BasicMIController(ChapterRepository repository) {
 		this.repository = repository;
 	}
 		

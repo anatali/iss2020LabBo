@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  
 
 @Controller
-public class SseHumanInterfaceController {
+public class SseHIController {
 
 	@GetMapping("/")
 	//@ResponseBody  //CAN BE OMITTED

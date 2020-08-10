@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  
 // tag::1[]
 @Controller
-public class SocialHumanInterfaceController {		//Book pg. 55
+public class SocialHIController {		//Book pg. 55
 
 	private static final String BASE_PATH = "/images";
 	private static final String FILENAME = "{filename:.+}";
@@ -30,7 +30,7 @@ public class SocialHumanInterfaceController {		//Book pg. 55
 	
 	private Flux<Image> fluxOfImages = null;
 
-	public SocialHumanInterfaceController(ImageService imageService) {
+	public SocialHIController(ImageService imageService) {
 		this.imageService = imageService;
 	}
 	// end::1[]

@@ -106,6 +106,14 @@ By clicking on the <ks>Send</ks> button, the following action is executed:
 	});           
  }
 </pre>
+The server (see <a href="#MessageController">MessageController</a>) executes:
+<pre>
+ @PostMapping("<ks>/send</ks>")
+ public String send(@RequestBody String message) {
+	processor.<k>process</k>(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " " + message);
+	return "Done";
+ }
+</pre>
  
 <h4>Update button</h4>
 By clicking on the <ks>Update</ks> button, the following action is executed:
@@ -121,6 +129,18 @@ By clicking on the <ks>Update</ks> button, the following action is executed:
 	eventSource.onerror = function (e) {
 		console.log("EventSource failed: " + e);
 	};  	  	
+ }
+</pre>
+The server (see <a href="#MessageController">MessageController</a>) executes:
+<pre>
+ @GetMapping(path = "<ks>/update</ks>", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+ public Flux<String> update() {
+	return Flux.create(sink -> {
+		for (int i = 0; i < 15; i++) {
+			sink.next(   "updatevalue_"+i  );    
+			try {Thread.sleep(1000);} catch (InterruptedException e) {}  <kc>//delay</kc>
+		}       	 
+	});
  }
 </pre>
  
@@ -140,7 +160,7 @@ public class MessageProcessor {
     }
 }
 </pre>
-<h4>MessageController.java</h4>
+<h4 id="MessageController">MessageController.java</h4>
 <pre>
  @Autowired
  private MessageProcessor processor;

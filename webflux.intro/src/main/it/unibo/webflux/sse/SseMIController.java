@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+ 
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -17,7 +17,7 @@ import java.time.LocalTime;
 import java.util.Date;
 
 @RestController
-public class MessageController {
+public class SseMIController {
 private int count = 1;
 //    private static final Logger LOGGER = LoggerFactory.getLogger(MessageController.class);
 

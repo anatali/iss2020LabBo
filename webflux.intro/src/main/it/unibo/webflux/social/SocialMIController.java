@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
  
 @RestController
-public class SocialMachineInterfaceController {
+public class SocialMIController {
 
-	private static final Logger log = LoggerFactory.getLogger(SocialMachineInterfaceController.class);
+	private static final Logger log = LoggerFactory.getLogger(SocialMIController.class);
 
 	private static final String API_BASE_PATH = "/api";
 	
 	private final ImageService imageService;
 	
-	public SocialMachineInterfaceController(ImageService imageService) {
+	public SocialMIController(ImageService imageService) {
 		this.imageService = imageService;
 	}
 	

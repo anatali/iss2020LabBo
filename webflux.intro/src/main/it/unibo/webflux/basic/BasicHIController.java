@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
  
 
 @Controller
-public class BasicHumanInterfaceController {  //Book pg.17
+public class BasicHIController {  //Book pg.17
 	 
 	//http://localhost:8082
 	@GetMapping("/")

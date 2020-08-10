@@ -7,7 +7,7 @@ import org.springframework.web.filter.reactive.HiddenHttpMethodFilter;
 
 
 // tag::code[]
-//@SpringBootApplication		 
+@SpringBootApplication		 
 public class ApplicationSocial {  //Book pg. 
 
 	public static void main(String[] args) {

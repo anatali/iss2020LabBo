@@ -245,14 +245,20 @@ Each of the following examples shows a page that explains its own structure and 
 <tr>
 <td style="width:50%" >
 <a href="../src/main/it/unibo/webflux/sse/ApplicationSse.java" target="code"><ks>ApplicationSse.java</ks></a>
+<div class="remark">Shows the usage of <a href="https://www.w3schools.com/html/html5_serversentevents.asp" target="web">
+Server-Sent Events (SSE)</a>.
+</div>
 <hr/>
-Example inspired by <a href="https://github.com/fbeaufume/webflux-sse-sample" target="code">Florian Beaufumé webflux-sse-sample GIT</a>.<br/><br/>
-Shows the usage of <a href="https://www.w3schools.com/html/html5_serversentevents.asp" target="web">Server-Sent Events (SSE)</a>.
-
+Example inspired by <a href="https://github.com/fbeaufume/webflux-sse-sample" target="code">Florian Beaufumé webflux-sse-sample GIT</a>.
+<br/>
+<tt><a href="../src/main/it/unibo/webflux/sse/SseHIController.java" target="code"><tt>SseHIController.java</tt></a>,  
+<a href="../src/main/it/unibo/webflux/sse/SseMIController.java" target="code"><tt>SseMIController.java</tt></a></tt>
 </td>
 <td>
-Usage (handled by <a href="../src/main/it/unibo/webflux/sse/MessageController.java" target="code">
-MessageController.java</a>):
+<img src="./img/ApplicationSse.png" alt="ApplicationSse.png" width="60%"><br/>
+
+Usage (handled by <a href="../src/main/it/unibo/webflux/sse/SseMIController.java" target="code">
+SseMIController.java</a>):
 <ul>
 <li><tt>http://localhost:8082</tt> Buttons send/update</li>
 </ul>
@@ -263,12 +269,25 @@ MessageController.java</a>):
 <tr>
 <td>
 <a href="../src/main/it/unibo/websocket/intro/ApplicationWebsocket.java" target="code"><ks>ApplicationWebsocket.java</ks></a>
+<div class="remark">Shows the usage of a reactive WebSocket.<br/> <m>
+By clicking on the Send button:
+<ul>
+<li>At the first (odd) click, the String written in the input area is rewritten in upcase, reverted and sent back over the socket.</li>
+<li>At the second (even) click, a hot flux of String is activated and sent back over the socket.</li>
+</ul>
+</m>
+</div>
 <hr/>
-Example inspired by <a href="https://github.com/faros/reactive-websockets.git" target="code">faros/reactive-websockets.git</a>.<br/><br/>
-Shows the usage of a reactive WebSocket.
+Example inspired by <a href="https://github.com/faros/reactive-websockets.git" target="code">faros/reactive-websockets.git</a>.
+<br/>
+<a href="../src/main/it/unibo/websocket/intro/WebSockHIController.java" target="code"><tt>WebSockHIController.java</tt></a>,
+<a href="../src/main/it/unibo/websocket/intro/WebSockHMController.java" target="code"><tt>WebSockHMController.java</tt></a>,
+<a href="../src/main/it/unibo/websocket/intro/WebSocketHandlers.java" target="code"><tt>WebSocketHandlers.java</tt></a>,
+<a href="../src/main/it/unibo/websocket/intro/WebSocketConfiguration.java" target="code"><tt>WebSocketConfiguration.java</tt></a>.
 
 </td>
-<td>
+<td><img src="./img/ApplicationWebsocket.png" alt="ApplicationWebsocket.png" width="70%"><br/>
+ 
 Usage (handled by <a href="../src/main/it/unibo/websocket/intro/WebSockHIController.java" target="code">
 WebSockHIController.java</a>):
 <ul>
@@ -281,10 +300,20 @@ WebSockHIController.java</a>):
 <tr>
 <td >
 <a href="../src/main/it/unibo/webflux/basic/ApplicationBasic.java" target="code"><ks>ApplicationBasic.java</ks></a>
+<div class="remark">
+</div>
 <hr/>
 Example taken from <k>Chapter 1</k> of the book 
 <a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
-<br/><br/>
+<br/>
+
+<a href="../src/main/it/unibo/webflux/basic/Chapter.java" target="code"><tt>Chapter.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/ChapterRepository.java" target="code"><tt>ChapterRepository.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/LoadDatabase.java" target="code"><tt>LoadDatabase.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/BasicHIController.java" target="code"><tt>BasicHIController.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/BasicMIController.java" target="code"><tt>BasicMIController.java</tt></a>,
+
+ 
 <hr/>
 Warning:
 <a href="../src/main/it/unibo/webflux/basic/Chapter.java" target="code">Chapter.java</a>
@@ -292,14 +321,14 @@ Warning:
 
 </td>
 <td>
-Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicHumanInterfaceController.java" target="code">
-BasicHumanInterfaceController.java</a>):
+Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicHIController.java" target="code">
+BasicHIController.java</a>):
 <ul>
 <li><tt>http://localhost:8082</tt></li>
 <li><tt>http://localhost:8082/greeting?name=Bob</tt></li>
 </ul>
-Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicMachineInterfaceController.java" target="code">
-BasicMachineInterfaceController.java</a>):
+Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicMIController.java" target="code">
+BasicMIController.java</a>):
 <ul>
 <li><tt>http://localhost:8082/api</tt></li>
 <li><tt>http://localhost:8082/api/mono</tt></li>
@@ -310,25 +339,34 @@ BasicMachineInterfaceController.java</a>):
 
 <tr>
 <td><a href="../src/main/it/unibo/webflux/social/ApplicationSocial.java" target="code"><ks>ApplicationSocial.java</ks></a>
+<div class="remark">Shows a set of images stored in the directory:<a href="../upload-dir" target="code"><tt>upload-dir</tt></a> and allows 
+insertion/deletion of images.</div>
 <hr/>
 Example taken from <k>Chapter 2</k> of the book 
 <a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
-<br/><br/>
+<br/>
+<a href="../src/main/it/unibo/webflux/social/Image.java" target="code"><tt>Image.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code"><tt>ImageService.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code"><tt>SocialHIController.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/social/SocialMIController.java" target="code"><tt>SocialMIController.java</tt></a>,
+
 <hr/>
 Warning:
 <a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code">ImageService..findAllImages()</a>
  has been modified to avoid the error: <em>Iterator already obtained</em>.
 </td>
 <td>
-Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHumanInterfaceController.java" target="code">
-SocialHumanInterfaceController.java</a>):
+<img src="./img/ApplicationSocial.png" alt="ApplicationSocial.png" width="70%"><br/>
+ 
+Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code">
+SocialHIController.java</a>):
 <ul>
 <li><tt>http://localhost:8082</tt></li>
 <li><tt>localhost:8082/images</tt> (POST) </li>
 <li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
 </ul>
-Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialMachineInterfaceController.java" target="code">
-SocialMachineInterfaceController.java</a>):
+Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code">
+SocialHIController.java</a>):
 <ul>
 <li><tt>http://localhost:8082</tt></li>
 <li><tt>localhost:8082/images</tt></li>
@@ -337,34 +375,7 @@ SocialMachineInterfaceController.java</a>):
 </td>
 </tr>
 
-<tr>
-<td><a href="../src/main/it/unibo/webflux/social/ApplicationSocial.java" target="code"><ks>ApplicationSocial.java</ks></a>
-<hr/>
-Example taken from <k>Chapter 2</k> of the book 
-<a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
-<br/><br/>
-<hr/>
-Warning:
-<a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code">ImageService..findAllImages()</a>
- has been modified to avoid the error: <em>Iterator already obtained</em>.
-</td>
-<td>
-Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHumanInterfaceController.java" target="code">
-SocialHumanInterfaceController.java</a>):
-<ul>
-<li><tt>http://localhost:8082</tt></li>
-<li><tt>localhost:8082/images</tt> (POST) </li>
-<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
-</ul>
-Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialMachineInterfaceController.java" target="code">
-SocialMachineInterfaceController.java</a>):
-<ul>
-<li><tt>http://localhost:8082</tt></li>
-<li><tt>localhost:8082/images</tt></li>
-<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
-</ul>
-</td>
-</tr>
+
 
 
 
