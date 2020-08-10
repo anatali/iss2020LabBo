@@ -19,14 +19,14 @@ public class BasicMIController {  //Book pg.17
 	//http://localhost:8082/api 
 	@GetMapping("/api")
     public String entry( ) {
-      	return "BasicMachineInterfaceController - entry ";  
+      	return "BasicMIController - entry ";  
     }
 
 	//http://localhost:8082/api/mono 
 	@GetMapping("/api/mono")
 	//@ResponseBody  //CAN BE OMITTED
 	public Mono<String> mono(Model model) {
-		String msg = "Welcome from BasicMachineInterfaceController - mono ";
+		String msg = "Welcome from BasicMIController - mono ";
  		model.addAttribute("applLogo",msg);
 		return Mono.just("indexBasic");		//just a string, not rendered
 	}
@@ -35,7 +35,7 @@ public class BasicMIController {  //Book pg.17
 	@GetMapping("/api/greeting")
 	public String greeting(@RequestParam(required = false, defaultValue = "User") String name) {
 		return name.equals("")
-			? "Hey | from BasicMachineInterfaceController - greeting "
+			? "Hey | from BasicMIController - greeting "
 			: "Hey, " + name + " | from BasicMachineInterfaceController - greeting";
 	}
 	

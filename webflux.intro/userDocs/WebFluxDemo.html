@@ -237,8 +237,121 @@ is <ks>8082</ks>.
 <br/><br/>
 
 <div class="remark">
-Each of the following examples shows a page that explains its own structure and behavior.
+Each of the following examples shows a page that explains its own structure and behavior. 
+<ul>
+<li>An application can be <ks>inspected</ks> by calling: 
+<tt>http://localhost:8082/<k>actuator/health</k></tt> or <tt>/<k>actuator/beans</k></tt> or  <k>actuator/metrics</k></tt>, ...</li>
+<!--
+<li>An application can be <ks>built</ks> by running: <tt>gradlew build distZip</tt> </li>
+<li>An application can be <ks>executed</ks> by running:
+<pre>
+SERVER_PORT=8082	//<kc>optional to override property</kc>
+java -jar build/libs/webflux.intro/webflux.intro-1.1.0.jar
+</pre>
+</li>
+-->
+</ul>
 </div>
+
+
+<table style="width:98%">
+<tbody>	 
+
+
+
+<tr>
+<td style="width:50%">
+<a href="../src/main/it/unibo/webflux/basic/ApplicationBasic.java" target="code"><ks>ApplicationBasic.java</ks></a>
+<div class="remark">A (<i>flapdoodle mongo</i>) ChapterRepository is preloaded (in reactive way) at Configuration time 
+by LoadDatabase with a set of Chapters. The BasicMIController returns a Flux of Chapters when called with <k>/api/chapters</k> 
+</div>
+<hr/>
+Example taken from <k>Chapter 1</k> of the book 
+<a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
+<br/>
+
+<a href="../src/main/it/unibo/webflux/basic/Chapter.java" target="code"><tt>Chapter.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/ChapterRepository.java" target="code"><tt>ChapterRepository.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/LoadDatabase.java" target="code"><tt>LoadDatabase.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/BasicHIController.java" target="code"><tt>BasicHIController.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/basic/BasicMIController.java" target="code"><tt>BasicMIController.java</tt></a>,
+
+ 
+<hr/>
+Warning:
+<a href="../src/main/it/unibo/webflux/basic/Chapter.java" target="code">Chapter.java</a>
+ has been modified to <em>allow access</em> to the fields <tt>id, name</tt>.
+
+</td>
+<td>
+<img src="./img/ApplicationBasic.png" alt="ApplicationBasic.png" width="70%"><br/>
+
+Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicHIController.java" target="code">
+BasicHIController.java</a>):
+<ul>
+<li><tt>http://localhost:8082</tt></li>
+<li><tt>http://localhost:8082/greeting?name=Bob</tt></li>
+</ul>
+Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicMIController.java" target="code">
+BasicMIController.java</a>):
+<ul>
+<li><tt>http://localhost:8082/api</tt></li>
+<li><tt>http://localhost:8082/api/mono</tt></li>
+<li><tt>http://localhost:8082/api/chapters</tt></li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td><a href="../src/main/it/unibo/webflux/social/ApplicationSocial.java" target="code"><ks>ApplicationSocial.java</ks></a>
+<div class="remark">Shows a set of images stored in the directory:<a href="../upload-dir" target="code"><tt>upload-dir</tt></a> and allows 
+insertion/deletion of images.</div>
+<hr/>
+Example taken from <k>Chapter 2</k> of the book 
+<a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
+<br/>
+<a href="../src/main/it/unibo/webflux/social/Image.java" target="code"><tt>Image.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code"><tt>ImageService.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code"><tt>SocialHIController.java</tt></a>,
+<a href="../src/main/it/unibo/webflux/social/SocialMIController.java" target="code"><tt>SocialMIController.java</tt></a>,
+
+<hr/>
+Warning:
+<a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code">ImageService..findAllImages()</a>
+ has been modified to avoid the error: <em>Iterator already obtained</em>.
+</td>
+<td>
+<img src="./img/ApplicationSocial.png" alt="ApplicationSocial.png" width="70%"><br/>
+ 
+Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code">
+SocialHIController.java</a>):
+<ul>
+<li><tt>http://localhost:8082</tt></li>
+<li><tt>localhost:8082/images</tt> (POST) </li>
+<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
+</ul>
+Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code">
+SocialHIController.java</a>):
+<ul>
+<li><tt>http://localhost:8082</tt></li>
+<li><tt>localhost:8082/images</tt></li>
+<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
+</ul>
+</td>
+</tr>
+ 
+
+<tr>
+<td></td>
+<td></td>
+</tr>
+
+ </tbody>
+</table>
+
+
+<h3>Beyond HTTP</h3>
+
 <table style="width:98%">
 <tbody>	 
 
@@ -297,92 +410,7 @@ WebSockHIController.java</a>):
 </tr>
 
 
-<tr>
-<td >
-<a href="../src/main/it/unibo/webflux/basic/ApplicationBasic.java" target="code"><ks>ApplicationBasic.java</ks></a>
-<div class="remark">
-</div>
-<hr/>
-Example taken from <k>Chapter 1</k> of the book 
-<a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
-<br/>
 
-<a href="../src/main/it/unibo/webflux/basic/Chapter.java" target="code"><tt>Chapter.java</tt></a>,
-<a href="../src/main/it/unibo/webflux/basic/ChapterRepository.java" target="code"><tt>ChapterRepository.java</tt></a>,
-<a href="../src/main/it/unibo/webflux/basic/LoadDatabase.java" target="code"><tt>LoadDatabase.java</tt></a>,
-<a href="../src/main/it/unibo/webflux/basic/BasicHIController.java" target="code"><tt>BasicHIController.java</tt></a>,
-<a href="../src/main/it/unibo/webflux/basic/BasicMIController.java" target="code"><tt>BasicMIController.java</tt></a>,
-
- 
-<hr/>
-Warning:
-<a href="../src/main/it/unibo/webflux/basic/Chapter.java" target="code">Chapter.java</a>
- has been modified to <em>allow access</em> to the fields <tt>id, name</tt>.
-
-</td>
-<td>
-Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicHIController.java" target="code">
-BasicHIController.java</a>):
-<ul>
-<li><tt>http://localhost:8082</tt></li>
-<li><tt>http://localhost:8082/greeting?name=Bob</tt></li>
-</ul>
-Usage (handled by <a href="../src/main/it/unibo/webflux/basic/BasicMIController.java" target="code">
-BasicMIController.java</a>):
-<ul>
-<li><tt>http://localhost:8082/api</tt></li>
-<li><tt>http://localhost:8082/api/mono</tt></li>
-<li><tt>http://localhost:8082/api/chapters</tt></li>
-</ul>
-</td>
-</tr>
-
-<tr>
-<td><a href="../src/main/it/unibo/webflux/social/ApplicationSocial.java" target="code"><ks>ApplicationSocial.java</ks></a>
-<div class="remark">Shows a set of images stored in the directory:<a href="../upload-dir" target="code"><tt>upload-dir</tt></a> and allows 
-insertion/deletion of images.</div>
-<hr/>
-Example taken from <k>Chapter 2</k> of the book 
-<a href="https://www.amazon.it/Learning-Spring-Boot-2-0-microservices-ebook/dp/B01LPRN0Z8" target="web">Learning Spring Boot 2.0</a>
-<br/>
-<a href="../src/main/it/unibo/webflux/social/Image.java" target="code"><tt>Image.java</tt></a>,
-<a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code"><tt>ImageService.java</tt></a>,
-<a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code"><tt>SocialHIController.java</tt></a>,
-<a href="../src/main/it/unibo/webflux/social/SocialMIController.java" target="code"><tt>SocialMIController.java</tt></a>,
-
-<hr/>
-Warning:
-<a href="../src/main/it/unibo/webflux/social/ImageService.java" target="code">ImageService..findAllImages()</a>
- has been modified to avoid the error: <em>Iterator already obtained</em>.
-</td>
-<td>
-<img src="./img/ApplicationSocial.png" alt="ApplicationSocial.png" width="70%"><br/>
- 
-Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code">
-SocialHIController.java</a>):
-<ul>
-<li><tt>http://localhost:8082</tt></li>
-<li><tt>localhost:8082/images</tt> (POST) </li>
-<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
-</ul>
-Usage (handled by <a href="../src/main/it/unibo/webflux/social/SocialHIController.java" target="code">
-SocialHIController.java</a>):
-<ul>
-<li><tt>http://localhost:8082</tt></li>
-<li><tt>localhost:8082/images</tt></li>
-<li><tt>localhost:8082/images/basicrobotlogical.png/raw</tt></li>
-</ul>
-</td>
-</tr>
-
-
-
-
-
-<tr>
-<td></td>
-<td></td>
-</tr>
 
 <tr>
 <td></td>
@@ -391,7 +419,6 @@ SocialHIController.java</a>):
 
  </tbody>
 </table>
-
  
 <h2>Start-up</h2>
  

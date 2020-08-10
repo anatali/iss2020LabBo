@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
 	id 'eclipse'
+	id 'application' 	//ADDED
 }
 
 group = 'it.unibo'
@@ -12,6 +13,7 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+	jcenter()
 }
 
 dependencies {
@@ -101,4 +103,14 @@ eclipse {
 
 test {
 	useJUnitPlatform()
+}
+
+mainClassName = 'it.unibo.webflux.basic.ApplicationBasic'
+
+jar {
+    println("building the jar ...")
+    from sourceSets.main.allSource
+    manifest {
+        attributes 'Main-Class': "$mainClassName"
+    }
 }

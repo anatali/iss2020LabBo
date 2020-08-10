@@ -17,7 +17,7 @@ public class BasicHIController {  //Book pg.17
 	@GetMapping("/")
 	//@ResponseBody  //CAN BE OMITTED
     public String entry(Model model) {
-		String msg = HtmlUtils.htmlEscape("Welcome from | BasicHumanInterfaceController - entry ");
+		String msg = HtmlUtils.htmlEscape("Welcome from | BasicHIController - entry ");
 		model.addAttribute("applLogo",msg);
      	return "indexBasic";  
     }
@@ -25,7 +25,7 @@ public class BasicHIController {  //Book pg.17
 	//http://localhost:8082/greeting?name=Bob
 	@GetMapping("/greeting")
 	public String greeting(Model model, @RequestParam(required = false, defaultValue = "User") String name) {
-		String msg = "Welcome," + name + " from BasicHumanInterfaceController - greeting ";
+		String msg = "Welcome," + name + " from BasicHIController - greeting ";
 		model.addAttribute("applLogo",msg);
 		return "indexBasic";  
 	}
