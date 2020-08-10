@@ -18,17 +18,12 @@ import java.util.Date;
 
 @RestController
 public class MessageController {
-
+private int count = 1;
 //    private static final Logger LOGGER = LoggerFactory.getLogger(MessageController.class);
 
-    @Autowired
+    @Autowired 
     private MessageProcessor processor;
-
-    @GetMapping("/")
-    public Mono<String> entry(){
-    	return Mono.just("indexSSE"); 
-    }
-    
+     
     @PostMapping("/send")
     public String send(@RequestBody String message) {
         //LOGGER.info("Received '{}'", message);
@@ -54,12 +49,17 @@ public class MessageController {
     
     @GetMapping(path = "/update", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> update() {
-         return Flux.create(sink -> {
+         return Flux.create(sink -> {	//previous flux is lost ...
         	//processor.register( sink::next );
-        	for (int i = 0; i < 15; i++) {
-        		sink.next(   "updatevalue_"+i  );    
-        		try {Thread.sleep(1000);} catch (InterruptedException e) {}
-        	}       	 
+        	 new Thread() {
+        		 public void run() {
+        			count++;
+		        	for (int i = 0; i < 15; i++) {
+		        		sink.next(   "updatevalue_"+count+"_"+i  );    
+		        		try {Thread.sleep(1000);} catch (InterruptedException e) {}
+		        	}       
+        		 }
+        	 }.start();
         });
     }
 

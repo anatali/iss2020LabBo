@@ -22,12 +22,15 @@ an initial client connection has been established. They are commonly used to sen
 data streams to a browser client and designed to enhance native, cross-browser streaming through 
 a JavaScript API called <k>EventSource</k>, through which a <i>client requests a particular URL</i> 
 in order to receive an event stream.
-
+<br/><br/>
+For an explanation of the technology, see 
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events" target"web">
+Using server-sent events</a>.
 
 <h2>Application</h2>
 
 <h4>OutputArea</h4>
-<div><textarea id="messages" cols="80" rows="20" readonly="readonly"></textarea></div>
+<div><textarea id="messages" cols="80" rows="10" readonly="readonly"></textarea></div>
 
 
 <h4>InputArea</h4>
@@ -38,6 +41,7 @@ in order to receive an event stream.
     <button onclick="update()">Update</button>
 </div>
 
+<hr/>
 <h2>Functionality</h2>
 
  
@@ -48,7 +52,7 @@ in order to receive an event stream.
 <ol>
 <li>The page defines fields for an output area:
 <pre>
-&lt;textarea id="messages" cols="80" rows="20" readonly="readonly">&lt;/textarea>
+&lt;textarea id="<ks>messages</ks>" cols="80" rows="20" readonly="readonly">&lt;/textarea>
 </pre>
 The page defines fields for an input-data area:
 <pre>
@@ -60,7 +64,6 @@ The page defines buttons:
 <pre>
     &lt;button onclick="<ks>sendMessage()</ks>">Send&lt;/button>
     &lt;button onclick="<ks>update()</ks>">Update&lt;/button>
-
 </pre>
  </li>
 <li>The page executes the following code
@@ -73,8 +76,8 @@ window.addEventListener("load", function () {
 	messageInput   = document.getElementById("message");
 
 	<kc>// Connect to the server</kc>
-	eventSource = new <k>EventSource</k>("<ks>/receive</ks>");
-	<kc>// Receive messages</kc>
+	eventSource = new <k>EventSource</k>("<ks>/receive</ks>"); <kc>//server-sent event API</kc>
+	<kc>// Receive message-events</kc>
 	eventSource.onmessage = function (event) {
 		messagesOutput.value += event.data + '\r';
 	};
@@ -83,6 +86,12 @@ window.addEventListener("load", function () {
 	};
 },false);
 </pre>
+<div class="remark">
+The server-sent event API is contained in the <k>EventSource</k> interface.<br/> 
+To open a connection to the server to begin receiving events from it, 
+create a new <k>EventSource</k> object with the <ks>URL of a script</ks> that generates the events.
+</div> 
+
  </li>
 </ol>
 
@@ -90,13 +99,12 @@ window.addEventListener("load", function () {
 By clicking on the <ks>Send</ks> button, the following action is executed:
 <pre>
  function <ks>sendMessage()</ks> {
-	var message = (userNameInput.value === '' ? "[Anonymous] " : '[' + userNameInput.value + '] ') + messageInput.value;
-	<k>fetch("<ks>/send</ks>", {method: "<ks>POST</ks>", body: message})</k>.then(function () {
+	var <kc>message</kc> = (userNameInput.value === '' ? "[Anonymous] " : '[' + userNameInput.value + '] ') + messageInput.value;
+	<k>fetch</k>("<ks>/send</ks>", {method: "<ks>POST</ks>", body: <kc>message</kc>}).then(function () {
 		messageInput.value = "";
 		messageInput.focus();
 	});           
  }
-
 </pre>
  
 <h4>Update button</h4>
@@ -106,7 +114,7 @@ By clicking on the <ks>Update</ks> button, the following action is executed:
  function <ks>update()</ks> {
 	<kc>// Connect to the server</kc>
 	eventSource = new <k>EventSource</k>("<ks>/update</ks>");
-	<kc>// Receive messages</kc>
+	<kc>// Receive message-events</kc>
 	eventSource.onmessage = function (event) {
 		messagesOutput.value += event.data + '\r';
 	};
@@ -121,7 +129,7 @@ By clicking on the <ks>Update</ks> button, the following action is executed:
 <pre>
 @Service
 public class MessageProcessor {
-    private List<Consumer<String>> listeners = new CopyOnWriteArrayList<>();
+    private List<Consumer&lt;String>> listeners = new CopyOnWriteArrayList&lt;>();
 
     public void <k>register</k>(Consumer<String> listener) {
         listeners.add(listener);
@@ -175,11 +183,11 @@ public class MessageProcessor {
 
 <script>
     var messagesOutput, userNameInput, messageInput, eventSource;
-
-    window.addEventListener("load", function () {
             messagesOutput = document.getElementById("messages");
             userNameInput  = document.getElementById("username");
-            messageInput   = document.getElementById("message");
+            messageInput   = document.getElementById("message"); 
+
+    window.addEventListener("load", function () {
 
             // Connect to the server
             eventSource = new EventSource("/receive");
@@ -197,7 +205,7 @@ public class MessageProcessor {
     function sendMessage() {
         var message = (userNameInput.value === '' ? "[Anonymous] " : '[' + userNameInput.value + '] ') + messageInput.value;
         fetch("/send", {method: "POST", body: message}).then(function () {
-            messageInput.value = "";
+            //messageInput.value = "";
             messageInput.focus();
         });           
     }

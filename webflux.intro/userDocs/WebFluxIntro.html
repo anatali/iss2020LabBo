@@ -649,14 +649,14 @@ The sum of current requests is sometimes referenced to as the current 'demand', 
 <table style="width:98%">
 <tbody>	
 <tr>
-<td style="width:65%" >
+<td style="width:55%" >
 <pre>
 public void demoFluxGen0() {
   Flux<String> flux = Flux.generate(
 	() -> 0, 			<kc>//initial state value</kc>
 	(state, sink) -> {
 	  <k>sink.next</k>("3 x " + state + " = " + 3*state); 
-	  if (state == 10) <k>sink.complete()</k>; 
+	  if (state == 5) <k>sink.complete()</k>; 
 	  return state + 1; 	<kc>//a new state for the next invocation</kc>
 	});	
   flux.subscribe( item -> System.out.println("demoFluxGen0 - 1: " + item) );
@@ -664,9 +664,25 @@ public void demoFluxGen0() {
 }
 </pre>
 </td>
-<td><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
+<td>
+<pre>
+<m><kc>OUTPUT</kc>
+demoFluxGen0 - 1: 3 x 0 = 0
+demoFluxGen0 - 1: 3 x 1 = 3
+demoFluxGen0 - 1: 3 x 2 = 6
+demoFluxGen0 - 1: 3 x 3 = 9
+demoFluxGen0 - 1: 3 x 4 = 12
+demoFluxGen0 - 1: 3 x 5 = 15
+demoFluxGen0 - 2: 3 x 0 = 0
+demoFluxGen0 - 2: 3 x 1 = 3
+demoFluxGen0 - 2: 3 x 2 = 6
+demoFluxGen0 - 2: 3 x 3 = 9
+demoFluxGen0 - 2: 3 x 4 = 12
+demoFluxGen0 - 2: 3 x 5 = 15
+</pre>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
 <ks>R3RFG | 4.4.1.</ks>   Synchronous generate</a> (Example 4.11):<br/> 
-<m>
+ 
 the generate method takes a generator function.
 </m>
 
@@ -690,9 +706,25 @@ public void demoFluxGen1() {
 }
 </pre>
 </td>
-<td><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
+<td>
+<pre>
+<m><kc>OUTPUT</kc>
+demoFluxGen1 - 1: 3 x 0 = 0
+demoFluxGen1 - 1: 3 x 1 = 3
+demoFluxGen1 - 1: 3 x 2 = 6
+demoFluxGen1 - 1: 3 x 3 = 9
+demoFluxGen1 - 1: 3 x 4 = 12
+demoFluxGen1 - 1: 3 x 5 = 15
+demoFluxGen1 - 2: 3 x 0 = 0
+demoFluxGen1 - 2: 3 x 1 = 3
+demoFluxGen1 - 2: 3 x 2 = 6
+demoFluxGen1 - 2: 3 x 3 = 9
+demoFluxGen1 - 2: 3 x 4 = 12
+demoFluxGen1 - 2: 3 x 5 = 15
+</pre>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
 <ks>R3RFG | 4.4.1.</ks>   Synchronous generate</a> (Example 4.12):<br/> 
-<m>
+ 
 using a single <ks>AtomicLong</ks> as the state, mutating it on each round.
 </m>
 </td>
@@ -715,9 +747,26 @@ public void demoFluxGen2() {
 }
 </pre>
 </td>
-<td><a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
+<td><pre>
+<m><kc>OUTPUT</kc>
+demoFluxGen2 - 1: 3 x 0 = 0
+demoFluxGen2 - 1: 3 x 1 = 3
+demoFluxGen2 - 1: 3 x 2 = 6
+demoFluxGen2 - 1: 3 x 3 = 9
+demoFluxGen2 - 1: 3 x 4 = 12
+demoFluxGen2 - 1: 3 x 5 = 15
+state: 6
+demoFluxGen2 - 2: 3 x 0 = 0
+demoFluxGen2 - 2: 3 x 1 = 3
+demoFluxGen2 - 2: 3 x 2 = 6
+demoFluxGen2 - 2: 3 x 3 = 9
+demoFluxGen2 - 2: 3 x 4 = 12
+demoFluxGen2 - 2: 3 x 5 = 15
+state: 6
+</pre>
+<a href="https://projectreactor.io/docs/core/release/reference/index.html#producing" target="web">
 <ks>R3RFG | 4.4.1.</ks>   Synchronous generate</a> (Example 4.12,  <k>with a consumer</k>):<br/> 
-<m>
+ 
 the <k>Consumer</k> lambda could close a connection or  handle any tasks that should be done at the end of the process.
 </m>
 </td>
@@ -751,10 +800,17 @@ public void demoCreate0() {
 
 </pre>
 </td>
-<td>
+<td><pre><m><kc>OUTPUT</kc>
+demoFluxCreate0 - 1: 0
+demoFluxCreate0 - 1: 1
+demoFluxCreate0 - 1: 2
+demoFluxCreate0 - 2: 0
+demoFluxCreate0 - 2: 1
+demoFluxCreate0 - 2: 2
+</pre>
 <a href="https://projectreactor.io/docs/core/release/reference/index.html#producing.create" target="web">
 <ks>R3RFG | 4.4.2.</ks>  Asynchronous and Multi-threaded: create</a><br/>
-<m>
+ 
 <k>create</k> is a more advanced form of programmatic creation of a Flux which is suitable for  
 multiple emissions per round, even from multiple threads.</m>
 
@@ -787,7 +843,18 @@ public void demoPush0() {
 }
 </pre>
 </td>
-<td>
+<td><pre><m><kc>OUTPUT</kc>
+demoPush0 - 1: a0
+demoPush0 - 2: a0
+demoPush0 - 1: a1
+demoPush0 - 2: a1
+demoPush0 - 2: a2
+demoPush0 - 1: a2
+demoPush0 - 2: a3
+demoPush0 - 1: a3
+demoPush0 - 2: a4
+demoPush0 - 1: a4
+</pre>
 <a href="https://projectreactor.io/docs/core/release/reference/index.html#_asynchronous_but_single_threaded_push" target="web">
 <ks>R3RFG | 4.4.3.</ks>   Asynchronous but single-threaded: push</a><br/>
 <m>
@@ -831,7 +898,14 @@ public void demoHot0() {
 
 </pre>
 </td>
-<td>
+<td><pre><m><kc>OUTPUT</kc>
+Subscriber 1: BLUE
+Subscriber 1: GREEN
+Subscriber 1: ORANGE
+Subscriber 2: ORANGE
+Subscriber 1: PURPLE
+Subscriber 2: PURPLE
+</pre>
 <a href="https://projectreactor.io/docs/core/release/reference/index.html#reactor.hotCold" target="web">
 <ks>R3RFG | 9.2.</ks>  Hot Versus Cold</a><br/>
 <m>
