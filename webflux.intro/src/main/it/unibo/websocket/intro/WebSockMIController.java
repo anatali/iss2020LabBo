@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 
 
 @RestController
-public class WebSockHMController {
+public class WebSockMIController {
 	private int count = 0;
 	
  	@GetMapping( "/hotdata" )
