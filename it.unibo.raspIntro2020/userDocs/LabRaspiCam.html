@@ -312,6 +312,7 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 
 sudo apt-get install cmake libjpeg8-dev
+sudo apt-get install build-essential libjpeg8-dev imagemagick libv4l-dev cmake -y  (su Raspian Buster lite)
 # Clone Repo in /tmp
 cd /tmp
 git clone https://github.com/jacksonliam/mjpg-streamer.git
@@ -324,7 +325,12 @@ sudo make install
 <kc># RUN</kc>
 export LD_LIBRARY_PATH=.
 ./mjpg_streamer -i "input_uvc.so" -o "output_http.so -p 8090 -w /usr/local/share/mjpg-streamer/www" &
+./mjpg_streamer -i "input_uvc.so -d /dev/video1" -o "output_http.so -p 8090 -w /usr/local/share/mjpg-streamer/www" &
 
+/usr/local/bin/mjpg_streamer -i "input_uvc.so -r 1280x720 
+	-d /dev/video0 -f 30" -o "output_http.so -p 8080 
+	-w /usr/local/share/mjpg-streamer/www"
+	
 <kc># TEST</kc>
 http://192.168.1.8:8090/stream.html 
 http://192.168.1.8:8090/?action=stream

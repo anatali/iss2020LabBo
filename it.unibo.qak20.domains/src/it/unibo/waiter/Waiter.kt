@@ -16,158 +16,16 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var CurrentClientId        	= 0
-		   var CurrentSelectedTable   	= 0
-		   var CurMoveX  			  	= 0
-		   var CurMoveY  				= 0
-		   
-		   val inmapname          		= "teaRoomExplored" 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						itunibo.planner.plannerUtil.initAI(  )
-						solve("consult('tearoomkb.pl')","") //set resVar	
-						itunibo.planner.plannerUtil.loadRoomMap( inmapname  )
-						itunibo.planner.plannerUtil.showCurrentRobotState(  )
-						updateResourceRep( "waiter athome"  
-						)
 					}
 					 transition(edgeName="t00",targetState="someQuery",cond=whenEvent("walkerstarted"))
 				}	 
 				state("someQuery") { //this:State
 					action { //it:State
-						println("waiter | sending some query ... ")
-						solve("teatable(1,ST)","") //set resVar	
-						if( currentSolution.isSuccess() ) { val S = getCurSol("ST").toString()    
-						println("waiter | teatable 1 state=$S")
-						}
-						else
-						{}
-						solve("numavailabletables(N)","") //set resVar	
-						if( currentSolution.isSuccess() ) { val Ntables = getCurSol("N").toString().toInt()   
-						println("waiter | numavailabletables=$Ntables")
-						}
-						else
-						{}
-						solve("roomstate(V)","") //set resVar	
-						if( currentSolution.isSuccess() ) { val W = getCurSol("V").toString()   
-						println("waiter | $W  ")
-						}
-						else
-						{}
-						println(" ------------- end of Queries ----------------  ")
-					}
-					 transition( edgeName="goto",targetState="listening", cond=doswitch() )
-				}	 
-				state("listening") { //this:State
-					action { //it:State
-						  //RESET all variables
-									CurrentClientId        	= 0
-									CurrentSelectedTable   	= 0
-									CurMoveX  			  	= 0
-									CurMoveY  				= 0		
-									var CurX                = itunibo.planner.plannerUtil.getPosX()
-									var CurY                = itunibo.planner.plannerUtil.getPosY()	
-									var Msg                 = "waiter listening at ($CurX,$CurY)"
-						updateResourceRep( Msg  
-						)
-						println(Msg)
-						stateTimer = TimerActor("timer_listening", 
-							scope, context!!, "local_tout_waiter_listening", 5000.toLong() )
-					}
-					 transition(edgeName="t01",targetState="checkrest",cond=whenTimeout("local_tout_waiter_listening"))   
-					transition(edgeName="t02",targetState="handleEnterrequest",cond=whenRequest("enterrequest"))
-				}	 
-				state("checkrest") { //this:State
-					action { //it:State
-						 var Msg = "waiter moving to rest"  
-						if(  ! itunibo.planner.plannerUtil.atHome()  
-						 ){updateResourceRep( Msg  
-						)
-						request("movetoCell", "movetoCell(0,0)" ,"waiterwalker" )  
-						}
-						else
-						 {forward("rest", "rest(0)" ,"waiter" ) 
-						 }
-					}
-					 transition(edgeName="t03",targetState="listening",cond=whenDispatch("rest"))
-					transition(edgeName="t04",targetState="listening",cond=whenReply("atcell"))
-					transition(edgeName="t05",targetState="unexpected",cond=whenReply("walkbreak"))
-				}	 
-				state("handleEnterrequest") { //this:State
-					action { //it:State
-						println("$name in ${currentState.stateName} | $currentMsg")
-						if( checkMsgContent( Term.createTerm("enterrequest(ID)"), Term.createTerm("enterrequest(CID)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 CurrentClientId = payloadArg(0).toString().toInt()  
-								solve("tableavailable(N)","") //set resVar	
-								if( currentSolution.isSuccess() ) { CurrentSelectedTable = getCurSol("N").toString().toInt()   
-								println("waiter | tableavailable=$CurrentSelectedTable")
-								answer("enterrequest", "enteranswer", "enteranswer($CurrentSelectedTable)"   )  
-								solve("engageTable($CurrentSelectedTable,$CurrentClientId)","") //set resVar	
-								}
-								else
-								{answer("enterrequest", "enteranswer", "enteranswer(0)"   )  
-								 CurrentClientId = 0  
-								}
-						}
-					}
-					 transition( edgeName="goto",targetState="listening", cond=doswitchGuarded({ CurrentClientId == 0  
-					}) )
-					transition( edgeName="goto",targetState="gotoEntrance", cond=doswitchGuarded({! ( CurrentClientId == 0  
-					) }) )
-				}	 
-				state("gotoEntrance") { //this:State
-					action { //it:State
-						updateResourceRep( "going to entrace for client $CurrentClientId"  
-						)
-						println("waiter | going to entracedoor for client = $CurrentClientId ")
-						solve("pos(entrancedoor,X,Y)","") //set resVar	
-						if( currentSolution.isSuccess() ) { CurMoveX = getCurSol("X").toString().toInt()  
-						 			   CurMoveY = getCurSol("Y").toString().toInt()  
-						request("movetoCell", "movetoCell($CurMoveX,$CurMoveY)" ,"waiterwalker" )  
-						}
-						else
-						{}
-					}
-					 transition(edgeName="t06",targetState="deployCurrentclient",cond=whenReply("atcell"))
-					transition(edgeName="t07",targetState="unexpected",cond=whenReply("walkbreak"))
-				}	 
-				state("deployCurrentclient") { //this:State
-					action { //it:State
-						updateResourceRep( "waiter at entrace, depolying client $CurrentClientId to table$CurrentSelectedTable "  
-						)
-						solve("pos(teatable,$CurrentSelectedTable,X,Y)","") //set resVar	
-						if( currentSolution.isSuccess() ) { CurMoveX = getCurSol("X").toString().toInt()  
-						 			   CurMoveY = getCurSol("Y").toString().toInt() - 1  //cell upon the table
-						request("movetoCell", "movetoCell($CurMoveX,$CurMoveY)" ,"waiterwalker" )  
-						}
-						else
-						{}
-					}
-					 transition(edgeName="t08",targetState="clientdeployed",cond=whenReply("atcell"))
-					transition(edgeName="t09",targetState="unexpected",cond=whenReply("walkbreak"))
-				}	 
-				state("clientdeployed") { //this:State
-					action { //it:State
-						 val Msg = "DEPLOYED client $CurrentClientId to table$CurrentSelectedTable at ($CurMoveX, $CurMoveY)" 
-						updateResourceRep( Msg  
-						)
-						println("waiter | $Msg")
-						 readLine()  
-					}
-					 transition( edgeName="goto",targetState="listening", cond=doswitch() )
-				}	 
-				state("endOfJob") { //this:State
-					action { //it:State
-						itunibo.planner.plannerUtil.showCurrentRobotState(  )
-						println("END OF Job ... BYE")
-					}
-				}	 
-				state("unexpected") { //this:State
-					action { //it:State
-						println("Sorry, there is something wrong ...")
-						println("$name in ${currentState.stateName} | $currentMsg")
+						println("waitermind | sending some query ... ")
 					}
 				}	 
 			}

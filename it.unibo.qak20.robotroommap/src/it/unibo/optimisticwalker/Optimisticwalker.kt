@@ -27,7 +27,7 @@ class Optimisticwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 					action { //it:State
 						println("&&&  optimisticwalker waits for a command 'movetoCell'")
 					}
-					 transition(edgeName="t04",targetState="walk",cond=whenRequest("movetoCell"))
+					 transition(edgeName="t00",targetState="walk",cond=whenRequest("movetoCell"))
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -36,12 +36,7 @@ class Optimisticwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 								 XT = payloadArg(0)
 											   YT = payloadArg(1)			  
 								println("&&&  optimisticwalker  MOVING to ($XT,$YT)")
-								if(  itunibo.planner.model.RoomMap.getRoomMap().isObstacle(XT,YT)  
-								 ){answer("movetoCell", "walkbreak", "walkbreak($XT,$YT)"   )  
-								}
-								else
-								 {itunibo.planner.plannerUtil.planForGoal( "$XT", "$YT"  )
-								 }
+								itunibo.planner.plannerUtil.planForGoal( "$XT", "$YT"  )
 						}
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitch() )
@@ -59,11 +54,13 @@ class Optimisticwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 					action { //it:State
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t05",targetState="stepDone",cond=whenReply("stepdone"))
-					transition(edgeName="t06",targetState="stepFailed",cond=whenReply("stepfail"))
+					 transition(edgeName="t01",targetState="stepDone",cond=whenReply("stepdone"))
+					transition(edgeName="t02",targetState="stepFailed",cond=whenReply("stepfail"))
 				}	 
 				state("stepDone") { //this:State
 					action { //it:State
+						updateResourceRep( itunibo.planner.plannerUtil.getMapOneLine()  
+						)
 						itunibo.planner.plannerUtil.updateMap( "w"  )
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ CurrentPlannedMove.length > 0  
@@ -90,17 +87,12 @@ class Optimisticwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm(
 				}	 
 				state("otherPlannedMove") { //this:State
 					action { //it:State
-						println("explorewawelike | otherPlannedMove $CurrentPlannedMove")
 						if(  CurrentPlannedMove == "l" || CurrentPlannedMove == "r"   
 						 ){forward("cmd", "cmd($CurrentPlannedMove)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "$CurrentPlannedMove"  )
-						delay(500) 
 						}
 					}
-					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ CurrentPlannedMove.length > 0  
-					}) )
-					transition( edgeName="goto",targetState="sendSuccessAnswer", cond=doswitchGuarded({! ( CurrentPlannedMove.length > 0  
-					) }) )
+					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitch() )
 				}	 
 				state("sendSuccessAnswer") { //this:State
 					action { //it:State
