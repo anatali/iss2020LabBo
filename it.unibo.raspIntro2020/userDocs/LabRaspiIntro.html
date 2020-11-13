@@ -601,6 +601,52 @@ sudo apt install -y samba
 </td>
 </tr>
 
+<tr>
+<td>
+<h3 id="wifi">Install a Wifi HotSpot</h3> 
+
+
+<a href="HotspotWifiRaspberryPI3 .pdf" target="web">HotspotWifiRaspberryPI3</a>
+
+https://www.domsoria.com/2020/02/cose-e-come-funziona-webrtc/ <br/><br/>
+
+https://www.domsoria.com/2019/10/configurare-la-raspberry-pi-come-access-point/ <br/><br/>
+
+</td>
+<td><pre>
+sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.sav
+sudo cat /etc/wpa_supplicant/wpa_supplicant.conf
+sudo cp /dev/null /etc/wpa_supplicant/wpa_supplicant.conf
+
+sudo nano  /etc/wpa_supplicant/wpa_supplicant.conf
+edit in the file /etc/wpa_supplicant/wpa_supplicant.conf and add the following lines:
+
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+RASPAP	https://raspap.com/#quick-installer	10.3.141.1
+wget -q https://git.io/voEUQ -O /tmp/raspap && bash /tmp/raspap
+curl -sL https://install.raspap.com | bash
+
+Per un certo periodo di tempo non sappiamo perché, ma sembra che l'accesso a Internet non sia più funzionale di default dopo l'installazione. 
+Per risolvere questo problema è sufficiente fare le due cose seguenti.
+
+abilitare il trasferimento dei pacchetti IPv4. Per fare questo, modificare il file /etc/sysctl.confand uncomment (cioè rimuoverlo all'inizio) la seguente riga:
+#net.ipv4.ip_forward=1
+
+Fatto questo, modificheremo iptables per definire l'IP di uscita che verrà indicato in modo che i server sappiano a chi rispondere
+(beh, da quello che ho capito, se ho sbagliato le correzioni sono le benvenute). 
+Per fare questo, aprite il file /etc/rc.local e aggiungete la seguente riga prima della parte "exit 0":
+
+iptables -t nat -A POSTROUTING -j MASQUERADE
+
+Riavviare la Raspberry PIe tutto dovrebbe funzionare come dovrebbe!
+ 
+</pre>
+</td>
+</tr>
+
+
  </tbody>
 </table>
  <br/><br/>
