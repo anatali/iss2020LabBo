@@ -251,33 +251,66 @@ within a software development team.
 
 <li>La definizione della architettura più appropriata di un sistema è sempre legata ad una accurata analisi del problema
 ed è sempre il risulato di un compromesso. 
-<div class="remark">
+	<div class="remark">
+	<ul>
+	<li>Architecture is about the important stuff ... whatever that is (Ralph Johson) 1</li>
+	<li>Everything in software architecture is a trade-off. (First law of Software Architecture) 18</li>
+	<li><ks>Why</ks> is more important than <ks>how</ks>. (Second law of Software Architecture) 18</li>
+	<li>The architecture for a software system arises from the combinations of requriments and additional concerns 
+	(Auditability, Performance, Security, Legality, Scalability ...) each protected by <k>fitness functions</k> B10
+	(objective functions used to summarize how close a design solution is to achieving the set aims)</li>
+	<li>All architecture become iterative becuase of <ks>unknown of unknowns</ks>. 
+	What we need today is an <ks>Evolutionary Architecture</ks>. 15 The evolvability is a meta-characteristic that protects  all
+	the other architectural characteristics, to ensure they <ks>don't erode</ks> B6.</li>
+	<li>An Evolutionary Architecture supports guided, incremental changes across multiple dimensions B25
+	including <k>-ilities</k> B 2 and broader (Technical, Data, Security, Operational B9)</li>
+	<li>The software development ecosystem (tools, frameworks, prectices, ..) forms a <k>dynamic equilibrium</k> B4 - much like a
+	biological system.</li>
+	<li>The <k>Continuos Delivery</k> and <k>DevOps</k> movements added a new factor in the dynamic equilibrium. B73</li>
+
+	<li>To build evolvable software systems, architets must think <ks>beyond just the technical</ks> architecture.
+
+	</ul>
+
+</div>  
+
+<h2>Gradle</h2>
+From <a href="https://docs.gradle.org/current/userguide/what_is_gradle.html" target="web">Gradle User Manual</a>
+<ol>
+<li>a build essentially configures a set of tasks and wires them together — based on their dependencies — to create that DAG. 
+<br/>
+Once the task graph has been created, Gradle determines which tasks need to be run in which order and then proceeds to execute them.</li>
+
+<li>Gradle evaluates and executes build scripts in three phases (that form Gradle’s Build Lifecycle): 
+Initialization, Configuration, Execution</li>
+<li>Gradle provides several mechanisms that allow you to extend it: 
 <ul>
-<li>Architecture is about the important stuff ... whatever that is (Ralph Johson) 1</li>
-<li>Everything in software architecture is a trade-off. (First law of Software Architecture) 18</li>
-<li><ks>Why</ks> is more important than <ks>how</ks>. (Second law of Software Architecture) 18</li>
-<li>The architecture for a software system arises from the combinations of requriments and additional concerns 
-(Auditability, Performance, Security, Legality, Scalability ...) each protected by <k>fitness functions</k> B10
-(objective functions used to summarize how close a design solution is to achieving the set aims)</li>
-<li>All architecture become iterative becuase of <ks>unknown of unknowns</ks>. 
-What we need today is an <ks>Evolutionary Architecture</ks>. 15 The evolvability is a meta-characteristic that protects  all
-the other architectural characteristics, to ensure they <ks>don't erode</ks> B6.</li>
-<li>An Evolutionary Architecture supports guided, incremental changes across multiple dimensions B25
-including <k>-ilities</k> B 2 and broader (Technical, Data, Security, Operational B9)</li>
-<li>The software development ecosystem (tools, frameworks, prectices, ..) forms a <k>dynamic equilibrium</k> B4 - much like a
-biological system.</li>
-<li>The <k>Continuos Delivery</k> and <k>DevOps</k> movements added a new factor in the dynamic equilibrium. B73</li>
-
-<li>To build evolvable software systems, architets must think <ks>beyond just the technical</ks> architecture.
-
+<li><a href="https://docs.gradle.org/current/userguide/custom_tasks.html" target="web">Custom task types</a>
+(It’s typically best to put the source file for a custom task type in the 
+<a href="https://docs.gradle.org/current/userguide/organizing_gradle_projects.html#sec:build_sources" target="web">buildSrc</a> directory)</li>
+<li>Custom task actions</li>
+<li>Extra properties</li>
 </ul>
+<li>
+<div class="remark">
+well-designed build scripts describe <k>what</k> steps are needed to build the software, 
+not <k>how</k> those steps should do the work. That’s a job for custom task types and plugins.
+</div>
+</li> 
 
+</li>
+
+<li><a href="https://docs.gradle.org/current/userguide/kotlin_dsl.html#sec:kotlin" target="web">Kotlin DSL</a></li>
+
+<li><a href="https://docs.gradle.org/current/samples/sample_building_java_applications.html" target="web">The Java Application Plugin</a></li>
+
+</ol>
+
+
+<br/><br/>
 </div>
  </li>
 </ol>
- 
-<br/><br/>
-</div>  
 <div style="background-color:rgba(86, 56, 253, 0.9); width:100%;text-align:center;font-size:small;color:white">
 By AN Unibo-DISI  
 </div> 
