@@ -459,7 +459,7 @@ val ftaction : <k>() -> Unit</k>
 val ftsum : <k>( Int,  Int) -> Int </k> 
 	<kc>//function type (two args, returns an Int)</kc>
 
-val ft greet: <k>(String )-> <ks>()->Unit</ks></k>
+val ftgreet: <k>(String )-> <ks>()->Unit</ks></k>
 	<kc>//returns another function  </kc>
 </td>
 <td><m><h3>Function type</h3> is just a syntactic sugar for an interface, but the interface cannot be used explicitly.
@@ -478,7 +478,7 @@ A  way to provide a value function is to use a <em>function literal</em>:
 
 <tr>
 <td><pre>
-<k>ftaction= {</k> println("hello") <k>}</k>  <kc>//lambda expression</kc>
+val <k>ftaction= {</k> println("hello") <k>}</k>  <kc>//lambda expression</kc>
 <kc>------</kc>
 <ks>ftaction()</ks> 		<kc>//hello</kc>
 
@@ -487,7 +487,7 @@ val fva = <ks> ftsum(1,2)</ks>
 <kc>------</kc>
 println("fva=$fva")	      <kc>//fva=3</kc>
 
-<k>ftgreet = {</k>  m: String -> { println(m)}   <k>}</k>
+val <k>ftgreet = {</k>  m: String -> { println(m)}   <k>}</k>
 <kc>------</kc>
 <ks> ftgreet( "Hello World" )<k>()</k></ks>  	<kc>//Hello World</kc>
 

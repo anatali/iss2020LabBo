@@ -2,43 +2,38 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="72872339-a0d1-4086-b48a-f54a15f5d983" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/bin/default/META-INF/main.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$checkDoEmptyMove$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$checkDoEmptyMove$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$checkTransition$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$checkTransition$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitch$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitch$1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitch$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitch$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitchGuarded$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitchGuarded$1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitchGuarded$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$doswitchGuarded$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$fsmStartWork$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$fsmStartWork$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$fsmactor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$fsmactor$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$fsmwork$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$fsmwork$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$messageArrived$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$messageArrived$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$setBody$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$setBody$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$whenDispatch$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$whenDispatch$1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm$whenDispatch$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm$whenDispatch$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Fsm.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Fsm.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/FsmKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/FsmKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/FsmUsageKt$main$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/FsmUsageKt$main$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/FsmUsageKt$runAnActor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/FsmUsageKt$runAnActor$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/FsmUsageKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/FsmUsageKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/MqttUtils$sendMsgToWorkActor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/MqttUtils$sendMsgToWorkActor$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/MqttUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/MqttUtils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/State$enterState$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/State$enterState$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/State.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/State.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/Transition.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/Transition.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/dummyactor$getBody$1$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/dummyactor$getBody$1$1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/dummyactor$getBody$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/dummyactor$getBody$1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/dummyactor$getBody$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/dummyactor$getBody$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/fsm/dummyactor.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/fsm/dummyactor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/utils/AppMsg$Companion.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/utils/AppMsg$Companion.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/utils/AppMsg.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/utils/AppMsg.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/utils/AppMsgType.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/utils/AppMsgType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/utils/Messages.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/utils/Messages.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/utils/virtualRobotSupportApp$startSensorObserver$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/utils/virtualRobotSupportApp$startSensorObserver$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/default/utils/virtualRobotSupportApp.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/default/utils/virtualRobotSupportApp.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/it.unibo.mbot2020.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.project" beforeDir="false" afterPath="$PROJECT_DIR$/.project" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/TestPlanBoundary.kt" beforeDir="false" afterPath="$PROJECT_DIR$/test/TestPlanBoundary.kttt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/testBasicrobot.kt" beforeDir="false" afterPath="$PROJECT_DIR$/test/testBasicrobot.kttt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/src/demo0.qak" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/src/demo0.qak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/src/demo_req_a.qak" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/src/demo_req_a.qak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/src/gettaskdeploy.qak" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/src/gettaskdeploy.qak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/blsblink/Blsblink.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/blsblink/Blsblink.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/ctxdemoreqa/MainCtxdemoreqa.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/ctxdemoreqa/MainCtxdemoreqa.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/led/Led.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/led/Led.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/sender/Sender.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.demoqak20/src/it/unibo/sender/Sender.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.issLabStart/userDocs/LabIss2020Bo.html" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.issLabStart/userDocs/LabIss2020Bo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.kotlinIntro/userDocs/LabIntroductionToKotlin.html" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.kotlinIntro/userDocs/LabIntroductionToKotlin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.mbot2020/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.mbot2020/src/mbotdemo.qak" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/src/mbotdemo.qak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.qak20.basicrobot/src/it/unibo/basicrobot/Basicrobot.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.qak20.basicrobot/src/it/unibo/basicrobot/Basicrobot.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/mappingwalker.pl" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/mappingwalker.pl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/src/it/unibo/ctxbasicrobot/MainCtxbasicrobot.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/src/it/unibo/ctxbasicrobot/MainCtxbasicrobot.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/src/it/unibo/mappingwalker/Mappingwalker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/src/it/unibo/mappingwalker/Mappingwalker.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/src/it/unibo/optimisticwalker/Optimisticwalker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.qak20.robotroommap/src/it/unibo/optimisticwalker/Optimisticwalker.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.qakactor/qaappl_MsgLog.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.qakactor/qaappl_MsgLog.txt" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/bin/default/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,59 +42,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-12" />
-    <option name="y" value="-12" />
-    <option name="width" value="2586" />
-    <option name="height" value="1466" />
-  </component>
+  <component name="ProjectId" id="1qhWBd91eM4H2PI7pK6ynjmsJO2" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="it.unibo.actorfsm" type="b2602c69:ProjectViewProjectNode" />
-              <item name="it.unibo.actorfsm" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="it.unibo.actorfsm" type="b2602c69:ProjectViewProjectNode" />
-              <item name="it.unibo.actorfsm" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="it.unibo.actorfsm" type="b2602c69:ProjectViewProjectNode" />
-              <item name="it.unibo.actorfsm" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="consolegui" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1585503112228" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager">
     <configuration name="ConsoleGui" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -121,6 +73,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -133,37 +86,6 @@
       <updated>1585503069800</updated>
     </task>
     <servers />
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="-6" y="-6" width="1293" height="733" extended-state="0" />
-    <layout>
-      <window_info id="Image Layers" />
-      <window_info id="Designer" />
-      <window_info id="UI Designer" />
-      <window_info id="Capture Tool" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24939272" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" weight="0.3283582" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3283582" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette" />
-      <window_info anchor="right" id="Theme Preview" />
-      <window_info anchor="right" id="Maven" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="right" id="Palette&#9;" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout>
   </component>
   <component name="masterDetails">
     <states>

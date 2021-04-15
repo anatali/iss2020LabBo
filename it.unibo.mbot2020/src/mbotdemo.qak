@@ -8,7 +8,7 @@ Context ctxmbotdemo ip [ host= "localhost" port= 8012 ]
 CodedQActor datacleaner    context ctxmbotdemo className "rx.dataCleaner"
 CodedQActor distancefilter context ctxmbotdemo className "rx.distanceFilter"
  
-QActor mbotrobot context ctxmbotdemo{ 
+QActor mbotrobot context ctxmbotdemo{    
 
 //[# var curSonarDistance = "" #]	
 	

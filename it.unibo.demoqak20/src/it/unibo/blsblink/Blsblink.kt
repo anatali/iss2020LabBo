@@ -40,7 +40,6 @@ class Blsblink ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 				}	 
 				state("startblink") { //this:State
 					action { //it:State
-						println("blsblink doblink")
 						if(  odd  
 						 ){updateResourceRep( "ledCmdOn"  
 						)
@@ -53,7 +52,7 @@ class Blsblink ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, s
 						 }
 						 odd = !odd  
 						stateTimer = TimerActor("timer_startblink", 
-							scope, context!!, "local_tout_blsblink_startblink", 300.toLong() )
+							scope, context!!, "local_tout_blsblink_startblink", 500.toLong() )
 					}
 					 transition(edgeName="t02",targetState="startblink",cond=whenTimeout("local_tout_blsblink_startblink"))   
 					transition(edgeName="t03",targetState="waitclick",cond=whenEvent("local_buttonCmd"))

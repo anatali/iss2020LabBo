@@ -7,8 +7,8 @@ System  /* -trace */ -msglog demo_req_a
  
 //mqttBroker "broker.hivemq.com" : 1883
 
-Request r1 : r1(X)
-Request r2 : r2(X)
+Request r1 : r1(X) 
+Request r2 : r2(X) 
 Reply   a1 : a1(X)   
 
 Context ctxdemoreqa ip [host="localhost" port=8010]   //for first run (debug)

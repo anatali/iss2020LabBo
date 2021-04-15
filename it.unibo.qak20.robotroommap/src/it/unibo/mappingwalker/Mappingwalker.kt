@@ -18,17 +18,18 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
 		var NumStep      = 0  
-		var GoalOk       = true
-		val StepTime     = 350
+		var GoalOk       = true 
+		val StepTime     = 360L
+		val BackTime     = 2 * StepTime / 3
 		var StartTime    = 0L
 		var Workduration = 0L    
 		var CurrentPlannedMove = ""
-		val inmapname    = "mapRoomEmpty"
-		val outmapname   = "mapRoomExplored"
+		val inmapname    = "tearoomBoundary"
+		val outmapname   = "teaRoomExplored"
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("robotmapper | START")
+						println("mappingwalker | START")
 						discardMessages = false
 						itunibo.planner.plannerUtil.initAI(  )
 						forward("cmd", "cmd(l)" ,"basicrobot" ) 
@@ -36,6 +37,7 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						forward("cmd", "cmd(r)" ,"basicrobot" ) 
 						delay(300) 
 						itunibo.planner.plannerUtil.loadRoomMap( inmapname  )
+						itunibo.planner.plannerUtil.showCurrentRobotState(  )
 						updateResourceRep( "initial"  
 						)
 					}
@@ -43,8 +45,10 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				}	 
 				state("exploreDirties") { //this:State
 					action { //it:State
+						println("$name in ${currentState.stateName} | $currentMsg")
 						itunibo.planner.plannerUtil.resetActions(  )
 						itunibo.planner.plannerUtil.planForNextDirty(  )
+						delay(1000) 
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ itunibo.planner.plannerUtil.existActions()  
 					}) )
@@ -107,20 +111,20 @@ class Mappingwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				state("stepFail") { //this:State
 					action { //it:State
 						println("				robotmapper | stepFail  ")
-						
-						 			var Dt = 0L 			
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(DURATION,CAUSE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Dt = payloadArg(0).toLong()   
-								if(  Dt < 3*StepTime/4.0   
+								 val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2  
+								println("robotmapper stepFail D= $D, BackTime = ${BackTime} BackT=$BackT")
+								if(  D > BackTime  
 								 ){forward("cmd", "cmd(s)" ,"basicrobot" ) 
-								delay(Dt)
+								delay(BackT)
 								forward("cmd", "cmd(h)" ,"basicrobot" ) 
 								}
 								itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection(  )
 								itunibo.planner.plannerUtil.showCurrentRobotState(  )
 								updateResourceRep( "stepFail"  
 								)
+								delay(500) 
 						}
 					}
 					 transition( edgeName="goto",targetState="exploreDirties", cond=doswitch() )

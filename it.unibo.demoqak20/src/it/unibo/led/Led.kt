@@ -31,7 +31,7 @@ class Led ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 					action { //it:State
 						println("led waits ...")
 					}
-					 transition(edgeName="t05",targetState="handleLedCmd",cond=whenDispatch("ledCmd"))
+					 transition(edgeName="t03",targetState="handleLedCmd",cond=whenDispatch("ledCmd"))
 				}	 
 				state("handleLedCmd") { //this:State
 					action { //it:State

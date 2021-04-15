@@ -6,12 +6,12 @@ System demo0
 Dispatch msg1 : msg1(ARG)
 Dispatch msg2 : msg2(ARG) 
  
-Event alarm   : alarm( KIND )   
+Event alarm   : alarm( KIND )    
 
 Context ctxdemo0 ip [host="localhost" port=8095]
 
 QActor demo context ctxdemo0{
-	State s0 initial { 	 
+	State s0 initial { 	    
 		discardMsg On
 //		[# sysUtil.logMsgs=true #]
  	}     
@@ -40,7 +40,7 @@ QActor demo context ctxdemo0{
    	}
     Goto s1      
  
-}
+}   
  
 
 QActor sender context ctxdemo0{
