@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:npm_and_yarn" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:npm_and_yarn" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:it.unibo.virtualRobot2020" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:npm_and_yarn" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:it.unibo.virtualRobot2020" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:node" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:npm_and_yarn" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:it.unibo.virtualRobot2020" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:node" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:WEnv" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:dependabot" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:npm_and_yarn" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:it.unibo.virtualRobot2020" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:node" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:WEnv" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:WebGLScene" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c1143dc8-c7bf-493f-8c17-84e70bbb10c7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../it.unibo.actorfsm/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.actorfsm/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/it.unibo.mbot2020.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.actorfsm/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.actorfsm/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.dockerCompose.gui/src/consolegui/sysConnKb.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.dockerCompose.gui/src/consolegui/sysConnKb.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.dockerCompose.gui/src/it/unibo/dockerCompose/gui/SenderNoGui.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.dockerCompose.gui/src/it/unibo/dockerCompose/gui/SenderNoGui.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.kotlinIntro/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.kotlinIntro/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.kotlinIntro/.project" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.kotlinIntro/.project" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.kotlinIntro/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.kotlinIntro/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.kotlinIntro/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.kotlinIntro/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.mbot2020/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.mbot2020/build_ctxDummy.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.mbot2020/src/it/unibo/ctxDummy/MainCtxDummy.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.mbot2020/src/mbotdemo.qak" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.mbot2020/src/mbotdemo.qak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.qak20.basicrobot/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.qak20.basicrobot/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/6.2.2/executionHistory/executionHistory.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/6.2.2/executionHistory/executionHistory.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/6.2.2/fileChanges/last-build.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/6.2.2/fileHashes/fileHashes.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/6.2.2/fileHashes/fileHashes.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/6.2.2/gc.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../it.unibo.robotgui2020/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../robotWeb2020/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../robotWeb2020/build.gradle" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="it.unibo.boundaryRobot" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.4\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1pnaPTg5dCac7QV3RVfRQyOjObk" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c1143dc8-c7bf-493f-8c17-84e70bbb10c7" name="Default Changelist" comment="" />
+      <created>1615821283995</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1615821283995</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
