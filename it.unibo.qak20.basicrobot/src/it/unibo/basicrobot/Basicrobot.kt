@@ -27,18 +27,18 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						unibo.robot.robotSupport.create(myself ,"basicrobotConfig.json" )
 						println("basicrobot | attempts to activate the sonar pipe")
 						  //For real robots
-						 			var robotsonar = context!!.hasActor("robotsonar")  
+						 			var robotsonar = context!!.hasActor("realsonar")  
 						 			if( robotsonar != null ){ 
 						 				println("basicrobot | WORKING WITH SONARS") 
 						 				//ACTIVATE THE DATA SOURCE robotsonar
-						 				forward("sonarstart", "sonarstart(1)" ,"robotsonar" ) 				
+						 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
 						 				//SET THE PIPE
 						 				robotsonar.
 						 				subscribeLocalActor("datacleaner").
 						 				subscribeLocalActor("distancefilter").
 						 				subscribeLocalActor("basicrobot")		//in order to perceive obstacle
 						 			}else{
-						 				println("basicrobot | WARNING: robotsonar NOT FOUND")
+						 				println("basicrobot | WARNING: realsonar NOT FOUND")
 						 			}
 						unibo.robot.robotSupport.move( "l"  )
 						unibo.robot.robotSupport.move( "r"  )

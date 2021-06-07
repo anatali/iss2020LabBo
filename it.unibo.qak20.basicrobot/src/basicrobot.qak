@@ -49,18 +49,18 @@ QActor basicrobot context ctxbasicrobot{
 // 		delay 1000  //give to the realsonar (if any) the time to start
  		println("basicrobot | attempts to activate the sonar pipe")	
  		[#  //For real robots
- 			var robotsonar = context!!.hasActor("robotsonar")  
+ 			var robotsonar = context!!.hasActor("realsonar")  
  			if( robotsonar != null ){ 
  				println("basicrobot | WORKING WITH SONARS") 
  				//ACTIVATE THE DATA SOURCE robotsonar
- 				forward("sonarstart", "sonarstart(1)" ,"robotsonar" ) 				
+ 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
  				//SET THE PIPE
  				robotsonar.
  				subscribeLocalActor("datacleaner").
  				subscribeLocalActor("distancefilter").
  				subscribeLocalActor("basicrobot")		//in order to perceive obstacle
  			}else{
- 				println("basicrobot | WARNING: robotsonar NOT FOUND")
+ 				println("basicrobot | WARNING: realsonar NOT FOUND")
  			}
  		#]
   		run unibo.robot.robotSupport.move( "l" )

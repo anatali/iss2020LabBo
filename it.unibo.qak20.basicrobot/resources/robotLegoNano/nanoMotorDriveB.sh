@@ -1,6 +1,6 @@
 #!/bin/bash
 # -----------------------------------------------------------------
-# nanoMotorDrive.sh
+# nanoMotorDriveB.sh
 # test for nano0
 # Key-point: we can manage a GPIO pin  by using the GPIO library.
 # On a OC, edit this file as UNIX

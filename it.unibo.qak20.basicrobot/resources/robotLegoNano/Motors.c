@@ -8,11 +8,11 @@ g++  Motors.c -l wiringPi -o  Motors
  */
 
 // #define TRUE 1   //already done in wiringPi
-#define inp1m1 15
-#define inp2m1 16
+#define inp1m1 15   //fisico 8
+#define inp2m1 16	//fisico 10
 
-#define inp1m2 12
-#define inp2m2 13
+#define inp1m2 12	//fisico 19
+#define inp2m2 13	//fisico 21
 
 using namespace std;
 

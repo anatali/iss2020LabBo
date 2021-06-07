@@ -34,7 +34,7 @@ object robotSupport{
 		val hostAddr     	= jsonObject.getString("host") 
 		robotKind        = jsonObject.getString("type") 
 		val robotPort    = jsonObject.getString("port") 
-		println( "		--- robotSupport | CREATED for $robotKind host=$hostAddr port=$robotPort" )
+		println( "		--- robotSupport | CREATED for $robotKind host=$hostAddr port=$robotPort owner=$owner" )
 
 		when( robotKind ){
 			"mockrobot"  ->  { robotMock.mockrobotSupport.create(  ) }
