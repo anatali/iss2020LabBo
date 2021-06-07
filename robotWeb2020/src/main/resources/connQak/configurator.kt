@@ -19,7 +19,7 @@ object configurator{
 	@JvmStatic var stepsize			= "350" 
 	
 //Basicrobot application
-	@JvmStatic var hostAddr   	    = "localhost";  //"192.168.1.5";		
+	@JvmStatic var hostAddr   	    = "192.168.1.40";  //"192.168.1.5";		
 	@JvmStatic var port    			= "8020";
 	@JvmStatic var qakdest	     	= "basicrobot";
 	@JvmStatic var ctxqadest 		= "ctxbasicrobot";

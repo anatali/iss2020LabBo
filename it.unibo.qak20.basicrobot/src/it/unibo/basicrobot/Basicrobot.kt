@@ -86,6 +86,11 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("stepPerhapsDone") { //this:State
 					action { //it:State
 						unibo.robot.robotSupport.move( "h"  )
+						if( checkMsgContent( Term.createTerm("sonar(DISTANCE,NAME)"), Term.createTerm("sonar(D,T)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("basicrobot | after a step emit polar(${payloadArg(0)}, 180) ")
+								emit("polar", "polar(${payloadArg(0)},180)" ) 
+						}
 						stateTimer = TimerActor("timer_stepPerhapsDone", 
 							scope, context!!, "local_tout_basicrobot_stepPerhapsDone", StepTime )
 					}
@@ -114,6 +119,7 @@ class Basicrobot ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep( "stepFail($Duration)"  
 						)
 						emit("obstacle", "obstacle(unknown)" ) 
+						emit("polar", "polar(10,90)" ) 
 						answer("step", "stepfail", "stepfail($Duration,obstacle)"   )  
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
