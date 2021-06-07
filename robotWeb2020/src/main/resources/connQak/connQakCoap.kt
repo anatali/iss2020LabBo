@@ -1,4 +1,4 @@
-package connQak
+										package connQak
 
 import org.eclipse.californium.core.CoapClient
 import org.eclipse.californium.core.coap.MediaTypeRegistry
@@ -14,8 +14,8 @@ class connQakCoap( )  {
 	 fun createConnection(  ){
  			val url = "coap://${configurator.hostAddr}:${configurator.port}/${configurator.ctxqadest}/${configurator.qakdest}"
  			System.out.println("connQakCoap | url=${url.toString()}")
- 			//uriStr: coap://192.168.1.22:8060/ctxdomains/waiter
-			//client = CoapClient(  )
+ 			//var uriStr: coap://192.168.1.22:8060/ctxdomains/waiter
+			client = CoapClient(  )
 		    client.uri = url.toString()
 			client.setTimeout( 1000L )
  			//initialCmd: to make console more reactive at the first user cmd

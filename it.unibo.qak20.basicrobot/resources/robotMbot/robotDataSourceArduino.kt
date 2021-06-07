@@ -13,54 +13,53 @@ import it.unibo.kactor.MsgUtil
 import it.unibo.kactor.ApplMessage
 import alice.tuprolog.Term
 import alice.tuprolog.Struct
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.GlobalScope
 
 
-class  robotDataSourceArduino( name : String, val owner : ActorBasic ,
-					val conn : SerialPortConnSupport) : ActorBasic(name, owner.scope){		
+class robotDataSourceArduino( name : String, val owner : ActorBasic ,
+					val conn : SerialPortConnSupport) : ActorBasic(name, owner.scope){
+	
+companion object {
+	val eventId = "sonarRobot"
+}		
 	init{
-		scope.launch{  autoMsg("start","start(1)") }
-		//println("   	%%% $name |  starts conn=$conn")	 
+ 		println("   	%%% $name |  starts conn=$conn")	 
 	}
 
 	override suspend fun actorBody(msg: ApplMessage) {
         //println("   	%%% $name |  handles msg= $msg  ")
-		val vStr  = (Term.createTerm( msg.msgContent()) as Struct).getArg(0).toString()
+		//val vStr  = (Term.createTerm( msg.msgContent()) as Struct).getArg(0).toString()
 		//println("   	%%% $name |  handles msg= $msg  vStr=$vStr")
-		elabData( vStr )
+		elabData(   )
 	}
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	suspend fun elabData(data : String ){
-         while (true) {
+	suspend fun elabData(  ){
+ 	GlobalScope.launch{	//to allow message handling
+		var counter   = 0
+        while (true) {
  			try {
  				var curDataFromArduino = conn.receiveALine()
-				//globalTimer.startTimer()  //TIMER ....
- 	 			//println("   	%%% $name | getDataFromArduino received: $curDataFromArduino"    )
+  	 			//println("   	%%% $name | elabData received: $curDataFromArduino"    )
  				var v = curDataFromArduino.toDouble() 
 				//handle too fast change ?? NOT HERE
   				var dataSonar = v.toInt();													
- 				//if( dataSonar < 350 ){ /REMOVED since USING STREAMS
- 				val event = MsgUtil.buildEvent( name,"sonarRobot","sonar( $dataSonar )")								
+  	 			//println("   	%%% $name | elabData: $dataSonar | ${counter++}"    )
+				//if( dataSonar < 350 ){ /REMOVED since USING STREAMS
+ 				var event = MsgUtil.buildEvent( name,"sonarRobot","sonar( $dataSonar )")								
   				//println("   	%%% $name | mbotSupport event: ${ event } owner=${owner.name}"   );						
 				//owner.emit(  event )
-				owner.emitLocalStreamEvent( event )
-			    
- 				//Oct2019 : emit the event obstacle
-/* //REMOVED WHEN USING STREAMS							
-				if( dataSonar < 7  ){ //WARNING: it generates  many events
-				if( ! obstacleEventEmitted ){ //Math.abs(dataSonar - oldSonarValue) > 3
-				//println("   	%%% $name | mbotSupport sonar: ${ dataSonar } r"   );
-				val obstacle = MsgUtil.buildEvent( name,"obstacle","obstacle($dataSonar)")
-	 			owner.emit(  obstacle )
-				obstacleEventEmitted = true
-				}else obstacleEventEmitted = false												
- */
+				emitLocalStreamEvent( event )
+				//delay(100)  //WARNING: if included, it does not change values
 			} catch ( e : Exception) {
- 				println("   	%%% $name | getDataFromArduino | ERROR $e   ")
+ 				println("   	%%% $name | robotDataSourceArduino | ERROR $e   ")
             }
+ 			//delay(100)  //WARNING: if included, it does read correct values
 		}//while
 	}
+ 	}
 	
  
 }

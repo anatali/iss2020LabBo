@@ -16,8 +16,8 @@
     function myIp() {
       var ip = location.host;
       //alert(ip);
-      document.getElementById("myIp").innerHTML = ip;
-      document.getElementById("raspIp").innerHTML = "192.168.1.5";
+      document.getElementById("myIp").innerHTML   = ip;
+      document.getElementById("raspIp").innerHTML = "192.168.1.39";
     }
   </script>
  
@@ -95,7 +95,7 @@
 	</div>
 
 	<script type="text/javascript">
-		 var url = "192.168.1.5:8090" //window.location.host;   //TO BE CHANGED: FOR WEB CAM
+		 var url = "192.168.1.62:8090" //window.location.host;   //TO BE CHANGED: FOR WEB CAM
  	     var len = url.length;
 	     var n   = url.indexOf(":");
 	     var j   = url.substring(n+1,len);
@@ -150,10 +150,10 @@
  <h2>Application-related configuration</h2>
  	My configuration in file <b><tt>pageConfig.json</tt></b>  the <tt>basicrobot</tt> is:
  	<pre>
- {"page":"robotGuiSocket", "host":"192.168.1.22", "port":"8020", 
+ {"page":"robotGuiSocket", "host":"192.168.1.61", "port":"8020", 
    "qakdest":"basicrobot", "ctxqadest":"ctxbasicrobot", "stepsize":"350"} </pre>
 or, for the project    <i>it.unibo.qak20.domains</i>:
- <pre>{"page":"robotGuiSocket", "host":"192.168.1.22", "port":"8060", 
+ <pre>{"page":"robotGuiSocket", "host":"192.168.1.61", "port":"8060", 
    "qakdest":"waiter", "ctxqadest":"ctxdomains", "stepsize":"350"} </pre>
  	</p><p>
 

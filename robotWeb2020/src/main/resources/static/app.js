@@ -1,10 +1,10 @@
 var stompClient = null;
-var hostAddr = "http://localhost:8080/move";
+var hostAddr = "http://localhost:7002/move";
 
 //SIMULA UNA FORM che invia comandi POST
 function sendRequestData( params, method) {
     method = method || "post"; // il metodo POST è usato di default
-    //console.log(" sendRequestData  params=" + params + " method=" + method);
+    //alert	(" sendRequestData  params=" + params + " method=" + method + " hostAddr=" + hostAddr);
     var form = document.createElement("form");
     form.setAttribute("method", method);
     form.setAttribute("action", hostAddr);
@@ -144,5 +144,5 @@ $(function () {
 	$( "#update" ).click(function() { sendUpdateRequest(  ) });
 });
 
-
+//alert("app.js")
 

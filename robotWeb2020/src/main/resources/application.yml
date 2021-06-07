@@ -17,7 +17,7 @@ api:
     get-robot-state:
       description: Provides a front-end server for the basicrobot
   
-server.port: 7001
+server.port: 7002
 
 app:
   robot-control:

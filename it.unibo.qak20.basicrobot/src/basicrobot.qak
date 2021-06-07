@@ -49,11 +49,11 @@ QActor basicrobot context ctxbasicrobot{
 // 		delay 1000  //give to the realsonar (if any) the time to start
  		println("basicrobot | attempts to activate the sonar pipe")	
  		[#  //For real robots
- 			var robotsonar = context!!.hasActor("robotsonar")  
+ 			var robotsonar = context!!.hasActor("realsonar")  
  			if( robotsonar != null ){ 
  				println("basicrobot | WORKING WITH SONARS") 
- 				//ACTIVATE THE DATA SOURCE robotsonar
- 				forward("sonarstart", "sonarstart(1)" ,"robotsonar" ) 				
+ 				//ACTIVATE THE DATA SOURCE realsonar
+ 				forward("sonarstart", "sonarstart(1)" ,"realsonar" ) 				
  				//SET THE PIPE
  				robotsonar.
  				subscribeLocalActor("datacleaner").
@@ -74,6 +74,8 @@ QActor basicrobot context ctxbasicrobot{
 	} 
 	Transition t1   whenMsg     cmd       -> execcmd
 					whenRequest step      -> doStep
+					whenEvent  obstacle   -> handleObstacle
+					whenEvent sonar       -> handleSonar
 				  	whenMsg     end       -> endwork			  
 	
 	State execcmd{
@@ -85,7 +87,26 @@ QActor basicrobot context ctxbasicrobot{
 		}
 	 }
 	 Goto work  
+	 
+	State handleObstacle{
+		//printCurrentMessage
+		println("basicrobot | handleObstacle")	
+		run robotMbot.mbotSupport.move( "h" )
+		//back to avoid obstacle again
+		run robotMbot.mbotSupport.move( "s" )
+		delay 400
+		run robotMbot.mbotSupport.move( "h" )
+		onMsg( obstacle  : obstacle( TARGET ) ){
+			updateResource [# "obstacle" #]
+ 		}
+	}
+	Goto work 
 
+	State handleSonar{
+		printCurrentMessage
+	}
+	Goto work
+		
    	State doStep{ 
  		//printCurrentMessage  
 		onMsg( step : step( T ) ){  

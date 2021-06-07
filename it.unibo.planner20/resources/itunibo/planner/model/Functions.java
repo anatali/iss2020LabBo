@@ -54,7 +54,7 @@ public class Functions implements ActionsFunction, ResultFunction, StepCostFunct
 
 	@Override
 	public boolean isGoalState(Object arg0) {
-		System.out.println("				isGoalState " + arg0 );
+		System.out.println("				isGoalState " + (itunibo.planner.model.RobotState)arg0 );
 		RobotState state = (RobotState) arg0;
 		if (RoomMap.getRoomMap().isDirty(state.getX(), state.getY()) &&
 				!RoomMap.getRoomMap().isObstacle(state.getX(), state.getY()))

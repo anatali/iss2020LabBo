@@ -31,7 +31,7 @@ object robotSupport{
 		val config = File("${configFileName}").readText(Charsets.UTF_8)
 		//println( "		--- robotSupport | config=$config" )
 		val jsonObject   = JSONObject( config )
-		val hostAddr     	= jsonObject.getString("host") 
+		val hostAddr     = jsonObject.getString("ipvirtualrobot") 
 		robotKind        = jsonObject.getString("type") 
 		val robotPort    = jsonObject.getString("port") 
 		println( "		--- robotSupport | CREATED for $robotKind host=$hostAddr port=$robotPort" )

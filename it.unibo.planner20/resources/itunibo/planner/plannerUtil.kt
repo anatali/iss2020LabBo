@@ -55,7 +55,8 @@ object plannerUtil {
        println("plannerUtil initAI done")
     }
 
-    @JvmStatic fun setGoal( x: Int, y: Int) {
+    @JvmStatic
+	fun setGoal( x: Int, y: Int) {
         try {
              println("setGoal $x,$y while robot in cell: ${getPosX()},${getPosY()} direction=${getDirection()} ") //canMove=$canMove
             
@@ -79,7 +80,9 @@ object plannerUtil {
     }
  
     @Throws(Exception::class)
-    @JvmStatic fun doPlan(): List<Action>? {
+    @JvmStatic
+	fun doPlan(): List<Action>? {
+		println("plannerUtil doPlan  " )
 		
 		if( ! currentGoalApplicable ){
 			println("plannerUtil doPlan cannot go into an obstacle")
@@ -88,11 +91,11 @@ object plannerUtil {
 		} 
 		
         val searchAgent: SearchAgent
-        //println("plannerUtil doPlan newProblem (A) $curGoal" );
+        println("plannerUtil doPlan newProblem (A) $curGoal" );
 		val problem = Problem(robotState, Functions(), Functions(), curGoal, Functions())
 		
 		
-        //println("plannerUtil doPlan newProblem (A) search " );
+        println("plannerUtil doPlan newProblem (A) search " );
         searchAgent = SearchAgent(problem, search!!)
         actions  = searchAgent.actions
 		

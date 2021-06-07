@@ -35,7 +35,7 @@ object mbotSupport{
 		 		val realsonar = robotDataSourceArduino("realsonar", owner,   conn)
 				//Context injection  
 				owner.context!!.addInternalActor(realsonar)  
-		  		println("   	---- mbotSupport | has created the realsonar")
+		  		println("   	--- mbotSupport | has created the realsonar")
 			}
 		}catch(  e : Exception) {
 			println("   	--- mbotSupport |  ERROR ${e }"   );

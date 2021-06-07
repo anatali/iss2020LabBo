@@ -113,4 +113,7 @@ public class RobotState {
 		UP, RIGHT, DOWN, LEFT;
 	}
 
+	public String toString() {
+		return "("+x+","+y+")"+direction;
+	}
 }

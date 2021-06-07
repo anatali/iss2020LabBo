@@ -28,8 +28,11 @@ object mbotSupport{
 			//println("   	%%% mbotSupport | initConn starts port=$port")
 			val serialConn = JSSCSerialComm()
 			conn = serialConn.connect(port)	//returns a SerialPortConnSupport
-			println("   	%%% mbotSupport |  initConn port=$port conn= $conn")						
- 			robotDataSourceArduino("realsonar", owner,   conn )
+			println("    	%%% mbotSupport |  initConn port=$port conn= $conn")						
+ 			val realsonar = robotDataSourceArduino("realsonar", owner,   conn )
+				//Context injection  
+				owner.context!!.addInternalActor(realsonar)  
+		  		println("   	%%% mbotSupport | has created the realsonar")
 		}catch(  e : Exception) {
 			println("   	%%% mbotSupport |  ERROR ${e }"   );
 		}		

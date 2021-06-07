@@ -1,7 +1,7 @@
 %====================================================================================
 % boundarywalker description   
 %====================================================================================
-mqttBroker("localhost", "1883", "unibo/boundarywalker").
+mqttBroker("localhost", "1883", "unibo/roomboundaryplanned").
 context(ctxboundarywalker, "localhost",  "TCP", "8068").
 context(ctxbasicrobot, "192.168.1.22",  "TCP", "8020").
  qactor( basicrobot, ctxbasicrobot, "external").

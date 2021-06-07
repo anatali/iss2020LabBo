@@ -336,9 +336,8 @@ Messaging
         //PROPAGATE TO REMOTE ACTORS
         if( event.msgId().startsWith("local")) return       //local_ => no propagation
         //EMIT VIA MQTT IF there is
-        if( context!!.mqttAddr.length != 0 ) {
-//            sysUtil.trace
-			println("$tt ActorBasic $name | emit MQTT ${event.msgId()}  on ${ sysUtil.getMqttEventTopic() }")
+        if( context!!.mqttAddr.length != 0  ) {
+//            sysUtil.traceprintln("$tt ActorBasic $name | emit MQTT ${event.msgId()}  on ${ sysUtil.getMqttEventTopic() }")
             //mqtt.sendMsg(event, sysUtil.getMqttEventTopic())
 			mqtt.publish(sysUtil.getMqttEventTopic(), event.toString() )  //Are perceived also by the emitter
         }
