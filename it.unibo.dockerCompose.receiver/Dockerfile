@@ -2,7 +2,9 @@
 ## Dockerfile for dcreceiver
 ## ----------------------------------------------------------
 ## see https://hub.docker.com/r/amd64/openjdk/
-FROM openjdk:12.0.2
+## FROM openjdk:12.0.2
+## FROM arm32v7/adoptopenjdk:11-jre-hotspot    	##For Raspberry 32bit
+FROM arm32v7/openjdk							##For Raspberry 32bit
 EXPOSE 8037
 ## ADD extracts the tar
 ADD ./build/distributions/*.tar /
