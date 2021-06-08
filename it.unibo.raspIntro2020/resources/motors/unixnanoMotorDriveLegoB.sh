@@ -1,18 +1,22 @@
 #!/bin/bash
 # -----------------------------------------------------------------
-# nanoMotorDriveA.sh
+# nanoMotorDrive.sh
 # test for nano0
 # Key-point: we can manage a GPIO pin  by using the GPIO library.
 # On a PC, edit this file as UNIX
-# users with Notepad++  Modifica -> Converti caratteri di fine linea
+
+## users with Notepad++  Modifica -> Converti caratteri di fine linea
+
 # -----------------------------------------------------------------
 
-in1=2 #WPI 8 BCM 2  PHYSICAL 3
-in2=3 #WPI 9 BCM 3  PHYSICAL 5
-inwp1=8   
-inwp2=9   
+in1=10 #WPI 12  BCM 10 PHYSICAL 19
+in2=9  #WPI 13  BCM 9  PHYSICAL 21
+
+inwp1=12  #WPI 12  BCM 10 PHYSICAL 19
+inwp2=13  #WPI 13  BCM 9  PHYSICAL 21
+
  
-if [ -d /sys/class/gpio/gpio2 ]
+if [ -d /sys/class/gpio/gpio10 ]
 then
  echo "in1 gpio${in1} exist"
  gpio export ${in1} out
@@ -21,7 +25,7 @@ else
  gpio export ${in1} out
 fi
 
-if [ -d /sys/class/gpio/gpio3 ]
+if [ -d /sys/class/gpio/gpio9 ]
 then
  echo "in2 gpio${in2} exist"
  gpio export ${in2} out

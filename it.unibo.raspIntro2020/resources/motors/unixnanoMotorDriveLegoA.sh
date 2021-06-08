@@ -7,10 +7,10 @@
 # users with Notepad++  Modifica -> Converti caratteri di fine linea
 # -----------------------------------------------------------------
 
-in1=2 #WPI 8 BCM 2  PHYSICAL 3
-in2=3 #WPI 9 BCM 3  PHYSICAL 5
-inwp1=8   
-inwp2=9   
+in1=15 #WPI 16 BCM 15  PHYSICAL 10
+in2=14 #WPI 15 BCM 14  PHYSICAL 8
+inwp1=16   
+inwp2=15   
  
 if [ -d /sys/class/gpio/gpio2 ]
 then
